@@ -1,14 +1,44 @@
 import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 
 export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
-  await waitFor(`document.querySelectorAll('.skills-sheet tbody tr').length > 17`, 'loaded skill catalog', 60000);
+  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false }, sessionId);
+  await waitFor(`document.querySelectorAll('.skills-summary').length > 17`, 'loaded skill catalog', 60000);
+  const capture = async name => {
+    if (!process.env.SKILLS_SCREENSHOT_DIR) return;
+    await mkdir(process.env.SKILLS_SCREENSHOT_DIR, { recursive: true });
+    const { data } = await send('Page.captureScreenshot', { format: 'png' }, sessionId);
+    await writeFile(path.join(process.env.SKILLS_SCREENSHOT_DIR, `${name}.png`), Buffer.from(data, 'base64'));
+  };
+  const checkContrast = async () => {
+    const ratios = await evaluate(`(() => {
+      const luminance = color => {
+        const rgb = color.match(/[\\d.]+/g).slice(0, 3).map(Number).map(v => { v /= 255; return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
+        return rgb[0] * .2126 + rgb[1] * .7152 + rgb[2] * .0722;
+      };
+      const background = luminance(getComputedStyle(document.querySelector('.skills-sheet')).backgroundColor);
+      return ['.skills-description p', '.skills-origin'].map(selector => {
+        const foreground = luminance(getComputedStyle(document.querySelector(selector)).color);
+        return (Math.max(foreground, background) + .05) / (Math.min(foreground, background) + .05);
+      });
+    })()`);
+    assert.ok(ratios.every(ratio => ratio >= 4.5), `Body and metadata contrast: ${ratios}`);
+  };
+  await capture('desktop');
   const catalog = await evaluate(`fetch('data/agent-skills.json').then(r => r.json())`);
   assert.ok(catalog.length > 1000);
   assert.ok(catalog.filter(skill => skill.Installed).every(skill => skill.Methods?.length > 0));
   assert.ok(catalog.filter(skill => skill.Installed && skill.Methods.length > 1).length > 100);
-  assert.equal(await evaluate(`document.querySelectorAll('.skills-sheet thead th').length`), 4);
-  assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('tbody tr:first-child .skills-description p')).map(el => ({ lang: el.lang, text: el.textContent }))`), [{ lang: 'en', text: catalog[0].DescriptionEn }, { lang: 'my', text: catalog[0].DescriptionMm }]);
-  assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('tbody tr:first-child .skills-badge')).map(el => el.textContent)`), [catalog[0].Category, catalog[0].Type, catalog[0].Agent]);
+  assert.equal(await evaluate(`document.querySelectorAll('.skills-sheet thead th').length`), 2);
+  assert.deepEqual(await evaluate(`Array.from(document.querySelector('.skills-summary .skills-description').querySelectorAll('p')).map(el => ({ lang: el.lang, text: el.textContent }))`), [{ lang: 'en', text: catalog[0].DescriptionEn }, { lang: 'my', text: catalog[0].DescriptionMm }]);
+  assert.deepEqual(await evaluate(`Array.from(document.querySelector('.skills-summary').querySelectorAll('.skills-badge')).map(el => el.textContent)`), [catalog[0].Category, catalog[0].Type, catalog[0].Agent]);
+  assert.equal(await evaluate(`Array.from(document.querySelectorAll('.skills-methods')).every(el => el.open)`), true);
+  const accessibility = await send('Accessibility.getFullAXTree', {}, sessionId);
+  assert.ok(accessibility.nodes.some(node => node.role?.value === 'list' && node.name?.value?.includes('methods; scroll for more')), 'Method inventories retain their native list semantics');
+  await evaluate(`document.querySelector('.skills-expand').click()`);
+  assert.equal(await evaluate(`Array.from(document.querySelectorAll('.skills-methods')).every(el => !el.open)`), true);
+  await evaluate(`document.querySelector('.skills-expand').click()`);
   assert.equal(await evaluate(`Array.from(document.querySelectorAll('.skills-methods')).every(el => el.open)`), true);
   const pageSize = 50;
   const set = (selector, value, event = 'change') => evaluate(`(() => {
@@ -19,31 +49,31 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await set('.skills-filters select', 'Design & UI');
   await waitFor(`document.querySelectorAll('tbody .skills-badge--category').length > 0 && Array.from(document.querySelectorAll('tbody .skills-badge--category')).every(el => el.textContent === 'Design & UI')`, 'category filter');
   await set('.skills-filters input[type=search]', 'Use the design-taste-frontend skill to design this landing page.', 'input');
-  await waitFor(`document.querySelectorAll('tbody tr').length === 1 && document.querySelector('tbody').textContent.includes('Taste Skill')`, 'combined category and search');
+  await waitFor(`document.querySelectorAll('.skills-summary').length === 1 && document.querySelector('tbody').textContent.includes('Taste Skill')`, 'combined category and search');
   await set('.skills-filters input[type=search]', 'no-such-skill-xyz', 'input');
   await waitFor(`Boolean(document.querySelector('.skills-empty'))`, 'empty state');
   await evaluate(`document.querySelector('.skills-filters button').click()`);
-  await waitFor(`document.querySelectorAll('tbody tr').length === ${pageSize}`, 'reset filters');
+  await waitFor(`document.querySelectorAll('.skills-summary').length === ${pageSize}`, 'reset filters');
   assert.ok((await evaluate(`document.querySelector('.skills-count').textContent`)).startsWith(`${catalog.length} of ${catalog.length}`));
   await evaluate(`document.querySelector('.skills-pagination button:last-child').click()`);
   await waitFor(`document.querySelector('.skills-pagination span').textContent.startsWith('Page 2 ')`, 'next page');
-  assert.ok((await evaluate(`document.querySelector('tbody th').textContent`)).includes(catalog[pageSize].Name));
+  assert.ok((await evaluate(`document.querySelector('.skills-summary th').textContent`)).includes(catalog[pageSize].Name));
   await set('.skills-filters input[type=search]', 'ecc:tdd-workflow', 'input');
-  await waitFor(`document.querySelector('.skills-pagination span').textContent.startsWith('Page 1 ') && document.querySelectorAll('tbody tr').length === 1 && document.querySelector('tbody th').textContent.includes('ecc:tdd-workflow')`, 'search all pages and reset page number');
+  await waitFor(`document.querySelector('.skills-pagination span').textContent.startsWith('Page 1 ') && document.querySelectorAll('.skills-summary').length === 1 && document.querySelector('.skills-summary th').textContent.includes('ecc:tdd-workflow')`, 'search all pages and reset page number');
   await evaluate(`document.querySelector('.skills-filters button').click()`);
   await evaluate(`document.querySelector('.skills-filters input[type=checkbox]').click()`);
   await waitFor(`document.querySelector('.skills-count').textContent.startsWith('${catalog.filter(s => s.Installed).length} of ${catalog.length}')`, 'installed-only snapshot');
   await evaluate(`document.querySelector('.skills-filters button').click()`);
-  await evaluate(`window.copiedSkillText = ''; window.skillCopyFails = false; window.copyToClipboard = async text => { window.copiedSkillText = text; return !window.skillCopyFails; }; document.querySelector('tbody td button').click()`);
+  await evaluate(`window.copiedSkillText = ''; window.skillCopyFails = false; window.copyToClipboard = async text => { window.copiedSkillText = text; return !window.skillCopyFails; }; document.querySelector('.skills-setup button').click()`);
   await waitFor(`document.querySelector('.skills-status').textContent.startsWith('Copied') && window.copiedSkillText.length > 0`, 'copy setup');
-  await evaluate(`window.skillCopyFails = true; document.querySelector('tbody td:last-child button').click()`);
+  await evaluate(`window.skillCopyFails = true; document.querySelector('.skills-calls button').click()`);
   await waitFor(`document.querySelector('.skills-status').textContent.includes('Could not copy')`, 'clipboard failure feedback');
   await set('.skills-filters input[type=search]', '/ponytail ultra', 'input');
   await set('.skills-filters label:nth-child(3) select', 'Codex / Claude Code');
-  await waitFor(`document.querySelectorAll('tbody tr').length === 1 && document.querySelector('tbody th').textContent.includes('Ponytail')`, 'search an alternative method across the catalog');
+  await waitFor(`document.querySelectorAll('.skills-summary').length === 1 && document.querySelector('.skills-summary th').textContent.includes('Ponytail')`, 'search an alternative method across the catalog');
   const ponytail = catalog.find(skill => skill.Name === 'Ponytail');
   assert.equal(await evaluate(`document.querySelector('.skills-methods').open`), true);
-  assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('.skills-methods li pre')).map(el => el.textContent)`), ponytail.Methods.map(method => method.Call));
+  assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('.skills-methods li pre')).map(el => el.textContent)`), ponytail.Methods.filter(method => method.Call.toLowerCase().includes('/ponytail ultra') || method.Name.toLowerCase().includes('/ponytail ultra')).map(method => method.Call));
   await evaluate(`document.querySelector('.skills-methods summary').click()`);
   assert.equal(await evaluate(`document.querySelector('.skills-methods').open`), false);
   await evaluate(`document.querySelector('.skills-methods summary').click()`);
@@ -51,10 +81,33 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await waitFor(`window.copiedSkillText === '/ponytail ultra' && document.querySelector('.skills-status').textContent.startsWith('Copied')`, 'copy one selected method');
   await evaluate(`document.querySelector('.skills-filters button').click()`);
   assert.equal(await evaluate(`getComputedStyle(document.querySelector('thead th')).position`), 'sticky');
-  assert.equal(await evaluate(`getComputedStyle(document.querySelector('tbody th')).position`), 'sticky');
+  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.skills-summary th')).position`), 'sticky');
+  await set('#skills-search', 'Playwright CLI', 'input');
+  await set('#skills-agent', 'Terminal / Agent');
+  await waitFor(`Boolean(Array.from(document.querySelectorAll('.skills-group')).find(el => el.querySelector('.skills-name').textContent === 'Playwright CLI'))`, 'large method inventory');
+  assert.equal(await evaluate(`(() => { const group = Array.from(document.querySelectorAll('.skills-group')).find(el => el.querySelector('.skills-name').textContent === 'Playwright CLI'); const list = group.querySelector('.skills-method-list'); return list.scrollHeight > list.clientHeight && list.clientHeight <= 384; })()`), true);
+  await evaluate(`Array.from(document.querySelectorAll('.skills-group')).find(el => el.querySelector('.skills-name').textContent === 'Playwright CLI').scrollIntoView({ block: 'start' })`);
+  await capture('large-methods');
+  await evaluate(`document.querySelector('.skills-filters button').click(); document.querySelector('.neo-canvas').scrollTop = 0`);
+  await evaluate(`document.querySelector('[data-theme-option="light"]').click()`);
+  await waitFor(`window.getGistHubTheme() === 'light'`, 'light theme');
+  await checkContrast();
+  await capture('desktop-light');
+  await evaluate(`document.querySelector('[data-theme-option="dark"]').click()`);
+  await waitFor(`window.getGistHubTheme() === 'dark'`, 'dark theme');
+  await checkContrast();
+  await capture('desktop-dark');
+  await send('Emulation.setDeviceMetricsOverride', { width: 900, height: 1100, deviceScaleFactor: 1, mobile: false }, sessionId);
+  assert.equal(await evaluate(`document.documentElement.scrollWidth > innerWidth`), false);
+  await capture('tablet');
   await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }, sessionId);
   assert.equal(await evaluate(`document.documentElement.scrollWidth > innerWidth`), false);
-  assert.equal(await evaluate(`document.querySelector('.skills-sheet').scrollWidth > document.querySelector('.skills-sheet').clientWidth`), true);
+  assert.equal(await evaluate(`document.querySelector('.skills-sheet').scrollWidth > document.querySelector('.skills-sheet').clientWidth`), false);
+  await capture('mobile');
+  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.skills-summary th')).position`), 'static');
+  assert.ok(await evaluate(`document.querySelector('.skills-copy').getBoundingClientRect().height >= 44`));
+  await evaluate(`document.querySelector('.skills-usage').scrollIntoView({ block: 'start' })`);
+  await capture('mobile-methods');
   await send('Emulation.clearDeviceMetricsOverride', {}, sessionId);
   console.log('PASS: skill category/search/installed filters, reset, empty results, clipboard feedback, sticky cells and mobile sheet scrolling.');
 }

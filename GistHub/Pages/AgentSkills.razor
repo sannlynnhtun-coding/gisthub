@@ -4,18 +4,24 @@
 
 <PageTitle>AI Agent Tools &amp; Skills · GistHub</PageTitle>
 <section class="skills-page" aria-labelledby="skills-title">
-    <div class="neo-page-heading space-y-3 pb-5 border-b">
-        <div class="neo-kicker">Workbench / Reference</div>
-        <h2 id="skills-title" class="text-3xl font-black tracking-tight">AI Agent Tools &amp; Skills</h2>
-        <p class="text-muted-foreground">Find a skill, copy its setup, and put it to work. English / မြန်မာ</p>
-        <p class="text-sm text-muted-foreground">Includes the <a href="https://www.chaseai.io/blog/best-claude-code-plugins-skills-clis" target="_blank" rel="noopener noreferrer">Chase AI list</a> and all installed skills from personal, shared and plugin skill folders. “Installed locally” records this workspace’s skill files on 1 Nov 2026; it does not detect your device or CLI authentication.</p>
-    </div>
+    <header class="skills-heading">
+        <div>
+            <h2 id="skills-title">AI tools &amp; skills</h2>
+            <p>Find the right skill, read it in English or မြန်မာ, and copy a method.</p>
+        </div>
+        <details class="skills-about">
+            <summary>About this catalog</summary>
+            <p>Includes the <a href="https://www.chaseai.io/blog/best-claude-code-plugins-skills-clis" target="_blank" rel="noopener noreferrer">Chase AI list</a> and all installed skills from personal, shared and plugin skill folders.</p>
+            <p>“Installed locally” is a snapshot of this workspace’s skill files on 1 Nov 2026. It does not detect your device or CLI authentication.</p>
+            <p>Methods are documented examples. Replace placeholders and follow the referenced guide for prerequisites and the working directory. Run terminal commands in a terminal and skill prompts in your agent’s chat.</p>
+        </details>
+    </header>
     <div class="skills-filters">
-        <label>Search<input type="search" placeholder="Name, description, command…" @bind="Search" @bind:event="oninput" @bind:after="ResetPage" /></label>
-        <label>Category<select @bind="Category" @bind:after="ResetPage"><option value="">All categories</option>@foreach (var category in Skills.Select(s => s.Category).Distinct().Order()) { <option>@category</option> }</select></label>
-        <label>Agent / environment<select @bind="Agent" @bind:after="ResetPage"><option value="">All environments</option>@foreach (var agent in Skills.Select(s => s.Agent).Distinct().Order()) { <option>@agent</option> }</select></label>
+        <label for="skills-search">Search skills &amp; methods<input id="skills-search" type="search" placeholder="Try a skill name, task, or command…" @bind="Search" @bind:event="oninput" @bind:after="ResetPage" /></label>
+        <label for="skills-category">Category<select id="skills-category" @bind="Category" @bind:after="ResetPage"><option value="">All categories</option>@foreach (var category in Skills.Select(s => s.Category).Distinct().Order()) { <option>@category</option> }</select></label>
+        <label for="skills-agent">Agent / environment<select id="skills-agent" @bind="Agent" @bind:after="ResetPage"><option value="">All environments</option>@foreach (var agent in Skills.Select(s => s.Agent).Distinct().Order()) { <option>@agent</option> }</select></label>
         <label class="skills-checkbox"><input type="checkbox" @bind="InstalledOnly" @bind:after="ResetPage" /> Installed locally</label>
-        <button type="button" class="btn btn-outline btn-sm" @onclick="Reset">Reset</button>
+        <button type="button" class="btn btn-outline btn-sm" @onclick="Reset">Clear filters</button>
     </div>
     <div class="skills-status" role="status" aria-live="polite">@Status</div>
     @if (Loading)
@@ -31,60 +37,92 @@
         var filtered = Skills.Where(s => s.Matches(Search, Category, Agent, InstalledOnly)).ToList();
         var totalPages = Math.Max(1, (filtered.Count + PageSize - 1) / PageSize);
         var rows = filtered.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
-        <p class="text-sm text-muted-foreground skills-count" role="status">@filtered.Count of @Skills.Count entries · Setup commands run in a terminal unless marked Claude Code. Skill examples are chat prompts.</p>
-        <p class="text-sm text-muted-foreground">Methods are documented examples. Replace placeholders and follow the referenced guide for prerequisites and the working directory.</p>
-        <nav class="skills-pagination" aria-label="Skill catalog pages">
-            <button type="button" class="btn btn-outline btn-sm" disabled="@(CurrentPage <= 1)" @onclick="() => CurrentPage--">Previous</button>
-            <span role="status">Page @CurrentPage of @totalPages · @PageSize per page</span>
-            <button type="button" class="btn btn-outline btn-sm" disabled="@(CurrentPage >= totalPages)" @onclick="() => CurrentPage++">Next</button>
-        </nav>
-        <div class="skills-sheet" tabindex="0" role="region" aria-label="Skills spreadsheet; scroll horizontally for install and call methods">
-            <table>
+        <div class="skills-results-bar">
+            <div class="skills-result-actions">
+                <p class="skills-count" role="status">@filtered.Count of @Skills.Count skills</p>
+                <button type="button" class="skills-expand" @onclick="() => MethodsExpanded = !MethodsExpanded">@(MethodsExpanded ? "Collapse all methods" : "Expand all methods")</button>
+            </div>
+            <nav class="skills-pagination" aria-label="Skill catalog pages">
+                <button type="button" class="btn btn-outline btn-sm" disabled="@(CurrentPage <= 1)" @onclick="() => CurrentPage--">Previous</button>
+                <span role="status">Page @CurrentPage of @totalPages</span>
+                <button type="button" class="btn btn-outline btn-sm" disabled="@(CurrentPage >= totalPages)" @onclick="() => CurrentPage++">Next</button>
+            </nav>
+        </div>
+        <div class="skills-sheet" role="region" aria-label="Skill catalog">
+            <table role="table">
                 <caption class="sr-only">AI tools and skills with categories, bilingual descriptions, installation and invocation examples.</caption>
-                <thead><tr><th scope="col">Name</th><th scope="col">Description · EN / MM</th><th scope="col">Install / Setup</th><th scope="col">How to call</th></tr></thead>
-                <tbody>
-                    @foreach (var skill in rows)
-                    {
-                        var methods = skill.CallMethods;
-                        <tr @key="skill.Name">
+                <thead><tr><th scope="col">Skill</th><th scope="col">Description · EN / MM</th></tr></thead>
+                @foreach (var skill in rows)
+                {
+                    var methods = skill.CallMethods;
+                    var matchingMethods = string.IsNullOrWhiteSpace(Search) || skill.Name.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase)
+                        ? methods : methods.Where(m => m.Name.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase) || m.Call.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase)).ToArray();
+                    var shownMethods = matchingMethods.Length > 0 ? matchingMethods : methods;
+                    <tbody class="skills-group" @key="skill.Name">
+                        <tr class="skills-summary">
                             <th scope="row">
-                                @if (skill.Source is not null) { <a href="@skill.Source" target="_blank" rel="noopener noreferrer">@skill.Name ↗</a> }
-                                else { @skill.Name }
+                                @if (skill.Source is not null)
+                                {
+                                    <a class="skills-name" href="@skill.Source" target="_blank" rel="noopener noreferrer">@skill.Name<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3h7v7m0-7L10 14"/><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></a>
+                                }
+                                else { <span class="skills-name">@skill.Name</span> }
                                 <div class="skills-badges">
                                     <span class="skills-badge skills-badge--category" title="Category">@skill.Category</span>
                                     <span class="skills-badge skills-badge--type" title="Type">@skill.Type</span>
                                     <span class="skills-badge skills-badge--agent" title="Agent / Environment">@skill.Agent</span>
                                 </div>
-                                @if (skill.Installed) { <small class="skills-installed">Installed locally</small> }
-                                @if (skill.Article) { <small>Chase AI list</small> }
+                                <div class="skills-origin">
+                                    @if (skill.Installed) { <span class="skills-installed">Installed locally</span> }
+                                    @if (skill.Article) { <span>Chase AI list</span> }
+                                </div>
                             </th>
                             <td class="skills-description">
                                 <p lang="en">@skill.DescriptionEn</p>
                                 <p lang="my">@skill.DescriptionMm</p>
                             </td>
-                            <td><button type="button" @onclick='() => CopyAsync(skill.Install, skill.Name + " setup")' aria-label="@($"Copy {skill.Name} setup")">Copy</button><pre>@skill.Install</pre></td>
-                            <td>
-                                <details class="skills-methods" open>
-                                    <summary>@methods.Length @(methods.Length == 1 ? "method" : "methods")</summary>
-                                    <ol>
-                                        @foreach (var method in methods)
-                                        {
-                                            <li>
-                                                <div class="skills-method-heading">
-                                                    <strong>@method.Name</strong>
-                                                    <button type="button" @onclick='() => CopyAsync(method.Call, $"{skill.Name}: {method.Name}")' aria-label="@($"Copy {skill.Name}: {method.Name}")">Copy</button>
-                                                </div>
-                                                <pre>@method.Call</pre>
-                                                @if (method.Reference is not null) { <small>@method.Reference</small> }
-                                            </li>
-                                        }
-                                    </ol>
+                        </tr>
+                        <tr class="skills-detail-row">
+                            <td colspan="2">
+                                <details class="skills-methods" open="@MethodsExpanded">
+                                    <summary aria-label="@($"{skill.Name}: setup and {methods.Length} methods")">
+                                        Setup &amp; methods
+                                        <span class="skills-method-count">@methods.Length @(methods.Length == 1 ? "method" : "methods")</span>
+                                        @if (shownMethods.Length < methods.Length) { <span class="skills-matching">@shownMethods.Length matching · clear search to see all</span> }
+                                    </summary>
+                                    <div class="skills-usage">
+                                        <section class="skills-setup" aria-label="@($"{skill.Name} installation")">
+                                            <div class="skills-method-heading">
+                                                <h3>Install / setup</h3>
+                                                <button type="button" class="btn btn-outline btn-sm skills-copy" @onclick='() => CopyAsync(skill.Install, skill.Name + " setup")' aria-label="@($"Copy {skill.Name} setup")">Copy</button>
+                                            </div>
+                                            <pre>@skill.Install</pre>
+                                        </section>
+                                        <section class="skills-calls" aria-label="@($"{skill.Name} invocation methods")">
+                                            <h3>How to call</h3>
+                                            <ol class="skills-method-list" tabindex="0" aria-label="@($"{skill.Name} methods; scroll for more")">
+                                                @foreach (var method in shownMethods)
+                                                {
+                                                    <li>
+                                                        <div class="skills-method-heading">
+                                                            <strong>@method.Name</strong>
+                                                            <button type="button" class="btn btn-outline btn-sm skills-copy" @onclick='() => CopyAsync(method.Call, $"{skill.Name}: {method.Name}")' aria-label="@($"Copy {skill.Name}: {method.Name}")">Copy</button>
+                                                        </div>
+                                                        <pre>@method.Call</pre>
+                                                        @if (method.Reference is not null) { <small>@method.Reference</small> }
+                                                    </li>
+                                                }
+                                            </ol>
+                                        </section>
+                                    </div>
                                 </details>
                             </td>
                         </tr>
-                    }
-                    @if (rows.Count == 0) { <tr><td colspan="4" class="skills-empty">No matching skills. Try another search or reset the filters.</td></tr> }
-                </tbody>
+                    </tbody>
+                }
+                @if (rows.Count == 0)
+                {
+                    <tbody><tr><td colspan="2" class="skills-empty"><strong>No matching skills</strong><p>Try a shorter query or clear your filters to browse the catalog.</p><button type="button" class="btn btn-outline btn-sm" @onclick="Reset">Clear filters</button></td></tr></tbody>
+                }
             </table>
         </div>
     }
@@ -94,6 +132,7 @@
     private List<AgentSkill> Skills = [];
     private string Search = "", Category = "", Agent = "", Status = "";
     private bool InstalledOnly, Loading = true;
+    private bool MethodsExpanded = true;
     private const int PageSize = 50;
     private int CurrentPage = 1;
     private string? Error;
