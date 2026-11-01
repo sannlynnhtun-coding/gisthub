@@ -1,0 +1,28 @@
+.skills-page { display: grid; gap: 1rem; min-width: 0; }
+.skills-page a { text-decoration: underline; text-underline-offset: 3px; }
+.skills-filters { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; }
+.skills-filters label { display: grid; gap: .35rem; font-size: .8rem; font-weight: 600; }
+.skills-filters label:first-child { flex: 1; min-width: 180px; }
+.skills-filters input[type=search], .skills-filters select { border: 1px solid hsl(var(--border)); background: hsl(var(--card)); color: hsl(var(--foreground)); border-radius: 3px; min-height: 40px; padding: .5rem .65rem; max-width: 100%; }
+.skills-filters .skills-checkbox { display: flex; align-items: center; gap: .5rem; min-height: 40px; }
+.skills-status:empty { display: none; }
+.skills-status { font-size: .85rem; }
+.skills-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; font-size: .8rem; }
+.skills-sheet { overflow: auto; max-height: 68vh; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); isolation: isolate; }
+table { width: 100%; min-width: 1600px; border-collapse: separate; border-spacing: 0; font-size: .82rem; }
+th, td { padding: .8rem; text-align: left; vertical-align: top; border-right: 1px solid hsl(var(--border)); border-bottom: 1px solid hsl(var(--border)); }
+thead th { position: sticky; top: 0; z-index: 2; background: hsl(var(--muted)); font-weight: 700; white-space: nowrap; }
+tbody th { position: sticky; left: 0; z-index: 1; min-width: 190px; max-width: 230px; background: hsl(var(--card)); font-weight: 600; }
+thead th:first-child { left: 0; z-index: 3; }
+tbody tr:nth-child(even) { background: hsl(var(--muted) / .25); }
+tbody tr:nth-child(even) th { background: hsl(var(--background)); }
+tbody tr:hover td, tbody tr:hover th { background: hsl(var(--muted)); }
+td:nth-child(4), td:nth-child(5) { min-width: 260px; line-height: 1.8; }
+td:nth-child(6), td:nth-child(7) { min-width: 280px; max-width: 360px; }
+small { display: block; margin-top: .4rem; font-size: .7rem; color: hsl(var(--muted-foreground)); font-weight: 400; }
+.skills-installed { font-weight: 700; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; font: .76rem/1.7 ui-monospace, monospace; margin-top: .5rem; }
+td button { padding: .2rem .55rem; border: 1px solid hsl(var(--border)); border-radius: 3px; font-size: .7rem; background: hsl(var(--card)); }
+.skills-empty { padding: 2rem; }
+:is(button, input, select, a, .skills-sheet):focus-visible { outline: 2px solid hsl(var(--foreground)); outline-offset: 3px; }
+@media (max-width: 640px) { tbody th { min-width: 145px; max-width: 145px; overflow-wrap: anywhere; } .skills-sheet { max-height: 65vh; } }

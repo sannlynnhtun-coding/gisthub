@@ -549,6 +549,11 @@ try {
     await checkMarkdownText({ evaluate, send, sessionId, waitFor });
   }
 
+  if (process.env.BROWSER_CHECK_AGENT_SKILLS === "1") {
+    const { checkAgentSkills } = await import('./test-agent-skills.mjs');
+    await checkAgentSkills({ evaluate, send, sessionId, waitFor });
+  }
+
   if (process.env.BROWSER_CHECK_TOOLS_GUIDE === "1") {
     const { checkToolsGuide } = await import('./test-tools-guide.mjs');
     await checkToolsGuide({ evaluate, send, sessionId, waitFor });

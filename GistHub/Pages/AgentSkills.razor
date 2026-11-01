@@ -1,0 +1,97 @@
+@page "/agent-skills"
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<PageTitle>AI Agent Tools &amp; Skills · GistHub</PageTitle>
+<section class="skills-page" aria-labelledby="skills-title">
+    <div class="neo-page-heading space-y-3 pb-5 border-b">
+        <div class="neo-kicker">Workbench / Reference</div>
+        <h2 id="skills-title" class="text-3xl font-black tracking-tight">AI Agent Tools &amp; Skills</h2>
+        <p class="text-muted-foreground">Find a skill, copy its setup, and put it to work. English / မြန်မာ</p>
+        <p class="text-sm text-muted-foreground">Includes the <a href="https://www.chaseai.io/blog/best-claude-code-plugins-skills-clis" target="_blank" rel="noopener noreferrer">Chase AI list</a> and selected installed skills. “Installed locally” records this workspace’s skill files on 1 Nov 2026; it does not detect your device or CLI authentication.</p>
+    </div>
+    <div class="skills-filters">
+        <label>Search<input type="search" placeholder="Name, description, command…" @bind="Search" @bind:event="oninput" @bind:after="ResetPage" /></label>
+        <label>Category<select @bind="Category" @bind:after="ResetPage"><option value="">All categories</option>@foreach (var category in Skills.Select(s => s.Category).Distinct().Order()) { <option>@category</option> }</select></label>
+        <label>Agent / environment<select @bind="Agent" @bind:after="ResetPage"><option value="">All environments</option>@foreach (var agent in Skills.Select(s => s.Agent).Distinct().Order()) { <option>@agent</option> }</select></label>
+        <label class="skills-checkbox"><input type="checkbox" @bind="InstalledOnly" @bind:after="ResetPage" /> Installed locally</label>
+        <button type="button" class="btn btn-outline btn-sm" @onclick="Reset">Reset</button>
+    </div>
+    <div class="skills-status" role="status" aria-live="polite">@Status</div>
+    @if (Loading)
+    {
+        <p role="status">Loading skills…</p>
+    }
+    else if (Error is not null)
+    {
+        <p role="alert">@Error</p><button type="button" class="btn btn-outline btn-sm" @onclick="LoadAsync">Retry</button>
+    }
+    else
+    {
+        var filtered = Skills.Where(s => s.Matches(Search, Category, Agent, InstalledOnly)).ToList();
+        var totalPages = Math.Max(1, (filtered.Count + PageSize - 1) / PageSize);
+        var rows = filtered.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+        <p class="text-sm text-muted-foreground skills-count" role="status">@filtered.Count of @Skills.Count entries · Setup commands run in a terminal unless marked Claude Code. Skill examples are chat prompts.</p>
+        <nav class="skills-pagination" aria-label="Skill catalog pages">
+            <button type="button" class="btn btn-outline btn-sm" disabled="@(CurrentPage <= 1)" @onclick="() => CurrentPage--">Previous</button>
+            <span role="status">Page @CurrentPage of @totalPages · @PageSize per page</span>
+            <button type="button" class="btn btn-outline btn-sm" disabled="@(CurrentPage >= totalPages)" @onclick="() => CurrentPage++">Next</button>
+        </nav>
+        <div class="skills-sheet" tabindex="0" role="region" aria-label="Skills spreadsheet; scroll horizontally for install and call methods">
+            <table>
+                <caption class="sr-only">AI tools and skills with categories, bilingual descriptions, installation and invocation examples.</caption>
+                <thead><tr><th scope="col">Name</th><th scope="col">Category / Type</th><th scope="col">Agent / Environment</th><th scope="col">Description · EN</th><th scope="col">ဖော်ပြချက် · MM</th><th scope="col">Install / Setup</th><th scope="col">How to call</th></tr></thead>
+                <tbody>
+                    @foreach (var skill in rows)
+                    {
+                        <tr @key="skill.Name">
+                            <th scope="row">
+                                @if (skill.Source is not null) { <a href="@skill.Source" target="_blank" rel="noopener noreferrer">@skill.Name ↗</a> }
+                                else { @skill.Name }
+                                @if (skill.Installed) { <small class="skills-installed">Installed locally</small> }
+                                @if (skill.Article) { <small>Chase AI list</small> }
+                            </th>
+                            <td>@skill.Category<small>@skill.Type</small></td>
+                            <td>@skill.Agent</td>
+                            <td lang="en">@skill.DescriptionEn</td>
+                            <td lang="my">@skill.DescriptionMm</td>
+                            <td><button type="button" @onclick='() => CopyAsync(skill.Install, skill.Name + " setup")' aria-label="@($"Copy {skill.Name} setup")">Copy</button><pre>@skill.Install</pre></td>
+                            <td><button type="button" @onclick='() => CopyAsync(skill.Call, skill.Name + " call")' aria-label="@($"Copy {skill.Name} invocation")">Copy</button><pre>@skill.Call</pre></td>
+                        </tr>
+                    }
+                    @if (rows.Count == 0) { <tr><td colspan="7" class="skills-empty">No matching skills. Try another search or reset the filters.</td></tr> }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>
+
+@code {
+    private List<AgentSkill> Skills = [];
+    private string Search = "", Category = "", Agent = "", Status = "";
+    private bool InstalledOnly, Loading = true;
+    private const int PageSize = 50;
+    private int CurrentPage = 1;
+    private string? Error;
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        Loading = true;
+        Error = null;
+        try { Skills = await Http.GetFromJsonAsync<List<AgentSkill>>("data/agent-skills.json") ?? []; }
+        catch (Exception ex) when (ex is HttpRequestException or System.Text.Json.JsonException or TaskCanceledException)
+        { Error = "Could not load the skill catalog. Please retry."; }
+        finally { Loading = false; }
+    }
+
+    private void ResetPage() => CurrentPage = 1;
+    private void Reset() { Search = Category = Agent = Status = ""; InstalledOnly = false; ResetPage(); }
+
+    private async Task CopyAsync(string text, string label)
+    {
+        try { Status = await JS.InvokeAsync<bool>("copyToClipboard", text) ? $"Copied {label}." : "Could not copy. Select the text and copy it manually."; }
+        catch (JSException) { Status = "Clipboard unavailable. Select the text and copy it manually."; }
+    }
+}

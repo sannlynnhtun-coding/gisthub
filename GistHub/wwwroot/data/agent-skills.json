@@ -1,0 +1,596 @@
+[
+  {
+    "Name": "a11y-design",
+    "Category": "Design & UI",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Design, build, audit, and improve accessible web and Apple-platform interfaces against WCAG 2.2 AA and Apple HIG.",
+    "DescriptionMm": "a11y-design — လူတိုင်းအသုံးပြုနိုင်မှု၊ keyboard ထိန်းချုပ်မှုနှင့် UI ဖတ်ရှုရလွယ်ကူမှုကို စစ်ဆေးပေးသည်။",
+    "Install": "Copy the complete a11y-design skill folder (SKILL.md and supporting files) to ~/.codex/skills/a11y-design/, then restart Codex.",
+    "Call": "Use the a11y-design skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "a11y-design"
+    ]
+  },
+  {
+    "Name": "aspnet-core",
+    "Category": "Development",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Build, review, refactor, or architect ASP.NET Core web applications using current official guidance for .NET web development.",
+    "DescriptionMm": "aspnet-core — .NET application နှင့် ဆက်စပ် runtime လုပ်ဆောင်ချက်များ တည်ဆောက်ပြင်ဆင်ရန် ကူညီပေးသည်။",
+    "Install": "Copy the complete aspnet-core skill folder (SKILL.md and supporting files) to ~/.codex/skills/aspnet-core/, then restart Codex.",
+    "Call": "Use the aspnet-core skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "aspnet-core"
+    ]
+  },
+  {
+    "Name": "auto-research",
+    "Category": "Research & Data",
+    "Type": "Research workflow",
+    "Agent": "Terminal / Agent",
+    "DescriptionEn": "Run measurable ML training experiments. The original project requires suitable GPU hardware.",
+    "DescriptionMm": "တိုင်းတာနိုင်သော ML training စမ်းသပ်မှုများကို အကြိမ်ကြိမ် လုပ်ဆောင်ပေးသည်။ မူရင်း project အတွက် သင့်လျော်သည့် GPU လိုသည်။",
+    "Install": "git clone https://github.com/karpathy/autoresearch.git\ncd autoresearch\nuv sync",
+    "Call": "Read program.md and follow its experiment workflow.",
+    "Source": "https://github.com/karpathy/autoresearch",
+    "Installed": false,
+    "Article": true,
+    "InstalledSkills": []
+  },
+  {
+    "Name": "awesome-design.md",
+    "Category": "Design & UI",
+    "Type": "Reference",
+    "Agent": "Any agent",
+    "DescriptionEn": "Reuse documented design languages from established websites.",
+    "DescriptionMm": "ရှိပြီးသား website များ၏ ဒီဇိုင်းစည်းမျဉ်းများကို မိမိ project တွင် ကိုးကားအသုံးပြုနိုင်သည်။",
+    "Install": "Download a chosen DESIGN.md from the repository and add it to your project.",
+    "Call": "Read DESIGN.md and apply its design language to this page.",
+    "Source": "https://github.com/VoltAgent/awesome-design-md",
+    "Installed": false,
+    "Article": true,
+    "InstalledSkills": []
+  },
+  {
+    "Name": "code-review",
+    "Category": "Testing & Debugging",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?).",
+    "DescriptionMm": "code-review — ပြောင်းလဲမှုများ၏ မှန်ကန်မှုနှင့် code အရည်အသွေးကို စစ်ဆေးအကြံပြုပေးသည်။",
+    "Install": "Copy the complete code-review skill folder (SKILL.md and supporting files) to ~/.codex/skills/code-review/, then restart Codex.",
+    "Call": "Use the code-review skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "code-review"
+    ]
+  },
+  {
+    "Name": "Codex Plugin",
+    "Category": "Agent & Skill Management",
+    "Type": "Plugin",
+    "Agent": "Claude Code",
+    "DescriptionEn": "Use Codex inside Claude Code for review and delegated coding tasks.",
+    "DescriptionMm": "Claude Code အတွင်းမှ Codex ကို code review နှင့် လုပ်ငန်းခွဲများအတွက် ခေါ်သုံးနိုင်သည်။",
+    "Install": "Claude Code:\n/plugin marketplace add openai/codex-plugin-cc\n/plugin install codex@openai-codex\n/reload-plugins\n/codex:setup",
+    "Call": "/codex:review",
+    "Source": "https://github.com/openai/codex-plugin-cc",
+    "Installed": false,
+    "Article": true,
+    "InstalledSkills": []
+  },
+  {
+    "Name": "content-research-writer",
+    "Category": "Research & Data",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Assists in writing high-quality content by conducting research, adding citations, improving hooks, iterating on outlines, and providing real-time feedback on each section.",
+    "DescriptionMm": "content-research-writer — သက်ဆိုင်ရာ အရင်းအမြစ်များကို ရှာဖွေ၍ အချက်အလက်ထုတ်ယူ၊ သုတေသနနှင့် အကျဉ်းချုပ်ပြုလုပ်ပေးသည်။",
+    "Install": "Copy the complete content-research-writer skill folder (SKILL.md and supporting files) to ~/.codex/skills/content-research-writer/, then restart Codex.",
+    "Call": "Use the content-research-writer skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "content-research-writer"
+    ]
+  },
+  {
+    "Name": "create-plan",
+    "Category": "Automation & Productivity",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Create a concise plan.",
+    "DescriptionMm": "create-plan — လိုအပ်ချက်များကို စိစစ်၍ အကောင်အထည်ဖော်မည့် အစီအစဉ်နှင့် တာဝန်များ ခွဲပေးသည်။",
+    "Install": "Copy the complete create-plan skill folder (SKILL.md and supporting files) to ~/.codex/skills/create-plan/, then restart Codex.",
+    "Call": "Use the create-plan skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "create-plan"
+    ]
+  },
+  {
+    "Name": "diagnosing-bugs",
+    "Category": "Testing & Debugging",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Diagnosis loop for hard bugs and performance regressions.",
+    "DescriptionMm": "diagnosing-bugs — အမှားဖြစ်ရသည့် အကြောင်းရင်းကို log နှင့် အထောက်အထားများဖြင့် စစ်ဆေးပြုပြင်ပေးသည်။",
+    "Install": "Copy the complete diagnosing-bugs skill folder (SKILL.md and supporting files) to ~/.codex/skills/diagnosing-bugs/, then restart Codex.",
+    "Call": "Use the diagnosing-bugs skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "diagnosing-bugs"
+    ]
+  },
+  {
+    "Name": "dotnet-webapi",
+    "Category": "Development",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Guides creation and modification of ASP.NET Core Web API endpoints with correct HTTP semantics, OpenAPI metadata, and error handling.",
+    "DescriptionMm": "dotnet-webapi — .NET application နှင့် ဆက်စပ် runtime လုပ်ဆောင်ချက်များ တည်ဆောက်ပြင်ဆင်ရန် ကူညီပေးသည်။",
+    "Install": "Copy the complete dotnet-webapi skill folder (SKILL.md and supporting files) to ~/.codex/skills/dotnet-webapi/, then restart Codex.",
+    "Call": "Use the dotnet-webapi skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "dotnet-webapi"
+    ]
+  },
+  {
+    "Name": "Firecrawl CLI",
+    "Category": "Research & Data",
+    "Type": "CLI / Skills",
+    "Agent": "Terminal / Agent",
+    "DescriptionEn": "Search, scrape and crawl websites into agent-readable content.",
+    "DescriptionMm": "Website များကို ရှာဖွေ၍ အကြောင်းအရာများကို agent ဖတ်ရှုနိုင်သည့် ပုံစံဖြင့် ထုတ်ယူပေးသည်။",
+    "Install": "npm install -g firecrawl-cli\nfirecrawl login",
+    "Call": "firecrawl scrape https://example.com",
+    "Source": "https://docs.firecrawl.dev/sdks/cli",
+    "Installed": true,
+    "Article": true,
+    "InstalledSkills": [
+      "firecrawl"
+    ]
+  },
+  {
+    "Name": "firecrawl-scrape",
+    "Category": "Research & Data",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Read a known webpage or execute a discovered workflow or data-provider capability.",
+    "DescriptionMm": "firecrawl-scrape — သက်ဆိုင်ရာ အရင်းအမြစ်များကို ရှာဖွေ၍ အချက်အလက်ထုတ်ယူ၊ သုတေသနနှင့် အကျဉ်းချုပ်ပြုလုပ်ပေးသည်။",
+    "Install": "Copy the complete firecrawl-scrape skill folder (SKILL.md and supporting files) to ~/.codex/skills/firecrawl-scrape/, then restart Codex.",
+    "Call": "Use the firecrawl-scrape skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "firecrawl-scrape"
+    ]
+  },
+  {
+    "Name": "firecrawl-search",
+    "Category": "Research & Data",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Find web sources with query-relevant page excerpts and optional full-page content, and discover workflows, data APIs, and indexes.",
+    "DescriptionMm": "firecrawl-search — သက်ဆိုင်ရာ အရင်းအမြစ်များကို ရှာဖွေ၍ အချက်အလက်ထုတ်ယူ၊ သုတေသနနှင့် အကျဉ်းချုပ်ပြုလုပ်ပေးသည်။",
+    "Install": "Copy the complete firecrawl-search skill folder (SKILL.md and supporting files) to ~/.codex/skills/firecrawl-search/, then restart Codex.",
+    "Call": "Use the firecrawl-search skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "firecrawl-search"
+    ]
+  },
+  {
+    "Name": "frontend-design",
+    "Category": "Design & UI",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one.",
+    "DescriptionMm": "frontend-design — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
+    "Install": "Copy the complete frontend-design skill folder (SKILL.md and supporting files) to ~/.codex/skills/frontend-design/, then restart Codex.",
+    "Call": "Use the frontend-design skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "frontend-design"
+    ]
+  },
+  {
+    "Name": "gh-address-comments",
+    "Category": "Integrations & Deployment",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Help address review/issue comments on the open GitHub PR for the current branch using gh CLI; verify gh auth first and prompt the user to authenticate if not logged in.",
+    "DescriptionMm": "gh-address-comments — Git repository၊ branch၊ issue နှင့် pull request လုပ်ငန်းများကို စီမံရန် ကူညီပေးသည်။",
+    "Install": "Copy the complete gh-address-comments skill folder (SKILL.md and supporting files) to ~/.codex/skills/gh-address-comments/, then restart Codex.",
+    "Call": "Use the gh-address-comments skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "gh-address-comments"
+    ]
+  },
+  {
+    "Name": "gh-fix-ci",
+    "Category": "Testing & Debugging",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Inspect GitHub PR checks with gh, pull failing GitHub Actions logs, summarize failure context, then create a fix plan and implement after user approval.",
+    "DescriptionMm": "gh-fix-ci — အမှားဖြစ်ရသည့် အကြောင်းရင်းကို log နှင့် အထောက်အထားများဖြင့် စစ်ဆေးပြုပြင်ပေးသည်။",
+    "Install": "Copy the complete gh-fix-ci skill folder (SKILL.md and supporting files) to ~/.codex/skills/gh-fix-ci/, then restart Codex.",
+    "Call": "Use the gh-fix-ci skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "gh-fix-ci"
+    ]
+  },
+  {
+    "Name": "GitHub CLI",
+    "Category": "Integrations & Deployment",
+    "Type": "CLI",
+    "Agent": "Terminal / Agent",
+    "DescriptionEn": "Manage repositories, pull requests, issues and workflow checks.",
+    "DescriptionMm": "Repository၊ pull request၊ issue နှင့် workflow စစ်ဆေးမှုများကို စီမံနိုင်သည်။",
+    "Install": "Windows:\nwinget install --id GitHub.cli\ngh auth login",
+    "Call": "gh pr status",
+    "Source": "https://cli.github.com/",
+    "Installed": false,
+    "Article": true,
+    "InstalledSkills": []
+  },
+  {
+    "Name": "GWS — Google Workspace CLI",
+    "Category": "Integrations & Deployment",
+    "Type": "CLI / Skills",
+    "Agent": "Terminal / Agent",
+    "DescriptionEn": "Work with Drive, Gmail, Sheets and other Workspace APIs after OAuth setup.",
+    "DescriptionMm": "OAuth ချိတ်ဆက်ပြီးနောက် Drive၊ Gmail၊ Sheets စသည့် Workspace ဝန်ဆောင်မှုများကို command ဖြင့် အသုံးပြုနိုင်သည်။",
+    "Install": "npm install -g @googleworkspace/cli\ngws auth setup\ngws auth login",
+    "Call": "gws drive files list --params '{\"pageSize\":5}'",
+    "Source": "https://github.com/googleworkspace/cli",
+    "Installed": true,
+    "Article": true,
+    "InstalledSkills": [
+      "gws-shared"
+    ]
+  },
+  {
+    "Name": "gws-gmail",
+    "Category": "Integrations & Deployment",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Gmail: Send, read, and manage email.",
+    "DescriptionMm": "gws-gmail — Google Workspace ဝန်ဆောင်မှု၏ အချက်အလက်နှင့် လုပ်ငန်းများကို ချိတ်ဆက်စီမံပေးသည်။",
+    "Install": "Copy the complete gws-gmail skill folder (SKILL.md and supporting files) to ~/.codex/skills/gws-gmail/, then restart Codex.",
+    "Call": "Use the gws-gmail skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "gws-gmail"
+    ]
+  },
+  {
+    "Name": "gws-sheets",
+    "Category": "Integrations & Deployment",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Google Sheets: Read and write spreadsheets.",
+    "DescriptionMm": "gws-sheets — Google Workspace ဝန်ဆောင်မှု၏ အချက်အလက်နှင့် လုပ်ငန်းများကို ချိတ်ဆက်စီမံပေးသည်။",
+    "Install": "Copy the complete gws-sheets skill folder (SKILL.md and supporting files) to ~/.codex/skills/gws-sheets/, then restart Codex.",
+    "Call": "Use the gws-sheets skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "gws-sheets"
+    ]
+  },
+  {
+    "Name": "image-to-code",
+    "Category": "Design & UI",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Elite website image-to-code skill for Codex.",
+    "DescriptionMm": "image-to-code — ဒီဇိုင်းပုံကို အခြေခံ၍ ကိုက်ညီသည့် web UI code ရေးသားပေးသည်။",
+    "Install": "Copy the complete image-to-code-skill skill folder (SKILL.md and supporting files) to ~/.codex/skills/image-to-code-skill/, then restart Codex.",
+    "Call": "Use the image-to-code skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "image-to-code"
+    ]
+  },
+  {
+    "Name": "Impeccable",
+    "Category": "Design & UI",
+    "Type": "Skill",
+    "Agent": "Codex / Claude Code",
+    "DescriptionEn": "Review and refine interface hierarchy, accessibility and visual polish.",
+    "DescriptionMm": "UI ၏ အချက်အလက်အစီအစဉ်၊ အသုံးပြုရလွယ်ကူမှုနှင့် အမြင်ဒီဇိုင်းကို စစ်ဆေးပြုပြင်ပေးသည်။",
+    "Install": "npx impeccable install",
+    "Call": "Use the impeccable skill to audit and polish this interface.",
+    "Source": "https://impeccable.style/tutorials/getting-started/",
+    "Installed": true,
+    "Article": true,
+    "InstalledSkills": [
+      "impeccable"
+    ]
+  },
+  {
+    "Name": "json-canvas",
+    "Category": "Design & UI",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Create and edit JSON Canvas files (.canvas) with nodes, edges, groups, and connections.",
+    "DescriptionMm": "json-canvas — ပုံသဏ္ဌာန်၊ ချိတ်ဆက်မှုနှင့် visual မြင်ကွင်းများ ဖန်တီးရန် ကူညီပေးသည်။",
+    "Install": "Copy the complete json-canvas skill folder (SKILL.md and supporting files) to ~/.codex/skills/json-canvas/, then restart Codex.",
+    "Call": "Use the json-canvas skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "json-canvas"
+    ]
+  },
+  {
+    "Name": "last30days",
+    "Category": "Research & Data",
+    "Type": "Skill",
+    "Agent": "Codex / Claude Code",
+    "DescriptionEn": "Research recent discussion across social platforms and the web. Source access varies.",
+    "DescriptionMm": "လူမှုကွန်ရက်နှင့် web ပေါ်ရှိ လတ်တလောဆွေးနွေးချက်များကို ရှာဖွေစုစည်းပေးသည်။ Source အသုံးပြုခွင့်အလိုက် ရလဒ်ကွာနိုင်သည်။",
+    "Install": "npx skills add https://github.com/mvanhorn/last30days-skill",
+    "Call": "Use the last30days skill to research AI coding tools.",
+    "Source": "https://github.com/mvanhorn/last30days-skill",
+    "Installed": true,
+    "Article": true,
+    "InstalledSkills": [
+      "last30days"
+    ]
+  },
+  {
+    "Name": "LightRAG",
+    "Category": "Research & Data",
+    "Type": "Library / Server",
+    "Agent": "Terminal / Agent",
+    "DescriptionEn": "Retrieve document knowledge using graph and vector indexing. Configure providers before use.",
+    "DescriptionMm": "Graph နှင့် vector indexing ဖြင့် စာတမ်းအချက်အလက်များကို ပြန်လည်ရှာဖွေပေးသည်။ အသုံးမပြုမီ model provider များ သတ်မှတ်ရသည်။",
+    "Install": "pip install \"lightrag-hku[api]\"\nConfigure .env using the repository example.",
+    "Call": "lightrag-server",
+    "Source": "https://github.com/HKUDS/LightRAG",
+    "Installed": false,
+    "Article": true,
+    "InstalledSkills": []
+  },
+  {
+    "Name": "NotebookLM-Py",
+    "Category": "Research & Data",
+    "Type": "CLI / Skill",
+    "Agent": "Terminal / Agent",
+    "DescriptionEn": "Manage notebooks and sources, ask grounded questions and generate artifacts. Unofficial integration.",
+    "DescriptionMm": "Notebook နှင့် source များကို စီမံ၍ အချက်အလက်အခြေပြု မေးခွန်းများမေးနိုင်ပြီး စာတမ်းများ ထုတ်လုပ်နိုင်သည်။ တရားဝင် Google integration မဟုတ်ပါ။",
+    "Install": "pip install \"notebooklm-py[browser]\"\nplaywright install chromium\nnotebooklm login",
+    "Call": "notebooklm list",
+    "Source": "https://github.com/teng-lin/notebooklm-py",
+    "Installed": true,
+    "Article": true,
+    "InstalledSkills": [
+      "notebooklm"
+    ]
+  },
+  {
+    "Name": "Obsidian",
+    "Category": "Documents & Content",
+    "Type": "App / Skills",
+    "Agent": "Desktop / Agent",
+    "DescriptionEn": "Organize linked Markdown notes; use companion skills for Obsidian syntax.",
+    "DescriptionMm": "Markdown မှတ်စုများကို ချိတ်ဆက်စုစည်းနိုင်ပြီး companion skills ဖြင့် Obsidian syntax ကို မှန်ကန်စွာ ရေးသားနိုင်သည်။",
+    "Install": "Install Obsidian from obsidian.md/download.\nOptional agent skills: npx skills add kepano/obsidian-skills",
+    "Call": "Open your vault in the agent and ask: Use obsidian-markdown to organize these notes.",
+    "Source": "https://github.com/kepano/obsidian-skills",
+    "Installed": true,
+    "Article": true,
+    "InstalledSkills": [
+      "obsidian-cli"
+    ]
+  },
+  {
+    "Name": "obsidian-bases",
+    "Category": "Documents & Content",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Create and edit Obsidian Bases (.base files) with views, filters, formulas, and summaries.",
+    "DescriptionMm": "obsidian-bases — ချိတ်ဆက်ထားသော မှတ်စုများနှင့် စာမျက်နှာများကို ဖန်တီး၊ စုစည်း သို့မဟုတ် ပြင်ဆင်ပေးသည်။",
+    "Install": "Copy the complete obsidian-bases skill folder (SKILL.md and supporting files) to ~/.codex/skills/obsidian-bases/, then restart Codex.",
+    "Call": "Use the obsidian-bases skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "obsidian-bases"
+    ]
+  },
+  {
+    "Name": "obsidian-markdown",
+    "Category": "Documents & Content",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Create and edit Obsidian Flavored Markdown with wikilinks, embeds, callouts, properties, and other Obsidian-specific syntax.",
+    "DescriptionMm": "obsidian-markdown — ချိတ်ဆက်ထားသော မှတ်စုများနှင့် စာမျက်နှာများကို ဖန်တီး၊ စုစည်း သို့မဟုတ် ပြင်ဆင်ပေးသည်။",
+    "Install": "Copy the complete obsidian-markdown skill folder (SKILL.md and supporting files) to ~/.codex/skills/obsidian-markdown/, then restart Codex.",
+    "Call": "Use the obsidian-markdown skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "obsidian-markdown"
+    ]
+  },
+  {
+    "Name": "Playwright CLI",
+    "Category": "Testing & Debugging",
+    "Type": "CLI / Skill",
+    "Agent": "Terminal / Agent",
+    "DescriptionEn": "Automate browsers and inspect or test web interfaces.",
+    "DescriptionMm": "Browser ကို အလိုအလျောက်ထိန်းချုပ်၍ web UI များကို စစ်ဆေးစမ်းသပ်ပေးသည်။",
+    "Install": "npm install -g @playwright/cli@latest\nplaywright-cli install --skills",
+    "Call": "playwright-cli open https://example.com",
+    "Source": "https://playwright.dev/agent-cli/installation",
+    "Installed": true,
+    "Article": true,
+    "InstalledSkills": [
+      "playwright-cli"
+    ]
+  },
+  {
+    "Name": "Ponytail",
+    "Category": "Automation & Productivity",
+    "Type": "Plugin / Skill",
+    "Agent": "Codex / Claude Code",
+    "DescriptionEn": "Favor existing code and the smallest complete implementation.",
+    "DescriptionMm": "ရှိပြီးသား code ကို ဦးစားပေးသုံးပြီး ပြည့်စုံစွာအလုပ်လုပ်နိုင်သည့် အနည်းဆုံး code ကို ရေးစေသည်။",
+    "Install": "Claude Code:\n/plugin marketplace add DietrichGebert/ponytail\n/plugin install ponytail@ponytail",
+    "Call": "/ponytail full",
+    "Source": "https://ponytail.dev/",
+    "Installed": true,
+    "Article": true,
+    "InstalledSkills": [
+      "ponytail:ponytail"
+    ]
+  },
+  {
+    "Name": "redesign-existing-projects",
+    "Category": "Design & UI",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Upgrades existing websites and apps to premium quality.",
+    "DescriptionMm": "redesign-existing-projects — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
+    "Install": "Copy the complete redesign-skill skill folder (SKILL.md and supporting files) to ~/.codex/skills/redesign-skill/, then restart Codex.",
+    "Call": "Use the redesign-existing-projects skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "redesign-existing-projects"
+    ]
+  },
+  {
+    "Name": "Skill Creator",
+    "Category": "Agent & Skill Management",
+    "Type": "Skill",
+    "Agent": "Codex / Claude Code",
+    "DescriptionEn": "Create skills, improve instructions and evaluate their behavior.",
+    "DescriptionMm": "Skill အသစ်ဖန်တီးခြင်း၊ ညွှန်ကြားချက်ပြုပြင်ခြင်းနှင့် ရလဒ်စမ်းသပ်ခြင်းများကို ကူညီပေးသည်။",
+    "Install": "Claude Code:\n/plugin marketplace add anthropics/skills\n/plugin install example-skills@anthropic-agent-skills",
+    "Call": "Use the skill-creator skill to create and evaluate a new skill.",
+    "Source": "https://github.com/anthropics/skills",
+    "Installed": true,
+    "Article": true,
+    "InstalledSkills": [
+      "anthropic-skill-creator"
+    ]
+  },
+  {
+    "Name": "Stripe CLI",
+    "Category": "Integrations & Deployment",
+    "Type": "CLI",
+    "Agent": "Terminal / Agent",
+    "DescriptionEn": "Develop and test Stripe integrations and webhook delivery.",
+    "DescriptionMm": "Stripe ချိတ်ဆက်မှုနှင့် webhook ပေးပို့မှုများကို တည်ဆောက်စမ်းသပ်နိုင်သည်။",
+    "Install": "npm install -g @stripe/cli\nstripe login",
+    "Call": "stripe listen --forward-to localhost:4242/webhook",
+    "Source": "https://docs.stripe.com/stripe-cli",
+    "Installed": false,
+    "Article": true,
+    "InstalledSkills": []
+  },
+  {
+    "Name": "Supabase CLI",
+    "Category": "Integrations & Deployment",
+    "Type": "CLI",
+    "Agent": "Terminal / Agent",
+    "DescriptionEn": "Develop local Supabase services and manage database migrations. Local services require Docker.",
+    "DescriptionMm": "Local Supabase ဝန်ဆောင်မှုများနှင့် database migration များကို စီမံနိုင်သည်။ Local services အတွက် Docker လိုသည်။",
+    "Install": "npm install --save-dev supabase",
+    "Call": "npx supabase init\nnpx supabase start",
+    "Source": "https://supabase.com/docs/guides/local-development/cli/getting-started",
+    "Installed": false,
+    "Article": true,
+    "InstalledSkills": []
+  },
+  {
+    "Name": "Taste Skill",
+    "Category": "Design & UI",
+    "Type": "Skill",
+    "Agent": "Codex / Claude Code",
+    "DescriptionEn": "Guide layout, typography and visual direction for frontend work.",
+    "DescriptionMm": "Frontend များ၏ layout၊ စာလုံးပုံစံနှင့် အမြင်ဒီဇိုင်းကို လမ်းညွှန်ပေးသည်။",
+    "Install": "npx skills add https://github.com/Leonxlnx/taste-skill --skill design-taste-frontend",
+    "Call": "Use the design-taste-frontend skill to design this landing page.",
+    "Source": "https://www.tasteskill.dev/docs",
+    "Installed": true,
+    "Article": true,
+    "InstalledSkills": [
+      "design-taste-frontend"
+    ]
+  },
+  {
+    "Name": "vercel-react-best-practices",
+    "Category": "Integrations & Deployment",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "React and Next.js performance optimization guidelines from Vercel Engineering.",
+    "DescriptionMm": "vercel-react-best-practices — Project ကို တည်ဆောက်ဖြန့်ချိခြင်းနှင့် ဆက်စပ်ဝန်ဆောင်မှုများ ချိတ်ဆက်ခြင်းကို ကူညီပေးသည်။",
+    "Install": "Copy the complete react-best-practices skill folder (SKILL.md and supporting files) to ~/.codex/skills/react-best-practices/, then restart Codex.",
+    "Call": "Use the vercel-react-best-practices skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "vercel-react-best-practices"
+    ]
+  },
+  {
+    "Name": "webapp-testing",
+    "Category": "Testing & Debugging",
+    "Type": "Skill",
+    "Agent": "Codex",
+    "DescriptionEn": "Toolkit for interacting with and testing local web applications using Playwright.",
+    "DescriptionMm": "webapp-testing — စမ်းသပ်မှုများ ရေးသား၊ လုပ်ဆောင်၍ ရလဒ်နှင့် လွှမ်းခြုံမှုကို စစ်ဆေးပေးသည်။",
+    "Install": "Copy the complete webapp-testing skill folder (SKILL.md and supporting files) to ~/.codex/skills/webapp-testing/, then restart Codex.",
+    "Call": "Use the webapp-testing skill for this task.",
+    "Source": null,
+    "Article": false,
+    "Installed": true,
+    "InstalledSkills": [
+      "webapp-testing"
+    ]
+  }
+]

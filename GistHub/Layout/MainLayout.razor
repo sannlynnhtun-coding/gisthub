@@ -133,6 +133,10 @@
                 <details open class="neo-tools-category" data-tools-category aria-labelledby="tools-category-getting-started">
                     <summary id="tools-category-getting-started"><span>Getting started <span class="neo-tools-category__count" data-tools-category-count></span></span><span class="neo-tools-category__chevron" aria-hidden="true">&#8250;</span></summary>
                     <div class="neo-tools-category__grid">
+                        <a href="agent-skills" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="agent-skills-menu-item">
+                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">AI</span>
+                            <span><strong>AI Tools &amp; Skills</strong><small>Search skills, setup and invocation examples</small></span>
+                        </a>
                         <a href="tools" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="tools-guide-menu-item">
                             <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">?</span>
                             <span><strong>Tools Guide</strong><small>What each tool does and when to use it</small></span>
