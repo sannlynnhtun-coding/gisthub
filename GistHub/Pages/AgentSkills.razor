@@ -11,8 +11,6 @@
         </div>
         <details class="skills-about">
             <summary>About this catalog</summary>
-            <p>Includes the <a href="https://www.chaseai.io/blog/best-claude-code-plugins-skills-clis" target="_blank" rel="noopener noreferrer">Chase AI list</a> and all installed skills from personal, shared and plugin skill folders.</p>
-            <p>“Installed locally” is a snapshot of this workspace’s skill files on 1 Nov 2026. It does not detect your device or CLI authentication.</p>
             <p>Methods are documented examples. Replace placeholders and follow the referenced guide for prerequisites and the working directory. Run terminal commands in a terminal and skill prompts in your agent’s chat.</p>
         </details>
     </header>
@@ -20,7 +18,6 @@
         <label for="skills-search">Search skills &amp; methods<input id="skills-search" type="search" placeholder="Try a skill name, task, or command…" @bind="Search" @bind:event="oninput" @bind:after="ResetPage" /></label>
         <label for="skills-category">Category<select id="skills-category" @bind="Category" @bind:after="ResetPage"><option value="">All categories</option>@foreach (var category in Skills.Select(s => s.Category).Distinct().Order()) { <option>@category</option> }</select></label>
         <label for="skills-agent">Agent / environment<select id="skills-agent" @bind="Agent" @bind:after="ResetPage"><option value="">All environments</option>@foreach (var agent in Skills.Select(s => s.Agent).Distinct().Order()) { <option>@agent</option> }</select></label>
-        <label class="skills-checkbox"><input type="checkbox" @bind="InstalledOnly" @bind:after="ResetPage" /> Installed locally</label>
         <button type="button" class="btn btn-outline btn-sm" @onclick="Reset">Clear filters</button>
     </div>
     <div class="skills-status" role="status" aria-live="polite">@Status</div>
@@ -34,7 +31,7 @@
     }
     else
     {
-        var filtered = Skills.Where(s => s.Matches(Search, Category, Agent, InstalledOnly)).ToList();
+        var filtered = Skills.Where(s => s.Matches(Search, Category, Agent, false)).ToList();
         var totalPages = Math.Max(1, (filtered.Count + PageSize - 1) / PageSize);
         var rows = filtered.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
         <div class="skills-results-bar">
@@ -76,10 +73,7 @@
                                     <span class="skills-badge skills-badge--type" title="Type">@skill.Type</span>
                                     <span class="skills-badge skills-badge--agent" title="Agent / Environment">@skill.Agent</span>
                                 </div>
-                                <div class="skills-origin">
-                                    @if (skill.Installed) { <span class="skills-installed">Installed locally</span> }
-                                    @if (skill.Article) { <span>Chase AI list</span> }
-                                </div>
+                                @if (skill.Article) { <div class="skills-origin">Chase AI list</div> }
                             </th>
                             <td class="skills-description">
                                 <p lang="en">@skill.DescriptionEn</p>
@@ -97,7 +91,7 @@
                                     <div class="skills-usage">
                                         <section class="skills-setup" aria-label="@($"{skill.Name} installation")">
                                             <div class="skills-method-heading">
-                                                <h3>Install / setup</h3>
+                                                <h3>Install online</h3>
                                                 <button type="button" class="btn btn-outline btn-sm skills-copy" @onclick='() => CopyAsync(skill.Install, skill.Name + " setup")' aria-label="@($"Copy {skill.Name} setup")">Copy</button>
                                             </div>
                                             <pre>@skill.Install</pre>
@@ -145,7 +139,7 @@
     private List<AgentSkill> Skills = [];
     private readonly Dictionary<string, string> MethodSearches = new();
     private string Search = "", Category = "", Agent = "", Status = "";
-    private bool InstalledOnly, Loading = true;
+    private bool Loading = true;
     private bool MethodsExpanded = true;
     private const int PageSize = 50;
     private int CurrentPage = 1;
@@ -164,7 +158,7 @@
     }
 
     private void ResetPage() => CurrentPage = 1;
-    private void Reset() { Search = Category = Agent = Status = ""; InstalledOnly = false; ResetPage(); }
+    private void Reset() { Search = Category = Agent = Status = ""; ResetPage(); }
 
     private async Task CopyAsync(string text, string label)
     {

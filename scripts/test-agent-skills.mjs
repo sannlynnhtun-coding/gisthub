@@ -18,7 +18,7 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
         return rgb[0] * .2126 + rgb[1] * .7152 + rgb[2] * .0722;
       };
       const background = luminance(getComputedStyle(document.querySelector('.skills-sheet')).backgroundColor);
-      return ['.skills-description p', '.skills-origin'].map(selector => {
+      return ['.skills-description p', '.skills-method-results'].map(selector => {
         const foreground = luminance(getComputedStyle(document.querySelector(selector)).color);
         return (Math.max(foreground, background) + .05) / (Math.min(foreground, background) + .05);
       });
@@ -31,6 +31,9 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   assert.ok(catalog.filter(skill => skill.Installed).every(skill => skill.Methods?.length > 0));
   assert.ok(catalog.filter(skill => skill.Installed && skill.Methods.length > 1).length > 100);
   assert.equal(await evaluate(`document.querySelectorAll('.skills-sheet thead th').length`), 2);
+  assert.equal(await evaluate(`document.querySelectorAll('.skills-installed, .skills-filters input[type=checkbox]').length`), 0);
+  assert.equal(await evaluate(`document.querySelector('.skills-about').textContent.includes('snapshot')`), false);
+  assert.ok(catalog.every(skill => !skill.Install.includes('~/.codex/skills/') && !skill.Install.includes('Copy the complete')));
   assert.deepEqual(await evaluate(`Array.from(document.querySelector('.skills-summary .skills-description').querySelectorAll('p')).map(el => ({ lang: el.lang, text: el.textContent }))`), [{ lang: 'en', text: catalog[0].DescriptionEn }, { lang: 'my', text: catalog[0].DescriptionMm }]);
   assert.deepEqual(await evaluate(`Array.from(document.querySelector('.skills-summary').querySelectorAll('.skills-badge')).map(el => el.textContent)`), [catalog[0].Category, catalog[0].Type, catalog[0].Agent]);
   assert.equal(await evaluate(`Array.from(document.querySelectorAll('.skills-methods')).every(el => el.open)`), true);
@@ -87,9 +90,6 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await set('.skills-filters input[type=search]', 'ecc:tdd-workflow', 'input');
   await waitFor(`document.querySelector('.skills-pagination span').textContent.startsWith('Page 1 ') && document.querySelectorAll('.skills-summary').length === 1 && document.querySelector('.skills-summary th').textContent.includes('ecc:tdd-workflow')`, 'search all pages and reset page number');
   await evaluate(`document.querySelector('.skills-filters button').click()`);
-  await evaluate(`document.querySelector('.skills-filters input[type=checkbox]').click()`);
-  await waitFor(`document.querySelector('.skills-count').textContent.startsWith('${catalog.filter(s => s.Installed).length} of ${catalog.length}')`, 'installed-only snapshot');
-  await evaluate(`document.querySelector('.skills-filters button').click()`);
   await evaluate(`window.copiedSkillText = ''; window.skillCopyFails = false; window.copyToClipboard = async text => { window.copiedSkillText = text; return !window.skillCopyFails; }; document.querySelector('.skills-setup button').click()`);
   await waitFor(`document.querySelector('.skills-status').textContent.startsWith('Copied') && window.copiedSkillText.length > 0`, 'copy setup');
   await evaluate(`window.skillCopyFails = true; document.querySelector('.skills-method-list button').click()`);
@@ -135,5 +135,5 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await evaluate(`document.querySelector('.skills-usage').scrollIntoView({ block: 'start' })`);
   await capture('mobile-methods');
   await send('Emulation.clearDeviceMetricsOverride', {}, sessionId);
-  console.log('PASS: skill category/search/installed filters, reset, empty results, clipboard feedback, sticky cells and mobile sheet scrolling.');
+  console.log('PASS: online installation, catalog filters, independent method search, copy feedback and responsive layouts.');
 }

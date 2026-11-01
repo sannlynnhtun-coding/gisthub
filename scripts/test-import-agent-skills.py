@@ -11,6 +11,15 @@ spec.loader.exec_module(catalog_import)
 
 
 class ImportSkillsTests(unittest.TestCase):
+    def test_online_installation_never_requires_an_existing_local_skill_folder(self):
+        source = "https://github.com/publisher/skills/tree/main/skills/review"
+        self.assertEqual(catalog_import.online_install("review", source), f"npx skills add {source} -a codex")
+        self.assertIn("https://publisher.example/install", catalog_import.online_install("review", "https://publisher.example/install"))
+        unavailable = catalog_import.online_install("Skill With Spaces", None)
+        self.assertIn("Online source not verified", unavailable)
+        self.assertIn("npx skills find 'Skill With Spaces'", unavailable)
+        self.assertNotIn("~/.codex/skills", unavailable)
+
     def test_complete_inventory_preserves_namespaces_and_excludes_stale_examples(self):
         with tempfile.TemporaryDirectory() as directory:
             home = Path(directory)
@@ -22,6 +31,7 @@ class ImportSkillsTests(unittest.TestCase):
 
             skill(".codex/skills/review", "review")
             skill(".agents/skills/review", "review")
+            (home / ".agents/.skill-lock.json").write_text(json.dumps({"skills": {"review": {"sourceUrl": "https://github.com/publisher/review-skills"}}}), encoding="utf-8")
             skill(".codex/skills/.system/helper", "system-helper")
             package = ".codex/plugins/cache/vendor/tool"
             skill(f"{package}/old/skills/stale", "stale")
@@ -34,6 +44,7 @@ class ImportSkillsTests(unittest.TestCase):
             os.utime(home / package / "current", (200, 200))
 
             installed = catalog_import.installations(home)
+            self.assertEqual(next(item for item in installed if item["id"] == "review")["source"], "https://github.com/publisher/review-skills")
             self.assertEqual({item["id"] for item in installed}, {"review", "system-helper", "tool:review", "tool:source-command"})
             existing = json.loads(catalog_import.CATALOG.read_text(encoding="utf-8"))
             articles = [row for row in existing if row["Article"]]
@@ -48,6 +59,10 @@ class ImportSkillsTests(unittest.TestCase):
             self.assertNotIn("Body is never exported", exported)
             self.assertEqual(sum(row["Installed"] for row in rows), 4)
             self.assertEqual(catalog_import.refresh(refreshed, installed), refreshed)
+            next(row for row in refreshed if row["Name"] == "review")["Source"] = None
+            unverified = next(row for row in catalog_import.refresh(refreshed, installed) if row["Name"] == "review")
+            self.assertIsNone(unverified["Source"])
+            self.assertIn("Online source not verified", unverified["Install"])
             with self.assertRaises(AssertionError):
                 catalog_import.check([row for row in rows if row["Name"] != "tool:review"], installed)
 

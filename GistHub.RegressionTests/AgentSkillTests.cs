@@ -24,6 +24,7 @@ static class AgentSkillTests
         var path = Path.Combine(AppContext.BaseDirectory, "agent-skills.json");
         var catalog = JsonSerializer.Deserialize<List<AgentSkill>>(File.ReadAllText(path))!;
         Check(catalog.Count(s => s.Article) == 17, "All 17 article entries are included");
+        Check(catalog.All(s => !s.Install.Contains("~/.codex/skills/") && !s.Install.Contains("Copy the complete")), "Installation instructions use online sources rather than existing local folders");
         using var document = JsonDocument.Parse(File.ReadAllText(path));
         var installedNames = document.RootElement.EnumerateArray()
             .SelectMany(row => row.GetProperty("InstalledSkills").EnumerateArray().Select(name => name.GetString()!)).ToList();

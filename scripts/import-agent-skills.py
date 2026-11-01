@@ -8,6 +8,7 @@ import argparse
 import json
 import os
 import re
+import shlex
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -368,6 +369,8 @@ def documented_methods(path, skill_id, data, boundary):
 
 
 def installations(home):
+    lock_path = home / ".agents/.skill-lock.json"
+    locked = json.loads(lock_path.read_text(encoding="utf-8-sig")).get("skills", {}) if lock_path.exists() else {}
     roots = [(home / ".codex/skills", "", None, home / ".codex/skills"),
              (home / ".agents/skills", "", None, home / ".agents/skills")]
     cache = home / ".codex/plugins/cache"
@@ -394,7 +397,8 @@ def installations(home):
             key = f"{namespace}:{name}" if namespace else name
             item = dict(id=key, name=name, folder=path.parent.name, namespace=namespace,
                         description=" ".join(str(data["description"]).split()),
-                        source=public_url(data.get("repository")) or public_url(data.get("homepage")) or source)
+                        source=public_url(data.get("repository")) or public_url(data.get("homepage"))
+                        or (public_url(locked.get(path.parent.name, {}).get("sourceUrl")) if not namespace else None) or source)
             if key.casefold() in found:
                 # Shared and personal directories can contain the same skill; export it once.
                 continue
@@ -425,6 +429,14 @@ ARTICLE_ALIASES = {
 }
 
 
+def online_install(name, source):
+    if source and urlparse(source).hostname == "github.com" and "/tree/" in urlparse(source).path:
+        return f"npx skills add {shlex.quote(source)} -a codex"
+    if source:
+        return f"Install {name} using the publisher’s online instructions:\n{source}"
+    return f"Online source not verified. Find a publisher-provided source before installing:\nnpx skills find {shlex.quote(name)}"
+
+
 def refresh(existing, installed):
     by_name = {row["Name"].casefold(): row for row in existing}
     rows = {row["Name"].casefold(): dict(row, Installed=False, InstalledSkills=[])
@@ -440,12 +452,12 @@ def refresh(existing, installed):
             desc = re.split(r"(?<=[.!?])\s+(?=[A-Z])", item["description"])[0]
             if len(desc) > 650:
                 desc = desc[:650].rsplit(" ", 1)[0] + "…"
-            setup = (f"Codex: install the {item['namespace']} plugin from its publisher or the Plugins catalog, then restart Codex."
-                     if item["namespace"] else
-                     f"Copy the complete {item['folder']} skill folder (SKILL.md and supporting files) to ~/.codex/skills/{item['folder']}/, then restart Codex.")
             row = dict(Name=name, Category=category, Type="Skill", Agent="Codex", DescriptionEn=desc,
-                       DescriptionMm=mm, Install=setup, Call=f"Use the {item['id']} skill for this task.",
+                       DescriptionMm=mm, Install="", Call=f"Use the {item['id']} skill for this task.",
                        Source=item["source"], Article=False)
+        row["Source"] = (previous or {}).get("Source", item["source"])
+        if not row["Article"]:
+            row["Install"] = online_install(item["name"], row["Source"])
         # Preserve hand-written examples; rebuild documented ones so removed commands disappear.
         curated = [method for method in (previous or {}).get("Methods", []) if not method.get("Reference")]
         methods = [{"Name": "Default usage", "Call": row["Call"]}] + curated + item["methods"]
@@ -478,6 +490,7 @@ def check(rows, installed):
         assert all(row[field].strip() for field in ["Name", "Category", "DescriptionEn", "DescriptionMm", "Install", "Call"]), row["Name"]
         assert any("\u1000" <= c <= "\u109f" for c in row["DescriptionMm"]), row["Name"]
         assert row["Source"] is None or public_url(row["Source"]), row["Name"]
+        assert "~/.codex/skills/" not in row["Install"] and "Copy the complete" not in row["Install"], row["Name"]
         methods = row.get("Methods", [])
         assert isinstance(methods, list), row["Name"]
         assert all(method["Name"].strip() and method["Call"].strip() for method in methods), row["Name"]
