@@ -260,6 +260,8 @@ def refresh(existing, installed):
             row = dict(Name=name, Category=category, Type="Skill", Agent="Codex", DescriptionEn=desc,
                        DescriptionMm=mm, Install=setup, Call=f"Use the {item['id']} skill for this task.",
                        Source=item["source"], Article=False)
+        if previous and previous.get("Methods"):
+            row["Methods"] = previous["Methods"]
         row.update(Installed=True, InstalledSkills=[item["id"]])
         rows[key] = row
     return sorted(rows.values(), key=lambda row: row["Name"].casefold())
@@ -277,6 +279,10 @@ def check(rows, installed):
         assert all(row[field].strip() for field in ["Name", "Category", "DescriptionEn", "DescriptionMm", "Install", "Call"]), row["Name"]
         assert any("\u1000" <= c <= "\u109f" for c in row["DescriptionMm"]), row["Name"]
         assert row["Source"] is None or public_url(row["Source"]), row["Name"]
+        methods = row.get("Methods", [])
+        assert isinstance(methods, list), row["Name"]
+        assert all(method["Name"].strip() and method["Call"].strip() for method in methods), row["Name"]
+        assert len({method["Name"].casefold() for method in methods}) == len(methods), row["Name"]
 
 
 if __name__ == "__main__":

@@ -38,6 +38,10 @@ class ImportSkillsTests(unittest.TestCase):
             existing = json.loads(catalog_import.CATALOG.read_text(encoding="utf-8"))
             articles = [row for row in existing if row["Article"]]
             rows = catalog_import.refresh(articles, installed)
+            custom_methods = [{"Name": "Review layout", "Call": "Check spacing"}, {"Name": "Review typography", "Call": "Check fonts"}]
+            next(row for row in rows if row["Name"] == "tool:review")["Methods"] = custom_methods
+            refreshed = catalog_import.refresh(rows, installed)
+            self.assertEqual(next(row for row in refreshed if row["Name"] == "tool:review")["Methods"], custom_methods)
             catalog_import.check(rows, installed)
             exported = json.dumps(rows)
             self.assertNotIn(str(home), exported)

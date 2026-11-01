@@ -10151,6 +10151,20 @@
     "Article": true,
     "InstalledSkills": [
       "firecrawl"
+    ],
+    "Methods": [
+      {
+        "Name": "Default usage",
+        "Call": "firecrawl scrape https://example.com"
+      },
+      {
+        "Name": "Search web",
+        "Call": "firecrawl search \"your query\" -o .firecrawl/result.json --json"
+      },
+      {
+        "Name": "Extract main page content",
+        "Call": "firecrawl scrape \"https://example.com\" --only-main-content -o .firecrawl/page.md"
+      }
     ]
   },
   {
@@ -10327,6 +10341,28 @@
     "Installed": true,
     "InstalledSkills": [
       "firecrawl-scrape"
+    ],
+    "Methods": [
+      {
+        "Name": "Default usage",
+        "Call": "Use the firecrawl-scrape skill for this task."
+      },
+      {
+        "Name": "Scrape a webpage",
+        "Call": "firecrawl scrape \"https://example.com\" -o .firecrawl/page.md"
+      },
+      {
+        "Name": "Extract main content",
+        "Call": "firecrawl scrape \"https://example.com\" --only-main-content -o .firecrawl/page.md"
+      },
+      {
+        "Name": "Wait for dynamic content",
+        "Call": "firecrawl scrape \"https://example.com\" --wait-for 3000 -o .firecrawl/page.md"
+      },
+      {
+        "Name": "Extract Markdown and links",
+        "Call": "firecrawl scrape \"https://example.com\" --format markdown,links -o .firecrawl/page.json"
+      }
     ]
   },
   {
@@ -10343,6 +10379,24 @@
     "Installed": true,
     "InstalledSkills": [
       "firecrawl-search"
+    ],
+    "Methods": [
+      {
+        "Name": "Default usage",
+        "Call": "Use the firecrawl-search skill for this task."
+      },
+      {
+        "Name": "Search web",
+        "Call": "firecrawl search \"your query\" -o .firecrawl/result.json --json"
+      },
+      {
+        "Name": "Search and scrape results",
+        "Call": "firecrawl search \"your query\" --scrape -o .firecrawl/scraped.json --json"
+      },
+      {
+        "Name": "Search recent news",
+        "Call": "firecrawl search \"your query\" --sources news --tbs qdr:d -o .firecrawl/news.json --json"
+      }
     ]
   },
   {
@@ -11797,6 +11851,104 @@
     "Article": true,
     "InstalledSkills": [
       "impeccable"
+    ],
+    "Methods": [
+      {
+        "Name": "Default usage",
+        "Call": "Use the impeccable skill to audit and polish this interface."
+      },
+      {
+        "Name": "Shape — Plan UX/UI before writing code",
+        "Call": "Use the impeccable skill: shape this feature."
+      },
+      {
+        "Name": "Init — Capture durable product context in PRODUCT.md",
+        "Call": "Use the impeccable skill: init."
+      },
+      {
+        "Name": "Document — Generate DESIGN.md from existing project code",
+        "Call": "Use the impeccable skill: document."
+      },
+      {
+        "Name": "Extract — Pull reusable tokens and components into design system",
+        "Call": "Use the impeccable skill: extract this interface."
+      },
+      {
+        "Name": "Critique — UX design review with heuristic scoring",
+        "Call": "Use the impeccable skill: critique this interface."
+      },
+      {
+        "Name": "Audit — Technical quality checks (a11y, perf, responsive)",
+        "Call": "Use the impeccable skill: audit this interface."
+      },
+      {
+        "Name": "Polish — Final quality pass before shipping",
+        "Call": "Use the impeccable skill: polish this interface."
+      },
+      {
+        "Name": "Bolder — Amplify safe or bland designs",
+        "Call": "Use the impeccable skill: bolder this interface."
+      },
+      {
+        "Name": "Quieter — Tone down aggressive or overstimulating designs",
+        "Call": "Use the impeccable skill: quieter this interface."
+      },
+      {
+        "Name": "Distill — Strip to essence, remove complexity",
+        "Call": "Use the impeccable skill: distill this interface."
+      },
+      {
+        "Name": "Harden — Production-ready: errors, i18n, edge cases",
+        "Call": "Use the impeccable skill: harden this interface."
+      },
+      {
+        "Name": "Onboard — Design first-run flows, empty states, activation",
+        "Call": "Use the impeccable skill: onboard this interface."
+      },
+      {
+        "Name": "Animate — Add purposeful animations and motion",
+        "Call": "Use the impeccable skill: animate this interface."
+      },
+      {
+        "Name": "Colorize — Add strategic color to monochromatic UIs",
+        "Call": "Use the impeccable skill: colorize this interface."
+      },
+      {
+        "Name": "Typeset — Improve typography hierarchy and fonts",
+        "Call": "Use the impeccable skill: typeset this interface."
+      },
+      {
+        "Name": "Layout — Fix spacing, rhythm, and visual hierarchy",
+        "Call": "Use the impeccable skill: layout this interface."
+      },
+      {
+        "Name": "Delight — Add personality and memorable touches",
+        "Call": "Use the impeccable skill: delight this interface."
+      },
+      {
+        "Name": "Overdrive — Push past conventional limits",
+        "Call": "Use the impeccable skill: overdrive this interface."
+      },
+      {
+        "Name": "Clarify — Improve UX copy, labels, and error messages",
+        "Call": "Use the impeccable skill: clarify this interface."
+      },
+      {
+        "Name": "Adapt — Adapt for different devices and screen sizes",
+        "Call": "Use the impeccable skill: adapt this interface."
+      },
+      {
+        "Name": "Optimize — Diagnose and fix UI performance",
+        "Call": "Use the impeccable skill: optimize this interface."
+      },
+      {
+        "Name": "Live — Visual variant mode: pick elements in the browser, iterate on alternatives",
+        "Call": "Use the impeccable skill: live."
+      },
+      {
+        "Name": "Generate — Variants, versions, or alternatives of a named element to choose from in the live browser; no manual picking",
+        "Call": "Use the impeccable skill: generate 3 layout variations for this interface."
+      }
     ]
   },
   {
@@ -12995,6 +13147,20 @@
     "Article": true,
     "InstalledSkills": [
       "notebooklm"
+    ],
+    "Methods": [
+      {
+        "Name": "Default usage",
+        "Call": "notebooklm list"
+      },
+      {
+        "Name": "List notebooks as JSON",
+        "Call": "notebooklm list --json"
+      },
+      {
+        "Name": "Ask a notebook (replace NOTEBOOK_ID)",
+        "Call": "notebooklm ask \"Summarize the key arguments\" -n NOTEBOOK_ID --json"
+      }
     ]
   },
   {
@@ -13219,6 +13385,28 @@
     "Article": true,
     "InstalledSkills": [
       "obsidian-cli"
+    ],
+    "Methods": [
+      {
+        "Name": "Default usage",
+        "Call": "Open your vault in the agent and ask: Use obsidian-markdown to organize these notes."
+      },
+      {
+        "Name": "Read a note",
+        "Call": "obsidian read file=\"My Note\""
+      },
+      {
+        "Name": "Search notes",
+        "Call": "obsidian search query=\"search term\" limit=10"
+      },
+      {
+        "Name": "Read daily note",
+        "Call": "obsidian daily:read"
+      },
+      {
+        "Name": "List open daily tasks",
+        "Call": "obsidian tasks daily todo"
+      }
     ]
   },
   {
@@ -14003,6 +14191,32 @@
     "Article": true,
     "InstalledSkills": [
       "playwright-cli"
+    ],
+    "Methods": [
+      {
+        "Name": "Default usage",
+        "Call": "playwright-cli open https://example.com"
+      },
+      {
+        "Name": "Navigate",
+        "Call": "playwright-cli goto https://example.com/"
+      },
+      {
+        "Name": "Inspect page elements",
+        "Call": "playwright-cli snapshot"
+      },
+      {
+        "Name": "Click an element (replace e3 with a snapshot ref)",
+        "Call": "playwright-cli click e3"
+      },
+      {
+        "Name": "Take screenshot",
+        "Call": "playwright-cli screenshot"
+      },
+      {
+        "Name": "Close browser",
+        "Call": "playwright-cli close"
+      }
     ]
   },
   {
@@ -14035,6 +14249,24 @@
     "Article": true,
     "InstalledSkills": [
       "ponytail:ponytail"
+    ],
+    "Methods": [
+      {
+        "Name": "Default usage",
+        "Call": "/ponytail full"
+      },
+      {
+        "Name": "Lite mode",
+        "Call": "/ponytail lite"
+      },
+      {
+        "Name": "Ultra mode",
+        "Call": "/ponytail ultra"
+      },
+      {
+        "Name": "Stop Ponytail",
+        "Call": "stop ponytail"
+      }
     ]
   },
   {

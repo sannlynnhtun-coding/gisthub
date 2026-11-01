@@ -44,6 +44,7 @@
                 <tbody>
                     @foreach (var skill in rows)
                     {
+                        var methods = skill.CallMethods;
                         <tr @key="skill.Name">
                             <th scope="row">
                                 @if (skill.Source is not null) { <a href="@skill.Source" target="_blank" rel="noopener noreferrer">@skill.Name ↗</a> }
@@ -61,7 +62,23 @@
                                 <p lang="my">@skill.DescriptionMm</p>
                             </td>
                             <td><button type="button" @onclick='() => CopyAsync(skill.Install, skill.Name + " setup")' aria-label="@($"Copy {skill.Name} setup")">Copy</button><pre>@skill.Install</pre></td>
-                            <td><button type="button" @onclick='() => CopyAsync(skill.Call, skill.Name + " call")' aria-label="@($"Copy {skill.Name} invocation")">Copy</button><pre>@skill.Call</pre></td>
+                            <td>
+                                <details class="skills-methods" open>
+                                    <summary>@methods.Length @(methods.Length == 1 ? "method" : "methods")</summary>
+                                    <ol>
+                                        @foreach (var method in methods)
+                                        {
+                                            <li>
+                                                <div class="skills-method-heading">
+                                                    <strong>@method.Name</strong>
+                                                    <button type="button" @onclick='() => CopyAsync(method.Call, $"{skill.Name}: {method.Name}")' aria-label="@($"Copy {skill.Name}: {method.Name}")">Copy</button>
+                                                </div>
+                                                <pre>@method.Call</pre>
+                                            </li>
+                                        }
+                                    </ol>
+                                </details>
+                            </td>
                         </tr>
                     }
                     @if (rows.Count == 0) { <tr><td colspan="4" class="skills-empty">No matching skills. Try another search or reset the filters.</td></tr> }

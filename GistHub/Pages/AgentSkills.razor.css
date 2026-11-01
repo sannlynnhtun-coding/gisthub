@@ -30,5 +30,10 @@ small { display: block; margin-top: .4rem; font-size: .7rem; color: hsl(var(--mu
 pre { white-space: pre-wrap; overflow-wrap: anywhere; font: .76rem/1.7 ui-monospace, monospace; margin-top: .5rem; }
 td button { padding: .2rem .55rem; border: 1px solid hsl(var(--border)); border-radius: 3px; font-size: .7rem; background: hsl(var(--card)); }
 .skills-empty { padding: 2rem; }
-:is(button, input, select, a, .skills-sheet):focus-visible { outline: 2px solid hsl(var(--foreground)); outline-offset: 3px; }
+.skills-methods summary { cursor: pointer; font-weight: 600; }
+.skills-methods ol { list-style: decimal; padding-left: 1.2rem; margin-top: .75rem; }
+.skills-methods li + li { margin-top: .9rem; padding-top: .9rem; border-top: 1px solid hsl(var(--border)); }
+.skills-method-heading { display: flex; justify-content: space-between; align-items: start; gap: .5rem; }
+.skills-method-heading strong { font-size: .76rem; }
+:is(button, input, select, a, summary, .skills-sheet):focus-visible { outline: 2px solid hsl(var(--foreground)); outline-offset: 3px; }
 @media (max-width: 640px) { tbody th { min-width: 145px; max-width: 145px; overflow-wrap: anywhere; } .skills-sheet { max-height: 65vh; } }

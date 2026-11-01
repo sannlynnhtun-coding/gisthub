@@ -7,6 +7,7 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   assert.equal(await evaluate(`document.querySelectorAll('.skills-sheet thead th').length`), 4);
   assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('tbody tr:first-child .skills-description p')).map(el => ({ lang: el.lang, text: el.textContent }))`), [{ lang: 'en', text: catalog[0].DescriptionEn }, { lang: 'my', text: catalog[0].DescriptionMm }]);
   assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('tbody tr:first-child .skills-badge')).map(el => el.textContent)`), [catalog[0].Category, catalog[0].Type, catalog[0].Agent]);
+  assert.equal(await evaluate(`Array.from(document.querySelectorAll('.skills-methods')).every(el => el.open)`), true);
   const pageSize = 50;
   const set = (selector, value, event = 'change') => evaluate(`(() => {
     const el = document.querySelector(${JSON.stringify(selector)});
@@ -35,6 +36,17 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await waitFor(`document.querySelector('.skills-status').textContent.startsWith('Copied') && window.copiedSkillText.length > 0`, 'copy setup');
   await evaluate(`window.skillCopyFails = true; document.querySelector('tbody td:last-child button').click()`);
   await waitFor(`document.querySelector('.skills-status').textContent.includes('Could not copy')`, 'clipboard failure feedback');
+  await set('.skills-filters input[type=search]', '/ponytail ultra', 'input');
+  await waitFor(`document.querySelectorAll('tbody tr').length === 1 && document.querySelector('tbody th').textContent.includes('Ponytail')`, 'search an alternative method across the catalog');
+  const ponytail = catalog.find(skill => skill.Name === 'Ponytail');
+  assert.equal(await evaluate(`document.querySelector('.skills-methods').open`), true);
+  assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('.skills-methods li pre')).map(el => el.textContent)`), ponytail.Methods.map(method => method.Call));
+  await evaluate(`document.querySelector('.skills-methods summary').click()`);
+  assert.equal(await evaluate(`document.querySelector('.skills-methods').open`), false);
+  await evaluate(`document.querySelector('.skills-methods summary').click()`);
+  await evaluate(`window.skillCopyFails = false; Array.from(document.querySelectorAll('.skills-methods li')).find(el => el.querySelector('pre').textContent === '/ponytail ultra').querySelector('button').click()`);
+  await waitFor(`window.copiedSkillText === '/ponytail ultra' && document.querySelector('.skills-status').textContent.startsWith('Copied')`, 'copy one selected method');
+  await evaluate(`document.querySelector('.skills-filters button').click()`);
   assert.equal(await evaluate(`getComputedStyle(document.querySelector('thead th')).position`), 'sticky');
   assert.equal(await evaluate(`getComputedStyle(document.querySelector('tbody th')).position`), 'sticky');
   await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }, sessionId);

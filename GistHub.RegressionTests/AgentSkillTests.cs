@@ -14,6 +14,12 @@ static class AgentSkillTests
         Check(!skill.Matches("", "", "Claude Code", false), "Environment filter excludes other environments");
         Check(!(skill with { Installed = false }).Matches("", "", "", true), "Installed filter excludes uninstalled entries");
         Check(skill.Matches("", "", "", false), "Reset shows every entry");
+        Check(skill.CallMethods is [{ Call: "Use Taste" }], "Legacy rows retain their default invocation");
+        Check((skill with { Methods = [] }).CallMethods.Length == 1, "An empty method list falls back to the original invocation");
+        var multi = skill with { Methods = [new("Review layout", "Check spacing"), new("Review typography", "Check fonts")] };
+        Check(multi.CallMethods.Length == 2 && multi.Matches("TYPOGRAPHY", "Design & UI", "Codex", true), "Method names are searchable with other filters");
+        Check(multi.Matches("Check fonts", "", "", false), "Method commands are searchable");
+        Check(!multi.Matches("Check fonts", "Development", "", false), "Method matches cannot bypass category filters");
 
         var path = Path.Combine(AppContext.BaseDirectory, "agent-skills.json");
         var catalog = JsonSerializer.Deserialize<List<AgentSkill>>(File.ReadAllText(path))!;
@@ -29,6 +35,8 @@ static class AgentSkillTests
             !string.IsNullOrWhiteSpace(s.Call) && !string.IsNullOrWhiteSpace(s.DescriptionEn) &&
             s.DescriptionMm.Any(c => c >= '\u1000' && c <= '\u109f')), "Every row has setup, invocation and bilingual content");
         Check(catalog.All(s => s.Source is null || Uri.TryCreate(s.Source, UriKind.Absolute, out var uri) && uri.Scheme == "https"), "Source links use HTTPS");
+        Check(catalog.All(s => s.CallMethods.All(m => !string.IsNullOrWhiteSpace(m.Name) && !string.IsNullOrWhiteSpace(m.Call))), "Every method has a name and invocation");
+        Check(catalog.Single(s => s.Name == "Ponytail").CallMethods.Any(m => m.Call == "/ponytail ultra"), "Documented alternative methods are included");
         Console.WriteLine("PASS: skill catalog content and combined search/category/environment/installed filters.");
     }
 
