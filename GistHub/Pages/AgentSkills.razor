@@ -40,7 +40,7 @@
         <div class="skills-sheet" tabindex="0" role="region" aria-label="Skills spreadsheet; scroll horizontally for install and call methods">
             <table>
                 <caption class="sr-only">AI tools and skills with categories, bilingual descriptions, installation and invocation examples.</caption>
-                <thead><tr><th scope="col">Name</th><th scope="col">Category / Type</th><th scope="col">Agent / Environment</th><th scope="col">Description · EN</th><th scope="col">ဖော်ပြချက် · MM</th><th scope="col">Install / Setup</th><th scope="col">How to call</th></tr></thead>
+                <thead><tr><th scope="col">Name</th><th scope="col">Description · EN</th><th scope="col">ဖော်ပြချက် · MM</th><th scope="col">Install / Setup</th><th scope="col">How to call</th></tr></thead>
                 <tbody>
                     @foreach (var skill in rows)
                     {
@@ -48,18 +48,21 @@
                             <th scope="row">
                                 @if (skill.Source is not null) { <a href="@skill.Source" target="_blank" rel="noopener noreferrer">@skill.Name ↗</a> }
                                 else { @skill.Name }
+                                <div class="skills-badges">
+                                    <span class="skills-badge skills-badge--category" title="Category">@skill.Category</span>
+                                    <span class="skills-badge skills-badge--type" title="Type">@skill.Type</span>
+                                    <span class="skills-badge skills-badge--agent" title="Agent / Environment">@skill.Agent</span>
+                                </div>
                                 @if (skill.Installed) { <small class="skills-installed">Installed locally</small> }
                                 @if (skill.Article) { <small>Chase AI list</small> }
                             </th>
-                            <td>@skill.Category<small>@skill.Type</small></td>
-                            <td>@skill.Agent</td>
                             <td lang="en">@skill.DescriptionEn</td>
                             <td lang="my">@skill.DescriptionMm</td>
                             <td><button type="button" @onclick='() => CopyAsync(skill.Install, skill.Name + " setup")' aria-label="@($"Copy {skill.Name} setup")">Copy</button><pre>@skill.Install</pre></td>
                             <td><button type="button" @onclick='() => CopyAsync(skill.Call, skill.Name + " call")' aria-label="@($"Copy {skill.Name} invocation")">Copy</button><pre>@skill.Call</pre></td>
                         </tr>
                     }
-                    @if (rows.Count == 0) { <tr><td colspan="7" class="skills-empty">No matching skills. Try another search or reset the filters.</td></tr> }
+                    @if (rows.Count == 0) { <tr><td colspan="5" class="skills-empty">No matching skills. Try another search or reset the filters.</td></tr> }
                 </tbody>
             </table>
         </div>

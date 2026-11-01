@@ -4,6 +4,8 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await waitFor(`document.querySelectorAll('.skills-sheet tbody tr').length > 17`, 'loaded skill catalog', 60000);
   const catalog = await evaluate(`fetch('data/agent-skills.json').then(r => r.json())`);
   assert.ok(catalog.length > 1000);
+  assert.equal(await evaluate(`document.querySelectorAll('.skills-sheet thead th').length`), 5);
+  assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('tbody tr:first-child .skills-badge')).map(el => el.textContent)`), [catalog[0].Category, catalog[0].Type, catalog[0].Agent]);
   const pageSize = 50;
   const set = (selector, value, event = 'change') => evaluate(`(() => {
     const el = document.querySelector(${JSON.stringify(selector)});
@@ -11,7 +13,7 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
     el.dispatchEvent(new Event(${JSON.stringify(event)}, { bubbles: true }));
   })()`);
   await set('.skills-filters select', 'Design & UI');
-  await waitFor(`Array.from(document.querySelectorAll('tbody td:nth-child(2)')).every(el => el.textContent.startsWith('Design & UI'))`, 'category filter');
+  await waitFor(`document.querySelectorAll('tbody .skills-badge--category').length > 0 && Array.from(document.querySelectorAll('tbody .skills-badge--category')).every(el => el.textContent === 'Design & UI')`, 'category filter');
   await set('.skills-filters input[type=search]', 'Use the design-taste-frontend skill to design this landing page.', 'input');
   await waitFor(`document.querySelectorAll('tbody tr').length === 1 && document.querySelector('tbody').textContent.includes('Taste Skill')`, 'combined category and search');
   await set('.skills-filters input[type=search]', 'no-such-skill-xyz', 'input');
