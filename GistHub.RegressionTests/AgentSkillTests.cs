@@ -37,6 +37,9 @@ static class AgentSkillTests
         Check(catalog.All(s => s.Source is null || Uri.TryCreate(s.Source, UriKind.Absolute, out var uri) && uri.Scheme == "https"), "Source links use HTTPS");
         Check(catalog.All(s => s.CallMethods.All(m => !string.IsNullOrWhiteSpace(m.Name) && !string.IsNullOrWhiteSpace(m.Call))), "Every method has a name and invocation");
         Check(catalog.Single(s => s.Name == "Ponytail").CallMethods.Any(m => m.Call == "/ponytail ultra"), "Documented alternative methods are included");
+        Check(catalog.Where(s => s.Installed).All(s => s.Methods is { Length: > 0 }), "Every installed skill has an explicit method inventory");
+        Check(catalog.Single(s => s.Name == "agentdb-query").CallMethods.Any(m => m.Call.Contains("mcp__claude-flow__agentdb_pattern-search")), "MCP methods are imported beyond the original selected skills");
+        Check(catalog.Single(s => s.Name == "ecc:source-command-epic-decompose").CallMethods.Any(m => m.Call == "/prp-plan"), "Migrated commands retain documented aliases");
         Console.WriteLine("PASS: skill catalog content and combined search/category/environment/installed filters.");
     }
 

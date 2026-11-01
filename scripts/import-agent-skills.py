@@ -6,6 +6,7 @@ credentials or absolute installation paths. Cached package examples are not skil
 """
 import argparse
 import json
+import os
 import re
 from pathlib import Path
 from urllib.parse import urlparse
@@ -183,8 +184,192 @@ def metadata(path):
     return data
 
 
+def documented_methods(path, skill_id, data, boundary):
+    """Collect documented entry points, not arbitrary Python/JS implementation examples."""
+    methods = [{"Name": "Default usage", "Call": f"Use the {skill_id} skill for this task.", "Reference": "SKILL.md"}]
+    seen = {" ".join(methods[0]["Call"].split())}
+    names = {"default usage"}
+    pending = [path]
+    visited = set()
+    skill_root = path.parent.resolve()
+    boundary = boundary.resolve()
+    ignored = {"node_modules", ".git", "fixtures", "__pycache__"}
+    # Include all bundled Markdown guides, even when SKILL.md does not link them directly.
+    pending.extend(sorted(p for p in path.parent.rglob("*.md")
+                          if p.name != "SKILL.md" and not ignored.intersection(p.relative_to(path.parent).parts)))
+    negative = re.compile(r"\b(avoid|wrong|incorrect|anti-patterns?|deprecated|never|do not|don't)\b", re.I)
+    section = re.compile(r"command|usage|invocation|examples?|prompts?|workflow|modes?|aliases|quick.?start", re.I)
+    tool_pattern = r"\bmcp__[\w-]+__[A-Za-z0-9][\w-]*(?![\w*<{\-])"
+    setup = re.compile(r"^(?:cd|echo|printf|mkdir|touch|ls|pwd|export|source|set|if|then|fi|for|while|do|done|else|elif|case|esac|wait|pause|function|return|exit|const|let|var|pass|break|continue)\b|^(?:npm|pnpm|yarn|pip|pip3|uv pip)\s+(?:install|add)\b", re.I)
+    executables = set("npx npm pnpm yarn bun bunx node python python3 py uv uvx pipx dotnet gh git gws firecrawl notebooklm obsidian playwright-cli codex claude claude-flow ruflo agentdb gemini opencode pi gcloud aws az docker kubectl helm terraform cargo rustc go java javac mvn gradle ruby rails bundle php composer perl cpan curl wget bash sh zsh pwsh powershell make cmake gcc clang csc ffmpeg ffprobe yt-dlp pandoc convert magick knap supabase stripe vercel flutter dart adb xcrun swift xcodebuild deno sqlite3 psql mysql redis-cli mongosh jq yq rg find grep sed awk cat chmod rm cp mv ln tar unzip zip open start test pytest jest vitest playwright tsc eslint prettier black ruff mypy csc msbuild vbc code scoop winget brew choco apt apt-get dnf nix devenv devenv.exe".split())
+    executables.update(re.findall(r"Bash\(([\w.-]+)", str(data.get("allowed-tools", ""))))
+    executables.update({"pip-audit", "cover", "dmux", "kvm-ok"})
+    helpers = set()
+
+    def add(name, call, reference):
+        call = call.strip().replace(str(Path.home()), "<HOME>").replace(str(Path.home()).replace("\\", "/"), "<HOME>")
+        normalized = " ".join(re.sub(r"\\\n\s*", " ", call).split())
+        if not normalized or normalized in seen:
+            return
+        seen.add(normalized)
+        title = re.sub(r"`|\*\*", "", name).strip().rstrip(":") or "Documented example"
+        base = title
+        number = 2
+        while title.casefold() in names:
+            title = f"{base} ({number})"
+            number += 1
+        names.add(title.casefold())
+        methods.append({"Name": title, "Call": call, "Reference": reference})
+
+    def shell_command(call, fenced=False):
+        candidate = re.sub(r"^(?:[A-Za-z_]\w*=(?:'[^']*'|\"[^\"]*\"|\S+)\s+)+", "", call).strip()
+        executable = candidate.split()[0] if candidate else ""
+        known = (executable in executables or re.match(r"^(?:\./|~/|/)[\w./-]+[^/]$", executable)
+                 or re.search(r"\.(?:sh|py|js|mjs|ps1|bat|cmd|exe|cs)$", executable)
+                 or re.match(r"^(?:Get|Set|New|Remove|Add|Invoke|Start|Stop|Test|Write|Read|Export|Import|Select|Join|Resolve|Copy|Move|Out|Format|Measure|Update|Install|Enable|Disable)-[A-Za-z]", executable))
+        return ((known or fenced and " " in candidate and executable[:1].islower())
+                and executable not in helpers
+                and re.match(r"^(?:[A-Za-z_./~][\w./~+@-]*)(?:\s|$)", candidate)
+                and not setup.search(candidate) and not re.search(r"<<|^\w+\s*\(|^\w+\s*=", candidate))
+
+    hint = data.get("argument-hint")
+    if not hint and isinstance(data.get("args"), list):
+        hint = " ".join(f"<{arg['name']}>" if arg.get("required") else f"[{arg['name']}]" for arg in data["args"])
+    if hint:
+        add("With arguments", f"Use the {skill_id} skill with arguments: {hint}", "SKILL.md › argument-hint")
+    for field in ("allowed-tools", "tools", "tools_required"):
+        tools = data.get(field, [])
+        if isinstance(tools, str):
+            tools = [tools]
+        for tool in tools:
+            for name in re.findall(tool_pattern, str(tool)):
+                add(f"Tool: {name}", f"Use the {skill_id} skill to call {name}, following its documented parameters and prerequisites.", f"SKILL.md › {field}")
+    for capability in data.get("capabilities", []):
+        if isinstance(capability, str):
+            title = capability.replace("_", " ")
+            add(title, f"Use the {skill_id} skill for: {title}.", "SKILL.md › capabilities")
+
+    cli_help = data.get("metadata", {}).get("openclaw", {}).get("cliHelp", "") if isinstance(data.get("metadata"), dict) else ""
+    cli_base = str(cli_help).removesuffix(" --help").strip()
+    if cli_help:
+        add("CLI help", str(cli_help), "SKILL.md › cliHelp")
+    while pending:
+        doc = pending.pop(0).resolve()
+        if doc in visited or not doc.is_relative_to(boundary) or not doc.is_file():
+            continue
+        visited.add(doc)
+        text = doc.read_text(encoding="utf-8-sig")
+        if doc == path.resolve():
+            text = re.split(r"^---\s*$", text, maxsplit=2, flags=re.M)[-1]
+        helpers = set(re.findall(r"^\s*(?:function\s+)?([A-Za-z_]\w*)\s*\(\s*\)\s*\{", text, re.M))
+        # Follow local Markdown references, but not another skill's entry point or remote URLs.
+        links = re.findall(r"\]\(([^)]+\.md)(?:#[^)]*)?\)", text)
+        links += re.findall(r"`([^`\n]+\.md)`", text)
+        for link in links:
+            if "://" not in link:
+                target = (doc.parent / link).resolve()
+                if target.name != "SKILL.md" and target.is_relative_to(boundary) and not ignored.intersection(target.parts):
+                    pending.append(target)
+        relative = os.path.relpath(doc, skill_root).replace("\\", "/")
+        heading = label = table_header = ""
+        fence = None
+        block = []
+        block_heading = ""
+
+        def parse_block(language, lines, title):
+            if negative.search(title):
+                return
+            content = "\n".join(lines).strip()
+            reference = relative + (f" › {heading}" if heading else "")
+            for tool in re.findall(tool_pattern, content):
+                add(f"Tool: {tool}", f"Use the {skill_id} skill to call {tool}, following its documented parameters and prerequisites.", reference)
+            if language in {"bash", "sh", "shell", "zsh", "console", "powershell", "ps1", "cmd", "batch"}:
+                command = ""
+                for line in lines:
+                    line = re.sub(r"^\s*(?:\$ |PS> |> )", "", line).strip()
+                    if not line or line.startswith("#"):
+                        continue
+                    command += ("\n" if command else "") + line
+                    if line.endswith(("\\", "`", "^")):
+                        continue
+                    if shell_command(command, fenced=True):
+                        add(title or "Terminal example", command, reference)
+                    command = ""
+            elif language in {"", "text", "txt", "prompt", "plaintext"} and section.search(title):
+                # Plain-text blocks under usage headings are user-facing prompts or commands.
+                if content and not re.search(r"^\s*(?:[{}]|[├└│]|\w+\s*[:=]\s*[\[{])", content):
+                    if shell_command(content.splitlines()[0]) or re.search(r"\b(use|please|create|build|review|help|find|fix|generate)\b", content, re.I) or content.startswith("/"):
+                        add(title or "Prompt example", content, reference)
+
+        for line in text.splitlines():
+            marker = re.match(r"^\s*(`{3,}|~{3,})([\w+-]*)\s*$", line)
+            if marker:
+                if fence is None:
+                    fence = (marker[1][0], len(marker[1]), marker[2].lower())
+                    block = []
+                    block_heading = label or heading
+                elif marker[1][0] == fence[0] and len(marker[1]) >= fence[1]:
+                    parse_block(fence[2], block, block_heading)
+                    fence = None
+                    label = ""
+                continue
+            if fence:
+                block.append(line)
+                continue
+            match = re.match(r"^\s*#{1,6}\s+(.+?)\s*#*\s*$", line)
+            if match:
+                heading = match[1]
+                label = table_header = ""
+                # Explicit command headings, including migrated slash-command aliases.
+                if heading.startswith("/"):
+                    add(heading, heading, relative + f" › {heading}")
+                continue
+            if line.strip().endswith(":"):
+                label = line.strip().strip("*")
+            context = f"{heading} {label}"
+            if negative.search(context):
+                continue
+            reference = relative + (f" › {heading}" if heading else "")
+            # Named MCP calls are agent invocations, never executable shell snippets.
+            for tool in re.findall(tool_pattern, line):
+                add(f"Tool: {tool}", f"Use the {skill_id} skill to call {tool}, following its documented parameters and prerequisites.", reference)
+            for snippet in re.findall(r"`([^`\n]+)`", line):
+                if snippet.startswith("/") and section.search(context):
+                    add(label or heading, snippet, reference)
+                elif shell_command(snippet) and " " in snippet:
+                    add(label or heading or "Terminal example", snippet, reference)
+                elif (re.search(r"\b(?:call|invoke|tool)\s+`" + re.escape(snippet) + r"`|`" + re.escape(snippet) + r"`\s+(?:MCP\s+)?tool\b", line, re.I)
+                      and re.fullmatch(r"[a-z][a-z0-9_]+", snippet)):
+                    add(f"Tool: {snippet}", f"Use the {skill_id} skill to call {snippet}, following its documented parameters and prerequisites.", reference)
+            if line.strip().startswith("|"):
+                cells = [cell.strip() for cell in re.split(r"(?<!\\)\|", line.strip().strip("|"))]
+                if not table_header:
+                    table_header = cells[0]
+                    continue
+                if re.fullmatch(r"[:\s-]+", cells[0]) or not section.search(table_header):
+                    continue
+                if negative.search(" ".join(cells[1:])):
+                    continue
+                entry = re.sub(r"\[([^]]+)\]\([^)]*\)", r"\1", cells[0]).strip("` \"")
+                if not entry or re.match(r"^--?\w", entry):
+                    continue
+                title = cells[1].strip("` ") if len(cells) == 2 else entry
+                if entry.startswith("+") and cli_base:
+                    add(title, f"{cli_base} {entry} [flags]", reference)
+                elif entry.startswith("/") or (" " in entry and shell_command(entry)):
+                    add(title, entry, reference)
+                else:
+                    add(title, f"Use the {skill_id} skill: {entry}", reference)
+            elif section.search(context):
+                for prompt in re.findall(r'["“]([^"”\n]+)["”]', line):
+                    if re.match(r"(?:use|please|create|build|review|help|find|fix|generate|show|analyze|audit|summarize)\b", prompt, re.I):
+                        add(label or heading, f"Use the {skill_id} skill. {prompt}", reference)
+    return methods
+
+
 def installations(home):
-    roots = [(home / ".codex/skills", "", None), (home / ".agents/skills", "", None)]
+    roots = [(home / ".codex/skills", "", None, home / ".codex/skills"),
+             (home / ".agents/skills", "", None, home / ".agents/skills")]
     cache = home / ".codex/plugins/cache"
     # One current cache version per package, excluding embedded examples and other agents' copies.
     for package in sorted(cache.glob("*/*")):
@@ -196,10 +381,10 @@ def installations(home):
         info = json.loads(manifest.read_text(encoding="utf-8-sig")) if manifest.exists() else {}
         namespace = str(info.get("name") or package.name)
         source = public_url(info.get("repository")) or public_url(info.get("homepage"))
-        roots.append((version / "skills", namespace, source))
-        roots.append((version / ".codex-plugin/migrated-command-skills", namespace, source))
+        roots.append((version / "skills", namespace, source, version))
+        roots.append((version / ".codex-plugin/migrated-command-skills", namespace, source, version))
     found = {}
-    for root, namespace, source in roots:
+    for root, namespace, source, boundary in roots:
         for path in sorted(root.rglob("SKILL.md")):
             relative = path.relative_to(root)
             if any(part in {"references", "examples", "fixtures", "node_modules", ".git"} for part in relative.parts):
@@ -213,6 +398,7 @@ def installations(home):
             if key.casefold() in found:
                 # Shared and personal directories can contain the same skill; export it once.
                 continue
+            item["methods"] = documented_methods(path, key, data, boundary)
             found[key.casefold()] = item
     return list(found.values())
 
@@ -260,8 +446,21 @@ def refresh(existing, installed):
             row = dict(Name=name, Category=category, Type="Skill", Agent="Codex", DescriptionEn=desc,
                        DescriptionMm=mm, Install=setup, Call=f"Use the {item['id']} skill for this task.",
                        Source=item["source"], Article=False)
-        if previous and previous.get("Methods"):
-            row["Methods"] = previous["Methods"]
+        # Preserve hand-written examples; rebuild documented ones so removed commands disappear.
+        curated = [method for method in (previous or {}).get("Methods", []) if not method.get("Reference")]
+        methods = [{"Name": "Default usage", "Call": row["Call"]}] + curated + item["methods"]
+        unique = {}
+        for method in methods:
+            unique.setdefault(" ".join(method["Call"].split()), dict(method))
+        used_names = set()
+        for method in unique.values():
+            base = method["Name"]
+            suffix = 2
+            while method["Name"].casefold() in used_names:
+                method["Name"] = f"{base} ({suffix})"
+                suffix += 1
+            used_names.add(method["Name"].casefold())
+        row["Methods"] = list(unique.values())
         row.update(Installed=True, InstalledSkills=[item["id"]])
         rows[key] = row
     return sorted(rows.values(), key=lambda row: row["Name"].casefold())
@@ -283,6 +482,10 @@ def check(rows, installed):
         assert isinstance(methods, list), row["Name"]
         assert all(method["Name"].strip() and method["Call"].strip() for method in methods), row["Name"]
         assert len({method["Name"].casefold() for method in methods}) == len(methods), row["Name"]
+    by_id = {name: row for row in rows for name in row.get("InstalledSkills", [])}
+    for item in installed:
+        actual_calls = {" ".join(method["Call"].split()) for method in by_id[item["id"]]["Methods"]}
+        assert all(" ".join(method["Call"].split()) in actual_calls for method in item["methods"]), item["id"]
 
 
 if __name__ == "__main__":

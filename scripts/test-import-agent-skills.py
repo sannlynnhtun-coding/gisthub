@@ -39,17 +39,86 @@ class ImportSkillsTests(unittest.TestCase):
             articles = [row for row in existing if row["Article"]]
             rows = catalog_import.refresh(articles, installed)
             custom_methods = [{"Name": "Review layout", "Call": "Check spacing"}, {"Name": "Review typography", "Call": "Check fonts"}]
-            next(row for row in rows if row["Name"] == "tool:review")["Methods"] = custom_methods
+            next(row for row in rows if row["Name"] == "tool:review")["Methods"].extend(custom_methods)
             refreshed = catalog_import.refresh(rows, installed)
-            self.assertEqual(next(row for row in refreshed if row["Name"] == "tool:review")["Methods"], custom_methods)
+            self.assertTrue(all(method in next(row for row in refreshed if row["Name"] == "tool:review")["Methods"] for method in custom_methods))
             catalog_import.check(rows, installed)
             exported = json.dumps(rows)
             self.assertNotIn(str(home), exported)
             self.assertNotIn("Body is never exported", exported)
             self.assertEqual(sum(row["Installed"] for row in rows), 4)
-            self.assertEqual(catalog_import.refresh(rows, installed), rows)
+            self.assertEqual(catalog_import.refresh(refreshed, installed), refreshed)
             with self.assertRaises(AssertionError):
                 catalog_import.check([row for row in rows if row["Name"] != "tool:review"], installed)
+
+    def test_methods_cover_commands_tools_arguments_and_bundled_references(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "SKILL.md"
+            path.write_text('''---
+name: sample
+description: Manage examples.
+argument-hint: "<topic>"
+allowed-tools: mcp__sample__read mcp__sample__write* Read
+capabilities: [history_analysis]
+metadata:
+  openclaw:
+    cliHelp: "gws gmail --help"
+---
+# Sample
+## Usage
+```bash
+npm install package
+sample-cli list
+sample-cli run \\
+  --topic "example"
+function local_helper() { echo example; }
+local_helper
+scripts/
+...
+Get-Content ./config.json
+```
+Use `gws gmail --help`. A `simple phrase` is not a shell command.
+Call `read_page` and use the `write_page` tool.
+## Commands
+| Command | Description |
+| --- | --- |
+| `+send` | Send mail |
+| `audit [target]` | Review the target |
+See [the guide](references/guide.md) and [another skill](other/SKILL.md).
+## Wrong usage
+```bash
+sample-cli incorrect
+```
+''', encoding="utf-8")
+            (root / "references").mkdir()
+            guide = root / "references/guide.md"
+            guide.write_text('## More commands\n```sh\nsample-cli history\n```\n[cycle](../SKILL.md)\n', encoding="utf-8")
+            (root / "other").mkdir()
+            (root / "other/SKILL.md").write_text("## Usage\n```sh\nunrelated-cli run\n```", encoding="utf-8")
+            methods = catalog_import.documented_methods(path, "sample", catalog_import.metadata(path), root)
+            calls = {method["Call"] for method in methods}
+            self.assertIn("sample-cli list", calls)
+            self.assertIn('sample-cli run ' + chr(92) + '\n--topic "example"', calls)
+            self.assertIn("sample-cli history", calls)
+            self.assertIn("gws gmail +send [flags]", calls)
+            self.assertIn("Use the sample skill: audit [target]", calls)
+            self.assertIn("Use the sample skill with arguments: <topic>", calls)
+            self.assertIn("Use the sample skill for: history analysis.", calls)
+            self.assertTrue(any("mcp__sample__read" in call for call in calls))
+            self.assertFalse(any("mcp__sample__write" in call for call in calls))
+            self.assertTrue(any("read_page" in call for call in calls))
+            self.assertTrue(any("write_page" in call for call in calls))
+            self.assertNotIn("simple phrase", calls)
+            self.assertNotIn("sample-cli incorrect", calls)
+            self.assertNotIn("npm install package", calls)
+            self.assertNotIn("unrelated-cli run", calls)
+            self.assertNotIn("local_helper", calls)
+            self.assertNotIn("scripts/", calls)
+            self.assertNotIn("...", calls)
+            self.assertIn("Get-Content ./config.json", calls)
+            self.assertEqual(len(calls), len(methods))
+            self.assertTrue(all(method.get("Reference") for method in methods))
 
     def test_invalid_metadata_is_reported_instead_of_silently_skipped(self):
         with tempfile.TemporaryDirectory() as directory:

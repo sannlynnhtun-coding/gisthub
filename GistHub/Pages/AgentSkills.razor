@@ -32,6 +32,7 @@
         var totalPages = Math.Max(1, (filtered.Count + PageSize - 1) / PageSize);
         var rows = filtered.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
         <p class="text-sm text-muted-foreground skills-count" role="status">@filtered.Count of @Skills.Count entries · Setup commands run in a terminal unless marked Claude Code. Skill examples are chat prompts.</p>
+        <p class="text-sm text-muted-foreground">Methods are documented examples. Replace placeholders and follow the referenced guide for prerequisites and the working directory.</p>
         <nav class="skills-pagination" aria-label="Skill catalog pages">
             <button type="button" class="btn btn-outline btn-sm" disabled="@(CurrentPage <= 1)" @onclick="() => CurrentPage--">Previous</button>
             <span role="status">Page @CurrentPage of @totalPages · @PageSize per page</span>
@@ -74,6 +75,7 @@
                                                     <button type="button" @onclick='() => CopyAsync(method.Call, $"{skill.Name}: {method.Name}")' aria-label="@($"Copy {skill.Name}: {method.Name}")">Copy</button>
                                                 </div>
                                                 <pre>@method.Call</pre>
+                                                @if (method.Reference is not null) { <small>@method.Reference</small> }
                                             </li>
                                         }
                                     </ol>

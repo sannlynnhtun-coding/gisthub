@@ -17,4 +17,4 @@ public sealed record AgentSkill(string Name, string Category, string Type, strin
              method.Call.Contains(search.Trim(), StringComparison.OrdinalIgnoreCase)) == true);
 }
 
-public sealed record AgentSkillMethod(string Name, string Call);
+public sealed record AgentSkillMethod(string Name, string Call, string? Reference = null);

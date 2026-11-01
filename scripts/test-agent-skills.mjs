@@ -4,6 +4,8 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await waitFor(`document.querySelectorAll('.skills-sheet tbody tr').length > 17`, 'loaded skill catalog', 60000);
   const catalog = await evaluate(`fetch('data/agent-skills.json').then(r => r.json())`);
   assert.ok(catalog.length > 1000);
+  assert.ok(catalog.filter(skill => skill.Installed).every(skill => skill.Methods?.length > 0));
+  assert.ok(catalog.filter(skill => skill.Installed && skill.Methods.length > 1).length > 100);
   assert.equal(await evaluate(`document.querySelectorAll('.skills-sheet thead th').length`), 4);
   assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('tbody tr:first-child .skills-description p')).map(el => ({ lang: el.lang, text: el.textContent }))`), [{ lang: 'en', text: catalog[0].DescriptionEn }, { lang: 'my', text: catalog[0].DescriptionMm }]);
   assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('tbody tr:first-child .skills-badge')).map(el => el.textContent)`), [catalog[0].Category, catalog[0].Type, catalog[0].Agent]);
@@ -37,6 +39,7 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await evaluate(`window.skillCopyFails = true; document.querySelector('tbody td:last-child button').click()`);
   await waitFor(`document.querySelector('.skills-status').textContent.includes('Could not copy')`, 'clipboard failure feedback');
   await set('.skills-filters input[type=search]', '/ponytail ultra', 'input');
+  await set('.skills-filters label:nth-child(3) select', 'Codex / Claude Code');
   await waitFor(`document.querySelectorAll('tbody tr').length === 1 && document.querySelector('tbody th').textContent.includes('Ponytail')`, 'search an alternative method across the catalog');
   const ponytail = catalog.find(skill => skill.Name === 'Ponytail');
   assert.equal(await evaluate(`document.querySelector('.skills-methods').open`), true);
