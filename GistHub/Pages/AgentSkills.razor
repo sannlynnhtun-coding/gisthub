@@ -58,6 +58,11 @@
                     var matchingMethods = string.IsNullOrWhiteSpace(Search) || skill.Name.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase)
                         ? methods : methods.Where(m => m.Name.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase) || m.Call.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase)).ToArray();
                     var shownMethods = matchingMethods.Length > 0 ? matchingMethods : methods;
+                    var methodSearch = MethodSearches.GetValueOrDefault(skill.Name, "");
+                    if (!string.IsNullOrWhiteSpace(methodSearch))
+                    {
+                        shownMethods = methods.Where(m => m.Name.Contains(methodSearch.Trim(), StringComparison.OrdinalIgnoreCase) || m.Call.Contains(methodSearch.Trim(), StringComparison.OrdinalIgnoreCase)).ToArray();
+                    }
                     <tbody class="skills-group" @key="skill.Name">
                         <tr class="skills-summary">
                             <th scope="row">
@@ -87,7 +92,7 @@
                                     <summary aria-label="@($"{skill.Name}: setup and {methods.Length} methods")">
                                         Setup &amp; methods
                                         <span class="skills-method-count">@methods.Length @(methods.Length == 1 ? "method" : "methods")</span>
-                                        @if (shownMethods.Length < methods.Length) { <span class="skills-matching">@shownMethods.Length matching · clear search to see all</span> }
+                                        @if (shownMethods.Length < methods.Length) { <span class="skills-matching">@shownMethods.Length matching</span> }
                                     </summary>
                                     <div class="skills-usage">
                                         <section class="skills-setup" aria-label="@($"{skill.Name} installation")">
@@ -99,6 +104,13 @@
                                         </section>
                                         <section class="skills-calls" aria-label="@($"{skill.Name} invocation methods")">
                                             <h3>How to call</h3>
+                                            <div class="skills-method-search">
+                                                <label>Search this skill’s methods
+                                                    <input type="search" placeholder="Method name or command…" aria-label="@($"Search methods in {skill.Name}")" @bind:get="methodSearch" @bind:set='value => MethodSearches[skill.Name] = value ?? ""' @bind:event="oninput" />
+                                                </label>
+                                                <button type="button" class="btn btn-outline btn-sm" disabled="@string.IsNullOrEmpty(methodSearch)" @onclick="() => MethodSearches.Remove(skill.Name)" aria-label="@($"Clear method search in {skill.Name}")">Clear</button>
+                                            </div>
+                                            <p class="skills-method-results" role="status">@shownMethods.Length of @methods.Length methods</p>
                                             <ol class="skills-method-list" tabindex="0" aria-label="@($"{skill.Name} methods; scroll for more")">
                                                 @foreach (var method in shownMethods)
                                                 {
@@ -112,6 +124,7 @@
                                                     </li>
                                                 }
                                             </ol>
+                                            @if (shownMethods.Length == 0) { <p class="skills-method-empty">No matching methods. Try another query or clear this method search.</p> }
                                         </section>
                                     </div>
                                 </details>
@@ -130,6 +143,7 @@
 
 @code {
     private List<AgentSkill> Skills = [];
+    private readonly Dictionary<string, string> MethodSearches = new();
     private string Search = "", Category = "", Agent = "", Status = "";
     private bool InstalledOnly, Loading = true;
     private bool MethodsExpanded = true;
