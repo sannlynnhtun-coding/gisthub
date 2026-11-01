@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await waitFor(`document.querySelectorAll('.skills-sheet tbody tr').length > 17`, 'loaded skill catalog', 60000);
   const catalog = await evaluate(`fetch('data/agent-skills.json').then(r => r.json())`);
-  const pageSize = Math.min(50, catalog.length);
+  assert.ok(catalog.length > 1000);
+  const pageSize = 50;
   const set = (selector, value, event = 'change') => evaluate(`(() => {
     const el = document.querySelector(${JSON.stringify(selector)});
     el.value = ${JSON.stringify(value)};
@@ -18,6 +19,12 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await evaluate(`document.querySelector('.skills-filters button').click()`);
   await waitFor(`document.querySelectorAll('tbody tr').length === ${pageSize}`, 'reset filters');
   assert.ok((await evaluate(`document.querySelector('.skills-count').textContent`)).startsWith(`${catalog.length} of ${catalog.length}`));
+  await evaluate(`document.querySelector('.skills-pagination button:last-child').click()`);
+  await waitFor(`document.querySelector('.skills-pagination span').textContent.startsWith('Page 2 ')`, 'next page');
+  assert.ok((await evaluate(`document.querySelector('tbody th').textContent`)).includes(catalog[pageSize].Name));
+  await set('.skills-filters input[type=search]', 'ecc:tdd-workflow', 'input');
+  await waitFor(`document.querySelector('.skills-pagination span').textContent.startsWith('Page 1 ') && document.querySelectorAll('tbody tr').length === 1 && document.querySelector('tbody th').textContent.includes('ecc:tdd-workflow')`, 'search all pages and reset page number');
+  await evaluate(`document.querySelector('.skills-filters button').click()`);
   await evaluate(`document.querySelector('.skills-filters input[type=checkbox]').click()`);
   await waitFor(`document.querySelector('.skills-count').textContent.startsWith('${catalog.filter(s => s.Installed).length} of ${catalog.length}')`, 'installed-only snapshot');
   await evaluate(`document.querySelector('.skills-filters button').click()`);

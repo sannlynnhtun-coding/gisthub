@@ -18,6 +18,12 @@ static class AgentSkillTests
         var path = Path.Combine(AppContext.BaseDirectory, "agent-skills.json");
         var catalog = JsonSerializer.Deserialize<List<AgentSkill>>(File.ReadAllText(path))!;
         Check(catalog.Count(s => s.Article) == 17, "All 17 article entries are included");
+        using var document = JsonDocument.Parse(File.ReadAllText(path));
+        var installedNames = document.RootElement.EnumerateArray()
+            .SelectMany(row => row.GetProperty("InstalledSkills").EnumerateArray().Select(name => name.GetString()!)).ToList();
+        Check(installedNames.Count > 1000, "Full installed inventory replaces the selected subset");
+        Check(installedNames.Distinct(StringComparer.OrdinalIgnoreCase).Count() == installedNames.Count, "Each installed skill identity occurs once");
+        Check(new[] { "skill-installer", "ponytail:ponytail-review", "ecc:tdd-workflow" }.All(installedNames.Contains), "System and plugin skills are included");
         Check(catalog.Select(s => s.Name).Distinct(StringComparer.OrdinalIgnoreCase).Count() == catalog.Count, "Names are unique");
         Check(catalog.All(s => !string.IsNullOrWhiteSpace(s.Name) && !string.IsNullOrWhiteSpace(s.Install) &&
             !string.IsNullOrWhiteSpace(s.Call) && !string.IsNullOrWhiteSpace(s.DescriptionEn) &&
