@@ -4,7 +4,8 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   await waitFor(`document.querySelectorAll('.skills-sheet tbody tr').length > 17`, 'loaded skill catalog', 60000);
   const catalog = await evaluate(`fetch('data/agent-skills.json').then(r => r.json())`);
   assert.ok(catalog.length > 1000);
-  assert.equal(await evaluate(`document.querySelectorAll('.skills-sheet thead th').length`), 5);
+  assert.equal(await evaluate(`document.querySelectorAll('.skills-sheet thead th').length`), 4);
+  assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('tbody tr:first-child .skills-description p')).map(el => ({ lang: el.lang, text: el.textContent }))`), [{ lang: 'en', text: catalog[0].DescriptionEn }, { lang: 'my', text: catalog[0].DescriptionMm }]);
   assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('tbody tr:first-child .skills-badge')).map(el => el.textContent)`), [catalog[0].Category, catalog[0].Type, catalog[0].Agent]);
   const pageSize = 50;
   const set = (selector, value, event = 'change') => evaluate(`(() => {

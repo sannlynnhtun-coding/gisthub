@@ -9,7 +9,7 @@
 .skills-status { font-size: .85rem; }
 .skills-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; font-size: .8rem; }
 .skills-sheet { overflow: auto; max-height: 68vh; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); isolation: isolate; }
-table { width: 100%; min-width: 1280px; border-collapse: separate; border-spacing: 0; font-size: .82rem; }
+table { width: 100%; min-width: 1100px; border-collapse: separate; border-spacing: 0; font-size: .82rem; }
 th, td { padding: .8rem; text-align: left; vertical-align: top; border-right: 1px solid hsl(var(--border)); border-bottom: 1px solid hsl(var(--border)); }
 thead th { position: sticky; top: 0; z-index: 2; background: hsl(var(--muted)); font-weight: 700; white-space: nowrap; }
 tbody th { position: sticky; left: 0; z-index: 1; min-width: 190px; max-width: 230px; background: hsl(var(--card)); font-weight: 600; }
@@ -17,8 +17,9 @@ thead th:first-child { left: 0; z-index: 3; }
 tbody tr:nth-child(even) { background: hsl(var(--muted) / .25); }
 tbody tr:nth-child(even) th { background: hsl(var(--background)); }
 tbody tr:hover td, tbody tr:hover th { background: hsl(var(--muted)); }
-td:nth-child(2), td:nth-child(3) { min-width: 260px; line-height: 1.8; }
-td:nth-child(4), td:nth-child(5) { min-width: 280px; max-width: 360px; }
+.skills-description { min-width: 340px; line-height: 1.8; }
+.skills-description p + p { margin-top: .65rem; }
+td:nth-child(3), td:nth-child(4) { min-width: 280px; max-width: 360px; }
 .skills-badges { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .6rem; }
 .skills-badge { border: 1px solid hsl(var(--border)); border-radius: 4px; padding: .15rem .4rem; font-size: .65rem; line-height: 1.5; font-weight: 500; overflow-wrap: anywhere; }
 .skills-badge--category { background: hsl(var(--secondary) / .3); }

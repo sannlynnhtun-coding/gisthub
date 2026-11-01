@@ -40,7 +40,7 @@
         <div class="skills-sheet" tabindex="0" role="region" aria-label="Skills spreadsheet; scroll horizontally for install and call methods">
             <table>
                 <caption class="sr-only">AI tools and skills with categories, bilingual descriptions, installation and invocation examples.</caption>
-                <thead><tr><th scope="col">Name</th><th scope="col">Description · EN</th><th scope="col">ဖော်ပြချက် · MM</th><th scope="col">Install / Setup</th><th scope="col">How to call</th></tr></thead>
+                <thead><tr><th scope="col">Name</th><th scope="col">Description · EN / MM</th><th scope="col">Install / Setup</th><th scope="col">How to call</th></tr></thead>
                 <tbody>
                     @foreach (var skill in rows)
                     {
@@ -56,13 +56,15 @@
                                 @if (skill.Installed) { <small class="skills-installed">Installed locally</small> }
                                 @if (skill.Article) { <small>Chase AI list</small> }
                             </th>
-                            <td lang="en">@skill.DescriptionEn</td>
-                            <td lang="my">@skill.DescriptionMm</td>
+                            <td class="skills-description">
+                                <p lang="en">@skill.DescriptionEn</p>
+                                <p lang="my">@skill.DescriptionMm</p>
+                            </td>
                             <td><button type="button" @onclick='() => CopyAsync(skill.Install, skill.Name + " setup")' aria-label="@($"Copy {skill.Name} setup")">Copy</button><pre>@skill.Install</pre></td>
                             <td><button type="button" @onclick='() => CopyAsync(skill.Call, skill.Name + " call")' aria-label="@($"Copy {skill.Name} invocation")">Copy</button><pre>@skill.Call</pre></td>
                         </tr>
                     }
-                    @if (rows.Count == 0) { <tr><td colspan="5" class="skills-empty">No matching skills. Try another search or reset the filters.</td></tr> }
+                    @if (rows.Count == 0) { <tr><td colspan="4" class="skills-empty">No matching skills. Try another search or reset the filters.</td></tr> }
                 </tbody>
             </table>
         </div>
