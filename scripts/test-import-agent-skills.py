@@ -11,6 +11,20 @@ spec.loader.exec_module(catalog_import)
 
 
 class ImportSkillsTests(unittest.TestCase):
+    def test_audited_sources_distinguish_public_history_host_setup_and_custom_skills(self):
+        rows = {row["Name"]: row for row in json.loads(catalog_import.CATALOG.read_text(encoding="utf-8"))}
+        self.assertIn("github.com/emilkowalski/skills/tree/", rows["animate"]["Source"])
+        historical = rows["mcp-csharp-create"]
+        self.assertIn("Historical version", historical["Install"])
+        self.assertIn(historical["Source"], historical["Install"])
+        hosted = rows["spreadsheets:excel-live-control"]
+        self.assertIn("help.openai.com", hosted["Source"])
+        self.assertIn("Allow Codex control", hosted["Install"])
+        self.assertNotIn("npx skills add", hosted["Install"])
+        self.assertIn("not independently confirmed", rows["openai-templates:artifact-template-business-review"]["Install"])
+        self.assertIsNone(rows["devcode"]["Source"])
+        self.assertIn("not a verified replacement", rows["devcode"]["Install"])
+
     def test_online_installation_never_requires_an_existing_local_skill_folder(self):
         source = "https://github.com/publisher/skills/tree/main/skills/review"
         self.assertEqual(catalog_import.online_install("review", source), f"npx skills add {source} -a codex")
@@ -63,6 +77,11 @@ class ImportSkillsTests(unittest.TestCase):
             unverified = next(row for row in catalog_import.refresh(refreshed, installed) if row["Name"] == "review")
             self.assertIsNone(unverified["Source"])
             self.assertIn("Online source not verified", unverified["Install"])
+            unverified["InstallNote"] = "Bundled capability; requires its host runtime."
+            noted = next(row for row in catalog_import.refresh([unverified] + [row for row in refreshed if row["Name"] != "review"], installed) if row["Name"] == "review")
+            self.assertTrue(noted["Install"].startswith(unverified["InstallNote"] + "\n\n"))
+            noted_rows = [noted] + [row for row in refreshed if row["Name"] != "review"]
+            self.assertEqual(next(row for row in catalog_import.refresh(noted_rows, installed) if row["Name"] == "review"), noted)
             with self.assertRaises(AssertionError):
                 catalog_import.check([row for row in rows if row["Name"] != "tool:review"], installed)
 

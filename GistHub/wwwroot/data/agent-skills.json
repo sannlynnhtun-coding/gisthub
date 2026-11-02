@@ -6,9 +6,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create or integrate highly detailed 3D models with smooth silhouettes, shaped surfaces, believable bevels, and close-up geometry, then prepare suitable runtime LODs and loading.",
     "DescriptionMm": "3d-high-poly-models — အသေးစိတ်ကျသည့် 3D model များကို ဖန်တီးပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find 3d-high-poly-models",
+    "Install": "npx skills add https://github.com/mengto/skills/tree/ef5f85130d083d33e08cb19f6ee23cdde2d406ab/agent-skills/3d/3d-high-poly-models -a codex",
     "Call": "Use the 3d-high-poly-models skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/mengto/skills/tree/ef5f85130d083d33e08cb19f6ee23cdde2d406ab/agent-skills/3d/3d-high-poly-models",
     "Article": false,
     "Methods": [
       {
@@ -28,9 +28,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Build sharp, physically coherent high-resolution materials for 3D rendering with appropriate PBR maps, texel density, UV direction, mipmaps, anisotropic filtering, and progressive asset delivery.",
     "DescriptionMm": "3d-high-resolution-textures — 3D မျက်နှာပြင်များအတွက် resolution မြင့် texture များကို ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find 3d-high-resolution-textures",
+    "Install": "npx skills add https://github.com/mengto/skills/tree/ef5f85130d083d33e08cb19f6ee23cdde2d406ab/agent-skills/3d/3d-high-resolution-textures -a codex",
     "Call": "Use the 3d-high-resolution-textures skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/mengto/skills/tree/ef5f85130d083d33e08cb19f6ee23cdde2d406ab/agent-skills/3d/3d-high-resolution-textures",
     "Article": false,
     "Methods": [
       {
@@ -50,9 +50,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Render a 3D canvas sharply on Retina and HiDPI displays, including explicit 200 percent resolution, synchronized renderer and post-processing sizes, correct pointer coordinates, and measured quality fallbacks.",
     "DescriptionMm": "3d-retina-resolution — 3D မြင်ကွင်းများကို resolution မြင့် screen များနှင့် ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find 3d-retina-resolution",
+    "Install": "npx skills add https://github.com/mengto/skills/tree/ef5f85130d083d33e08cb19f6ee23cdde2d406ab/agent-skills/3d/3d-retina-resolution -a codex",
     "Call": "Use the 3d-retina-resolution skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/mengto/skills/tree/ef5f85130d083d33e08cb19f6ee23cdde2d406ab/agent-skills/3d/3d-retina-resolution",
     "Article": false,
     "Methods": [
       {
@@ -72,7 +72,7 @@
     "Agent": "Codex",
     "DescriptionEn": "Design, build, audit, and improve accessible web and Apple-platform interfaces against WCAG 2.2 AA and Apple HIG.",
     "DescriptionMm": "a11y-design — လူတိုင်းအသုံးပြုနိုင်မှု၊ keyboard ထိန်းချုပ်မှုနှင့် UI ဖတ်ရှုရလွယ်ကူမှုကို စစ်ဆေးပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find a11y-design",
+    "Install": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing.\n\nOnline source not verified. Find a publisher-provided source before installing:\nnpx skills find a11y-design",
     "Call": "Use the a11y-design skill for this task.",
     "Source": null,
     "Article": false,
@@ -90,7 +90,8 @@
     "Installed": true,
     "InstalledSkills": [
       "a11y-design"
-    ]
+    ],
+    "InstallNote": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing."
   },
   {
     "Name": "adr-create",
@@ -1573,9 +1574,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Build, validate, and troubleshoot deep links for Codex, Cursor, VS Code, Visual Studio, and similar tools.",
     "DescriptionMm": "agent-deep-links — AI agent ၏ လုပ်ဆောင်ပုံ၊ ချိတ်ဆက်မှုနှင့် လုပ်ငန်းဆောင်ရွက်မှုကို စီမံရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find agent-deep-links",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/agent-deep-links -a codex",
     "Call": "Use the agent-deep-links skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/agent-deep-links",
     "Article": false,
     "Methods": [
       {
@@ -6007,9 +6008,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Master advanced AgentDB features including QUIC synchronization, multi-database management, custom distance metrics, hybrid search, and distributed systems integration.",
     "DescriptionMm": "AgentDB Advanced Features — အချက်အလက်များကို မှတ်ဉာဏ်နှင့် index အဖြစ် သိမ်းဆည်း၍ ပြန်လည်ရှာဖွေသုံးစွဲရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find 'AgentDB Advanced Features'",
+    "Install": "npx skills add https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/agentdb-advanced -a codex",
     "Call": "Use the AgentDB Advanced Features skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/agentdb-advanced",
     "Article": false,
     "Methods": [
       {
@@ -6089,9 +6090,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create and train AI learning plugins with AgentDB's 9 reinforcement learning algorithms.",
     "DescriptionMm": "AgentDB Learning Plugins — အချက်အလက်များကို မှတ်ဉာဏ်နှင့် index အဖြစ် သိမ်းဆည်း၍ ပြန်လည်ရှာဖွေသုံးစွဲရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find 'AgentDB Learning Plugins'",
+    "Install": "npx skills add https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/agentdb-learning -a codex",
     "Call": "Use the AgentDB Learning Plugins skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/agentdb-learning",
     "Article": false,
     "Methods": [
       {
@@ -6303,9 +6304,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Optimize AgentDB performance with quantization (4-32x memory reduction), HNSW indexing (150x faster search), caching, and batch operations.",
     "DescriptionMm": "AgentDB Performance Optimization — လုပ်ဆောင်ချိန်နှင့် resource အသုံးပြုမှုကို တိုင်းတာ၍ စွမ်းဆောင်ရည်မြှင့်တင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find 'AgentDB Performance Optimization'",
+    "Install": "npx skills add https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/agentdb-optimization -a codex",
     "Call": "Use the AgentDB Performance Optimization skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/agentdb-optimization",
     "Article": false,
     "Methods": [
       {
@@ -6830,9 +6831,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Build an animation from scratch, making the decisions in the order that determines whether it feels right — should it animate at all, what purpose, which tool, which properties, which curve and duration, how it interrupts, how it exits.",
     "DescriptionMm": "animate — UI လှုပ်ရှားမှုနှင့် transition များကို ဖန်တီးစစ်ဆေးပြုပြင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find animate",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/animate -a codex",
     "Call": "Use the animate skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/animate",
     "Article": false,
     "Methods": [
       {
@@ -6852,9 +6853,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Build animations in React Native and Expo, making the decisions in the order that determines whether they feel right — should it animate, which thread it runs on, which properties, spring or timing, how the gesture hands off, how it degrades.",
     "DescriptionMm": "animate-expo — UI လှုပ်ရှားမှုနှင့် transition များကို ဖန်တီးစစ်ဆေးပြုပြင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find animate-expo",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/animate-expo -a codex",
     "Call": "Use the animate-expo skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/animate-expo",
     "Article": false,
     "Methods": [
       {
@@ -6899,9 +6900,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Reverse-lookup glossary that turns a vague description of a web animation or motion effect into its exact term (\"the bouncy thing when a popover opens\" → Pop in; \"the iOS rubber-band scroll\" → Rubber-banding).",
     "DescriptionMm": "animation-vocabulary — UI လှုပ်ရှားမှုနှင့် transition များကို ဖန်တီးစစ်ဆေးပြုပြင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find animation-vocabulary",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/animation-vocabulary -a codex",
     "Call": "Use the animation-vocabulary skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/animation-vocabulary",
     "Article": false,
     "Methods": [
       {
@@ -7262,9 +7263,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Apple's approach to interface design and fluid, physical motion, translated for the web.",
     "DescriptionMm": "apple-design — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find apple-design",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/apple-design -a codex",
     "Call": "Use the apple-design skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/apple-design",
     "Article": false,
     "Methods": [
       {
@@ -7311,9 +7312,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Guide to Sonner, the React toast library — install and wire up the Toaster, pick the right toast() call, promise and loading toasts, updating, dismissing and persisting toasts, styling, theming and icons, positioning and multiple toasters.",
     "DescriptionMm": "ask-sonner — Frontend component၊ data fetching နှင့် framework လုပ်ဆောင်ချက်များ ရေးသားပြင်ဆင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find ask-sonner",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/ask-sonner -a codex",
     "Call": "Use the ask-sonner skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/ask-sonner",
     "Article": false,
     "Methods": [
       {
@@ -7465,7 +7466,7 @@
     "Agent": "Codex",
     "DescriptionEn": "Create or migrate an ASP.NET Core shared stage-based configuration setup using a solution-root Config folder, Config/appsettings.json Stage selection, Config/custom-setting-{stage}.json files, optional stage credential JSON files, WebApplicationBuilder AddStageConfig wiring, strongly typed CustomSettingModel binding, and IOptionsMonitor consumption.",
     "DescriptionMm": "aspnetcore-config-skill — Agent skill နှင့် plugin များကို ရှာဖွေ၊ ဖန်တီး၊ တပ်ဆင် သို့မဟုတ် စီမံရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find aspnetcore-config-skill",
+    "Install": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing.\n\nOnline source not verified. Find a publisher-provided source before installing:\nnpx skills find aspnetcore-config-skill",
     "Call": "Use the aspnetcore-config-skill skill for this task.",
     "Source": null,
     "Article": false,
@@ -7478,7 +7479,8 @@
     "Installed": true,
     "InstalledSkills": [
       "aspnetcore-config-skill"
-    ]
+    ],
+    "InstallNote": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing."
   },
   {
     "Name": "assertion-quality",
@@ -7728,9 +7730,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when building the evidence base for a chosen autoresearch topic — maps the insight areas needed to propose new ideas, downloads references to cover them via download-ref, distills each area into research/INSIGHTS.md for user selection, builds a structured domain database and pinned reference implementations, and catalogs all algorithms/software in research/CATALOG.md.",
     "DescriptionMm": "autoresearch-db — Model နှင့် စမ်းသပ်မှုများကို လေ့ကျင့်၊ အကဲဖြတ် သို့မဟုတ် တိုးတက်အောင် သုတေသနလုပ်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find autoresearch-db",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/b51588f262e32d201da9d47deaf20f686c224cea/skills/autoresearch-db -a codex",
     "Call": "Use the autoresearch-db skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/b51588f262e32d201da9d47deaf20f686c224cea/skills/autoresearch-db",
     "Article": false,
     "Methods": [
       {
@@ -7741,7 +7743,8 @@
     "Installed": true,
     "InstalledSkills": [
       "autoresearch-db"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "autoresearch-run",
@@ -7750,9 +7753,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when running the autoresearch loop for a project whose survey and validator gates have passed — executes batches of attempts (one git worktree + LOG.md each, scored only by the validator under a hard time limit), then reflects, reports, and re-plans; continues autonomously while authorized_attempts remain, otherwise stops for user review.",
     "DescriptionMm": "autoresearch-run — Model နှင့် စမ်းသပ်မှုများကို လေ့ကျင့်၊ အကဲဖြတ် သို့မဟုတ် တိုးတက်အောင် သုတေသနလုပ်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find autoresearch-run",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/d701eb5cce233bc1588b9b1ce3a3a397511d6998/skills/autoresearch-run -a codex",
     "Call": "Use the autoresearch-run skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/d701eb5cce233bc1588b9b1ce3a3a397511d6998/skills/autoresearch-run",
     "Article": false,
     "Methods": [
       {
@@ -7763,7 +7766,8 @@
     "Installed": true,
     "InstalledSkills": [
       "autoresearch-run"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "autoresearch-topics",
@@ -7772,9 +7776,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when choosing research topics within a domain that suit autoresearch and defining their score metrics — brainstorms candidates, scores each on machine-checkable success, cheap per-attempt evaluation, iteration headroom, and publishability, lets the user pick, derives primary/guard metrics (with computation cost and gaming risks), then red-teams and gets user confirmation of a strict acceptance gate per chosen topic, and writes everything to topics.md.",
     "DescriptionMm": "autoresearch-topics — Model နှင့် စမ်းသပ်မှုများကို လေ့ကျင့်၊ အကဲဖြတ် သို့မဟုတ် တိုးတက်အောင် သုတေသနလုပ်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find autoresearch-topics",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/b51588f262e32d201da9d47deaf20f686c224cea/skills/autoresearch-topics -a codex",
     "Call": "Use the autoresearch-topics skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/b51588f262e32d201da9d47deaf20f686c224cea/skills/autoresearch-topics",
     "Article": false,
     "Methods": [
       {
@@ -7785,7 +7789,8 @@
     "Installed": true,
     "InstalledSkills": [
       "autoresearch-topics"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "autoresearch-validator",
@@ -7794,9 +7799,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when setting the goal and building the validator for an autoresearch topic — defines the publishable bar with the user, splits dev instances from a sealed gitignored holdout, builds a Docker-canonical strict environment (recorded fallback allowed), implements the validate CLI with rich JSON errors, and passes the strictness self-test against negative controls.",
     "DescriptionMm": "autoresearch-validator — Model နှင့် စမ်းသပ်မှုများကို လေ့ကျင့်၊ အကဲဖြတ် သို့မဟုတ် တိုးတက်အောင် သုတေသနလုပ်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find autoresearch-validator",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/75c220adc6cce19dcacde5c3524e258e8b2cb1ab/skills/autoresearch-validator -a codex",
     "Call": "Use the autoresearch-validator skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/75c220adc6cce19dcacde5c3524e258e8b2cb1ab/skills/autoresearch-validator",
     "Article": false,
     "Methods": [
       {
@@ -7807,7 +7812,8 @@
     "Installed": true,
     "InstalledSkills": [
       "autoresearch-validator"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "awesome-design.md",
@@ -8043,9 +8049,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when brainstorming research ideas — a research collaborator that understands your background, helps find interesting problems together, and shares relevant resources along the way",
     "DescriptionMm": "brainstorm-ideas — သက်ဆိုင်ရာ အရင်းအမြစ်များကို ရှာဖွေ၍ အချက်အလက်ထုတ်ယူ၊ သုတေသနနှင့် အကျဉ်းချုပ်ပြုလုပ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find brainstorm-ideas",
+    "Install": "npx skills add https://github.com/QuantumBFS/sci-brain/tree/203c839650e57ed150068f7fcea4b3908e7b3ee7/skills/brainstorm-ideas -a codex",
     "Call": "Use the brainstorm-ideas skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/203c839650e57ed150068f7fcea4b3908e7b3ee7/skills/brainstorm-ideas",
     "Article": false,
     "Methods": [
       {
@@ -8087,9 +8093,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Premium brand-kit image generation skill for creating high-end brand-guidelines boards, logo systems, identity decks, and visual-world presentations.",
     "DescriptionMm": "brandkit — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find brandkit",
+    "Install": "npx skills add https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/brandkit -a codex",
     "Call": "Use the brandkit skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/brandkit",
     "Article": false,
     "Methods": [
       {
@@ -8109,9 +8115,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Try to break a piece of UI by feeding it worst-case data — long names, unbreakable emails, one-letter names, missing fields, huge counts, zero items, long labels, non-Latin text, emoji, extreme numbers — then render it behind a \"Demo data / Worst case\" toggle and report everything that broke, with the fix for each.",
     "DescriptionMm": "break-ui — UI ၏ အားနည်းချက်နှင့် မျက်နှာပြင်ပျက်ယွင်းနိုင်မှုများကို ရှာဖွေစစ်ဆေးပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find break-ui",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/break-ui -a codex",
     "Call": "Use the break-ui skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/break-ui",
     "Article": false,
     "Methods": [
       {
@@ -8979,9 +8985,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Browser automation for the Codex in-app browser.",
     "DescriptionMm": "browser — Browser သို့မဟုတ် desktop ကို ထိန်းချုပ်၍ သက်ဆိုင်ရာ အဆင့်များကို ဆောင်ရွက်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find browser",
+    "Install": "Bundled capability; no standalone public skill package verified. In the ChatGPT desktop app, open Plugins, install or enable Browser, and complete its setup. Chrome also needs its extension; Computer Use may need operating-system permissions. Availability depends on the account and platform. This link documents the host setup, not downloadable SKILL.md source.\n\nInstall browser-use:browser using the publisher’s online instructions:\nhttps://developers.openai.com/training/walkthroughs/using-your-computer-and-browser",
     "Call": "Use the browser-use:browser skill for this task.",
-    "Source": null,
+    "Source": "https://developers.openai.com/training/walkthroughs/using-your-computer-and-browser",
     "Article": false,
     "Methods": [
       {
@@ -9012,7 +9018,8 @@
     "Installed": true,
     "InstalledSkills": [
       "browser-use:browser"
-    ]
+    ],
+    "InstallNote": "Bundled capability; no standalone public skill package verified. In the ChatGPT desktop app, open Plugins, install or enable Browser, and complete its setup. Chrome also needs its extension; Computer Use may need operating-system permissions. Availability depends on the account and platform. This link documents the host setup, not downloadable SKILL.md source."
   },
   {
     "Name": "build-parallelism",
@@ -9567,9 +9574,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Control the user's Chrome browser for tasks that depend on existing Chrome state: tabs, logged-in sessions, or extensions.",
     "DescriptionMm": "control-chrome — Browser သို့မဟုတ် desktop ကို ထိန်းချုပ်၍ သက်ဆိုင်ရာ အဆင့်များကို ဆောင်ရွက်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find control-chrome",
+    "Install": "Bundled capability; no standalone public skill package verified. In the ChatGPT desktop app, open Plugins, install or enable Chrome, and complete its setup. Chrome also needs its extension; Computer Use may need operating-system permissions. Availability depends on the account and platform. This link documents the host setup, not downloadable SKILL.md source.\n\nInstall chrome:control-chrome using the publisher’s online instructions:\nhttps://developers.openai.com/training/walkthroughs/using-your-computer-and-browser",
     "Call": "Use the chrome:control-chrome skill for this task.",
-    "Source": null,
+    "Source": "https://developers.openai.com/training/walkthroughs/using-your-computer-and-browser",
     "Article": false,
     "Methods": [
       {
@@ -9595,7 +9602,8 @@
     "Installed": true,
     "InstalledSkills": [
       "chrome:control-chrome"
-    ]
+    ],
+    "InstallNote": "Bundled capability; no standalone public skill package verified. In the ChatGPT desktop app, open Plugins, install or enable Chrome, and complete its setup. Chrome also needs its extension; Computer Use may need operating-system permissions. Availability depends on the account and platform. This link documents the host setup, not downloadable SKILL.md source."
   },
   {
     "Name": "claims",
@@ -11151,9 +11159,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Run large codebase migrations and multi-file refactors.",
     "DescriptionMm": "codebase-migrate — လက်ရှိ code နှင့် project configuration ကို သတ်မှတ်ထားသော ပုံစံသစ်သို့ ပြောင်းလဲရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find codebase-migrate",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/codebase-migrate -a codex",
     "Call": "Use the codebase-migrate skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/codebase-migrate",
     "Article": false,
     "Methods": [
       {
@@ -11430,9 +11438,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Control Windows apps from ChatGPT",
     "DescriptionMm": "computer-use — Browser သို့မဟုတ် desktop ကို ထိန်းချုပ်၍ သက်ဆိုင်ရာ အဆင့်များကို ဆောင်ရွက်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find computer-use",
+    "Install": "Bundled capability; no standalone public skill package verified. In the ChatGPT desktop app, open Plugins, install or enable Computer Use, and complete its setup. Chrome also needs its extension; Computer Use may need operating-system permissions. Availability depends on the account and platform. This link documents the host setup, not downloadable SKILL.md source.\n\nInstall computer-use:computer-use using the publisher’s online instructions:\nhttps://developers.openai.com/training/walkthroughs/using-your-computer-and-browser",
     "Call": "Use the computer-use:computer-use skill for this task.",
-    "Source": null,
+    "Source": "https://developers.openai.com/training/walkthroughs/using-your-computer-and-browser",
     "Article": false,
     "Methods": [
       {
@@ -11453,7 +11461,8 @@
     "Installed": true,
     "InstalledSkills": [
       "computer-use:computer-use"
-    ]
+    ],
+    "InstallNote": "Bundled capability; no standalone public skill package verified. In the ChatGPT desktop app, open Plugins, install or enable Computer Use, and complete its setup. Chrome also needs its extension; Computer Use may need operating-system permissions. Availability depends on the account and platform. This link documents the host setup, not downloadable SKILL.md source."
   },
   {
     "Name": "configure-auth",
@@ -11504,9 +11513,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Configure OpenTelemetry distributed tracing, metrics, and logging in ASP.NET Core using the .NET OpenTelemetry SDK.",
     "DescriptionMm": "configuring-opentelemetry-dotnet — .NET application နှင့် ဆက်စပ် runtime လုပ်ဆောင်ချက်များ တည်ဆောက်ပြင်ဆင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find configuring-opentelemetry-dotnet",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/dotnet/skills/tree/05aeb657e67426e62603002f1d9e9675a59e471b/plugins/dotnet-aspnet/skills/configuring-opentelemetry-dotnet -a codex",
     "Call": "Use the configuring-opentelemetry-dotnet skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/dotnet/skills/tree/05aeb657e67426e62603002f1d9e9675a59e471b/plugins/dotnet-aspnet/skills/configuring-opentelemetry-dotnet",
     "Article": false,
     "Methods": [
       {
@@ -11557,7 +11566,8 @@
     "Installed": true,
     "InstalledSkills": [
       "configuring-opentelemetry-dotnet"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "connect",
@@ -11817,9 +11827,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when analyzing conversation patterns — extracts dialog from Claude Code or Codex CLI history, classifies each user message across 6 academic dimensions (Bloom's cognitive level, Graesser question depth, Paul & Elder reasoning probe, Walton presupposition quality, Long & Sato discourse function, Graesser generation mechanism), and outputs tagged dialog reports",
     "DescriptionMm": "conversation-dump — Code နှင့် project ဖွဲ့စည်းပုံကို စိစစ်၍ သတ်မှတ်ထားသော အလုပ်ကို အကောင်အထည်ဖော်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find conversation-dump",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/6c1b330cf7b12eb72097f81f9629b9a16caddc64/skills/conversation-dump -a codex",
     "Call": "Use the conversation-dump skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/6c1b330cf7b12eb72097f81f9629b9a16caddc64/skills/conversation-dump",
     "Article": false,
     "Methods": [
       {
@@ -11830,7 +11840,8 @@
     "Installed": true,
     "InstalledSkills": [
       "conversation-dump"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "convert-blazor-server-to-webapp",
@@ -12987,9 +12998,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a concise plan.",
     "DescriptionMm": "create-plan — လိုအပ်ချက်များကို စိစစ်၍ အကောင်အထည်ဖော်မည့် အစီအစဉ်နှင့် တာဝန်များ ခွဲပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find create-plan",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/create-plan -a codex",
     "Call": "Use the create-plan skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/create-plan",
     "Article": false,
     "Methods": [
       {
@@ -13242,9 +13253,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Query and filter Datadog logs from the shell using the Composio CLI.",
     "DescriptionMm": "datadog-logs — သက်ဆိုင်ရာ အရင်းအမြစ်များကို ရှာဖွေ၍ အချက်အလက်ထုတ်ယူ၊ သုတေသနနှင့် အကျဉ်းချုပ်ပြုလုပ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find datadog-logs",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/datadog-logs -a codex",
     "Call": "Use the datadog-logs skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/datadog-logs",
     "Article": false,
     "Methods": [
       {
@@ -13686,9 +13697,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Run end-to-end deploy pipelines across Stripe, Supabase, and Vercel using the Composio CLI.",
     "DescriptionMm": "deploy-pipeline — Project ကို တည်ဆောက်ဖြန့်ချိခြင်းနှင့် ဆက်စပ်ဝန်ဆောင်မှုများ ချိတ်ဆက်ခြင်းကို ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find deploy-pipeline",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/deploy-pipeline -a codex",
     "Call": "Use the deploy-pipeline skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/deploy-pipeline",
     "Article": false,
     "Methods": [
       {
@@ -13845,9 +13856,9 @@
     "Agent": "Codex",
     "DescriptionEn": "The original v1 taste-skill, preserved for projects depending on its exact behavior.",
     "DescriptionMm": "design-taste-frontend-v1 — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find design-taste-frontend-v1",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/Leonxlnx/taste-skill/tree/f6831c5df8ad546c2567535442f1691a823868e3/skills/taste-skill-v1 -a codex",
     "Call": "Use the design-taste-frontend-v1 skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/Leonxlnx/taste-skill/tree/f6831c5df8ad546c2567535442f1691a823868e3/skills/taste-skill-v1",
     "Article": false,
     "Methods": [
       {
@@ -13858,7 +13869,8 @@
     "Installed": true,
     "InstalledSkills": [
       "design-taste-frontend-v1"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "detect-static-dependencies",
@@ -13889,7 +13901,7 @@
     "Agent": "Codex",
     "DescriptionEn": "Lean coding mode for Codex.",
     "DescriptionMm": "devcode — Code နှင့် project ဖွဲ့စည်းပုံကို စိစစ်၍ သတ်မှတ်ထားသော အလုပ်ကို အကောင်အထည်ဖော်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find devcode",
+    "Install": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing.\n\nOnline source not verified. Find a publisher-provided source before installing:\nnpx skills find devcode",
     "Call": "Use the devcode skill for this task.",
     "Source": null,
     "Article": false,
@@ -13902,7 +13914,8 @@
     "Installed": true,
     "InstalledSkills": [
       "devcode"
-    ]
+    ],
+    "InstallNote": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing."
   },
   {
     "Name": "developer-growth-analysis",
@@ -13960,9 +13973,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Diff a live page's accessibility violations against a baseline — by default compares uncommitted changes (stash-based), or pass --branch [<name>] to diff against a branch.",
     "DescriptionMm": "diff — Code နှင့် project ဖွဲ့စည်းပုံကို စိစစ်၍ သတ်မှတ်ထားသော အလုပ်ကို အကောင်အထည်ဖော်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find diff",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/AccessLint/skills/tree/f30665e1bf0ca4a906a3503153a1b6d8cd7f67df/plugins/accesslint/skills/diff -a codex",
     "Call": "Use the diff skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/AccessLint/skills/tree/f30665e1bf0ca4a906a3503153a1b6d8cd7f67df/plugins/accesslint/skills/diff",
     "Article": false,
     "Methods": [
       {
@@ -14038,7 +14051,8 @@
     "Installed": true,
     "InstalledSkills": [
       "diff"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "diff-analyze",
@@ -14275,9 +14289,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create, edit, redline, and comment on `.docx`, Word, and Google Docs-targeted document artifacts inside the container, with a strict render-and-verify workflow.",
     "DescriptionMm": "documents — စာတမ်းအကြောင်းအရာများကို ဖန်တီး၊ ပြောင်းလဲ သို့မဟုတ် အစီအစဉ်တကျ စုစည်းပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find documents",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall documents:documents using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the documents:documents skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -14763,7 +14777,8 @@
     "Installed": true,
     "InstalledSkills": [
       "documents:documents"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "domain-modeling",
@@ -14950,9 +14965,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Dotnet Collin workflow notes for Collin-specific .NET projects.",
     "DescriptionMm": "dotnet-collin — .NET application နှင့် ဆက်စပ် runtime လုပ်ဆောင်ချက်များ တည်ဆောက်ပြင်ဆင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find dotnet-collin",
+    "Install": "npx skills add https://github.com/sannlynnhtun-coding/dotnet-collin/tree/02a981c44cc2c1a9ec36ffb9f6114ed081992545 -a codex",
     "Call": "Use the dotnet-collin skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/sannlynnhtun-coding/dotnet-collin/tree/02a981c44cc2c1a9ec36ffb9f6114ed081992545",
     "Article": false,
     "Methods": [
       {
@@ -15396,7 +15411,7 @@
     "Agent": "Codex",
     "DescriptionEn": "Clean Code guidance adapted for C#/.NET and .NET Core.",
     "DescriptionMm": "dotnet-thang-chung — .NET application နှင့် ဆက်စပ် runtime လုပ်ဆောင်ချက်များ တည်ဆောက်ပြင်ဆင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find dotnet-thang-chung",
+    "Install": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing.\n\nOnline source not verified. Find a publisher-provided source before installing:\nnpx skills find dotnet-thang-chung",
     "Call": "Use the dotnet-thang-chung skill for this task.",
     "Source": null,
     "Article": false,
@@ -15419,7 +15434,8 @@
     "Installed": true,
     "InstalledSkills": [
       "dotnet-thang-chung"
-    ]
+    ],
+    "InstallNote": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing."
   },
   {
     "Name": "dotnet-trace-collect",
@@ -15802,9 +15818,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when adding one or many new references (arXiv ID or DOI) to a sci-brain knowledge base — `<project>/.knowledge/` by default, or `advisors/<slug>/.knowledge/` when invoked from an advisor flow.",
     "DescriptionMm": "download-ref — စာတမ်းအကြောင်းအရာများကို ဖန်တီး၊ ပြောင်းလဲ သို့မဟုတ် အစီအစဉ်တကျ စုစည်းပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find download-ref",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/30d3f0e8a3d44016c72768a7310e7a483ba34d52/skills/download-ref -a codex",
     "Call": "Use the download-ref skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/30d3f0e8a3d44016c72768a7310e7a483ba34d52/skills/download-ref",
     "Article": false,
     "Methods": [
       {
@@ -15815,7 +15831,8 @@
     "Installed": true,
     "InstalledSkills": [
       "download-ref"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "dump-collect",
@@ -32065,9 +32082,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Draft, rewrite, or condense emails with target tone, length, and audience; use for cold outreach, replies, status updates, or escalations where clarity and brevity matter.",
     "DescriptionMm": "email-draft-polish — Agent အများအပြား၏ တာဝန်ခွဲဝေမှု၊ ပူးပေါင်းမှုနှင့် ရလဒ်များကို စီမံပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find email-draft-polish",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/email-draft-polish -a codex",
     "Call": "Use the email-draft-polish skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/email-draft-polish",
     "Article": false,
     "Methods": [
       {
@@ -32139,9 +32156,9 @@
     "Agent": "Codex",
     "DescriptionEn": "This skill encodes Emil Kowalski's philosophy on UI polish, component design, animation decisions, and the invisible details that make software feel great.",
     "DescriptionMm": "emil-design-eng — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find emil-design-eng",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/emil-design-eng -a codex",
     "Call": "Use the emil-design-eng skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/emil-design-eng",
     "Article": false,
     "Methods": [
       {
@@ -32230,9 +32247,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Optimizes hot-path scalar loops in .NET 8+ with cross-platform Vector128/Vector256/Vector512 SIMD intrinsics, or replaces manual math loops with single TensorPrimitives API calls.",
     "DescriptionMm": "exp-simd-vectorization — လုပ်ဆောင်ချိန်နှင့် resource အသုံးပြုမှုကို တိုင်းတာ၍ စွမ်းဆောင်ရည်မြှင့်တင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find exp-simd-vectorization",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/dotnet/skills/tree/05aeb657e67426e62603002f1d9e9675a59e471b/plugins/dotnet-experimental/skills/exp-simd-vectorization -a codex",
     "Call": "Use the exp-simd-vectorization skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/dotnet/skills/tree/05aeb657e67426e62603002f1d9e9675a59e471b/plugins/dotnet-experimental/skills/exp-simd-vectorization",
     "Article": false,
     "Methods": [
       {
@@ -32253,7 +32270,8 @@
     "Installed": true,
     "InstalledSkills": [
       "exp-simd-vectorization"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "exp-test-maintainability",
@@ -33498,9 +33516,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Import or upload local HTML or project files into Figma, choose editable Design frames, runnable Code Layers or standalone Code (also known as Make), and repair imported previews.",
     "DescriptionMm": "figma-code-workflows — Figma ဒီဇိုင်းနှင့် component များကို ဖန်တီး၊ စစ်ဆေး သို့မဟုတ် code နှင့် ချိတ်ဆက်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find figma-code-workflows",
+    "Install": "npx skills add https://github.com/figma/mcp-server-guide/tree/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-code-workflows -a codex",
     "Call": "Use the figma:figma-code-workflows skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/figma/mcp-server-guide/tree/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-code-workflows",
     "Article": false,
     "Methods": [
       {
@@ -33770,9 +33788,9 @@
     "Agent": "Codex",
     "DescriptionEn": "**MANDATORY prerequisite** — load this skill before calling `create_generative_plugin` or `update_generative_plugin`.",
     "DescriptionMm": "figma-generative-plugins — Figma ဒီဇိုင်းနှင့် component များကို ဖန်တီး၊ စစ်ဆေး သို့မဟုတ် code နှင့် ချိတ်ဆက်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find figma-generative-plugins",
+    "Install": "npx skills add https://github.com/figma/mcp-server-guide/tree/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-generative-plugins -a codex",
     "Call": "Use the figma:figma-generative-plugins skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/figma/mcp-server-guide/tree/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-generative-plugins",
     "Article": false,
     "Methods": [
       {
@@ -33849,9 +33867,9 @@
     "Agent": "Codex",
     "DescriptionEn": "**MANDATORY prerequisite** — load this skill before calling `create_shader` or `update_shader`.",
     "DescriptionMm": "figma-shaders — Figma ဒီဇိုင်းနှင့် component များကို ဖန်တီး၊ စစ်ဆေး သို့မဟုတ် code နှင့် ချိတ်ဆက်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find figma-shaders",
+    "Install": "npx skills add https://github.com/figma/mcp-server-guide/tree/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-shaders -a codex",
     "Call": "Use the figma:figma-shaders skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/figma/mcp-server-guide/tree/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-shaders",
     "Article": false,
     "Methods": [
       {
@@ -33891,9 +33909,9 @@
     "Agent": "Codex",
     "DescriptionEn": "This skill is required to create, read, edit, review, or comment on Figma specs.",
     "DescriptionMm": "figma-spec — Figma ဒီဇိုင်းနှင့် component များကို ဖန်တီး၊ စစ်ဆေး သို့မဟုတ် code နှင့် ချိတ်ဆက်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find figma-spec",
+    "Install": "npx skills add https://github.com/figma/mcp-server-guide/tree/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-spec -a codex",
     "Call": "Use the figma:figma-spec skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/figma/mcp-server-guide/tree/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-spec",
     "Article": false,
     "Methods": [
       {
@@ -34133,9 +34151,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when reviewing the visual design/quality of a figure, plot, or diagram — \"is this figure well-designed\", \"review my plot\", \"critique this figure's layout/colors\", \"does this figure have good taste\".",
     "DescriptionMm": "figure-taste — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find figure-taste",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/ced5e2e52fb90b476b20aeadc7f40990e26908c9/skills/figure-taste -a codex",
     "Call": "Use the figure-taste skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/ced5e2e52fb90b476b20aeadc7f40990e26908c9/skills/figure-taste",
     "Article": false,
     "Methods": [
       {
@@ -34146,7 +34164,8 @@
     "Installed": true,
     "InstalledSkills": [
       "figure-taste"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "file-organizer",
@@ -34344,9 +34363,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Search a codebase or UI for places that don't animate but should, and reject everything that shouldn't.",
     "DescriptionMm": "find-animation-opportunities — UI လှုပ်ရှားမှုနှင့် transition များကို ဖန်တီးစစ်ဆေးပြုပြင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find find-animation-opportunities",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/find-animation-opportunities -a codex",
     "Call": "Use the find-animation-opportunities skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/find-animation-opportunities",
     "Article": false,
     "Methods": [
       {
@@ -35682,9 +35701,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when attacking a single hard goal that resists a direct solution — runs an autonomous CDCL/DPLL-style search (decide → propagate → learn → backjump, with a meta-pivot when stuck), taking notes after every trial.",
     "DescriptionMm": "flow — ခက်ခဲသည့် ရည်မှန်းချက်ကို စမ်းသပ်မှုနှင့် မှတ်တမ်းများဖြင့် အဆင့်ဆင့်ဖြေရှင်းပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find flow",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/a6f52233ddaa641ba117a634f7f6dd17e56730ee/skills/flow -a codex",
     "Call": "Use the flow skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/a6f52233ddaa641ba117a634f7f6dd17e56730ee/skills/flow",
     "Article": false,
     "Methods": [
       {
@@ -35695,7 +35714,8 @@
     "Installed": true,
     "InstalledSkills": [
       "flow"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "flow-nexus-neural",
@@ -36369,9 +36389,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Overrides default LLM truncation behavior.",
     "DescriptionMm": "full-output-enforcement — AI အသုံးပြုမှု၏ token၊ context နှင့် ကုန်ကျစရိတ်ကို စစ်ဆေးစီမံပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find full-output-enforcement",
+    "Install": "npx skills add https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/output-skill -a codex",
     "Call": "Use the full-output-enforcement skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/output-skill",
     "Article": false,
     "Methods": [
       {
@@ -38655,9 +38675,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Elite UX/UI & Advanced GSAP Motion Engineer.",
     "DescriptionMm": "gpt-taste — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find gpt-taste",
+    "Install": "npx skills add https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/gpt-tasteskill -a codex",
     "Call": "Use the gpt-taste skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/gpt-tasteskill",
     "Article": false,
     "Methods": [
       {
@@ -41105,9 +41125,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Search real-time news with bias scoring, get live stock/ETF/crypto data with AI analysis, ML options pricing, balanced news synthesis, and meme search via the Helium MCP server.",
     "DescriptionMm": "helium-mcp — သက်ဆိုင်ရာ အရင်းအမြစ်များကို ရှာဖွေ၍ အချက်အလက်ထုတ်ယူ၊ သုတေသနနှင့် အကျဉ်းချုပ်ပြုလုပ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find helium-mcp",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/helium-mcp -a codex",
     "Call": "Use the helium-mcp skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/helium-mcp",
     "Article": false,
     "Methods": [
       {
@@ -41127,9 +41147,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Teaches the AI to design like a high-end agency.",
     "DescriptionMm": "high-end-visual-design — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find high-end-visual-design",
+    "Install": "npx skills add https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/soft-skill -a codex",
     "Call": "Use the high-end-visual-design skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/soft-skill",
     "Article": false,
     "Methods": [
       {
@@ -42002,9 +42022,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when writing an ideas report after brainstorming or when turning a chosen research direction into a proposal-style research plan",
     "DescriptionMm": "idea-writer — ရည်ရွယ်ချက်နှင့် ပရိသတ်အလိုက် ရှင်းလင်းသည့် စာသားရေးသားပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find idea-writer",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/4fcc020edda555b03ef68993b3d6a17c985f2921/skills/idea-writer -a codex",
     "Call": "Use the idea-writer skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/4fcc020edda555b03ef68993b3d6a17c985f2921/skills/idea-writer",
     "Article": false,
     "Methods": [
       {
@@ -42015,7 +42035,8 @@
     "Installed": true,
     "InstalledSkills": [
       "idea-writer"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "image-enhancer",
@@ -42270,9 +42291,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Elite mobile app image-generation skill for creating premium, app-native screen concepts and flows.",
     "DescriptionMm": "imagegen-frontend-mobile — ပုံ၊ animation နှင့် video အကြောင်းအရာများ ဖန်တီးပြင်ဆင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find imagegen-frontend-mobile",
+    "Install": "npx skills add https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/imagegen-frontend-mobile -a codex",
     "Call": "Use the imagegen-frontend-mobile skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/imagegen-frontend-mobile",
     "Article": false,
     "Methods": [
       {
@@ -42292,9 +42313,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Elite frontend image-direction skill for generating premium, conversion-aware website design references.",
     "DescriptionMm": "imagegen-frontend-web — ပုံ၊ animation နှင့် video အကြောင်းအရာများ ဖန်တီးပြင်ဆင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find imagegen-frontend-web",
+    "Install": "npx skills add https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/imagegen-frontend-web -a codex",
     "Call": "Use the imagegen-frontend-web skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/imagegen-frontend-web",
     "Article": false,
     "Methods": [
       {
@@ -42655,9 +42676,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Import .md dialog files (Claude.ai exports, custom markdown conversations) to create or update advisor profiles.",
     "DescriptionMm": "import-dialog — စာတမ်းအကြောင်းအရာများကို ဖန်တီး၊ ပြောင်းလဲ သို့မဟုတ် အစီအစဉ်တကျ စုစည်းပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find import-dialog",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/3b5ad792bf60ef9c323cbac487748488da58d93e/skills/import-dialog -a codex",
     "Call": "Use the import-dialog skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/3b5ad792bf60ef9c323cbac487748488da58d93e/skills/import-dialog",
     "Article": false,
     "Methods": [
       {
@@ -42668,7 +42689,8 @@
     "Installed": true,
     "InstalledSkills": [
       "import-dialog"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "improve-animations",
@@ -42677,9 +42699,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Survey a codebase's animation and motion code as a senior motion advisor, then produce a prioritized audit and self-contained implementation plans for other agents (or cheaper models) to execute.",
     "DescriptionMm": "improve-animations — UI လှုပ်ရှားမှုနှင့် transition များကို ဖန်တီးစစ်ဆေးပြုပြင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find improve-animations",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/improve-animations -a codex",
     "Call": "Use the improve-animations skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/improve-animations",
     "Article": false,
     "Methods": [
       {
@@ -42781,9 +42803,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when onboarding a contributor as an advisor — guides them through providing their background and conversation history, runs conversation-dump and soul-extraction, then synthesizes a named advisor profile for the ideas skill's advisor library",
     "DescriptionMm": "incarnate — Agent skill နှင့် plugin များကို ရှာဖွေ၊ ဖန်တီး၊ တပ်ဆင် သို့မဟုတ် စီမံရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find incarnate",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/30d3f0e8a3d44016c72768a7310e7a483ba34d52/skills/incarnate -a codex",
     "Call": "Use the incarnate skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/30d3f0e8a3d44016c72768a7310e7a483ba34d52/skills/incarnate",
     "Article": false,
     "Methods": [
       {
@@ -42794,7 +42816,8 @@
     "Installed": true,
     "InstalledSkills": [
       "incarnate"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "including-generated-files",
@@ -42892,9 +42915,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Raw mechanical interfaces fusing Swiss typographic print with military terminal aesthetics.",
     "DescriptionMm": "industrial-brutalist-ui — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find industrial-brutalist-ui",
+    "Install": "npx skills add https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/brutalist-skill -a codex",
     "Call": "Use the industrial-brutalist-ui skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/brutalist-skill",
     "Article": false,
     "Methods": [
       {
@@ -43434,9 +43457,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Triage Linear or Jira backlogs and run bug sweeps via the Composio CLI.",
     "DescriptionMm": "issue-triage — လုပ်ငန်းတာဝန်၊ အဖွဲ့နှင့် project လိုအပ်ချက်များကို စိစစ်စီမံပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find issue-triage",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/issue-triage -a codex",
     "Call": "Use the issue-triage skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/issue-triage",
     "Article": false,
     "Methods": [
       {
@@ -43689,7 +43712,7 @@
     "Agent": "Codex",
     "DescriptionEn": "Apply Martin Kleppmann's Designing Data-Intensive Applications, first edition, to data-system architecture reviews and study.",
     "DescriptionMm": "kleppmann-data-intensive — Database နှင့် အချက်အလက်စနစ်များကို တည်ဆောက်၊ မေးမြန်း သို့မဟုတ် စီမံရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find kleppmann-data-intensive",
+    "Install": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing.\n\nOnline source not verified. Find a publisher-provided source before installing:\nnpx skills find kleppmann-data-intensive",
     "Call": "Use the kleppmann-data-intensive skill for this task.",
     "Source": null,
     "Article": false,
@@ -43712,7 +43735,8 @@
     "Installed": true,
     "InstalledSkills": [
       "kleppmann-data-intensive"
-    ]
+    ],
+    "InstallNote": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing."
   },
   {
     "Name": "knap",
@@ -44774,9 +44798,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create MCP servers using the C# SDK and .NET project templates.",
     "DescriptionMm": "mcp-csharp-create — Agent နှင့် ပြင်ပဝန်ဆောင်မှုများကို tool သို့မဟုတ် API ဖြင့် ချိတ်ဆက်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find mcp-csharp-create",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/dotnet/skills/tree/10331dbf090f4d1ddb37b3adf2294dc3aefab0f2/plugins/dotnet-ai/skills/mcp-csharp-create -a codex",
     "Call": "Use the mcp-csharp-create skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/dotnet/skills/tree/10331dbf090f4d1ddb37b3adf2294dc3aefab0f2/plugins/dotnet-ai/skills/mcp-csharp-create",
     "Article": false,
     "Methods": [
       {
@@ -44852,7 +44876,8 @@
     "Installed": true,
     "InstalledSkills": [
       "mcp-csharp-create"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "mcp-csharp-debug",
@@ -44861,9 +44886,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Run and debug C# MCP servers locally.",
     "DescriptionMm": "mcp-csharp-debug — အမှားဖြစ်ရသည့် အကြောင်းရင်းကို log နှင့် အထောက်အထားများဖြင့် စစ်ဆေးပြုပြင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find mcp-csharp-debug",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/dotnet/skills/tree/05aeb657e67426e62603002f1d9e9675a59e471b/plugins/dotnet-ai/skills/mcp-csharp-debug -a codex",
     "Call": "Use the mcp-csharp-debug skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/dotnet/skills/tree/05aeb657e67426e62603002f1d9e9675a59e471b/plugins/dotnet-ai/skills/mcp-csharp-debug",
     "Article": false,
     "Methods": [
       {
@@ -44944,7 +44969,8 @@
     "Installed": true,
     "InstalledSkills": [
       "mcp-csharp-debug"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "mcp-csharp-publish",
@@ -44953,9 +44979,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Publish and deploy C# MCP servers.",
     "DescriptionMm": "mcp-csharp-publish — Agent နှင့် ပြင်ပဝန်ဆောင်မှုများကို tool သို့မဟုတ် API ဖြင့် ချိတ်ဆက်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find mcp-csharp-publish",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/dotnet/skills/tree/10331dbf090f4d1ddb37b3adf2294dc3aefab0f2/plugins/dotnet-ai/skills/mcp-csharp-publish -a codex",
     "Call": "Use the mcp-csharp-publish skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/dotnet/skills/tree/10331dbf090f4d1ddb37b3adf2294dc3aefab0f2/plugins/dotnet-ai/skills/mcp-csharp-publish",
     "Article": false,
     "Methods": [
       {
@@ -45181,7 +45207,8 @@
     "Installed": true,
     "InstalledSkills": [
       "mcp-csharp-publish"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "mcp-csharp-test",
@@ -45190,9 +45217,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Test C# MCP servers at multiple levels: unit tests for individual tools and integration tests using the MCP client SDK.",
     "DescriptionMm": "mcp-csharp-test — Agent နှင့် ပြင်ပဝန်ဆောင်မှုများကို tool သို့မဟုတ် API ဖြင့် ချိတ်ဆက်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find mcp-csharp-test",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/dotnet/skills/tree/10331dbf090f4d1ddb37b3adf2294dc3aefab0f2/plugins/dotnet-ai/skills/mcp-csharp-test -a codex",
     "Call": "Use the mcp-csharp-test skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/dotnet/skills/tree/10331dbf090f4d1ddb37b3adf2294dc3aefab0f2/plugins/dotnet-ai/skills/mcp-csharp-test",
     "Article": false,
     "Methods": [
       {
@@ -45248,7 +45275,8 @@
     "Installed": true,
     "InstalledSkills": [
       "mcp-csharp-test"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "meeting-insights-analyzer",
@@ -45284,9 +45312,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Turn meeting transcripts or rough notes into crisp summaries with decisions, risks, and owner-tagged action items; use for Zoom/Meet/Teams transcripts, call notes, or long meeting chats to generate share-ready outputs.",
     "DescriptionMm": "meeting-notes-and-actions — အစည်းအဝေး၊ အချိန်ဇယားနှင့် ဆက်လက်လုပ်ဆောင်ရမည့် အလုပ်များကို စီစဉ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find meeting-notes-and-actions",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/meeting-notes-and-actions -a codex",
     "Call": "Use the meeting-notes-and-actions skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/meeting-notes-and-actions",
     "Article": false,
     "Methods": [
       {
@@ -46188,9 +46216,9 @@
     "Agent": "Codex",
     "DescriptionEn": "File upload endpoints in ASP.NET minimal APIs (.NET 8+)",
     "DescriptionMm": "minimal-api-file-upload — Backend ဝန်ဆောင်မှု၊ API နှင့် request လုပ်ဆောင်ပုံများ တည်ဆောက်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find minimal-api-file-upload",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/dotnet/skills/tree/05aeb657e67426e62603002f1d9e9675a59e471b/plugins/dotnet-aspnet/skills/minimal-api-file-upload -a codex",
     "Call": "Use the minimal-api-file-upload skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/dotnet/skills/tree/05aeb657e67426e62603002f1d9e9675a59e471b/plugins/dotnet-aspnet/skills/minimal-api-file-upload",
     "Article": false,
     "Methods": [
       {
@@ -46201,7 +46229,8 @@
     "Installed": true,
     "InstalledSkills": [
       "minimal-api-file-upload"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "minimalist-ui",
@@ -46210,9 +46239,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Clean editorial-style interfaces.",
     "DescriptionMm": "minimalist-ui — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find minimalist-ui",
+    "Install": "npx skills add https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/minimalist-skill -a codex",
     "Call": "Use the minimalist-ui skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/minimalist-skill",
     "Article": false,
     "Methods": [
       {
@@ -46232,9 +46261,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Make a web app feel native on a phone — the small CSS and meta-tag fixes that separate \"a website in a browser\" from something that feels installed.",
     "DescriptionMm": "mobile-native — Mobile သို့မဟုတ် native application လုပ်ဆောင်ချက်များ တည်ဆောက်ပြင်ဆင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find mobile-native",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/mobile-native -a codex",
     "Call": "Use the mobile-native skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/mobile-native",
     "Article": false,
     "Methods": [
       {
@@ -46400,9 +46429,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Guide for using MSBuild Server to improve CLI build performance.",
     "DescriptionMm": "msbuild-server — Project build၊ dependency နှင့် configuration ပြဿနာများကို စစ်ဆေးပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find msbuild-server",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/dotnet/skills/tree/67e2a47e87b768cbcdc6a5dc863bd9b2310cbcd3/plugins/dotnet-msbuild/skills/msbuild-server -a codex",
     "Call": "Use the msbuild-server skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/dotnet/skills/tree/67e2a47e87b768cbcdc6a5dc863bd9b2310cbcd3/plugins/dotnet-msbuild/skills/msbuild-server",
     "Article": false,
     "Methods": [
       {
@@ -46428,7 +46457,8 @@
     "Installed": true,
     "InstalledSkills": [
       "msbuild-server"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "mtp-hot-reload",
@@ -48126,9 +48156,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Turns scattered notes and recurring work into useful Notion trackers for requests, content plans, or team work.",
     "DescriptionMm": "notion-database-designer — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find notion-database-designer",
+    "Install": "npx skills add https://github.com/makenotion/notion-cookbook/tree/d76880bb02b293d3be10f1c567c2d1d10d667070/plugins/antigravity/skills/notion-database-designer -a codex",
     "Call": "Use the notion:notion-database-designer skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/makenotion/notion-cookbook/tree/d76880bb02b293d3be10f1c567c2d1d10d667070/plugins/antigravity/skills/notion-database-designer",
     "Article": false,
     "Methods": [
       {
@@ -48251,9 +48281,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Produces evidence-based weekly project or team updates by comparing reporting periods, tasks, decisions, and blockers in Notion.",
     "DescriptionMm": "notion-weekly-project-digest — ချိတ်ဆက်ထားသော မှတ်စုများနှင့် စာမျက်နှာများကို ဖန်တီး၊ စုစည်း သို့မဟုတ် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find notion-weekly-project-digest",
+    "Install": "npx skills add https://github.com/makenotion/notion-cookbook/tree/d76880bb02b293d3be10f1c567c2d1d10d667070/plugins/antigravity/skills/notion-weekly-project-digest -a codex",
     "Call": "Use the notion:notion-weekly-project-digest skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/makenotion/notion-cookbook/tree/d76880bb02b293d3be10f1c567c2d1d10d667070/plugins/antigravity/skills/notion-weekly-project-digest",
     "Article": false,
     "Methods": [
       {
@@ -48728,9 +48758,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a spreadsheet using the Analytics Dashboard template and its retained reference file.",
     "DescriptionMm": "artifact-template-analytics-dashboard — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-analytics-dashboard",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-analytics-dashboard using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-analytics-dashboard skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48741,7 +48771,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-analytics-dashboard"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-business-review",
@@ -48750,9 +48781,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a presentation using the Business Review template and its retained reference file.",
     "DescriptionMm": "artifact-template-business-review — ပြောင်းလဲမှုများ၏ မှန်ကန်မှုနှင့် code အရည်အသွေးကို စစ်ဆေးအကြံပြုပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-business-review",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-business-review using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-business-review skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48763,7 +48794,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-business-review"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-design-report",
@@ -48772,9 +48804,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a document using the Design Report template and its retained reference file.",
     "DescriptionMm": "artifact-template-design-report — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-design-report",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-design-report using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-design-report skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48785,7 +48817,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-design-report"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-experiment-analysis",
@@ -48794,9 +48827,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a document using the Experiment Analysis template and its retained reference file.",
     "DescriptionMm": "artifact-template-experiment-analysis — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-experiment-analysis",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-experiment-analysis using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-experiment-analysis skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48807,7 +48840,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-experiment-analysis"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-financial-budget",
@@ -48816,9 +48850,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a spreadsheet using the Financial Budget template and its retained reference file.",
     "DescriptionMm": "artifact-template-financial-budget — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-financial-budget",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-financial-budget using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-financial-budget skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48829,7 +48863,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-financial-budget"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-investment-committee-memo",
@@ -48838,9 +48873,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a document using the Investment Committee Memo template and its retained reference file.",
     "DescriptionMm": "artifact-template-investment-committee-memo — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-investment-committee-memo",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-investment-committee-memo using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-investment-committee-memo skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48851,7 +48886,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-investment-committee-memo"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-legal-memorandum",
@@ -48860,9 +48896,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a document using the Legal Memorandum template and its retained reference file.",
     "DescriptionMm": "artifact-template-legal-memorandum — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-legal-memorandum",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-legal-memorandum using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-legal-memorandum skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48873,7 +48909,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-legal-memorandum"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-market-trends-report",
@@ -48882,9 +48919,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a presentation using the Market Trends Report template and its retained reference file.",
     "DescriptionMm": "artifact-template-market-trends-report — ဈေးကွက်အချက်အလက်နှင့် လမ်းကြောင်းများကို စုစည်း၍ မဟာဗျူဟာနှင့် အန္တရာယ်ကို သုံးသပ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-market-trends-report",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-market-trends-report using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-market-trends-report skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48895,7 +48932,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-market-trends-report"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-minimal-letterhead",
@@ -48904,9 +48942,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a document using the Minimal Letterhead template and its retained reference file.",
     "DescriptionMm": "artifact-template-minimal-letterhead — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-minimal-letterhead",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-minimal-letterhead using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-minimal-letterhead skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48917,7 +48955,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-minimal-letterhead"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-operating-calendar",
@@ -48926,9 +48965,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a spreadsheet using the Operating Calendar template and its retained reference file.",
     "DescriptionMm": "artifact-template-operating-calendar — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-operating-calendar",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-operating-calendar using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-operating-calendar skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48939,7 +48978,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-operating-calendar"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-operating-review",
@@ -48948,9 +48988,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a presentation using the Operating Review template and its retained reference file.",
     "DescriptionMm": "artifact-template-operating-review — ပြောင်းလဲမှုများ၏ မှန်ကန်မှုနှင့် code အရည်အသွေးကို စစ်ဆေးအကြံပြုပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-operating-review",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-operating-review using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-operating-review skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48961,7 +49001,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-operating-review"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-project-kickoff",
@@ -48970,9 +49011,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a presentation using the Project Kickoff template and its retained reference file.",
     "DescriptionMm": "artifact-template-project-kickoff — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-project-kickoff",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-project-kickoff using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-project-kickoff skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -48983,7 +49024,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-project-kickoff"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-project-tracker",
@@ -48992,9 +49034,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a spreadsheet using the Project Tracker template and its retained reference file.",
     "DescriptionMm": "artifact-template-project-tracker — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-project-tracker",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-project-tracker using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-project-tracker skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -49005,7 +49047,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-project-tracker"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-sales-pipeline",
@@ -49014,9 +49057,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a spreadsheet using the Sales Pipeline template and its retained reference file.",
     "DescriptionMm": "artifact-template-sales-pipeline — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-sales-pipeline",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-sales-pipeline using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-sales-pipeline skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -49027,7 +49070,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-sales-pipeline"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-simple-dark-mode",
@@ -49036,9 +49080,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a presentation using the Simple Dark Mode template and its retained reference file.",
     "DescriptionMm": "artifact-template-simple-dark-mode — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-simple-dark-mode",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-simple-dark-mode using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-simple-dark-mode skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -49049,7 +49093,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-simple-dark-mode"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-simple-light-mode",
@@ -49058,9 +49103,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a presentation using the Simple Light Mode template and its retained reference file.",
     "DescriptionMm": "artifact-template-simple-light-mode — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-simple-light-mode",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-simple-light-mode using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-simple-light-mode skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -49071,7 +49116,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-simple-light-mode"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-strategy-memorandum",
@@ -49080,9 +49126,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a document using the Strategy Memorandum template and its retained reference file.",
     "DescriptionMm": "artifact-template-strategy-memorandum — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-strategy-memorandum",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-strategy-memorandum using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-strategy-memorandum skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -49093,7 +49139,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-strategy-memorandum"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-system-design",
@@ -49102,9 +49149,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a document using the System Design template and its retained reference file.",
     "DescriptionMm": "artifact-template-system-design — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-system-design",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-system-design using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-system-design skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -49115,7 +49162,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-system-design"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-team-alignment",
@@ -49124,9 +49172,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a presentation using the Team Alignment template and its retained reference file.",
     "DescriptionMm": "artifact-template-team-alignment — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-team-alignment",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-team-alignment using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-team-alignment skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -49137,7 +49185,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-team-alignment"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "openai-templates:artifact-template-three-statement-forecast",
@@ -49146,9 +49195,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create a spreadsheet using the Three-Statement Forecast template and its retained reference file.",
     "DescriptionMm": "artifact-template-three-statement-forecast — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find artifact-template-three-statement-forecast",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall openai-templates:artifact-template-three-statement-forecast using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the openai-templates:artifact-template-three-statement-forecast skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -49159,7 +49208,8 @@
     "Installed": true,
     "InstalledSkills": [
       "openai-templates:artifact-template-three-statement-forecast"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Open the Templates gallery and choose the matching template if offered. The guide covers template access; this exact named bundled template is not independently confirmed in the public gallery. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "optimizing-ef-core-queries",
@@ -49190,9 +49240,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Reconcile new evidence into existing ChatGPT Pages or a Space when the user requests upkeep.",
     "DescriptionMm": "maintain-space — ရည်ရွယ်ချက်နှင့် ပရိသတ်အလိုက် ရှင်းလင်းသည့် စာသားရေးသားပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find maintain-space",
+    "Install": "Host setup, not a standalone skill package: sign in to an account with ChatGPT Space access, then open Space on web or desktop and ask ChatGPT to create, edit, or organize pages. This public guide confirms Space access; it does not publish the individual bundled skill or guarantee schedule-management tools.\n\nInstall pages:maintain-space using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001549-getting-started-with-space-in-chatgpt",
     "Call": "Use the pages:maintain-space skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001549-getting-started-with-space-in-chatgpt",
     "Article": false,
     "Methods": [
       {
@@ -49228,7 +49278,8 @@
     "Installed": true,
     "InstalledSkills": [
       "pages:maintain-space"
-    ]
+    ],
+    "InstallNote": "Host setup, not a standalone skill package: sign in to an account with ChatGPT Space access, then open Space on web or desktop and ask ChatGPT to create, edit, or organize pages. This public guide confirms Space access; it does not publish the individual bundled skill or guarantee schedule-management tools."
   },
   {
     "Name": "pages:manage-schedules",
@@ -49237,9 +49288,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Review a ChatGPT Space page and its schedules, recommend useful recurring work, and create, update, or remove scheduled automations.",
     "DescriptionMm": "manage-schedules — အစည်းအဝေး၊ အချိန်ဇယားနှင့် ဆက်လက်လုပ်ဆောင်ရမည့် အလုပ်များကို စီစဉ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find manage-schedules",
+    "Install": "Host setup, not a standalone skill package: sign in to an account with ChatGPT Space access, then open Space on web or desktop and ask ChatGPT to create, edit, or organize pages. This public guide confirms Space access; it does not publish the individual bundled skill or guarantee schedule-management tools.\n\nInstall pages:manage-schedules using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001549-getting-started-with-space-in-chatgpt",
     "Call": "Use the pages:manage-schedules skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001549-getting-started-with-space-in-chatgpt",
     "Article": false,
     "Methods": [
       {
@@ -49255,7 +49306,8 @@
     "Installed": true,
     "InstalledSkills": [
       "pages:manage-schedules"
-    ]
+    ],
+    "InstallNote": "Host setup, not a standalone skill package: sign in to an account with ChatGPT Space access, then open Space on web or desktop and ask ChatGPT to create, edit, or organize pages. This public guide confirms Space access; it does not publish the individual bundled skill or guarantee schedule-management tools."
   },
   {
     "Name": "pages:organize-space",
@@ -49264,9 +49316,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Organize existing ChatGPT Pages and Space structure when the user requests changes to that structure.",
     "DescriptionMm": "organize-space — လုံခြုံရေး၊ အသုံးပြုခွင့်နှင့် အချက်အလက်ကာကွယ်မှုဆိုင်ရာ လုပ်ဆောင်ချက်များကို စစ်ဆေးပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find organize-space",
+    "Install": "Host setup, not a standalone skill package: sign in to an account with ChatGPT Space access, then open Space on web or desktop and ask ChatGPT to create, edit, or organize pages. This public guide confirms Space access; it does not publish the individual bundled skill or guarantee schedule-management tools.\n\nInstall pages:organize-space using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001549-getting-started-with-space-in-chatgpt",
     "Call": "Use the pages:organize-space skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001549-getting-started-with-space-in-chatgpt",
     "Article": false,
     "Methods": [
       {
@@ -49287,7 +49339,8 @@
     "Installed": true,
     "InstalledSkills": [
       "pages:organize-space"
-    ]
+    ],
+    "InstallNote": "Host setup, not a standalone skill package: sign in to an account with ChatGPT Space access, then open Space on web or desktop and ask ChatGPT to create, edit, or organize pages. This public guide confirms Space access; it does not publish the individual bundled skill or guarantee schedule-management tools."
   },
   {
     "Name": "pages:write-page",
@@ -49296,9 +49349,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create or edit requested Page/Space content, or use for prose you have already decided to save as a standalone Markdown file, only if the user did not explicitly request a Markdown file.",
     "DescriptionMm": "write-page — လုံခြုံရေး၊ အသုံးပြုခွင့်နှင့် အချက်အလက်ကာကွယ်မှုဆိုင်ရာ လုပ်ဆောင်ချက်များကို စစ်ဆေးပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find write-page",
+    "Install": "Host setup, not a standalone skill package: sign in to an account with ChatGPT Space access, then open Space on web or desktop and ask ChatGPT to create, edit, or organize pages. This public guide confirms Space access; it does not publish the individual bundled skill or guarantee schedule-management tools.\n\nInstall pages:write-page using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001549-getting-started-with-space-in-chatgpt",
     "Call": "Use the pages:write-page skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001549-getting-started-with-space-in-chatgpt",
     "Article": false,
     "Methods": [
       {
@@ -49339,7 +49392,8 @@
     "Installed": true,
     "InstalledSkills": [
       "pages:write-page"
-    ]
+    ],
+    "InstallNote": "Host setup, not a standalone skill package: sign in to an account with ChatGPT Space access, then open Space on web or desktop and ask ChatGPT to create, edit, or organize pages. This public guide confirms Space access; it does not publish the individual bundled skill or guarantee schedule-management tools."
   },
   {
     "Name": "Pair Programming",
@@ -49845,9 +49899,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when reviewing, critiquing, commenting on, or fact-checking an existing scientific manuscript — \"comment on my paper\", \"review my draft\", \"check my references\", \"verify my claims\", or a referee-style read of a .tex/.typ/.md paper.",
     "DescriptionMm": "paper-reviewer — ပြောင်းလဲမှုများ၏ မှန်ကန်မှုနှင့် code အရည်အသွေးကို စစ်ဆေးအကြံပြုပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find paper-reviewer",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/22b54a963cd9228a9fe13bbc0492641bca4a267d/skills/paper-reviewer -a codex",
     "Call": "Use the paper-reviewer skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/22b54a963cd9228a9fe13bbc0492641bca4a267d/skills/paper-reviewer",
     "Article": false,
     "Methods": [
       {
@@ -49858,7 +49912,8 @@
     "Installed": true,
     "InstalledSkills": [
       "paper-reviewer"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "paper-writer",
@@ -49867,9 +49922,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when drafting or revising a scientific manuscript with real results, including journal articles, letters, and arXiv preprints",
     "DescriptionMm": "paper-writer — သုတေသနစာတမ်းများ၏ အချက်အလက်နှင့် အရည်အသွေးကို စုစည်းသုံးသပ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find paper-writer",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/22b54a963cd9228a9fe13bbc0492641bca4a267d/skills/paper-writer -a codex",
     "Call": "Use the paper-writer skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/22b54a963cd9228a9fe13bbc0492641bca4a267d/skills/paper-writer",
     "Article": false,
     "Methods": [
       {
@@ -49880,7 +49935,8 @@
     "Installed": true,
     "InstalledSkills": [
       "paper-writer"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "paperjsx",
@@ -49889,9 +49945,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Generate PPTX presentations, DOCX documents, XLSX spreadsheets, and PDF reports from structured JSON input using PaperJSX.",
     "DescriptionMm": "paperjsx — ပုံသဏ္ဌာန်၊ ချိတ်ဆက်မှုနှင့် visual မြင်ကွင်းများ ဖန်တီးရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find paperjsx",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/paperjsx -a codex",
     "Call": "Use the paperjsx skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/paperjsx",
     "Article": false,
     "Methods": [
       {
@@ -49911,9 +49967,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Read, create, inspect, render, and verify PDF files where visual layout matters, including fillable AcroForms.",
     "DescriptionMm": "pdf — စာတမ်းအကြောင်းအရာများကို ဖန်တီး၊ ပြောင်းလဲ သို့မဟုတ် အစီအစဉ်တကျ စုစည်းပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find pdf",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Ask for PDF output; the host supplies the document tools. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall pdf:pdf using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the pdf:pdf skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -49949,7 +50005,8 @@
     "Installed": true,
     "InstalledSkills": [
       "pdf:pdf"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Ask for PDF output; the host supplies the document tools. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "performance-analysis",
@@ -50650,9 +50707,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Pick the right library for a given frontend task from a curated, opinionated list — numbers, OTP inputs, charts, command menus, virtualization, drag and drop, toasts, state, styling, and more.",
     "DescriptionMm": "pick-ui-library — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find pick-ui-library",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/pick-ui-library -a codex",
     "Call": "Use the pick-ui-library skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/pick-ui-library",
     "Article": false,
     "Methods": [
       {
@@ -52455,9 +52512,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Discover and suggest relevant plugins, inspect app permissions and dependencies, and manage plugin connections or removal.",
     "DescriptionMm": "plugin-management — Agent skill နှင့် plugin များကို ရှာဖွေ၊ ဖန်တီး၊ တပ်ဆင် သို့မဟုတ် စီမံရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find plugin-management",
+    "Install": "No standalone public skill package or public listing verified. Open the ChatGPT/Codex plugin directory and search for Plugin Management. Install only if the listing is offered to your account and complete its setup. The link explains directory installation; it does not confirm that this particular plugin is publicly available. A copied skill alone cannot provide its host tools.\n\nInstall plugin-management:plugin-management using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001256-plugins-in-chatgpt",
     "Call": "Use the plugin-management:plugin-management skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001256-plugins-in-chatgpt",
     "Article": false,
     "Methods": [
       {
@@ -52478,7 +52535,8 @@
     "Installed": true,
     "InstalledSkills": [
       "plugin-management:plugin-management"
-    ]
+    ],
+    "InstallNote": "No standalone public skill package or public listing verified. Open the ChatGPT/Codex plugin directory and search for Plugin Management. Install only if the listing is offered to your account and complete its setup. The link explains directory installation; it does not confirm that this particular plugin is publicly available. A copied skill alone cannot provide its host tools."
   },
   {
     "Name": "Ponytail",
@@ -52711,9 +52769,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Automated PR review and CI auto-fix for GitHub and GitLab using the Composio CLI.",
     "DescriptionMm": "pr-review-ci-fix — ပြောင်းလဲမှုများ၏ မှန်ကန်မှုနှင့် code အရည်အသွေးကို စစ်ဆေးအကြံပြုပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find pr-review-ci-fix",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/pr-review-ci-fix -a codex",
     "Call": "Use the pr-review-ci-fix skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/pr-review-ci-fix",
     "Article": false,
     "Methods": [
       {
@@ -52798,9 +52856,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Read, create or edit Spaces presentations, PowerPoint files, or Google Slides decks.",
     "DescriptionMm": "Presentations — တင်ပြချက်နှင့် slide များကို ဖန်တီး၊ ပြင်ဆင် သို့မဟုတ် စီစဉ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find Presentations",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall presentations:Presentations using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the presentations:Presentations skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -52831,7 +52889,8 @@
     "Installed": true,
     "InstalledSkills": [
       "presentations:Presentations"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "project-workflow-analysis-blueprint-generator",
@@ -52975,9 +53034,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Implement ReasoningBank adaptive learning with AgentDB's 150x faster vector database.",
     "DescriptionMm": "ReasoningBank with AgentDB — အချက်အလက်များကို မှတ်ဉာဏ်နှင့် index အဖြစ် သိမ်းဆည်း၍ ပြန်လည်ရှာဖွေသုံးစွဲရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find 'ReasoningBank with AgentDB'",
+    "Install": "npx skills add https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/reasoningbank-agentdb -a codex",
     "Call": "Use the ReasoningBank with AgentDB skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/reasoningbank-agentdb",
     "Article": false,
     "Methods": [
       {
@@ -54514,9 +54573,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Upgrades existing websites and apps to premium quality.",
     "DescriptionMm": "redesign-existing-projects — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find redesign-existing-projects",
+    "Install": "npx skills add https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/redesign-skill -a codex",
     "Call": "Use the redesign-existing-projects skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/redesign-skill",
     "Article": false,
     "Methods": [
       {
@@ -54625,9 +54684,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when indexing a paper collection (your own or another researcher's) into a knowledge base — supports Zotero library, a PDF folder, or a Google Scholar profile",
     "DescriptionMm": "researchstyle — သက်ဆိုင်ရာ အရင်းအမြစ်များကို ရှာဖွေ၍ အချက်အလက်ထုတ်ယူ၊ သုတေသနနှင့် အကျဉ်းချုပ်ပြုလုပ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find researchstyle",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/2a8e6b5c809323ba23eaea4c401a160cf1ecb5cd/skills/researchstyle -a codex",
     "Call": "Use the researchstyle skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/2a8e6b5c809323ba23eaea4c401a160cf1ecb5cd/skills/researchstyle",
     "Article": false,
     "Methods": [
       {
@@ -54638,7 +54697,8 @@
     "Installed": true,
     "InstalledSkills": [
       "researchstyle"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "resolve-project-references",
@@ -54679,9 +54739,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when you need to resolve an in-progress git merge/rebase conflict.",
     "DescriptionMm": "resolving-merge-conflicts — Git repository၊ branch၊ issue နှင့် pull request လုပ်ငန်းများကို စီမံရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find resolving-merge-conflicts",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/mattpocock/skills/tree/321658273cb1d20b76026717d027d505790106d4/skills/engineering/resolving-merge-conflicts -a codex",
     "Call": "Use the resolving-merge-conflicts skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/mattpocock/skills/tree/321658273cb1d20b76026717d027d505790106d4/skills/engineering/resolving-merge-conflicts",
     "Article": false,
     "Methods": [
       {
@@ -54692,7 +54752,8 @@
     "Installed": true,
     "InstalledSkills": [
       "resolving-merge-conflicts"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "review-agent",
@@ -54701,9 +54762,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Perform a read-only, defect-first review of a specified code change and return every actionable finding.",
     "DescriptionMm": "review-agent — ပြောင်းလဲမှုများ၏ မှန်ကန်မှုနှင့် code အရည်အသွေးကို စစ်ဆေးအကြံပြုပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find review-agent",
+    "Install": "npx skills add https://github.com/openai/codex/tree/4b4a5cf25aa5b064c866218b405c848745fd280f/codex-rs/skills/src/assets/samples/review-agent -a codex",
     "Call": "Use the review-agent skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/openai/codex/tree/4b4a5cf25aa5b064c866218b405c848745fd280f/codex-rs/skills/src/assets/samples/review-agent",
     "Article": false,
     "Methods": [
       {
@@ -54733,9 +54794,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Reviews animation and motion code against a high craft bar derived from Emil Kowalski's design engineering philosophy.",
     "DescriptionMm": "review-animations — UI လှုပ်ရှားမှုနှင့် transition များကို ဖန်တီးစစ်ဆေးပြုပြင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find review-animations",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/review-animations -a codex",
     "Call": "Use the review-animations skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/review-animations",
     "Article": false,
     "Methods": [
       {
@@ -55098,7 +55159,7 @@
     "Agent": "Codex",
     "DescriptionEn": "Draft or edit Burmese posts, shared captions, technical explanations and personal reflections in Sann Lynn Htun's voice and editorial taste.",
     "DescriptionMm": "sann-burmese-writing — ရည်ရွယ်ချက်နှင့် ပရိသတ်အလိုက် ရှင်းလင်းသည့် စာသားရေးသားပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find sann-burmese-writing",
+    "Install": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing.\n\nOnline source not verified. Find a publisher-provided source before installing:\nnpx skills find sann-burmese-writing",
     "Call": "Use the sann-burmese-writing skill for this task.",
     "Source": null,
     "Article": false,
@@ -55126,7 +55187,8 @@
     "Installed": true,
     "InstalledSkills": [
       "sann-burmese-writing"
-    ]
+    ],
+    "InstallNote": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing."
   },
   {
     "Name": "scan",
@@ -55135,9 +55197,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Audit a live page for accessibility issues and locate each violation precisely — pass a URL, a config target name (e.g. `accesslint:scan dev`), or nothing to use the default target from accesslint.config.json.",
     "DescriptionMm": "scan — Code နှင့် project ဖွဲ့စည်းပုံကို စိစစ်၍ သတ်မှတ်ထားသော အလုပ်ကို အကောင်အထည်ဖော်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find scan",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/AccessLint/skills/tree/f30665e1bf0ca4a906a3503153a1b6d8cd7f67df/plugins/accesslint/skills/scan -a codex",
     "Call": "Use the scan skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/AccessLint/skills/tree/f30665e1bf0ca4a906a3503153a1b6d8cd7f67df/plugins/accesslint/skills/scan",
     "Article": false,
     "Methods": [
       {
@@ -55168,7 +55230,8 @@
     "Installed": true,
     "InstalledSkills": [
       "scan"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "security-audit",
@@ -55316,9 +55379,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Diagnose Sentry issues without copy-pasting stack traces.",
     "DescriptionMm": "sentry-triage — အမှားဖြစ်ရသည့် အကြောင်းရင်းကို log နှင့် အထောက်အထားများဖြင့် စစ်ဆေးပြုပြင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find sentry-triage",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/sentry-triage -a codex",
     "Call": "Use the sentry-triage skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/sentry-triage",
     "Article": false,
     "Methods": [
       {
@@ -56287,9 +56350,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when building a slide deck in Typst + Touying for a scientific talk, lecture, or project briefing — ships a browsable zoo of color themes, layout templates, and gadgets (callouts, theory boxes, CeTZ diagrams, pin annotations) that compose into projector-safe slides.",
     "DescriptionMm": "slide-writer — တင်ပြချက်နှင့် slide များကို ဖန်တီး၊ ပြင်ဆင် သို့မဟုတ် စီစဉ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find slide-writer",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/22b54a963cd9228a9fe13bbc0492641bca4a267d/skills/slide-writer -a codex",
     "Call": "Use the slide-writer skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/22b54a963cd9228a9fe13bbc0492641bca4a267d/skills/slide-writer",
     "Article": false,
     "Methods": [
       {
@@ -56300,7 +56363,8 @@
     "Installed": true,
     "InstalledSkills": [
       "slide-writer"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "soul-extraction",
@@ -56309,9 +56373,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when extracting conversation patterns and logic jumps from tagged dialog reports — reads /conversation-dump output, clusters trigger→reaction pairs into thinking-pattern.md, detects logic jumps with user confirmation for master-thinking.md",
     "DescriptionMm": "soul-extraction — Frontend component၊ data fetching နှင့် framework လုပ်ဆောင်ချက်များ ရေးသားပြင်ဆင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find soul-extraction",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/4a14c55de02eaeeeca637bdd27c8be30a71f8746/skills/soul-extraction -a codex",
     "Call": "Use the soul-extraction skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/4a14c55de02eaeeeca637bdd27c8be30a71f8746/skills/soul-extraction",
     "Article": false,
     "Methods": [
       {
@@ -56322,7 +56386,8 @@
     "Installed": true,
     "InstalledSkills": [
       "soul-extraction"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "sparc-implement",
@@ -56804,9 +56869,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Write and debug spreadsheet formulas (Excel/Google Sheets), pivot tables, and array formulas; translate between dialects; use when users need working formulas with examples and edge-case checks.",
     "DescriptionMm": "spreadsheet-formula-helper — Spreadsheet အချက်အလက်၊ formula နှင့် ဇယားများကို ဖန်တီးစစ်ဆေးပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find spreadsheet-formula-helper",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/spreadsheet-formula-helper -a codex",
     "Call": "Use the spreadsheet-formula-helper skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/spreadsheet-formula-helper",
     "Article": false,
     "Methods": [
       {
@@ -56826,9 +56891,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Control an open or active Microsoft Excel workbook through the ChatGPT add-in or connected session.",
     "DescriptionMm": "excel-live-control — Spreadsheet အချက်အလက်၊ formula နှင့် ဇယားများကို ဖန်တီးစစ်ဆေးပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find excel-live-control",
+    "Install": "Host setup, not a standalone skill install: in Excel, open Home > Add-ins, search for ChatGPT, add it, and sign in with the same account/workspace used by Codex. Open a workbook, enable Allow Codex control in the add-in settings, then mention @Microsoft Excel in desktop Codex.\n\nInstall spreadsheets:excel-live-control using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001063-chatgpt-for-excel-and-google-sheets",
     "Call": "Use the spreadsheets:excel-live-control skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001063-chatgpt-for-excel-and-google-sheets",
     "Article": false,
     "Methods": [
       {
@@ -56984,7 +57049,8 @@
     "Installed": true,
     "InstalledSkills": [
       "spreadsheets:excel-live-control"
-    ]
+    ],
+    "InstallNote": "Host setup, not a standalone skill install: in Excel, open Home > Add-ins, search for ChatGPT, add it, and sign in with the same account/workspace used by Codex. Open a workbook, enable Allow Codex control in the add-in settings, then mention @Microsoft Excel in desktop Codex."
   },
   {
     "Name": "spreadsheets:Spreadsheets",
@@ -56993,9 +57059,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use skill when user requests to create, modify, analyze, visualize, or work with spreadsheet files (`.xlsx`, `.xls`, `.csv`, `.tsv`) or Google Sheets with formulas, formatting, charts, tables, and recalculation.",
     "DescriptionMm": "Spreadsheets — Spreadsheet အချက်အလက်၊ formula နှင့် ဇယားများကို ဖန်တီးစစ်ဆေးပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find Spreadsheets",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall spreadsheets:Spreadsheets using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the spreadsheets:Spreadsheets skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -57151,7 +57217,8 @@
     "Installed": true,
     "InstalledSkills": [
       "spreadsheets:Spreadsheets"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "stitch-design-taste",
@@ -57160,9 +57227,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Semantic Design System Skill for Google Stitch.",
     "DescriptionMm": "stitch-design-taste — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find stitch-design-taste",
+    "Install": "npx skills add https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/stitch-skill -a codex",
     "Call": "Use the stitch-design-taste skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/tasteskill/tasteskill/tree/37c8c376b92ebc02456f7c70776b514fddda88e1/skills/stitch-skill",
     "Article": false,
     "Methods": [
       {
@@ -58339,9 +58406,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Triage customer support tickets/emails/chats into categories, priority, and next action; draft responses and create reproducible steps; use for Zendesk/Intercom/Help Scout exports or pasted threads.",
     "DescriptionMm": "support-ticket-triage — လိုအပ်ချက်များကို စိစစ်၍ အကောင်အထည်ဖော်မည့် အစီအစဉ်နှင့် တာဝန်များ ခွဲပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find support-ticket-triage",
+    "Install": "npx skills add https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/support-ticket-triage -a codex",
     "Call": "Use the support-ticket-triage skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/composio-community/awesome-codex-skills/tree/0930e1373789d2eda449039f7ac154b33031de89/support-ticket-triage",
     "Article": false,
     "Methods": [
       {
@@ -58361,9 +58428,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when surveying a research topic — launches parallel exploration strategies via web search, lets user pick interesting directions, then builds a focused knowledge base with BibTeX",
     "DescriptionMm": "survey — သက်ဆိုင်ရာ အရင်းအမြစ်များကို ရှာဖွေ၍ အချက်အလက်ထုတ်ယူ၊ သုတေသနနှင့် အကျဉ်းချုပ်ပြုလုပ်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find survey",
+    "Install": "npx skills add https://github.com/QuantumBFS/sci-brain/tree/203c839650e57ed150068f7fcea4b3908e7b3ee7/skills/survey -a codex",
     "Call": "Use the survey skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/203c839650e57ed150068f7fcea4b3908e7b3ee7/skills/survey",
     "Article": false,
     "Methods": [
       {
@@ -58383,9 +58450,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when writing up a literature survey, technology review, field assessment, SOTA report, or pros/cons report from a populated knowledge base — the write-up stage of the survey pipeline",
     "DescriptionMm": "survey-writer — ရည်ရွယ်ချက်နှင့် ပရိသတ်အလိုက် ရှင်းလင်းသည့် စာသားရေးသားပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find survey-writer",
+    "Install": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it.\n\nnpx skills add https://github.com/QuantumBFS/sci-brain/tree/e89fc0b088e47a19e386d1cd6aae16009e51f052/skills/survey-writer -a codex",
     "Call": "Use the survey-writer skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/QuantumBFS/sci-brain/tree/e89fc0b088e47a19e386d1cd6aae16009e51f052/skills/survey-writer",
     "Article": false,
     "Methods": [
       {
@@ -58396,7 +58463,8 @@
     "Installed": true,
     "InstalledSkills": [
       "survey-writer"
-    ]
+    ],
+    "InstallNote": "Historical version: this install is pinned to the last verified revision containing this skill name. The publisher has since removed or renamed it."
   },
   {
     "Name": "Swarm Orchestration",
@@ -58955,7 +59023,7 @@
     "Agent": "Codex",
     "DescriptionEn": "Help users create effective, structured notes from technical books (programming, engineering, math, systems, science).",
     "DescriptionMm": "technical-book-notes — စာတမ်းအကြောင်းအရာများကို ဖန်တီး၊ ပြောင်းလဲ သို့မဟုတ် အစီအစဉ်တကျ စုစည်းပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find technical-book-notes",
+    "Install": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing.\n\nOnline source not verified. Find a publisher-provided source before installing:\nnpx skills find technical-book-notes",
     "Call": "Use the technical-book-notes skill for this task.",
     "Source": null,
     "Article": false,
@@ -58968,7 +59036,8 @@
     "Installed": true,
     "InstalledSkills": [
       "technical-book-notes"
-    ]
+    ],
+    "InstallNote": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing."
   },
   {
     "Name": "technology-selection",
@@ -59143,9 +59212,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create or update a reusable personal Codex artifact-template skill.",
     "DescriptionMm": "template-creator — အကြောင်းအရာနှင့် ရလဒ်ဖိုင်များအတွက် သင့်လျော်သည့် template ဖန်တီးအသုံးပြုရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find template-creator",
+    "Install": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source.\n\nInstall template-creator:template-creator using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Call": "Use the template-creator:template-creator skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001278-creating-and-editing-documents-spreadsheets-and-presentations-with-chatgpt-work",
     "Article": false,
     "Methods": [
       {
@@ -59166,7 +59235,8 @@
     "Installed": true,
     "InstalledSkills": [
       "template-creator:template-creator"
-    ]
+    ],
+    "InstallNote": "Requires the ChatGPT Work/Codex document runtime; no standalone public package verified. Open Work or desktop Codex and use @Documents, @Spreadsheets, @Presentations, or @Template-Creator as appropriate. Availability depends on the plan, workspace, and surface. The link is a host setup guide, not downloadable SKILL.md source."
   },
   {
     "Name": "template-discovery",
@@ -60145,9 +60215,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Use when building or debugging interactive 3D scenes on the web with Three.js (scene/camera/renderer, lights/materials, GLTF loading, controls, performance).",
     "DescriptionMm": "threejs — ပုံသဏ္ဌာန်၊ ချိတ်ဆက်မှုနှင့် visual မြင်ကွင်းများ ဖန်တီးရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find threejs",
+    "Install": "npx skills add https://github.com/mengto/skills/tree/ef5f85130d083d33e08cb19f6ee23cdde2d406ab/agent-skills/web-design/threejs -a codex",
     "Call": "Use the threejs skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/mengto/skills/tree/ef5f85130d083d33e08cb19f6ee23cdde2d406ab/agent-skills/web-design/threejs",
     "Article": false,
     "Methods": [
       {
@@ -60697,7 +60767,7 @@
     "Agent": "Codex",
     "DescriptionEn": "Write, rewrite, and review clear, concise, consistent, accessible UI copy and UX microcopy.",
     "DescriptionMm": "ui-copywriting — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find ui-copywriting",
+    "Install": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing.\n\nOnline source not verified. Find a publisher-provided source before installing:\nnpx skills find ui-copywriting",
     "Call": "Use the ui-copywriting skill for this task.",
     "Source": null,
     "Article": false,
@@ -60710,7 +60780,8 @@
     "Installed": true,
     "InstalledSkills": [
       "ui-copywriting"
-    ]
+    ],
+    "InstallNote": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing."
   },
   {
     "Name": "ui-ux-design",
@@ -60719,7 +60790,7 @@
     "Agent": "Codex",
     "DescriptionEn": "Design and improve UI/UX for web and mobile products.",
     "DescriptionMm": "ui-ux-design — မျက်နှာပြင်ဒီဇိုင်း၊ layout၊ အရောင်နှင့် စာလုံးပုံစံများကို ရည်ရွယ်ချက်နှင့်ကိုက်ညီအောင် ပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find ui-ux-design",
+    "Install": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing.\n\nOnline source not verified. Find a publisher-provided source before installing:\nnpx skills find ui-ux-design",
     "Call": "Use the ui-ux-design skill for this task.",
     "Source": null,
     "Article": false,
@@ -60732,7 +60803,8 @@
     "Installed": true,
     "InstalledSkills": [
       "ui-ux-design"
-    ]
+    ],
+    "InstallNote": "No matching published copy found in the source audit on 2 Nov 2026. This skill appears customized or unpublished. A similarly named online skill is not a verified replacement; obtain a public repository or download from its author before installing."
   },
   {
     "Name": "ui-ux-pro-max",
@@ -60971,9 +61043,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Deep agentic-flow@alpha integration implementing ADR-001.",
     "DescriptionMm": "V3 Deep Integration — Agent နှင့် ပြင်ပဝန်ဆောင်မှုများကို tool သို့မဟုတ် API ဖြင့် ချိတ်ဆက်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find 'V3 Deep Integration'",
+    "Install": "npx skills add https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/v3-integration-deep -a codex",
     "Call": "Use the V3 Deep Integration skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/v3-integration-deep",
     "Article": false,
     "Methods": [
       {
@@ -66306,9 +66378,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Comprehensive truth scoring, code quality verification, and automatic rollback system with 0.95 accuracy threshold for ensuring high-quality agent outputs and codebase reliability.",
     "DescriptionMm": "Verification & Quality Assurance — စမ်းသပ်မှုများ ရေးသား၊ လုပ်ဆောင်၍ ရလဒ်နှင့် လွှမ်းခြုံမှုကို စစ်ဆေးပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find 'Verification & Quality Assurance'",
+    "Install": "npx skills add https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/verification-quality -a codex",
     "Call": "Use the Verification & Quality Assurance skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/ruvnet/agentic-flow/tree/2c86073bf55a105282bbdd4476fc18f5b7e6f97d/.claude/skills/verification-quality",
     "Article": false,
     "Methods": [
       {
@@ -66959,9 +67031,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Create, repair, validate, preview, upload, or activate an animated v2 pet in ChatGPT Work mode from a character idea, brand cue, or reference image.",
     "DescriptionMm": "create-pet — အလုပ်ခွင် companion ပုံနှင့် ၎င်း၏ ပုံစံများကို ဖန်တီးပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find create-pet",
+    "Install": "No standalone public skill package or public listing verified. Open the ChatGPT/Codex plugin directory and search for Pets. Install only if the listing is offered to your account and complete its setup. The link explains directory installation; it does not confirm that this particular plugin is publicly available. A copied skill alone cannot provide its host tools.\n\nInstall work-pets:create-pet using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001256-plugins-in-chatgpt",
     "Call": "Use the work-pets:create-pet skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001256-plugins-in-chatgpt",
     "Article": false,
     "Methods": [
       {
@@ -67032,7 +67104,8 @@
     "Installed": true,
     "InstalledSkills": [
       "work-pets:create-pet"
-    ]
+    ],
+    "InstallNote": "No standalone public skill package or public listing verified. Open the ChatGPT/Codex plugin directory and search for Pets. Install only if the listing is offered to your account and complete its setup. The link explains directory installation; it does not confirm that this particular plugin is publicly available. A copied skill alone cannot provide its host tools."
   },
   {
     "Name": "work-pets:pets",
@@ -67041,9 +67114,9 @@
     "Agent": "Codex",
     "DescriptionEn": "List, inspect, select, download, or delete animated pets in ChatGPT Work mode.",
     "DescriptionMm": "pets — အလုပ်ခွင် companion ပုံနှင့် ၎င်း၏ ပုံစံများကို ဖန်တီးပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find pets",
+    "Install": "No standalone public skill package or public listing verified. Open the ChatGPT/Codex plugin directory and search for Pets. Install only if the listing is offered to your account and complete its setup. The link explains directory installation; it does not confirm that this particular plugin is publicly available. A copied skill alone cannot provide its host tools.\n\nInstall work-pets:pets using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001256-plugins-in-chatgpt",
     "Call": "Use the work-pets:pets skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001256-plugins-in-chatgpt",
     "Article": false,
     "Methods": [
       {
@@ -67074,7 +67147,8 @@
     "Installed": true,
     "InstalledSkills": [
       "work-pets:pets"
-    ]
+    ],
+    "InstallNote": "No standalone public skill package or public listing verified. Open the ChatGPT/Codex plugin directory and search for Pets. Install only if the listing is offered to your account and complete its setup. The link explains directory installation; it does not confirm that this particular plugin is publicly available. A copied skill alone cannot provide its host tools."
   },
   {
     "Name": "work-pets:update-pet",
@@ -67083,9 +67157,9 @@
     "Agent": "Codex",
     "DescriptionEn": "Inspect, validate, preview, repair, or update a custom pet in ChatGPT Work mode, including its name, description, or sprite sheet.",
     "DescriptionMm": "update-pet — အလုပ်ခွင် companion ပုံနှင့် ၎င်း၏ ပုံစံများကို ဖန်တီးပြင်ဆင်ပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find update-pet",
+    "Install": "No standalone public skill package or public listing verified. Open the ChatGPT/Codex plugin directory and search for Pets. Install only if the listing is offered to your account and complete its setup. The link explains directory installation; it does not confirm that this particular plugin is publicly available. A copied skill alone cannot provide its host tools.\n\nInstall work-pets:update-pet using the publisher’s online instructions:\nhttps://help.openai.com/en/articles/20001256-plugins-in-chatgpt",
     "Call": "Use the work-pets:update-pet skill for this task.",
-    "Source": null,
+    "Source": "https://help.openai.com/en/articles/20001256-plugins-in-chatgpt",
     "Article": false,
     "Methods": [
       {
@@ -67131,7 +67205,8 @@
     "Installed": true,
     "InstalledSkills": [
       "work-pets:update-pet"
-    ]
+    ],
+    "InstallNote": "No standalone public skill package or public listing verified. Open the ChatGPT/Codex plugin directory and search for Pets. Install only if the listing is offered to your account and complete its setup. The link explains directory installation; it does not confirm that this particular plugin is publicly available. A copied skill alone cannot provide its host tools."
   },
   {
     "Name": "worker-benchmarks",
@@ -67420,9 +67495,9 @@
     "Agent": "Codex",
     "DescriptionEn": "How to write modern Swift well — modeling with value types, Swift 6 data-race safety and approachable concurrency (@concurrent, main-actor-by-default, actors, task groups), protocols and generics (some vs any), API design, performance and ARC, Swift Testing, macros, and the modern language features agents don't know about yet.",
     "DescriptionMm": "write-swift — Mobile သို့မဟုတ် native application လုပ်ဆောင်ချက်များ တည်ဆောက်ပြင်ဆင်ရန် ကူညီပေးသည်။",
-    "Install": "Online source not verified. Find a publisher-provided source before installing:\nnpx skills find write-swift",
+    "Install": "npx skills add https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/write-swift -a codex",
     "Call": "Use the write-swift skill for this task.",
-    "Source": null,
+    "Source": "https://github.com/emilkowalski/skills/tree/a81dbca07f2217b7103e510c0f13f8d5b017afc9/skills/write-swift",
     "Article": false,
     "Methods": [
       {

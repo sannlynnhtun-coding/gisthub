@@ -458,6 +458,9 @@ def refresh(existing, installed):
         row["Source"] = (previous or {}).get("Source", item["source"])
         if not row["Article"]:
             row["Install"] = online_install(item["name"], row["Source"])
+            if (previous or {}).get("InstallNote"):
+                row["InstallNote"] = previous["InstallNote"]
+                row["Install"] = row["InstallNote"] + "\n\n" + row["Install"]
         # Preserve hand-written examples; rebuild documented ones so removed commands disappear.
         curated = [method for method in (previous or {}).get("Methods", []) if not method.get("Reference")]
         methods = [{"Name": "Default usage", "Call": row["Call"]}] + curated + item["methods"]
