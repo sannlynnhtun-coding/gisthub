@@ -36,8 +36,12 @@ async function send() {
     });
     if (!response.ok) throw new Error(`OneSignal rejected the update notification (HTTP ${response.status}).`);
     const result = await response.json();
-    if (!result.id) throw new Error('OneSignal did not create a notification. Check that the app has subscribed users.');
-    console.log('Update notification created:', result.id);
+    if (result.id === '') {
+        console.log('::notice::OneSignal accepted the request, but no subscribed browsers matched. No notification was sent.');
+        return;
+    }
+    if (!result.id) throw new Error('OneSignal returned an unexpected response without a notification ID.');
+    console.log(`::notice::OneSignal accepted update notification ${result.id}.`);
     if (result.errors) console.warn('OneSignal reported partial delivery errors. Check its dashboard.');
 }
 
