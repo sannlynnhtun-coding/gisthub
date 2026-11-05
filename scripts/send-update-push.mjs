@@ -24,7 +24,8 @@ export function pushMessage(appId, version, origin) {
 async function send() {
     const { ONESIGNAL_APP_ID: appId, ONESIGNAL_REST_API_KEY: key, GISTHUB_PUBLIC_URL: origin } = process.env;
     if (!appId) { console.log('Web Push is not configured; deployment completed without sending notifications.'); return; }
-    if (!key || !origin) throw new Error('Configure ONESIGNAL_REST_API_KEY and GISTHUB_PUBLIC_URL before enabling update push.');
+    if (!key) throw new Error('GitHub Actions did not provide ONESIGNAL_REST_API_KEY.');
+    if (!origin) throw new Error('GitHub Actions did not provide GISTHUB_PUBLIC_URL.');
     const version = manifestVersion(await readFile(process.argv[2], 'utf8'));
     const message = pushMessage(appId, version, origin);
     const live = await fetch(new URL('/service-worker-assets.js', origin), { cache: 'no-store', signal: AbortSignal.timeout(30000) });
@@ -45,4 +46,12 @@ async function send() {
     if (result.errors) console.warn('OneSignal reported partial delivery errors. Check its dashboard.');
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await send();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+    try {
+        await send();
+    } catch (error) {
+        const message = error.message.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+        console.error(`::error::${message}`);
+        process.exitCode = 1;
+    }
+}
