@@ -1,5 +1,6 @@
 @page "/editor"
 @page "/editor/{GistId}"
+@implements IAsyncDisposable
 @using GistHub.Models
 @using GistHub.Services
 @using System.Net
@@ -8,7 +9,7 @@
 @inject NavigationManager Navigation
 @inject IGithubService Github
 
-<div class="neo-page max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div data-update-draft="snippet" class="neo-page max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
     <!-- Header -->
     <div class="neo-page-heading flex flex-col md:flex-row md:items-center justify-between gap-6 pb-7 border-b">
         <div class="flex items-center gap-4">
@@ -38,7 +39,11 @@
     }
 
     <!-- Main Workspace -->
-    @if (IsEditorUnavailable)
+    @if (!EditorLoaded)
+    {
+        <p role="status">Loading your snippet…</p>
+    }
+    else if (IsEditorUnavailable)
     {
         <div class="p-12 border border-dashed rounded-xl flex flex-col items-center justify-center text-center space-y-4">
             <h2 class="text-2xl font-semibold tracking-tight">Snippet unavailable</h2>
@@ -167,6 +172,11 @@
     private string ErrorMessage { get; set; } = "";
     private ElementReference previewContainer;
     private bool shouldRenderPreview = false;
+    private IJSObjectReference? UpdateModule;
+    private DotNetObjectReference<Editor>? UpdateReference;
+    private string? DraftKey;
+    private bool DraftRecoveryReady;
+    private bool EditorLoaded;
 
     protected override async Task OnInitializedAsync()
     {
@@ -180,6 +190,7 @@
         {
             await LoadGistForEditing();
         }
+        EditorLoaded = true;
     }
 
     private async Task LoadGistForEditing()
@@ -299,6 +310,12 @@
                             .Max() + 1
                     : 0;
                 await Storage.SaveGistAsync(result);
+                if (UpdateModule is not null && DraftKey is not null)
+                {
+                    // A local cleanup failure must not turn a successful GitHub save into a retry.
+                    try { await UpdateModule.InvokeVoidAsync("removeEditorDraft", DraftKey); }
+                    catch (JSException) { Console.WriteLine("The saved snippet's temporary update draft could not be removed."); }
+                }
                 Navigation.NavigateTo("/my-gists");
             }
             else
@@ -342,10 +359,61 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (UpdateModule is null && EditorLoaded && AppState.IsAuthenticated && !IsEditorUnavailable)
+        {
+            try
+            {
+                UpdateModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/appUpdates.js");
+                DraftKey = $"gisthub:update-draft:{AppState.CurrentProfile!.Id}:{GistId ?? "new"}";
+                UpdateReference = DotNetObjectReference.Create(this);
+                await UpdateModule.InvokeVoidAsync("registerDraftGuard", "snippet", UpdateReference);
+                var draft = await UpdateModule.InvokeAsync<UpdateDraft?>("loadEditorDraft", DraftKey);
+                DraftRecoveryReady = true;
+                if (draft is not null)
+                {
+                    Description = draft.Description; Filename = draft.Filename; Content = draft.Content;
+                    IsPublic = draft.IsPublic; IsBookmarked = draft.IsBookmarked;
+                    ErrorMessage = "Your local draft was restored after updating. It has not been published to GitHub.";
+                    StateHasChanged();
+                }
+            }
+            catch (JSException) { ErrorMessage = "Could not prepare local draft recovery. Updating is blocked until you save or leave this editor."; StateHasChanged(); }
+        }
         if (shouldRenderPreview && previewContainer.Id != null)
         {
             shouldRenderPreview = false;
             await JS.InvokeVoidAsync("renderMarkdown", previewContainer, Content);
         }
+    }
+
+    [JSInvokable]
+    public async Task SaveUpdateDraft()
+    {
+        if (IsLoading || UpdateModule is null || DraftKey is null || IsEditorUnavailable || !DraftRecoveryReady)
+            throw new InvalidOperationException("Finish saving the snippet before updating.");
+        await UpdateModule.InvokeVoidAsync("saveEditorDraft", DraftKey, new UpdateDraft
+        {
+            Description = Description, Filename = Filename, Content = Content,
+            IsPublic = IsPublic, IsBookmarked = IsBookmarked
+        });
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (UpdateModule is not null)
+        {
+            try { await UpdateModule.InvokeVoidAsync("unregisterDraftGuard", "snippet"); await UpdateModule.DisposeAsync(); }
+            catch (JSDisconnectedException) { }
+        }
+        UpdateReference?.Dispose();
+    }
+
+    public sealed class UpdateDraft
+    {
+        public string Description { get; set; } = "";
+        public string Filename { get; set; } = "";
+        public string Content { get; set; } = "";
+        public bool IsPublic { get; set; }
+        public bool IsBookmarked { get; set; }
     }
 }

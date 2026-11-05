@@ -1,0 +1,90 @@
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<div class="update-notifications">
+    <button @ref="Trigger" type="button" class="neo-icon-button" aria-label="@(Available ? "Notifications: update available" : "Notifications")"
+            title="Notifications" aria-expanded="@Open" aria-controls="update-notifications-panel" @onclick="() => Open = !Open">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" /></svg>
+        @if (Available) { <span class="update-badge" aria-hidden="true">1</span> }
+    </button>
+    @if (Open)
+    {
+        <section id="update-notifications-panel" class="update-panel" aria-label="Notifications" @onkeydown="HandleKey">
+            <h2 class="font-bold">Notifications</h2>
+            @if (Available)
+            {
+                <p>Update available</p>
+                <p class="text-sm text-muted-foreground">Download the latest version, protect your draft, then reload?</p>
+                <div class="flex gap-2">
+                    <button type="button" class="btn btn-primary btn-sm" disabled="@Busy" @onclick="Apply">@(Busy ? "Downloading update…" : "Yes, update now")</button>
+                    <button type="button" class="btn btn-secondary btn-sm" disabled="@Busy" @onclick="Close">Later</button>
+                </div>
+            }
+            else { <p class="text-sm">No updates available.</p> }
+            @if (PushConfigured)
+            {
+                <button type="button" class="btn btn-outline btn-sm" disabled="@Busy" @onclick="EnablePush">Enable update notifications</button>
+                <p class="text-sm text-muted-foreground">Allows browser notifications through OneSignal.</p>
+            }
+            @if (Status is not null) { <p role="status" class="text-sm">@Status</p> }
+            @if (Error is not null) { <p role="alert" class="text-sm">@Error</p> }
+        </section>
+    }
+</div>
+
+@code {
+    private IJSObjectReference? Module;
+    private DotNetObjectReference<UpdateNotifications>? Reference;
+    private ElementReference Trigger;
+    private bool Available, Open, Busy, PushConfigured;
+    private string? Error, Status;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        try
+        {
+            Module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/appUpdates.js");
+            Reference = DotNetObjectReference.Create(this);
+            PushConfigured = await Module.InvokeAsync<bool>("watch", Reference);
+        }
+        catch (JSException) { Error = "Update notifications could not start. Check your connection and reload once."; }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public Task UpdateAvailable(bool available) => InvokeAsync(() => { Available = available; StateHasChanged(); });
+
+    private async Task Apply()
+    {
+        if (Module is null || Busy) return;
+        Busy = true; Error = null;
+        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(3));
+        try { await Module.InvokeVoidAsync("applyUpdate", timeout.Token); }
+        catch (JSException ex) { Error = ex.Message.Split('\n')[0]; }
+        catch (OperationCanceledException) { Error = "Update is taking too long. Keep this tab open and retry when your connection is stable."; }
+        finally { Busy = false; }
+    }
+
+    private async Task EnablePush()
+    {
+        if (Module is null || Busy) return;
+        Busy = true; Error = null;
+        try { await Module.InvokeVoidAsync("enablePush"); Status = "Update notifications enabled."; }
+        catch (JSException ex) { Error = ex.Message.Split('\n')[0]; }
+        finally { Busy = false; }
+    }
+
+    private async Task Close() { Open = false; await Trigger.FocusAsync(); }
+    private async Task HandleKey(KeyboardEventArgs args) { if (args.Key == "Escape" && !Busy) await Close(); }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (Module is not null)
+        {
+            try { await Module.InvokeVoidAsync("unwatch"); await Module.DisposeAsync(); }
+            catch (JSDisconnectedException) { }
+        }
+        Reference?.Dispose();
+    }
+}

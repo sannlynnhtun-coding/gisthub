@@ -574,6 +574,11 @@ try {
     await checkGistCopy({ evaluate, send, sessionId, waitFor });
   }
 
+  if (process.env.BROWSER_CHECK_UPDATES === "1") {
+    const { checkUpdateNotifications } = await import('./test-update-notifications-browser.mjs');
+    await checkUpdateNotifications({ evaluate, send, sessionId, waitFor, url });
+  }
+
   const failures = [...new Set([
     ...observedMessages.filter((message) => errorPatterns.some((pattern) => pattern.test(message))),
     ...verificationFailures,

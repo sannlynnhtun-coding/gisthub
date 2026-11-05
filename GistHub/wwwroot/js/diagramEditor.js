@@ -1,3 +1,5 @@
+import { registerJsDraftGuard, unregisterDraftGuard } from './appUpdates.js';
+
 const origin = 'https://embed.diagrams.net';
 const maxBytes = 5 * 1024 * 1024;
 const blank = '<mxfile><diagram name="Page-1"><mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram></mxfile>';
@@ -100,6 +102,10 @@ class Editor {
         this.disposed = false;
         this.dirty = false;
         this.ready = false;
+        registerJsDraftGuard('diagram', async () => {
+            if (this.doc && !this.ready) throw new Error('Wait for the diagram editor to finish loading before updating.');
+            await this.checkpoint();
+        });
         this.listener = event => this.receive(event);
         this.beforeUnload = event => { if (this.dirty) { event.preventDefault(); event.returnValue = ''; } };
         window.addEventListener('message', this.listener);
@@ -391,6 +397,7 @@ class Editor {
         else await element.requestFullscreen();
     }
     async dispose() {
+        unregisterDraftGuard('diagram');
         this.themeObserver.disconnect();
         clearTimeout(this.themeTimer);
         clearTimeout(this.saveTimer);

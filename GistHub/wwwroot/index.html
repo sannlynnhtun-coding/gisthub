@@ -303,7 +303,12 @@
     <script src="js/codeImage.js"></script>
     <script src="js/indexedDb.js" type="module"></script>
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>navigator.serviceWorker.register('service-worker.js', { updateViaCache: 'none' });</script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.gistHubServiceWorkerReady = navigator.serviceWorker.register('service-worker.js', { updateViaCache: 'none' });
+            window.gistHubServiceWorkerReady.catch(error => console.warn('Service worker registration failed:', error));
+        }
+    </script>
 </body>
 
 </html>

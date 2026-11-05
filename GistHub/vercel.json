@@ -1,5 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "headers": [
+    { "source": "/service-worker.js", "headers": [{ "key": "Cache-Control", "value": "no-store" }] },
+    { "source": "/service-worker-assets.js", "headers": [{ "key": "Cache-Control", "value": "no-store" }] },
+    { "source": "/push-config.json", "headers": [{ "key": "Cache-Control", "value": "no-store" }] },
+    { "source": "/push/onesignal/OneSignalSDKWorker.js", "headers": [{ "key": "Cache-Control", "value": "no-store" }] }
+  ],
   "rewrites": [
     { "source": "/api/github/:path*", "destination": "https://api.github.com/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }

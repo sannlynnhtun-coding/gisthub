@@ -5,11 +5,23 @@ self.importScripts('./service-worker-assets.js');
 self.addEventListener('install', event => event.waitUntil(onInstall(event)));
 self.addEventListener('activate', event => event.waitUntil(onActivate(event)));
 self.addEventListener('fetch', event => event.respondWith(onFetch(event)));
+self.addEventListener('message', event => {
+    const reply = value => event.ports[0]?.postMessage(value);
+    if (event.data?.type === 'GET_VERSION') reply({ version: self.assetsManifest.version });
+    if (event.data?.type === 'GET_CLIENT_COUNT' || event.data?.type === 'ACTIVATE_UPDATE') {
+        event.waitUntil((async () => {
+            const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+            if (event.data.type === 'GET_CLIENT_COUNT') reply({ clients: clients.length });
+            else if (clients.length > 1) reply({ ok: false });
+            else { await self.skipWaiting(); reply({ ok: true }); }
+        })());
+    }
+});
 
 const cacheNamePrefix = 'offline-cache-';
 const cacheName = `${cacheNamePrefix}${self.assetsManifest.version}`;
 const offlineAssetsInclude = [ /\.dll$/, /\.pdb$/, /\.wasm/, /\.html/, /\.js$/, /\.json$/, /\.css$/, /\.(woff2?|otf)$/, /\.png$/, /\.jpe?g$/, /\.gif$/, /\.ico$/, /\.svg$/, /\.blat$/, /\.dat$/, /\.webmanifest$/ ];
-const offlineAssetsExclude = [ /^service-worker\.js$/, /^index\.html$/, /^vercel\.json$/ ];
+const offlineAssetsExclude = [ /^service-worker\.js$/, /^index\.html$/, /^vercel\.json$/, /^push\//, /^push-config\.json$/ ];
 
 // Replace with your base path if you are hosting on a subfolder. Ensure there is a trailing '/'.
 const base = "/";
@@ -39,11 +51,13 @@ async function onActivate(event) {
     await Promise.all(cacheKeys
         .filter(key => key.startsWith(cacheNamePrefix) && key !== cacheName)
         .map(key => caches.delete(key)));
+    await self.clients.claim();
 }
 
 async function onFetch(event) {
     // API responses and download files must always reach the local service.
-    if (new URL(event.request.url).pathname.startsWith('/api/')) return fetch(event.request);
+    const pathname = new URL(event.request.url).pathname;
+    if (pathname.startsWith('/api/') || pathname.startsWith('/push/') || pathname === '/push-config.json') return fetch(event.request);
     let cachedResponse = null;
     if (event.request.method === 'GET') {
         const shouldServeIndexHtml = event.request.mode === 'navigate'

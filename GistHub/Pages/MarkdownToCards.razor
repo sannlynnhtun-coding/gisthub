@@ -13,7 +13,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="space-y-4 min-w-0">
             <label for="cards-source" class="block font-bold">Markdown</label>
-            <textarea id="cards-source" class="w-full bg-card border border-border rounded-md p-4 font-mono" rows="20" maxlength="131072" @bind="Source" @bind:event="oninput" @bind:after="MarkDirty" disabled="@Busy" spellcheck="false"></textarea>
+            <textarea id="cards-source" data-update-draft="markdown-cards" class="w-full bg-card border border-border rounded-md p-4 font-mono" rows="20" maxlength="131072" @bind="Source" @bind:event="oninput" @bind:after="MarkDirty" disabled="@Busy" spellcheck="false"></textarea>
             <label for="cards-file" class="block text-sm font-bold">Open Markdown (up to 128 KB)</label>
             <InputFile id="cards-file" accept=".md,.markdown,text/markdown,text/plain" OnChange="ImportAsync" disabled="@Busy" />
             <p class="text-sm text-muted-foreground">@(DraftSaved ? "Markdown draft saved in this browser." : "Keep a copy before leaving: the draft has not been saved.")</p>
@@ -64,6 +64,8 @@
     private bool Busy, Dirty = true, DraftSaved;
     private string? Error;
     private IJSObjectReference? Module, Downloads;
+    private IJSObjectReference? Updates;
+    private DotNetObjectReference<MarkdownToCards>? UpdateReference;
     private List<CardPreview> Cards = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -72,6 +74,9 @@
         try
         {
             Module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/markdownCards.js");
+            Updates = await JS.InvokeAsync<IJSObjectReference>("import", "./js/appUpdates.js");
+            UpdateReference = DotNetObjectReference.Create(this);
+            await Updates.InvokeVoidAsync("registerDraftGuard", "markdown-cards", UpdateReference);
             var draft = await Module.InvokeAsync<string?>("loadDraft");
             if (draft is not null) { Source = draft; DraftSaved = true; }
             await GenerateAsync();
@@ -86,6 +91,13 @@
         Error = null;
         try { DraftSaved = Module is not null && await Module.InvokeAsync<bool>("saveDraft", Source); }
         catch (JSException) { DraftSaved = false; }
+    }
+
+    [JSInvokable]
+    public async Task SaveUpdateDraft()
+    {
+        if (Busy || Module is null || !await Module.InvokeAsync<bool>("saveDraft", Source))
+            throw new InvalidOperationException("Could not save the Markdown draft. Keep a copy before updating.");
     }
 
     private async Task GenerateAsync()
@@ -154,8 +166,10 @@
         {
             if (Module is not null) { await Module.InvokeVoidAsync("clear"); await Module.DisposeAsync(); }
             if (Downloads is not null) await Downloads.DisposeAsync();
+            if (Updates is not null) { await Updates.InvokeVoidAsync("unregisterDraftGuard", "markdown-cards"); await Updates.DisposeAsync(); }
         }
         catch (JSDisconnectedException) { }
+        UpdateReference?.Dispose();
     }
 
     public sealed class CardPreview
