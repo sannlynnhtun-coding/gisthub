@@ -559,6 +559,11 @@ try {
     await checkToolsGuide({ evaluate, send, sessionId, waitFor });
   }
 
+  if (process.env.BROWSER_CHECK_BASE64 === "1") {
+    const { checkBase64 } = await import('./test-base64.mjs');
+    await checkBase64({ evaluate, send, sessionId, waitFor });
+  }
+
   if (process.env.BROWSER_CHECK_HTML_IMAGE === "1") {
     const { checkHtmlImage } = await import('./test-html-image.mjs');
     await checkHtmlImage({ evaluate, send, sessionId, waitFor });

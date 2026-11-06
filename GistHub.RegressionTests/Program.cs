@@ -198,21 +198,31 @@ Assert(limitedResults.TotalCount == 3 && limitedResults.Results.Count == 2, "Sea
 Console.WriteLine("PASS: local gist search ranks fields, groups by gist, filters bookmarks, and returns safe context snippets.");
 
 var unicode = "Hello မြန်မာ 👋\nSecond line";
+Assert(Base64Converter.ConvertText("Hello", false) == "SGVsbG8=", "Standard text encoding must emit the expected padded Base64.");
 Assert(Base64Converter.ConvertText(Base64Converter.ConvertText(unicode, false), true) == unicode, "UTF-8 Base64 must round-trip Unicode and newlines.");
 Assert(Base64Converter.ConvertText(" SGVs\nbG8= \r\n", true) == "Hello", "Decode should ignore whitespace.");
+Assert(Base64Converter.ConvertText("Hello\r\n\rWorld\n", false, eachLine: true) == "SGVsbG8=\n\nV29ybGQ=\n", "Separate-line encoding must handle mixed line endings and preserve blank lines.");
 Assert(Base64Converter.ConvertText("SGVsbG8=\r\n\r\nV29ybGQ=", true, eachLine: true) == "Hello\n\nWorld", "Separate-line mode must preserve blank lines.");
 Assert(Base64Converter.ConvertText("é", false, latin1: true) == "6Q==", "Latin-1 must use one byte for accented characters.");
 Assert(Base64Converter.ConvertText("6Q==", true, latin1: true) == "é", "Latin-1 bytes should decode correctly.");
 var binary = new byte[] { 0, 255, 254, 128, 1 };
+Assert(Base64Converter.EncodeBytes(binary) == "AP/+gAE=", "Standard binary encoding must emit the standard alphabet and padding.");
+Assert(Base64Converter.EncodeBytes(binary, true) == "AP_-gAE", "URL-safe encoding must substitute both alphabet characters and omit padding.");
+Assert(Base64Converter.DecodeBytes("AP_-gAE=", true).SequenceEqual(binary), "URL-safe decoding must also accept padding.");
 Assert(Base64Converter.DecodeBytes(Base64Converter.EncodeBytes(binary, true), true).SequenceEqual(binary), "URL-safe unpadded Base64 must preserve binary files.");
 Assert(Base64Converter.DecodeBytes("Zg", true).SequenceEqual(new byte[] { 102 }), "URL-safe input should accept omitted padding.");
-foreach (var invalid in new[] { "!bad", "A", "AA=A", "Zg===", "SGVsbG8" })
+foreach (var (invalid, urlSafe) in new[] { ("!bad", false), ("A", false), ("AA=A", false),
+    ("Zg===", false), ("SGVsbG8", false), ("AP_-gAE=", false), ("AP/+gAE=", true), ("A", true) })
 {
     var rejected = false;
-    try { Base64Converter.DecodeBytes(invalid); }
+    try { Base64Converter.DecodeBytes(invalid, urlSafe); }
     catch (FormatException) { rejected = true; }
-    Assert(rejected, $"Invalid standard Base64 must be rejected: {invalid}");
+    Assert(rejected, $"Invalid Base64 must be rejected (URL-safe: {urlSafe}): {invalid}");
 }
+var invalidLatin1Rejected = false;
+try { Base64Converter.ConvertText("€", false, latin1: true); }
+catch (System.Text.EncoderFallbackException) { invalidLatin1Rejected = true; }
+Assert(invalidLatin1Rejected, "Latin-1 encoding must reject characters it cannot represent.");
 var invalidUtf8Rejected = false;
 try { Base64Converter.ConvertText("/w==", true); }
 catch (System.Text.DecoderFallbackException) { invalidUtf8Rejected = true; }
