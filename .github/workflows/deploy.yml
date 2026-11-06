@@ -41,6 +41,20 @@ jobs:
           dotnet restore GistHub.slnx
           dotnet build GistHub.slnx --configuration Release --no-restore
 
+      - name: Run .NET regression tests
+        run: dotnet run --project GistHub.RegressionTests --configuration Release --no-build
+
+      - name: Check Base64 in Chrome
+        env:
+          BROWSER_CHECK_BASE64: "1"
+          BROWSER_CHECK_WAIT_MS: "0"
+        run: |
+          dotnet run --project GistHub --configuration Release --no-build --no-launch-profile -- --urls http://127.0.0.1:5187 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          curl --fail --silent --show-error --retry 20 --retry-connrefused --retry-delay 1 http://127.0.0.1:5187/tools > /dev/null
+          node scripts/check-browser-errors.mjs http://127.0.0.1:5187/tools
+
       # 4. Compile the Wasm Project for Production
       - name: Check update notification flow
         run: node scripts/test-app-updates.mjs
