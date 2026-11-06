@@ -1,6 +1,5 @@
 import { spawn } from "node:child_process";
-import { mkdtemp, rm } from "node:fs/promises";
-import net from "node:net";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
@@ -24,32 +23,6 @@ const errorPatterns = [
 
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
-async function reservePort() {
-  const server = net.createServer();
-  await new Promise((resolve, reject) => {
-    server.once("error", reject);
-    server.listen(0, "127.0.0.1", resolve);
-  });
-  const { port } = server.address();
-  await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
-  return port;
-}
-
-async function waitForDebugger(port) {
-  const endpoint = `http://127.0.0.1:${port}/json/version`;
-  for (let attempt = 0; attempt < 100; attempt += 1) {
-    try {
-      const response = await fetch(endpoint);
-      if (response.ok) return response.json();
-    } catch {
-      // Chrome has not opened its debugging endpoint yet.
-    }
-    await delay(100);
-  }
-  throw new Error("Chrome DevTools endpoint did not become ready");
-}
-
-const port = await reservePort();
 const profilePath = await mkdtemp(path.join(os.tmpdir(), "gist-hub-browser-check-"));
 const chrome = spawn(browserPath, [
   "--headless=new",
@@ -57,15 +30,49 @@ const chrome = spawn(browserPath, [
   "--disable-background-networking",
   "--enable-logging=stderr",
   "--no-first-run",
-  `--remote-debugging-port=${port}`,
+  "--remote-debugging-port=0",
   `--user-data-dir=${profilePath}`,
   "about:blank",
 ], { stdio: ["ignore", "pipe", "pipe"], windowsHide: true });
 
+const observedMessages = [];
+let startupError;
+let chromeStderr = "";
+chrome.on("error", (error) => { startupError = error; });
+chrome.stdout.on("data", (chunk) => observedMessages.push(chunk.toString()));
+chrome.stderr.on("data", (chunk) => {
+  const message = chunk.toString();
+  observedMessages.push(message);
+  chromeStderr = (chromeStderr + message).slice(-4000);
+});
+
+async function waitForDebugger() {
+  const endpointFile = path.join(profilePath, "DevToolsActivePort");
+  const deadline = Date.now() + 30000;
+  while (Date.now() < deadline) {
+    if (startupError) throw startupError;
+    if (chrome.exitCode !== null || chrome.signalCode !== null) {
+      throw new Error(`Chrome exited before DevTools was ready (${chrome.exitCode ?? chrome.signalCode})`);
+    }
+    const endpoint = await readFile(endpointFile, "utf8").catch((error) => {
+      if (error.code !== "ENOENT") throw error;
+      return "";
+    });
+    const [port, browserEndpoint] = endpoint.trim().split(/\r?\n/);
+    if (/^\d+$/.test(port) && browserEndpoint?.startsWith("/devtools/browser/")) {
+      return `ws://127.0.0.1:${port}${browserEndpoint}`;
+    }
+    await delay(100);
+  }
+  throw new Error("Chrome DevTools endpoint did not become ready within 30 seconds");
+}
+
 let socket;
 try {
-  const debuggerInfo = await waitForDebugger(port);
-  socket = new WebSocket(debuggerInfo.webSocketDebuggerUrl);
+  const debuggerUrl = await waitForDebugger().catch((error) => {
+    throw new Error(`Chrome startup failed: ${error.message}\n${chromeStderr.trim()}`, { cause: error });
+  });
+  socket = new WebSocket(debuggerUrl);
   await new Promise((resolve, reject) => {
     socket.addEventListener("open", resolve, { once: true });
     socket.addEventListener("error", reject, { once: true });
@@ -73,14 +80,10 @@ try {
 
   let nextId = 0;
   const pending = new Map();
-  const observedMessages = [];
   let resolvePageSession;
   const pageSession = new Promise((resolve) => { resolvePageSession = resolve; });
   let targetPageId;
   const attachedPageSessions = new Map();
-
-  chrome.stdout.on("data", (chunk) => observedMessages.push(chunk.toString()));
-  chrome.stderr.on("data", (chunk) => observedMessages.push(chunk.toString()));
 
   const send = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
     const id = ++nextId;
