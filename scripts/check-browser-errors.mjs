@@ -380,11 +380,9 @@ try {
     const blurPreference = await evaluate(`localStorage.getItem('gisthub:files-blurred')`);
     if (blurPreference !== "true") verificationFailures.push("Blur Files was not persisted to localStorage.");
 
-    await waitFor(`Boolean(document.querySelector('header [data-testid="sidebar-toggle-trigger"]'))`, "the top navigation sidebar toggle");
-    await evaluate(`document.querySelector('[data-testid="sidebar-toggle-trigger"]').click()`);
-    await waitFor(`!document.querySelector('.neo-sidebar')`, "the sidebar to hide");
-    const sidebarPreference = await evaluate(`localStorage.getItem('gisthub:sidebar-visible')`);
-    if (sidebarPreference !== "false") verificationFailures.push("Sidebar visibility was not persisted to localStorage.");
+    await waitFor(`document.querySelectorAll('.workspace-tabs [role="tab"]').length === 4`, "workspace command tabs");
+    if (await evaluate(`Boolean(document.querySelector('.neo-sidebar, .neo-mobile-nav'))`))
+      verificationFailures.push("Legacy sidebar or mobile navigation remains beside the workspace tabs.");
 
     await send("Emulation.setDeviceMetricsOverride", {
       width: 360,
@@ -560,6 +558,11 @@ try {
   if (process.env.BROWSER_CHECK_TOOLS_GUIDE === "1") {
     const { checkToolsGuide } = await import('./test-tools-guide.mjs');
     await checkToolsGuide({ evaluate, send, sessionId, waitFor });
+  }
+
+  if (process.env.BROWSER_CHECK_MARKDOWN_LIVE === "1") {
+    const { checkMarkdownLive } = await import('./test-markdown-live.mjs');
+    await checkMarkdownLive({ evaluate, send, sessionId, waitFor });
   }
 
   if (process.env.BROWSER_CHECK_BASE64 === "1") {

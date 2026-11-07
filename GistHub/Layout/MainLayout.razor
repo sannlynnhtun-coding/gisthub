@@ -4,26 +4,16 @@
 <div class="neo-app-shell relative min-h-screen flex bg-background text-foreground @(AreFilesBlurred ? "gist-files-blurred" : "")"
      aria-hidden="@(IsModalOpen ? "true" : null)"
      inert="@(IsModalOpen ? "" : null)">
-    <NavMenu IsVisible="@IsSidebarVisible" />
 
     <main class="neo-main flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         <header class="neo-topbar flex items-center justify-between px-6 glass sticky top-0 z-40">
             <div class="neo-topbar-brand flex items-center gap-4">
-                <button data-testid="sidebar-toggle-trigger"
-                        @onclick="ToggleSidebarAsync"
-                        class="neo-toolbar-menu__trigger hidden md:flex"
-                        type="button"
-                        title="@(IsSidebarVisible ? "Hide sidebar" : "Show sidebar")"
-                        aria-label="@(IsSidebarVisible ? "Hide sidebar" : "Show sidebar")"
-                        aria-pressed="@(IsSidebarVisible ? "true" : "false")">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
-                </button>
-                <a href="my-gists" aria-label="GistHub — My Collection" class="neo-brand-mark md:hidden w-9 h-9 overflow-hidden rounded-md">
+                <a href="my-gists" aria-label="GistHub â€” My Collection" class="neo-brand-mark md:hidden w-9 h-9 overflow-hidden rounded-md">
                     <img src="logo.svg" class="w-full h-full object-cover" alt="" />
                 </a>
                 <div>
                     <div class="neo-kicker mb-1">Code stash</div>
-                    <h1 class="text-xl font-black tracking-tight"><a href="my-gists" aria-label="GistHub — My Collection">GistHub</a></h1>
+                    <h1 class="text-xl font-black tracking-tight"><a href="my-gists" aria-label="GistHub â€” My Collection">GistHub</a></h1>
                 </div>
             </div>
 
@@ -50,8 +40,6 @@
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
                     <span class="neo-new-snippet__label" aria-hidden="true">New Snippet</span>
                 </NavLink>
-                <SoundToggle />
-                <ThemeToggle />
                 <LocalBackupReminder />
                 <UpdateNotifications />
                 <SectionOutlet SectionName="collection-actions" />
@@ -80,6 +68,7 @@
                 </button>
             </div>
         </header>
+        <NavMenu OnOpenTools="OpenRibbonTools" />
 
         <div class="neo-canvas flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
             <div class="neo-decor neo-decor--pink" aria-hidden="true"></div>
@@ -87,7 +76,7 @@
             <div class="neo-content max-w-6xl mx-auto space-y-10 animate-in fade-in duration-500">
                 @if (!IsProfileReady)
                 {
-                    <p role="status">Loading your local workspace…</p>
+                    <p role="status">Loading your local workspaceâ€¦</p>
                 }
                 else if (ProfileLoadFailed)
                 {
@@ -118,11 +107,11 @@
                     <h2 id="tools-modal-title">Workbench tools</h2>
                     <p id="tools-modal-description">Choose a tool to get started.</p>
                 </div>
-                <button type="button" class="btn btn-ghost btn-sm" aria-label="Close tools" @onclick="CloseToolbarMenus">✕</button>
+                <button type="button" class="btn btn-ghost btn-sm" aria-label="Close tools" @onclick="CloseToolbarMenus">âœ•</button>
             </header>
             <div class="neo-tools-modal__search">
                 <label for="tools-search">Search tools</label>
-                <input id="tools-search" @ref="ToolsSearchInput" type="search" placeholder="Search by name or description…"
+                <input id="tools-search" @ref="ToolsSearchInput" type="search" placeholder="Search by name or descriptionâ€¦"
                        autocomplete="off" @oninput="FilterToolsAsync" aria-controls="tools-results" />
                 <p id="tools-search-status" role="status" aria-live="polite"></p>
                 <div class="neo-tools-modal__category-actions" role="group" aria-label="Tool categories">
@@ -171,12 +160,16 @@
                 <details open class="neo-tools-category" data-tools-category aria-labelledby="tools-category-markdown-documents">
                     <summary id="tools-category-markdown-documents"><span>Markdown & documents <span class="neo-tools-category__count" data-tools-category-count></span></span><span class="neo-tools-category__chevron" aria-hidden="true">&#8250;</span></summary>
                     <div class="neo-tools-category__grid">
+                        <a href="tools/markdown-live-preview" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="markdown-live-preview-menu-item">
+                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">MD</span>
+                            <span><strong>Markdown Live Preview</strong><small>Write, preview, recover drafts and export documents</small></span>
+                        </a>
                         <a href="tools/markdown-to-docx" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="markdown-docx-menu-item">
                             <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">W</span>
                             <span><strong>Markdown to DOCX</strong><small>Download editable Word documents locally</small></span>
                         </a>
                         <a href="tools/markdown-to-cards" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="markdown-cards-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">▤</span>
+                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">â–¤</span>
                             <span><strong>Markdown to Cards</strong><small>Split articles into cards and download a ZIP</small></span>
                         </a>
                         <a href="tools/markdown-to-text" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="markdown-text-menu-item">
@@ -189,15 +182,15 @@
                     <summary id="tools-category-diagrams-math"><span>Diagrams & math <span class="neo-tools-category__count" data-tools-category-count></span></span><span class="neo-tools-category__chevron" aria-hidden="true">&#8250;</span></summary>
                     <div class="neo-tools-category__grid">
                         <a href="tools/diagram-editor" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="diagram-editor-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">◇</span>
+                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">â—‡</span>
                             <span><strong>draw.io Diagram Editor</strong><small>Create workflows and architecture diagrams</small></span>
                         </a>
                         <a href="tools/mermaid-to-image" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="mermaid-image-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">◇</span>
+                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">â—‡</span>
                             <span><strong>Mermaid to Image</strong><small>Preview diagrams and export PNG, SVG, or PDF</small></span>
                         </a>
                         <a href="tools/formula-to-image" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="formula-image-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">∑</span>
+                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">âˆ‘</span>
                             <span><strong>Formula to Image</strong><small>LaTeX math with transparent PNG and SVG export</small></span>
                         </a>
                     </div>
@@ -221,7 +214,7 @@
                         @if (!IsVercelApp)
                         {
                             <a href="tools/youtube-downloader" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="youtube-downloader-menu-item">
-                                <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--pink" aria-hidden="true">▶</span>
+                                <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--pink" aria-hidden="true">â–¶</span>
                                 <span><strong>YouTube Downloader</strong><small>Save video and audio on this computer</small></span>
                             </a>
                         }
@@ -249,10 +242,8 @@
 @inject NavigationManager Navigation
 
 @code {
-    private const string SidebarVisibleStorageKey = "gisthub:sidebar-visible";
     private const string FilesBlurredStorageKey = "gisthub:files-blurred";
 
-    private bool IsSidebarVisible { get; set; } = true;
     private bool IsProfileReady;
     private bool ProfileLoadFailed;
     private bool AreFilesBlurred { get; set; }
@@ -314,9 +305,7 @@
     {
         if (firstRender)
         {
-            var storedSidebar = await JS.InvokeAsync<string?>("localStorage.getItem", SidebarVisibleStorageKey);
             var storedBlur = await JS.InvokeAsync<string?>("localStorage.getItem", FilesBlurredStorageKey);
-            IsSidebarVisible = !string.Equals(storedSidebar, "false", StringComparison.OrdinalIgnoreCase);
             AreFilesBlurred = string.Equals(storedBlur, "true", StringComparison.OrdinalIgnoreCase);
 
             AppShellModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/appShell.js");
@@ -381,6 +370,12 @@
         ShouldFocusToolsMenu = true;
     }
 
+    private void OpenRibbonTools(ElementReference trigger)
+    {
+        GuideToolTrigger = trigger;
+        ToggleToolsMenu();
+    }
+
     private void CloseToolbarMenus()
     {
         if (IsToolsMenuOpen)
@@ -410,12 +405,6 @@
     {
         AreFilesBlurred = !AreFilesBlurred;
         await JS.InvokeVoidAsync("gistHubBackup.setPreference", FilesBlurredStorageKey, AreFilesBlurred ? "true" : "false");
-    }
-
-    private async Task ToggleSidebarAsync()
-    {
-        IsSidebarVisible = !IsSidebarVisible;
-        await JS.InvokeVoidAsync("gistHubBackup.setPreference", SidebarVisibleStorageKey, IsSidebarVisible ? "true" : "false");
     }
 
     private void OpenGlobalSearch()

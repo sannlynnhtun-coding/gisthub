@@ -18,6 +18,17 @@ export function downloadBytes(filename, bytes) {
 export function registerGlobalSearchShortcut() {
     unregisterGlobalSearchShortcut();
     searchShortcutHandler = (event) => {
+        const tab = event.target.closest?.('.workspace-tabs [role="tab"]');
+        if (tab && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+            event.preventDefault();
+            const tabs = [...tab.parentElement.querySelectorAll('[role="tab"]')];
+            const index = tabs.indexOf(tab);
+            const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 :
+                (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+            tabs[next].click();
+            tabs[next].focus();
+            return;
+        }
         if (event.repeat || event.altKey || event.shiftKey) return;
         if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "k") return;
 
