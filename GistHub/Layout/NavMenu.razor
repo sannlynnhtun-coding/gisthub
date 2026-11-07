@@ -1,63 +1,41 @@
-@if (IsVisible)
-{
-<div class="neo-sidebar w-64 bg-card hidden md:flex flex-col h-screen sticky top-0 z-50">
-    <div class="p-6 flex flex-col h-full">
-        <!-- Brand/Logo Area -->
-        <a href="my-gists" aria-label="GistHub — My Collection" class="flex items-center gap-3 mb-8 cursor-pointer group">
-            <div class="neo-brand-mark w-11 h-11 rounded-md overflow-hidden transition-all duration-200">
-                <img src="logo.svg" class="w-full h-full object-cover" alt="GistHub logo" />
-            </div>
-            <div class="flex flex-col">
-                <h1 class="font-black text-2xl tracking-tight leading-none">GistHub</h1>
-                <div class="flex items-center gap-1.5 mt-1">
-                    <span class="w-2 h-2 bg-[#71D84B] border border-black"></span>
-                    <span class="text-[10px] text-muted-foreground font-black uppercase tracking-widest leading-none">Local workspace</span>
+<section class="workspace-ribbon" aria-label="Workspace toolbar">
+    <div class="workspace-tabs" role="tablist" aria-label="Workspace commands">
+        @foreach (var tab in Tabs)
+        {
+            <button id="@($"workspace-tab-{tab}")" role="tab" type="button"
+                    aria-selected="@(SelectedTab == tab ? "true" : "false")" aria-controls="workspace-commands"
+                    tabindex="@(SelectedTab == tab ? 0 : -1)" @onclick="() => SelectedTab = tab">@tab</button>
+        }
+    </div>
+    <div id="workspace-commands" role="tabpanel" aria-labelledby="@($"workspace-tab-{SelectedTab}")" class="workspace-commands">
+        @switch (SelectedTab)
+        {
+            case "Home":
+                <div class="workspace-command-group" aria-label="Collection">
+                    <NavLink href="my-gists">My Collection</NavLink><NavLink href="editor">New Snippet</NavLink>
+                    <NavLink href="collections">Playlists</NavLink><NavLink href="slh-collection">SLH Collection</NavLink>
                 </div>
-            </div>
-        </a>
-
-        <!-- Main Navigation -->
-        <nav class="space-y-1 mb-8">
-            <a href="" class="@NavItemClass("my-gists", "view", "editor")">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-code-2 text-muted-foreground group-hover:text-primary transition-colors"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
-                My Collection
-            </a>
-            <NavLink href="discovery" Match="NavLinkMatch.All" ActiveClass="@ActiveNavItemClasses" class="nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all hover:bg-accent group">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-compass text-muted-foreground group-hover:text-primary transition-colors"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-                Discovery
-            </NavLink>
-            <NavLink href="trending" ActiveClass="@ActiveNavItemClasses" class="nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all hover:bg-accent group">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles text-muted-foreground group-hover:text-primary transition-colors"><path d="m12 3 1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
-                Trending Now
-            </NavLink>
-            <NavLink href="collections" ActiveClass="@ActiveNavItemClasses" class="nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all hover:bg-accent group">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers text-muted-foreground group-hover:text-primary transition-colors"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
-                Playlists
-            </NavLink>
-            <NavLink href="slh-collection" ActiveClass="@ActiveNavItemClasses" class="nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all hover:bg-accent group">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-open text-muted-foreground group-hover:text-primary transition-colors"><path d="m6 14 1.5-3h9L18 14"/><path d="M3 20h18"/><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v11H3z"/></svg>
-                SLH Collection
-            </NavLink>
-            <NavLink href="agent-skills" ActiveClass="@ActiveNavItemClasses" class="nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all hover:bg-accent group">AI Tools &amp; Skills</NavLink>
-            <NavLink href="settings" ActiveClass="@ActiveNavItemClasses" class="nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all hover:bg-accent group">Local settings</NavLink>
-        </nav>
-
-        <!-- Divider -->
-        <div class="h-[1px] bg-border mb-8"></div>
-
-        <!-- Social/Feed Area -->
-        <div class="mb-auto">
-            <h3 class="px-3 text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-4">Tags</h3>
-            <div class="flex flex-wrap gap-2 px-3">
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E1F3FE] text-[#1F6C9F] border border-border cursor-pointer transition-all">#dotnet</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EDF3EC] text-[#346538] border border-border cursor-pointer transition-all">#react</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FBF3DB] text-[#956400] border border-border cursor-pointer transition-all">#python</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FDEBEC] text-[#9F2F2D] border border-border cursor-pointer transition-all">#blazor</span>
-            </div>
-        </div>
-
-        <!-- User Profile / Auth Area -->
-        <div class="mt-auto pt-6">
+                break;
+            case "Discover":
+                <div class="workspace-command-group" aria-label="Explore">
+                    <NavLink href="discovery">Discovery</NavLink><NavLink href="trending">Trending Now</NavLink>
+                </div>
+                break;
+            case "Tools":
+                <div class="workspace-command-group" aria-label="Workbench">
+                    <button @ref="ToolsButton" type="button" @onclick="() => OnOpenTools.InvokeAsync(ToolsButton)">All Tools</button>
+                    <NavLink href="tools" Match="NavLinkMatch.All">Tools Guide</NavLink>
+                    <NavLink href="tools/markdown-live-preview">Markdown Live Preview</NavLink>
+                    <NavLink href="agent-skills">AI Tools &amp; Skills</NavLink>
+                </div>
+                break;
+            case "View":
+                <div class="workspace-command-group" aria-label="Preferences">
+                    <NavLink href="settings">Local settings</NavLink><ThemeToggle /><SoundToggle />
+                </div>
+                break;
+        }
+        <div class="workspace-account">
             @if (AppState.IsAuthenticated)
             {
                 <div class="neo-profile-card p-3 bg-secondary rounded-lg border border-border animate-in fade-in slide-in-from-bottom-4">
@@ -89,32 +67,7 @@
             }
         </div>
     </div>
-</div>
-}
-
-<nav class="neo-mobile-nav fixed bottom-4 inset-x-4 z-50 md:hidden grid grid-cols-5 p-1.5 rounded-md" aria-label="Mobile navigation">
-    <NavLink href="discovery" Match="NavLinkMatch.All" ActiveClass="active" class="flex flex-col items-center justify-center gap-1 p-2 rounded-sm text-[9px] font-black uppercase">
-        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-        Discover
-    </NavLink>
-    <NavLink href="trending" ActiveClass="active" class="flex flex-col items-center justify-center gap-1 p-2 rounded-sm text-[9px] font-black uppercase">
-        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/></svg>
-        Trending
-    </NavLink>
-    <a href="" class="@MobileNavItemClass("my-gists", "view", "editor")">
-        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
-        My Gists
-    </a>
-    <NavLink href="collections" ActiveClass="active" class="flex flex-col items-center justify-center gap-1 p-2 rounded-sm text-[9px] font-black uppercase">
-        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m12.8 2.2-10.2 4.6 9.4 4.3 9.4-4.3Z"/><path d="m22 12.7-10 4.5-10-4.5"/><path d="m22 17.7-10 4.5-10-4.5"/></svg>
-        Lists
-    </NavLink>
-    <NavLink href="slh-collection" ActiveClass="active" class="flex flex-col items-center justify-center gap-1 p-2 rounded-sm text-[9px] font-black uppercase">
-        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 20h18V8H11L9 5H3Z"/></svg>
-        SLH
-    </NavLink>
-</nav>
-
+</section>
 @if (IsLogoutConfirmOpen)
 {
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6">
@@ -143,14 +96,11 @@
 @inject NavigationManager Navigation
 
 @code {
-    private const string NavItemClasses = "nav-item flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-bold transition-all group";
-    private const string ActiveNavItemClasses = "active bg-accent text-foreground font-black";
-    private const string MobileNavItemClasses = "flex flex-col items-center justify-center gap-1 p-2 rounded-sm text-[9px] font-black uppercase";
-
-    private bool IsLogoutConfirmOpen { get; set; }
-
-    [Parameter]
-    public bool IsVisible { get; set; } = true;
+    private static readonly string[] Tabs = ["Home", "Discover", "Tools", "View"];
+    private string SelectedTab = "Home";
+    private bool IsLogoutConfirmOpen;
+    private ElementReference ToolsButton;
+    [Parameter] public EventCallback<ElementReference> OnOpenTools { get; set; }
 
     protected override void OnInitialized()
     {
@@ -161,27 +111,6 @@
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         _ = InvokeAsync(StateHasChanged);
-    }
-
-    private string NavItemClass(params string[] routePrefixes)
-        => IsActive(routePrefixes)
-            ? $"{NavItemClasses} {ActiveNavItemClasses} active"
-            : NavItemClasses;
-
-    private string MobileNavItemClass(params string[] routePrefixes)
-        => IsActive(routePrefixes)
-            ? $"{MobileNavItemClasses} active"
-            : MobileNavItemClasses;
-
-    private bool IsActive(params string[] routePrefixes)
-    {
-        var path = Navigation.ToBaseRelativePath(Navigation.Uri)
-            .Split('?', '#')[0]
-            .Trim('/');
-
-        return routePrefixes.Any(prefix =>
-            string.Equals(path, prefix, StringComparison.OrdinalIgnoreCase) ||
-            path.StartsWith($"{prefix}/", StringComparison.OrdinalIgnoreCase));
     }
 
     private void ShowLogoutConfirm()

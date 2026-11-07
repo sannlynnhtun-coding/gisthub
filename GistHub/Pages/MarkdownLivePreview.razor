@@ -1,0 +1,145 @@
+@page "/tools/markdown-live-preview"
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<PageTitle>Markdown Live Preview · GistHub</PageTitle>
+<section class="markdown-workbench space-y-4" aria-labelledby="markdown-live-title">
+    <div>
+        <div class="neo-kicker">Workbench / Markdown</div>
+        <h2 id="markdown-live-title" class="text-3xl font-black tracking-tight">Markdown Live Preview</h2>
+        <p class="text-muted-foreground">Write and preview locally. Your draft stays in this browser. Remote images are shown as text.</p>
+    </div>
+    <div class="markdown-live-actions flex flex-wrap gap-2">
+        <label for="markdown-live-file" class="btn btn-outline btn-md">Open Markdown (up to 1 MB)</label>
+        <InputFile id="markdown-live-file" accept=".md,.markdown,.txt,text/markdown,text/plain" OnChange="ImportAsync" disabled="@(!Ready)" />
+        <button class="btn btn-secondary btn-md" disabled="@(!Ready)" @onclick="() => CopyAsync(false)">Copy Markdown</button>
+        <button class="btn btn-secondary btn-md" disabled="@(!Ready)" @onclick="() => CopyAsync(true)">Copy HTML</button>
+        <button id="markdown-live-download" class="btn btn-primary btn-md" disabled="@(!Ready)" @onclick='() => DownloadAsync("md")'>Download .md</button>
+        <button class="btn btn-secondary btn-md" disabled="@(!Ready)" @onclick='() => DownloadAsync("html")'>Download HTML</button>
+        <button class="btn btn-secondary btn-md" disabled="@(!Ready)" @onclick='() => DownloadAsync("docx")'>Download Word</button>
+        <button class="btn btn-outline btn-md" disabled="@(!Ready)" @onclick="PrintAsync">Print / PDF</button>
+        <button class="btn btn-outline btn-md" disabled="@(!Ready)" @onclick="ClearAsync">Clear</button>
+    </div>
+    @if (Error is not null) { <p id="markdown-live-error" role="alert" class="text-destructive">@Error</p> }
+    <p id="markdown-live-status" role="status" aria-live="polite">@Status</p>
+    <div class="markdown-live-panes">
+        <div>
+            <label for="markdown-live-source" class="block font-bold mb-2">Markdown source</label>
+            <textarea id="markdown-live-source" class="w-full bg-card border border-border rounded-md p-4 font-mono" rows="24" maxlength="1048576" @bind:get="Source" @bind:set="ChangedAsync" @bind:event="oninput" disabled="@(!Ready)" spellcheck="false"></textarea>
+        </div>
+        <div class="min-w-0">
+            <h3 id="markdown-live-preview-label" class="font-bold mb-2">Live preview</h3>
+            <div @ref="Preview" id="markdown-live-preview" class="markdown-live-preview prose dark:prose-invert max-w-none bg-card border border-border rounded-md p-4" role="region" aria-labelledby="markdown-live-preview-label"></div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private const int MaxSize = 1024 * 1024;
+    private string Source = "# Your next document\n\nWrite **Markdown** and see it here.\n\n- [x] Live preview\n- [ ] Share your document\n\n| Tool | Output |\n| --- | --- |\n| Markdown | A readable document |\n\n```csharp\nConsole.WriteLine(\"Hello, workspace!\");\n```";
+    private string Filename = "document", Status = "Opening local draft…";
+    private string? Error;
+    private bool Ready, NeedsRender;
+    private ElementReference Preview;
+    private IJSObjectReference? Module, Downloads;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                Module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/markdownLivePreview.js");
+                var draft = await Module.InvokeAsync<Draft>("restore");
+                if (draft.Source is not null) { Source = draft.Source; Filename = draft.Filename; }
+                Error = draft.Warning;
+                Ready = true;
+                NeedsRender = true;
+            }
+            catch (JSException) { Error = "Could not load the editor. Reload this page to retry."; }
+        }
+        if (NeedsRender && Module is not null)
+        {
+            NeedsRender = false;
+            try { Status = await Module.InvokeAsync<string>("render", Preview, Source); }
+            catch (JSException) { Error = "Preview unavailable. Your source is still available to copy or download."; }
+            StateHasChanged();
+        }
+        else if (firstRender) StateHasChanged();
+    }
+
+    private Task ChangedAsync(string source) => SetSourceAsync(source, Filename);
+    private Task ClearAsync() => SetSourceAsync("", "document");
+
+    private async Task SetSourceAsync(string source, string filename)
+    {
+        if (System.Text.Encoding.UTF8.GetByteCount(source) > MaxSize) { Error = "Markdown must be 1 MB or smaller. Your previous draft was kept."; return; }
+        Source = source; Filename = filename; NeedsRender = true;
+        Error = await Module!.InvokeAsync<string?>("save", Source, Filename);
+    }
+
+    private async Task ImportAsync(InputFileChangeEventArgs args)
+    {
+        try
+        {
+            using var reader = new StreamReader(args.File.OpenReadStream(MaxSize), new System.Text.UTF8Encoding(false, true));
+            var source = await reader.ReadToEndAsync();
+            await SetSourceAsync(source, Path.GetFileNameWithoutExtension(args.File.Name));
+        }
+        catch (Exception ex) when (ex is IOException or System.Text.DecoderFallbackException or JSException)
+        { Error = "Could not open this file. Use a UTF-8 Markdown file up to 1 MB. Your draft was kept."; }
+    }
+
+    private async Task CopyAsync(bool html)
+    {
+        try
+        {
+            var text = html ? await Module!.InvokeAsync<string>("html", Source) : Source;
+            Status = await JS.InvokeAsync<bool>("copyToClipboard", text) ? "Copied." : "Copy failed. Select the source and copy manually.";
+        }
+        catch (JSException) { Error = "Clipboard unavailable. Select the source and copy manually."; }
+    }
+
+    private async Task DownloadAsync(string format)
+    {
+        try
+        {
+            byte[] bytes;
+            if (format == "docx")
+            {
+                var xhtml = await Module!.InvokeAsync<string>("wordSource", Source);
+                bytes = MarkdownDocxConverter.Create(xhtml);
+            }
+            else bytes = System.Text.Encoding.UTF8.GetBytes(format == "html" ? await Module!.InvokeAsync<string>("html", Source) : Source);
+            var name = string.Concat(Filename.Where(c => !char.IsControl(c) && !"<>:\"/\\|?*".Contains(c))).Trim().TrimEnd('.');
+            Downloads ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/appShell.js");
+            await Downloads.InvokeVoidAsync("downloadBytes", (string.IsNullOrWhiteSpace(name) ? "document" : name) + "." + format, bytes);
+            Status = "Document downloaded.";
+        }
+        catch (Exception ex) when (ex is JSException or System.Xml.XmlException or InvalidOperationException)
+        { Error = "Export failed. Your draft is still available; try downloading Markdown."; }
+    }
+
+    private async Task PrintAsync()
+    {
+        try { await Module!.InvokeVoidAsync("print"); }
+        catch (JSException) { Error = "Printing is unavailable in this browser."; }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (Module is not null) { await Module.InvokeVoidAsync("cancel", Preview); await Module.DisposeAsync(); }
+            if (Downloads is not null) await Downloads.DisposeAsync();
+        }
+        catch (JSDisconnectedException) { }
+    }
+
+    public sealed class Draft
+    {
+        public string? Source { get; set; }
+        public string Filename { get; set; } = "document";
+        public string? Warning { get; set; }
+    }
+}
