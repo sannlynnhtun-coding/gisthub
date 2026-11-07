@@ -20,7 +20,11 @@ required. Browser/OS delivery can be delayed or disabled.
 4. Deploy through `.github/workflows/deploy.yml`. Before publishing, the workflow
    writes only the public App ID into `push-config.json`. After Vercel production
    deployment succeeds, it checks that the production domain serves the expected
-   asset-manifest version and sends a visible push to `Subscribed Users`.
+   asset-manifest version and sends a visible push to `Subscribed Users`. The
+   deployment check retries up to 12 times, five seconds apart (each request has
+   a ten-second timeout), to allow production alias propagation. It still fails
+   without sending push if the expected version never becomes available; the
+   error reports the expected and last observed version/status.
 5. Open the site, click the notification bell, and choose **Enable update
    notifications**. Allow browser notifications. On iOS/iPadOS, use a supported
    installed Home Screen web app. The first deployment enables the mechanism;

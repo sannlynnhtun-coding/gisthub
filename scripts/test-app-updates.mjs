@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { MessageChannel } from 'node:worker_threads';
-import { manifestVersion, pushMessage } from './send-update-push.mjs';
+import { manifestVersion, pushMessage, waitForRelease } from './send-update-push.mjs';
 
 const root = new URL('../', import.meta.url);
 const source = await readFile(new URL('GistHub/wwwroot/js/appUpdates.js', root), 'utf8');
@@ -140,4 +140,32 @@ assert.equal(message.data.version, 'release-1');
 assert.equal(message.web_url, 'https://example.com/');
 assert.throws(() => pushMessage('id', 'v', 'http://example.com'));
 assert.throws(() => pushMessage('id', 'v', 'https://example.com/editor'));
+const originalFetch = globalThis.fetch, originalTimeout = globalThis.setTimeout;
+try {
+    globalThis.setTimeout = callback => { callback(); return 0; };
+    let calls = 0;
+    globalThis.fetch = async url => {
+        assert.equal(url.searchParams.get('version'), 'release-1');
+        return new Response(`self.assetsManifest = {"version":"${++calls < 3 ? 'old' : 'release-1'}"};`);
+    };
+    await waitForRelease('https://example.com', 'release-1');
+    assert.equal(calls, 3, 'waits for the production alias to serve the deployed version');
+    calls = 0;
+    globalThis.fetch = async () => {
+        calls++;
+        if (calls === 1) throw new Error('temporary network failure');
+        if (calls === 2) return new Response('unavailable', { status: 503 });
+        if (calls === 3) return new Response('<html>fallback</html>');
+        return new Response('{"version":"release-1"}');
+    };
+    await waitForRelease('https://example.com', 'release-1');
+    assert.equal(calls, 4, 'retries network, HTTP and invalid-manifest responses');
+    calls = 0;
+    globalThis.fetch = async () => { calls++; return new Response('{"version":"old"}'); };
+    await assert.rejects(waitForRelease('https://example.com', 'release-1'), /expected release-1, observed old.*No update notification was sent/);
+    assert.equal(calls, 12, 'stops after bounded retries without accepting a stale release');
+} finally {
+    globalThis.fetch = originalFetch;
+    globalThis.setTimeout = originalTimeout;
+}
 console.log('PASS: update badges, no polling, draft recovery, failure guards, activation, push persistence, and deployment payload.');

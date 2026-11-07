@@ -21,6 +21,24 @@ export function pushMessage(appId, version, origin) {
     };
 }
 
+export async function waitForRelease(origin, version) {
+    let observed = 'unavailable';
+    for (let attempt = 1; attempt <= 12; attempt++) {
+        try {
+            const url = new URL('/service-worker-assets.js', origin);
+            url.searchParams.set('version', version);
+            const live = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+            observed = live.ok ? manifestVersion(await live.text()) : `HTTP ${live.status}`;
+            if (observed === version) return;
+        } catch { observed = 'unavailable or invalid manifest'; }
+        if (attempt < 12) {
+            console.log(`Waiting for production release ${version} (observed ${observed}, attempt ${attempt}/12).`);
+            await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+    }
+    throw new Error(`The production domain is not serving this release (expected ${version}, observed ${observed}). No update notification was sent.`);
+}
+
 async function send() {
     const { ONESIGNAL_APP_ID: appId, ONESIGNAL_REST_API_KEY: key, GISTHUB_PUBLIC_URL: origin } = process.env;
     if (!appId) { console.log('Web Push is not configured; deployment completed without sending notifications.'); return; }
@@ -28,9 +46,7 @@ async function send() {
     if (!origin) throw new Error('GitHub Actions did not provide GISTHUB_PUBLIC_URL.');
     const version = manifestVersion(await readFile(process.argv[2], 'utf8'));
     const message = pushMessage(appId, version, origin);
-    const live = await fetch(new URL('/service-worker-assets.js', origin), { cache: 'no-store', signal: AbortSignal.timeout(30000) });
-    if (!live.ok || manifestVersion(await live.text()) !== version)
-        throw new Error('The production domain is not serving this release. No update notification was sent.');
+    await waitForRelease(origin, version);
     const response = await fetch('https://api.onesignal.com/notifications', {
         method: 'POST', headers: { Authorization: `Key ${key}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(message), signal: AbortSignal.timeout(30000)
