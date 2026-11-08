@@ -24,10 +24,24 @@ export async function checkToolsGuide({evaluate,send,sessionId,waitFor}) {
       underline: getComputedStyle(tab, '::after').backgroundColor,
       icons: document.querySelectorAll('.workspace-command-group .ribbon-command-icon').length };
   })()`);
-  assert.equal(ribbon.background, 'rgb(255, 255, 255)');
   assert.equal(ribbon.radius, '15px');
-  assert.equal(ribbon.underline, 'rgb(33, 115, 70)');
   assert.ok(ribbon.icons > 0, 'ribbon commands have labelled icons');
+  const initialTheme = await evaluate(`window.getGistHubTheme()`);
+  for (const theme of ['light', 'dark']) {
+    await evaluate(`window.applyGistHubTheme('${theme}')`);
+    const palette = await evaluate(`(() => {
+      const sample = document.createElement('span');
+      sample.style.color = 'hsl(var(--card))'; document.body.append(sample);
+      const card = getComputedStyle(sample).color;
+      sample.style.color = 'hsl(var(--primary))'; const primary = getComputedStyle(sample).color;
+      sample.remove();
+      return { card, primary, panel: getComputedStyle(document.querySelector('.workspace-commands')).backgroundColor,
+        underline: getComputedStyle(document.querySelector('.workspace-tabs [aria-selected="true"]'), '::after').backgroundColor };
+    })()`);
+    assert.equal(palette.panel, palette.card, `${theme} ribbon follows the app card color`);
+    assert.equal(palette.underline, palette.primary, `${theme} ribbon follows the app accent color`);
+  }
+  await evaluate(`window.applyGistHubTheme(${JSON.stringify(initialTheme)})`);
   await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="tools-guide-menu-item"]'))`, 'the guide modal link');
   await waitFor(`document.activeElement === document.querySelector('#tools-search')`, 'tools search keyboard focus');
