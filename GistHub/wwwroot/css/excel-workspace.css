@@ -144,3 +144,11 @@
 .profile-signout { display: block; width: 100%; padding: 8px 0; border: 0; background: transparent; text-align: left; font-size: 14px; line-height: 20px; color: hsl(var(--foreground)); }
 .profile-signout:hover { color: hsl(var(--primary)); }
 .excel-topbar .profile-avatar:focus-visible, .profile-dropdown :is(a, button):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+
+.compact-tool-page > :is(div, header):first-child { gap: 8px; margin-bottom: 12px; padding-bottom: 12px !important; }
+.compact-tool-page > :is(div, header):first-child h2 { font-size: 18px !important; line-height: 24px !important; font-weight: 600 !important; letter-spacing: normal !important; margin: 0 !important; }
+.compact-tool-page > :is(div, header):first-child p { margin-top: 4px !important; font-size: 13px !important; line-height: 20px !important; }
+.compact-tool-page > :is(div, header):first-child .neo-kicker { display: none; }
+.compact-tool-page .skills-filters { padding: 12px; gap: 12px; }
+.compact-tool-page .skills-filters label { font-size: 12px !important; }
+.compact-tool-page .skills-filters :is(input, select, button) { min-height: 36px; padding: 6px 10px; font-size: 13px !important; }
