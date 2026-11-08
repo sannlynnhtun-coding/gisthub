@@ -359,14 +359,14 @@ try {
     await evaluate(`document.querySelector('[data-testid="global-search-input"]').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`);
     await waitFor(`!document.querySelector('[data-testid="global-search-input"]')`, "Escape to close global search");
 
-    await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
-    await waitFor(`Boolean(document.querySelector('[data-testid="json-parser-menu-item"]')) && Boolean(document.querySelector('[data-testid="code-image-menu-item"]'))`, "the Tools menu");
+    await evaluate(`document.querySelector('#workspace-tab-Data').click()`);
+    await waitFor(`Boolean(document.querySelector('[data-testid="json-parser-menu-item"]'))`, "the Data ribbon");
     await evaluate(`document.querySelector('[data-testid="json-parser-menu-item"]').click()`);
     await waitFor(`Boolean(document.querySelector('.json-parser-overlay'))`, "the JSON parser overlay");
     await evaluate(`document.querySelector('.json-parser-overlay').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`);
     await waitFor(`!document.querySelector('.json-parser-overlay')`, "Escape to close the JSON parser");
 
-    await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
+    await evaluate(`document.querySelector('#workspace-tab-Media').click()`);
     await waitFor(`Boolean(document.querySelector('[data-testid="code-image-menu-item"]'))`, "the Code Image menu item");
     await evaluate(`document.querySelector('[data-testid="code-image-menu-item"]').click()`);
     await waitFor(`Boolean(document.querySelector('.code-image-overlay'))`, "the Code Image overlay");
@@ -380,7 +380,7 @@ try {
     const blurPreference = await evaluate(`localStorage.getItem('gisthub:files-blurred')`);
     if (blurPreference !== "true") verificationFailures.push("Blur Files was not persisted to localStorage.");
 
-    await waitFor(`document.querySelectorAll('.workspace-tabs [role="tab"]').length === 4`, "workspace command tabs");
+    await waitFor(`document.querySelectorAll('.workspace-tabs [role="tab"]').length === 8`, "workspace command tabs");
     if (await evaluate(`Boolean(document.querySelector('.neo-sidebar, .neo-mobile-nav'))`))
       verificationFailures.push("Legacy sidebar or mobile navigation remains beside the workspace tabs.");
 

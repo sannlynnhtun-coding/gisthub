@@ -2,10 +2,10 @@ import assert from 'node:assert/strict';
 
 export async function checkMarkdownCardTool({ evaluate, send, sessionId, waitFor }) {
   await waitFor(`document.querySelectorAll('[aria-label="Card previews"] img').length === 3 && !document.querySelector('#cards-zip').disabled`, 'three rendered cards', 60000);
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
+  await evaluate(`document.querySelector('#workspace-tab-Markdown').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="markdown-cards-menu-item"]'))`, 'the Cards tool menu entry');
   assert.equal(await evaluate(`document.querySelector('[data-testid="markdown-cards-menu-item"]').getAttribute('href')`), 'tools/markdown-to-cards');
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
+  await evaluate(`document.querySelector('#workspace-tab-Markdown').click()`);
   await evaluate(`(() => {
     const original = URL.createObjectURL;
     URL.createObjectURL = blob => { if(blob.type === 'application/octet-stream') window.cardDownload = blob; return original(blob); };

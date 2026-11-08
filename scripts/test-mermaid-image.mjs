@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 
 export async function checkMermaidImage({evaluate,send,sessionId,waitFor}) {
   await waitFor(`document.querySelector('#mermaid-preview svg') && !document.querySelector('#mermaid-download').disabled`, 'a valid Mermaid preview',60000);
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
+  await evaluate(`document.querySelector('#workspace-tab-Diagrams').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="mermaid-image-menu-item"]'))`, 'the Mermaid menu entry');
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
+  await evaluate(`document.querySelector('#workspace-tab-Diagrams').click()`);
   const update = async (selector,value,type='input') => evaluate(`(() => {const el=document.querySelector(${JSON.stringify(selector)}); el.value=${JSON.stringify(value)}; el.dispatchEvent(new Event(${JSON.stringify(type)},{bubbles:true}));})()`);
   await update('#mermaid-source','not a diagram');
   await waitFor(`document.querySelector('#mermaid-error') && document.querySelector('#mermaid-download').disabled`, 'syntax error with export disabled');

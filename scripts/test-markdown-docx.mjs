@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 
 export async function checkMarkdownDocx({ evaluate, send, sessionId, waitFor }) {
   await waitFor(`Boolean(document.querySelector('#docx-source')) && !document.querySelector('button.btn-primary[disabled]')`, 'the DOCX editor', 60000);
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
+  await evaluate(`document.querySelector('#workspace-tab-Markdown').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="markdown-docx-menu-item"]'))`, 'the Tools entry');
   assert.equal(await evaluate(`document.querySelector('[data-testid="markdown-docx-menu-item"]').getAttribute('href')`), 'tools/markdown-to-docx');
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
+  await evaluate(`document.querySelector('#workspace-tab-Markdown').click()`);
   const source = '# Export test\n\n**Bold** and *italic*\n\n| A | B |\n|---|---|\n| One | Two |\n\n- [x] Done\n\n![Alt](https://example.com/image.png)\n\n```mermaid\ngraph TD; A-->B\n```\n\n<script>window.docxUnsafe=true</script><a href="javascript:alert(1)" onclick="window.docxUnsafe=true">Unsafe</a>';
   await evaluate(`(() => {
     const input = document.querySelector('#docx-source'); input.value = ${JSON.stringify(source)};

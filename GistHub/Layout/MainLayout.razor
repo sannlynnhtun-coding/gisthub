@@ -51,7 +51,7 @@
                 </button>
             </div>
         </header>
-        <NavMenu @ref="WorkspaceNavigation" OnOpenTools="OpenRibbonTools" IsToolsMenuOpen="IsToolsMenuOpen" />
+        <NavMenu @ref="WorkspaceNavigation" OnOpenWorkbenchTool="OpenWorkbenchTool" IsVercelApp="IsVercelApp" />
 
         <div class="neo-canvas flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
             <div class="neo-decor neo-decor--pink" aria-hidden="true"></div>
@@ -79,136 +79,6 @@
     </main>
 </div>
 
-@if (IsToolsMenuOpen)
-{
-    <div class="neo-tools-backdrop" @onclick="CloseToolbarMenus">
-        <section id="tools-menu" @ref="ToolsDialog" class="neo-tools-modal" role="dialog" aria-modal="true"
-                 aria-labelledby="tools-modal-title" aria-describedby="tools-modal-description"
-                 @onclick:stopPropagation="true" @onkeydown="HandleToolsMenuKeyDown">
-            <header class="neo-tools-modal__header">
-                <div>
-                    <h2 id="tools-modal-title">Workbench tools</h2>
-                    <p id="tools-modal-description">Choose a tool to get started.</p>
-                </div>
-                <button type="button" class="btn btn-ghost btn-sm" aria-label="Close tools" @onclick="CloseToolbarMenus">âœ•</button>
-            </header>
-            <div class="neo-tools-modal__search">
-                <label for="tools-search">Search tools</label>
-                <input id="tools-search" @ref="ToolsSearchInput" type="search" placeholder="Search by name or descriptionâ€¦"
-                       autocomplete="off" @oninput="FilterToolsAsync" aria-controls="tools-results" />
-                <p id="tools-search-status" role="status" aria-live="polite"></p>
-                <div class="neo-tools-modal__category-actions" role="group" aria-label="Tool categories">
-                    <button type="button" class="btn btn-ghost btn-sm" @onclick="ExpandAllToolCategoriesAsync" aria-controls="tools-results">Expand all</button>
-                    <button type="button" class="btn btn-ghost btn-sm" @onclick="CollapseAllToolCategoriesAsync" aria-controls="tools-results">Collapse all</button>
-                </div>
-            </div>
-            <div id="tools-results" class="neo-tools-modal__grid custom-scrollbar">
-                <details open class="neo-tools-category" data-tools-category aria-labelledby="tools-category-getting-started">
-                    <summary id="tools-category-getting-started"><span>Getting started <span class="neo-tools-category__count" data-tools-category-count></span></span><span class="neo-tools-category__chevron" aria-hidden="true">&#8250;</span></summary>
-                    <div class="neo-tools-category__grid">
-                        <a href="agent-skills" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="agent-skills-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">AI</span>
-                            <span><strong>AI Tools &amp; Skills</strong><small>Search skills, setup and invocation examples</small></span>
-                        </a>
-                        <a href="tools" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="tools-guide-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">?</span>
-                            <span><strong>Tools Guide</strong><small>What each tool does and when to use it</small></span>
-                        </a>
-                    </div>
-                </details>
-                <details open class="neo-tools-category" data-tools-category aria-labelledby="tools-category-data-encoding">
-                    <summary id="tools-category-data-encoding"><span>Data & encoding <span class="neo-tools-category__count" data-tools-category-count></span></span><span class="neo-tools-category__chevron" aria-hidden="true">&#8250;</span></summary>
-                    <div class="neo-tools-category__grid">
-                        <button data-testid="json-parser-menu-item"
-                                @onclick="OpenJsonParser"
-                                class="neo-toolbar-menu-item"
-                                type="button">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan">
-                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg>
-                            </span>
-                            <span><strong>JSON Parser</strong><small>Normalize escaped JSON text</small></span>
-                        </button>
-                        <button type="button" @onclick="OpenJsonTable" class="neo-toolbar-menu-item" data-testid="json-to-table-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan">
-                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 9v12M3 15h18"/></svg>
-                            </span>
-                            <span><strong>JSON to Table</strong><small>Explore JSON and export tables locally</small></span>
-                        </button>
-                        <button data-testid="base64-menu-item" @onclick="OpenBase64" class="neo-toolbar-menu-item" type="button">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">64</span>
-                            <span><strong>Base64 Encode / Decode</strong><small>Convert text and files locally</small></span>
-                        </button>
-                    </div>
-                </details>
-                <details open class="neo-tools-category" data-tools-category aria-labelledby="tools-category-markdown-documents">
-                    <summary id="tools-category-markdown-documents"><span>Markdown & documents <span class="neo-tools-category__count" data-tools-category-count></span></span><span class="neo-tools-category__chevron" aria-hidden="true">&#8250;</span></summary>
-                    <div class="neo-tools-category__grid">
-                        <a href="tools/markdown-live-preview" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="markdown-live-preview-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">MD</span>
-                            <span><strong>Markdown Live Preview</strong><small>Write, preview, recover drafts and export documents</small></span>
-                        </a>
-                        <a href="tools/markdown-to-docx" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="markdown-docx-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">W</span>
-                            <span><strong>Markdown to DOCX</strong><small>Download editable Word documents locally</small></span>
-                        </a>
-                        <a href="tools/markdown-to-cards" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="markdown-cards-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">â–¤</span>
-                            <span><strong>Markdown to Cards</strong><small>Split articles into cards and download a ZIP</small></span>
-                        </a>
-                        <a href="tools/markdown-to-text" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="markdown-text-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">T</span>
-                            <span><strong>Markdown to Text</strong><small>Strip formatting, copy text or sanitized HTML</small></span>
-                        </a>
-                    </div>
-                </details>
-                <details open class="neo-tools-category" data-tools-category aria-labelledby="tools-category-diagrams-math">
-                    <summary id="tools-category-diagrams-math"><span>Diagrams & math <span class="neo-tools-category__count" data-tools-category-count></span></span><span class="neo-tools-category__chevron" aria-hidden="true">&#8250;</span></summary>
-                    <div class="neo-tools-category__grid">
-                        <a href="tools/diagram-editor" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="diagram-editor-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">â—‡</span>
-                            <span><strong>draw.io Diagram Editor</strong><small>Create workflows and architecture diagrams</small></span>
-                        </a>
-                        <a href="tools/mermaid-to-image" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="mermaid-image-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">â—‡</span>
-                            <span><strong>Mermaid to Image</strong><small>Preview diagrams and export PNG, SVG, or PDF</small></span>
-                        </a>
-                        <a href="tools/formula-to-image" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="formula-image-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">âˆ‘</span>
-                            <span><strong>Formula to Image</strong><small>LaTeX math with transparent PNG and SVG export</small></span>
-                        </a>
-                    </div>
-                </details>
-                <details open class="neo-tools-category" data-tools-category aria-labelledby="tools-category-images-media">
-                    <summary id="tools-category-images-media"><span>Images & media <span class="neo-tools-category__count" data-tools-category-count></span></span><span class="neo-tools-category__chevron" aria-hidden="true">&#8250;</span></summary>
-                    <div class="neo-tools-category__grid">
-                        <a href="tools/html-to-image" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="html-image-menu-item">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--cyan" aria-hidden="true">&lt;/&gt;</span>
-                            <span><strong>HTML to Image</strong><small>Preview HTML/CSS and export images or PDF</small></span>
-                        </a>
-                        <button data-testid="code-image-menu-item"
-                                @onclick="OpenCodeImage"
-                                class="neo-toolbar-menu-item"
-                                type="button">
-                            <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--pink">
-                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 9-3 3 3 3"/><path d="m15 9 3 3-3 3"/></svg>
-                            </span>
-                            <span><strong>Markdown + Code Converter</strong><small>Styled PNG, JPEG, WebP, and PDF</small></span>
-                        </button>
-                        @if (!IsVercelApp)
-                        {
-                            <a href="tools/youtube-downloader" @onclick="DismissToolbarMenus" class="neo-toolbar-menu-item" data-testid="youtube-downloader-menu-item">
-                                <span class="neo-toolbar-menu-item__icon neo-toolbar-menu-item__icon--pink" aria-hidden="true">â–¶</span>
-                                <span><strong>YouTube Downloader</strong><small>Save video and audio on this computer</small></span>
-                            </a>
-                        }
-                    </div>
-                </details>
-                <p class="neo-tools-modal__empty" data-tools-empty hidden>No tools found. Try a different search.</p>
-            </div>
-        </section>
-    </div>
-}
-
 <GlobalGistSearch IsOpen="@IsGlobalSearchOpen"
                   IsAuthenticated="@AppState.IsAuthenticated"
                   AccountUsername="@(AppState.CurrentProfile?.GithubUsername ?? string.Empty)"
@@ -230,7 +100,6 @@
     private bool IsProfileReady;
     private bool ProfileLoadFailed;
     private bool AreFilesBlurred { get; set; }
-    private bool IsToolsMenuOpen { get; set; }
     private bool IsVercelApp => new Uri(Navigation.BaseUri).Host is var host &&
         (host.Equals("vercel.app", StringComparison.OrdinalIgnoreCase) || host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase));
     private bool IsGlobalSearchOpen { get; set; }
@@ -239,19 +108,16 @@
     private bool IsBase64Open { get; set; }
     private bool IsJsonTableOpen { get; set; }
     private bool IsCodeImageOpen { get; set; }
-    private bool ShouldFocusToolsMenu { get; set; }
     private bool ShouldRestoreToolsFocus { get; set; }
     private bool ShouldRestoreSearchFocus { get; set; }
     private NavMenu? WorkspaceNavigation;
     private ElementReference GlobalSearchTrigger { get; set; }
-    private ElementReference ToolsSearchInput { get; set; }
-    private ElementReference ToolsDialog { get; set; }
     private ElementReference? GuideToolTrigger;
     private EventCallback<(string Name, ElementReference Trigger)> OpenWorkbenchTool =>
         EventCallback.Factory.Create<(string Name, ElementReference Trigger)>(this, OpenToolFromGuide);
     private IJSObjectReference? AppShellModule { get; set; }
     private bool IsUtilityOpen => IsJsonParserOpen || IsCodeImageOpen || IsBase64Open || IsJsonTableOpen;
-    private bool IsModalOpen => IsToolsMenuOpen || IsUtilityOpen || IsGlobalSearchOpen;
+    private bool IsModalOpen => IsUtilityOpen || IsGlobalSearchOpen;
 
     protected override async Task OnInitializedAsync()
     {
@@ -297,17 +163,6 @@
             StateHasChanged();
         }
 
-        if (ShouldFocusToolsMenu)
-        {
-            ShouldFocusToolsMenu = false;
-            await ToolsSearchInput.FocusAsync();
-            if (AppShellModule is not null)
-            {
-                await AppShellModule.InvokeVoidAsync("restoreToolCategories", ToolsDialog);
-                await AppShellModule.InvokeVoidAsync("activateFocusTrap", ToolsDialog);
-            }
-        }
-
         if (ShouldRestoreToolsFocus)
         {
             ShouldRestoreToolsFocus = false;
@@ -326,64 +181,6 @@
         }
     }
 
-    private async Task FilterToolsAsync(ChangeEventArgs args)
-    {
-        if (AppShellModule is not null)
-            await AppShellModule.InvokeVoidAsync("filterTools", ToolsDialog, args.Value?.ToString() ?? string.Empty);
-    }
-
-    private Task ExpandAllToolCategoriesAsync() => SetAllToolCategoriesAsync(true);
-    private Task CollapseAllToolCategoriesAsync() => SetAllToolCategoriesAsync(false);
-
-    private async Task SetAllToolCategoriesAsync(bool expanded)
-    {
-        if (AppShellModule is not null)
-            await AppShellModule.InvokeVoidAsync("setAllToolCategories", ToolsDialog, expanded);
-    }
-
-    private void ToggleToolsMenu()
-    {
-        if (IsToolsMenuOpen)
-        {
-            IsToolsMenuOpen = false;
-            return;
-        }
-
-        IsToolsMenuOpen = true;
-        ShouldFocusToolsMenu = true;
-    }
-
-    private void OpenRibbonTools(ElementReference trigger)
-    {
-        GuideToolTrigger = trigger;
-        ToggleToolsMenu();
-    }
-
-    private void CloseToolbarMenus()
-    {
-        if (IsToolsMenuOpen)
-        {
-            ShouldRestoreToolsFocus = true;
-        }
-
-        DismissToolbarMenus();
-    }
-
-    private void DismissToolbarMenus()
-    {
-        IsToolsMenuOpen = false;
-        ShouldFocusToolsMenu = false;
-    }
-
-    private void HandleToolsMenuKeyDown(KeyboardEventArgs args)
-    {
-        if (args.Key == "Escape")
-        {
-            IsToolsMenuOpen = false;
-            ShouldRestoreToolsFocus = true;
-        }
-    }
-
     private async Task ToggleFileBlurAsync()
     {
         AreFilesBlurred = !AreFilesBlurred;
@@ -397,7 +194,6 @@
             return;
         }
 
-        DismissToolbarMenus();
         IsGlobalSearchOpen = true;
     }
 
@@ -416,7 +212,6 @@
     private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
         GuideToolTrigger = null;
-        DismissToolbarMenus();
         _ = InvokeAsync(StateHasChanged);
     }
 
@@ -434,7 +229,6 @@
 
     private void OpenJsonParser()
     {
-        DismissToolbarMenus();
         IsJsonParserOpen = true;
     }
 
@@ -446,13 +240,11 @@
 
     private void OpenBase64()
     {
-        DismissToolbarMenus();
         IsBase64Open = true;
     }
 
     private void OpenJsonTable()
     {
-        DismissToolbarMenus();
         IsJsonTableOpen = true;
     }
 
@@ -470,7 +262,6 @@
 
     private void OpenCodeImage()
     {
-        DismissToolbarMenus();
         IsCodeImageOpen = true;
     }
 

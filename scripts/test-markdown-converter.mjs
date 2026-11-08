@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 
 export async function checkMarkdownConverter({ evaluate, send, sessionId, waitFor }) {
   console.log('Checking converter UI…');
-  await waitFor(`Boolean(document.querySelector('[data-testid="tools-trigger"]'))`, 'the Tools menu', 60000);
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
+  await waitFor(`Boolean(document.querySelector('#workspace-tab-Media'))`, 'the Tools menu', 60000);
+  await evaluate(`document.querySelector('#workspace-tab-Media').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="code-image-menu-item"]'))`, 'the converter menu item');
   await evaluate(`document.querySelector('[data-testid="code-image-menu-item"]').click()`);
   await waitFor(`Boolean(document.querySelector('.code-image-overlay .code-image-markdown h1'))`, 'Markdown as the default mode');

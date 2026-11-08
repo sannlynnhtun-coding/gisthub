@@ -2,21 +2,13 @@
     <div class="workspace-tabs" role="tablist" aria-label="Workspace commands">
         @foreach (var tab in Tabs)
         {
-            <button id="@($"workspace-tab-{tab}")" role="tab" type="button"
+            <button @ref="TabButtons[tab]" data-testid="@(tab == "Tools" ? "tools-trigger" : null)" id="@($"workspace-tab-{tab}")" role="tab" type="button"
                     aria-selected="@(SelectedTab == tab ? "true" : "false")" aria-controls="workspace-commands"
                     tabindex="@(SelectedTab == tab ? 0 : -1)" @onclick="() => SelectedTab = tab">@tab</button>
         }
     </div>
     <div id="workspace-commands" role="tabpanel" aria-labelledby="@($"workspace-tab-{SelectedTab}")" class="workspace-commands">
         <div class="workspace-command-area">
-            <div class="workspace-command-group workspace-tools-group" aria-label="Tools menu">
-                <button @ref="ToolsButton" data-testid="tools-trigger" class="workspace-tools-trigger" type="button"
-                        @onclick="() => OnOpenTools.InvokeAsync(ToolsButton)" aria-label="Tools"
-                        aria-haspopup="dialog" aria-expanded="@IsToolsMenuOpen" aria-controls="tools-menu" title="Open tools">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5-5l2.1 2.1-1.4 1.4-2.1-2.1a4 4 0 0 0 5 5l-7.6 7.6a2.1 2.1 0 1 0 3 3l7.6-7.6a4 4 0 0 0 5-5l-2.1 2.1-1.4-1.4 2.1-2.1a4 4 0 0 0-5 5Z"/></svg>
-                    <span>Tools <span aria-hidden="true">▾</span></span>
-                </button>
-            </div>
         @switch (SelectedTab)
         {
             case "Home":
@@ -31,10 +23,113 @@
                 </div>
                 break;
             case "Tools":
-                <div class="workspace-command-group" aria-label="Workbench">
-                    <NavLink href="tools" Match="NavLinkMatch.All"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h7l2 2 2-2h7v16h-7l-2 2-2-2H3z" fill="hsl(var(--secondary))"/><path d="M12 6v16M6 9h3M15 9h3"/></svg><span>Tools Guide</span></NavLink>
-                    <NavLink href="tools/markdown-live-preview"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" fill="hsl(var(--secondary))"/><path d="M5 15V9l3 3 3-3v6M15 11l2 3 2-3M17 8v6"/></svg><span>Markdown Live Preview</span></NavLink>
-                    <NavLink href="agent-skills"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="14" rx="3" fill="hsl(var(--secondary))"/><path d="M12 2v4M8 11h1M15 11h1M8 16h8M1 10v6M23 10v6"/></svg><span>AI Tools &amp; Skills</span></NavLink>
+                <div class="ribbon-tool-group" role="group" aria-label="Getting started">
+                    <div class="ribbon-tool-items">
+                        <a href="agent-skills" class="ribbon-tool" title="AI Tools &amp; Skills" data-testid="agent-skills-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">AI</span>
+                            <span>AI Tools &amp; Skills</span>
+                        </a>
+                        <a href="tools" class="ribbon-tool" title="Tools Guide" data-testid="tools-guide-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">?</span>
+                            <span>Tools Guide</span>
+                        </a>
+                    </div>
+                    <span class="ribbon-group-label">Getting started</span>
+                </div>
+                break;
+            case "Data":
+                <div class="ribbon-tool-group" role="group" aria-label="Data & encoding">
+                    <div class="ribbon-tool-items">
+                        <button data-testid="json-parser-menu-item"
+                                @ref='ToolTriggers["JSON Parser"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("JSON Parser", ToolTriggers["JSON Parser"]))'
+                                class="ribbon-tool" title="JSON Parser"
+                                type="button">
+                            <span class="ribbon-tool-icon">
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg>
+                            </span>
+                            <span>JSON Parser</span>
+                        </button>
+                        <button type="button" @ref='ToolTriggers["JSON to Table"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("JSON to Table", ToolTriggers["JSON to Table"]))' class="ribbon-tool" title="JSON to Table" data-testid="json-to-table-menu-item">
+                            <span class="ribbon-tool-icon">
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 9v12M3 15h18"/></svg>
+                            </span>
+                            <span>JSON to Table</span>
+                        </button>
+                        <button data-testid="base64-menu-item" @ref='ToolTriggers["Base64 Encode / Decode"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Base64 Encode / Decode", ToolTriggers["Base64 Encode / Decode"]))' class="ribbon-tool" title="Base64 Encode / Decode" type="button">
+                            <span class="ribbon-tool-icon" aria-hidden="true">64</span>
+                            <span>Base64 Encode / Decode</span>
+                        </button>
+                    </div>
+                    <span class="ribbon-group-label">Data & encoding</span>
+                </div>
+                break;
+            case "Markdown":
+                <div class="ribbon-tool-group" role="group" aria-label="Markdown & documents">
+                    <div class="ribbon-tool-items">
+                        <a href="tools/markdown-live-preview" class="ribbon-tool" title="Markdown Live Preview" data-testid="markdown-live-preview-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">MD</span>
+                            <span>Markdown Live Preview</span>
+                        </a>
+                        <a href="tools/markdown-to-docx" class="ribbon-tool" title="Markdown to DOCX" data-testid="markdown-docx-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">W</span>
+                            <span>Markdown to DOCX</span>
+                        </a>
+                        <a href="tools/markdown-to-cards" class="ribbon-tool" title="Markdown to Cards" data-testid="markdown-cards-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">&#9636;</span>
+                            <span>Markdown to Cards</span>
+                        </a>
+                        <a href="tools/markdown-to-text" class="ribbon-tool" title="Markdown to Text" data-testid="markdown-text-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">T</span>
+                            <span>Markdown to Text</span>
+                        </a>
+                    </div>
+                    <span class="ribbon-group-label">Markdown & documents</span>
+                </div>
+                break;
+            case "Diagrams":
+                <div class="ribbon-tool-group" role="group" aria-label="Diagrams & math">
+                    <div class="ribbon-tool-items">
+                        <a href="tools/diagram-editor" class="ribbon-tool" title="draw.io Diagram Editor" data-testid="diagram-editor-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">&#9671;</span>
+                            <span>draw.io Diagram Editor</span>
+                        </a>
+                        <a href="tools/mermaid-to-image" class="ribbon-tool" title="Mermaid to Image" data-testid="mermaid-image-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">&#9671;</span>
+                            <span>Mermaid to Image</span>
+                        </a>
+                        <a href="tools/formula-to-image" class="ribbon-tool" title="Formula to Image" data-testid="formula-image-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">&#8721;</span>
+                            <span>Formula to Image</span>
+                        </a>
+                    </div>
+                    <span class="ribbon-group-label">Diagrams & math</span>
+                </div>
+                break;
+            case "Media":
+                <div class="ribbon-tool-group" role="group" aria-label="Images & media">
+                    <div class="ribbon-tool-items">
+                        <a href="tools/html-to-image" class="ribbon-tool" title="HTML to Image" data-testid="html-image-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">&lt;/&gt;</span>
+                            <span>HTML to Image</span>
+                        </a>
+                        <button data-testid="code-image-menu-item"
+                                @ref='ToolTriggers["Markdown + Code Converter"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown + Code Converter", ToolTriggers["Markdown + Code Converter"]))'
+                                class="ribbon-tool" title="Markdown + Code Converter"
+                                type="button">
+                            <span class="ribbon-tool-icon">
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 9-3 3 3 3"/><path d="m15 9 3 3-3 3"/></svg>
+                            </span>
+                            <span>Markdown + Code Converter</span>
+                        </button>
+                        @if (!IsVercelApp)
+                        {
+                            <a href="tools/youtube-downloader" class="ribbon-tool" title="YouTube Downloader" data-testid="youtube-downloader-menu-item">
+                                <span class="ribbon-tool-icon" aria-hidden="true">&#9654;</span>
+                                <span>YouTube Downloader</span>
+                            </a>
+                        }
+                    </div>
+                    <span class="ribbon-group-label">Images & media</span>
                 </div>
                 break;
             case "View":
@@ -105,13 +200,14 @@
 @inject NavigationManager Navigation
 
 @code {
-    private static readonly string[] Tabs = ["Home", "Discover", "Tools", "View"];
+    private static readonly string[] Tabs = ["Home", "Discover", "Tools", "Data", "Markdown", "Diagrams", "Media", "View"];
     private string SelectedTab = "Home";
     private bool IsLogoutConfirmOpen;
-    private ElementReference ToolsButton;
-    [Parameter] public EventCallback<ElementReference> OnOpenTools { get; set; }
-    [Parameter] public bool IsToolsMenuOpen { get; set; }
-    public ValueTask FocusToolsAsync() => ToolsButton.FocusAsync();
+    private readonly Dictionary<string, ElementReference> TabButtons = new();
+    private readonly Dictionary<string, ElementReference> ToolTriggers = new();
+    [Parameter] public EventCallback<(string Name, ElementReference Trigger)> OnOpenWorkbenchTool { get; set; }
+    [Parameter] public bool IsVercelApp { get; set; }
+    public ValueTask FocusToolsAsync() => TabButtons["Tools"].FocusAsync();
 
     protected override void OnInitialized()
     {

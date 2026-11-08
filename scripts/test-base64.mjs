@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 
 export async function checkBase64({ evaluate, send, sessionId, waitFor }) {
-  const tools = '[data-testid="tools-trigger"]';
+  const tools = '#workspace-tab-Data';
   const menuItem = '[data-testid="base64-menu-item"]';
   const dialog = '.base64-overlay';
   const input = `${dialog} .json-parser-pane--input textarea`;

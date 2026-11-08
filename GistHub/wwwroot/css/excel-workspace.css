@@ -12,8 +12,8 @@
 .neo-main > .excel-topbar {
   position: relative;
   flex-shrink: 0;
-  min-height: 56px;
-  height: 56px;
+  min-height: 44px;
+  height: 44px;
   padding: 0 20px !important;
   border: 0 !important;
   border-bottom: 1px solid hsl(var(--border)) !important;
@@ -40,17 +40,17 @@
 }
 .excel-topbar .neo-new-snippet__label { display: none !important; }
 .neo-main > .workspace-ribbon { position: relative; z-index: 20; padding-bottom: 8px; border: 0 !important; border-bottom: 1px solid hsl(var(--border)) !important; }
-.workspace-ribbon .workspace-tabs { gap: 6px; height: 46px; padding: 0 24px; border: 0; align-items: stretch; }
+.workspace-ribbon .workspace-tabs { gap: 6px; height: auto; min-height: 36px; flex-wrap: wrap; overflow: visible; padding: 0 24px; border: 0; align-items: stretch; }
 .neo-main .workspace-ribbon .workspace-tabs button {
   position: relative;
   flex-shrink: 0;
-  min-height: 44px;
-  padding: 8px 14px 12px;
+  min-height: 36px;
+  padding: 4px 12px 8px;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   color: hsl(var(--muted-foreground)) !important;
-  font: 400 18px var(--font-ui) !important;
+  font: 400 15px var(--font-ui) !important;
   box-shadow: none !important;
   transform: none !important;
   text-transform: none !important;
@@ -59,25 +59,24 @@
 .workspace-tabs button[aria-selected="true"]::after { content: ""; position: absolute; height: 4px; border-radius: 2px; background: hsl(var(--primary)); bottom: 4px; left: 14px; right: 14px; }
 .neo-main .workspace-ribbon .workspace-commands {
   margin: 0 14px;
-  padding: 10px 16px;
-  min-height: 120px;
+  padding: 4px 10px;
+  min-height: 92px;
   gap: 16px;
   border: 1px solid hsl(var(--border)) !important;
-  border-radius: 15px !important;
+  border-radius: 8px !important;
   background: hsl(var(--card)) !important;
   box-shadow: 0 1px 2px hsl(var(--foreground) / .03) !important;
 }
-.workspace-ribbon .workspace-command-area { gap: 16px; align-items: center; }
-.workspace-ribbon .workspace-command-group { gap: 4px; align-items: center; }
-.workspace-ribbon .workspace-tools-group { border-right: 1px solid hsl(var(--border)); padding-right: 16px; }
+.workspace-ribbon .workspace-command-area { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; overflow: visible; min-width: 0; }
+.workspace-ribbon .workspace-command-group { gap: 4px; align-items: center; flex-wrap: wrap; min-width: 0; }
 .neo-main .workspace-ribbon .workspace-command-group > :is(a, button) {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
-  width: 94px;
-  height: 88px;
-  min-height: 88px;
+  gap: 4px;
+  width: 100px;
+  height: 60px;
+  min-height: 60px;
   padding: 6px !important;
   border: 0 !important;
   border-radius: 4px !important;
@@ -85,35 +84,47 @@
   color: hsl(var(--foreground)) !important;
   box-shadow: none !important;
   transform: none !important;
-  font: 400 14px/18px var(--font-ui) !important;
+  font: 400 12px/16px var(--font-ui) !important;
   text-transform: none !important;
   text-align: center;
   white-space: normal;
 }
-.workspace-ribbon .workspace-command-group > :is(a, button) > span { min-height: 36px; display: flex; align-items: center; justify-content: center; gap: 4px; }
-.workspace-ribbon .workspace-tools-trigger > svg { width: 32px; height: 32px; color: hsl(var(--primary)); }
-.workspace-ribbon .ribbon-command-icon { flex-shrink: 0; color: hsl(var(--primary)); }
+.workspace-ribbon .workspace-command-group > :is(a, button) > span { min-height: 28px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.workspace-ribbon .ribbon-command-icon { width: 22px; height: 22px; flex-shrink: 0; color: hsl(var(--primary)); }
 .neo-main .workspace-ribbon .workspace-command-group > :is(a, button):hover,
 .neo-main .excel-topbar .neo-topbar-actions :is(.neo-icon-button, .neo-new-snippet):hover { background: hsl(var(--accent)) !important; }
-.neo-main .workspace-ribbon .workspace-command-group > a.active,
-.neo-main .workspace-ribbon .workspace-tools-trigger[aria-expanded="true"] { background: hsl(var(--accent)) !important; }
+.neo-main .workspace-ribbon .workspace-command-group > a.active { background: hsl(var(--accent)) !important; }
 .neo-main .workspace-ribbon :is(button, a):focus-visible { outline: 2px solid hsl(var(--primary)) !important; outline-offset: -2px; }
-.workspace-ribbon .ribbon-setting { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; min-height: 88px; padding: 0 8px; }
+.workspace-ribbon .ribbon-setting { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; min-height: 60px; padding: 0 8px; }
 .workspace-ribbon .workspace-account { padding-left: 16px; border-left: 1px solid hsl(var(--border)); }
 .neo-main .workspace-ribbon .workspace-account .neo-profile-card { border: 0 !important; box-shadow: none !important; background: transparent !important; color: hsl(var(--foreground)) !important; border-radius: 4px !important; }
 .neo-main .workspace-ribbon .workspace-account .neo-profile-card span { color: hsl(var(--foreground)) !important; }
 .workspace-ribbon .workspace-account .neo-profile-card .underline { color: hsl(var(--muted-foreground)) !important; }
 @media (max-width: 767px) {
-  .neo-main > .excel-topbar { min-height: 48px; height: auto; padding: 8px 12px !important; flex-wrap: wrap; gap: 8px; }
+  .neo-main > .excel-topbar { min-height: 44px; height: auto; padding: 8px 12px !important; flex-wrap: wrap; gap: 8px; }
   .excel-workspace-title { display: none; }
   .excel-topbar .neo-topbar-brand { flex: 0 1 auto !important; }
   .excel-topbar .neo-topbar-actions { flex: 0 1 auto !important; flex-wrap: wrap; gap: 4px !important; }
   .workspace-ribbon .workspace-tabs { padding: 0 10px; gap: 0; }
   .neo-main .workspace-ribbon .workspace-tabs button { padding-inline: 12px; font-size: 16px !important; }
-  .neo-main .workspace-ribbon .workspace-commands { margin-inline: 8px; padding: 8px; gap: 8px; }
-  .workspace-ribbon .workspace-command-area { gap: 8px; width: 100%; }
-  .workspace-ribbon .workspace-tools-group { padding-right: 8px; }
+  .neo-main .workspace-ribbon .workspace-commands { margin-inline: 8px; padding: 8px; gap: 8px; flex-direction: column; align-items: stretch; }
+  .workspace-ribbon .workspace-command-area { gap: 8px; width: 100%; flex: 1; }
   .workspace-ribbon .workspace-command-group { gap: 0; }
   .neo-main .workspace-ribbon .workspace-command-group > :is(a, button) { width: 76px; font-size: 12px !important; }
-  .workspace-ribbon .workspace-account { border-left: 0; border-top: 1px solid hsl(var(--border)); padding: 4px 0 0; width: 100%; }
+  .workspace-ribbon .workspace-account { border-left: 0; border-top: 1px solid hsl(var(--border)); padding: 4px 0 0; flex: 0 0 auto; max-width: none; width: 100%; font-size: 11px; }
+}
+
+.workspace-ribbon .ribbon-tool-group { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; padding-right: 12px; border-right: 1px solid hsl(var(--border)); }
+.workspace-ribbon .ribbon-tool-group:last-child { padding-right: 0; border-right: 0; }
+.workspace-ribbon .ribbon-tool-items { display: grid; grid-template-rows: repeat(3, 24px); grid-auto-flow: column; column-gap: 8px; }
+.neo-main .workspace-ribbon .ribbon-tool { display: flex; align-items: center; gap: 6px; width: 156px; min-height: 24px; padding: 2px 4px !important; border: 0 !important; border-radius: 3px !important; background: transparent !important; color: hsl(var(--foreground)) !important; box-shadow: none !important; transform: none !important; font: 400 11px/16px var(--font-ui) !important; text-align: left; text-transform: none !important; white-space: nowrap; }
+.workspace-ribbon .ribbon-tool > span:last-child { overflow: hidden; text-overflow: ellipsis; }
+.workspace-ribbon .ribbon-tool-icon { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 18px; font-size: 11px; font-weight: 600; color: hsl(var(--primary)); }
+.workspace-ribbon .ribbon-tool-icon svg { width: 16px; height: 16px; }
+.workspace-ribbon .ribbon-group-label { text-align: center; color: hsl(var(--muted-foreground)); font-size: 10px; line-height: 14px; white-space: nowrap; }
+.neo-main .workspace-ribbon .ribbon-tool:hover { background: hsl(var(--accent)) !important; }
+@media (max-width: 767px) {
+  .workspace-ribbon .ribbon-tool-group { width: 100%; padding-right: 0; border-right: 0; }
+  .workspace-ribbon .ribbon-tool-items { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; }
+  .neo-main .workspace-ribbon .ribbon-tool { min-height: 32px; width: 100%; min-width: 0; }
 }

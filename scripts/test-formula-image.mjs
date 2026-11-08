@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 export async function checkFormulaImage({evaluate,send,sessionId,waitFor}) {
   await waitFor(`document.querySelector('#formula-preview math') && !document.querySelector('#formula-download').disabled`, 'a rendered formula',60000);
   const update=async(selector,value,type='input')=>evaluate(`(()=>{const el=document.querySelector(${JSON.stringify(selector)});el.value=${JSON.stringify(value)};el.dispatchEvent(new Event(${JSON.stringify(type)},{bubbles:true}));})()`);
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
+  await evaluate(`document.querySelector('#workspace-tab-Diagrams').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="formula-image-menu-item"]'))`, 'the Formula menu entry');
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
+  await evaluate(`document.querySelector('#workspace-tab-Diagrams').click()`);
   await update('#formula-source',String.raw`\frac{`);
   await waitFor(`document.querySelector('#formula-error') && document.querySelector('#formula-download').disabled`, 'invalid LaTeX with disabled export');
   await update('#formula-example','matrix','change');

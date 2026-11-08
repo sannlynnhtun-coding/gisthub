@@ -22,7 +22,7 @@ export async function checkMarkdownLive({ evaluate: rawEvaluate, send, sessionId
   await waitFor(`document.querySelector('#workspace-tab-Tools').getAttribute('aria-selected') === 'true'`, 'Tools command tab');
   assert.equal(await evaluate(`location.pathname`), '/tools/markdown-live-preview');
   assert.equal(await evaluate(`document.querySelector('#markdown-live-source').value`), source);
-  await evaluate(`document.querySelector('#workspace-tab-Tools').dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowRight', bubbles: true}))`);
+  await evaluate(`document.querySelector('#workspace-tab-Tools').dispatchEvent(new KeyboardEvent('keydown', {key: 'End', bubbles: true}))`);
   await waitFor(`document.activeElement?.id === 'workspace-tab-View' && document.activeElement.getAttribute('aria-selected') === 'true'`, 'keyboard tab navigation');
   assert.equal(await evaluate(`document.querySelectorAll('.neo-theme-picker').length`), 1);
   assert.equal(await evaluate(`document.querySelector('.workspace-command-group .neo-sound-toggle').getClientRects().length > 0`), true);
@@ -87,15 +87,11 @@ export async function checkMarkdownLive({ evaluate: rawEvaluate, send, sessionId
     }
   }
   await send('Emulation.clearDeviceMetricsOverride', {}, sessionId);
-  await evaluate(`document.querySelector('#workspace-tab-Tools').click()`);
-  await waitFor(`document.querySelector('#workspace-tab-Tools').getAttribute('aria-selected') === 'true'`, 'ribbon Tools');
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
-  await waitFor(`!!document.querySelector('#tools-menu')`, 'ribbon Tools dialog');
-  await evaluate(`document.querySelector('#tools-menu').dispatchEvent(new KeyboardEvent('keydown', {key:'Escape',bubbles:true}))`);
-  await waitFor(`!document.querySelector('#tools-menu') && document.activeElement === document.querySelector('[data-testid="tools-trigger"]')`, 'ribbon Tools focus return');
-  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
-  await waitFor(`!!document.querySelector('[data-testid="markdown-live-preview-menu-item"]')`, 'Tools entry');
+  await evaluate(`document.querySelector('#workspace-tab-Markdown').click()`);
+  await waitFor(`document.querySelector('#workspace-tab-Markdown').getAttribute('aria-selected') === 'true'`, 'Markdown ribbon');
+  assert.equal(await evaluate(`document.querySelectorAll('#tools-menu, #tools-search').length`), 0);
+  await waitFor(`!!document.querySelector('[data-testid="markdown-live-preview-menu-item"]')`, 'direct ribbon tool');
   await evaluate(`document.querySelector('[data-testid="markdown-live-preview-menu-item"]').click()`);
-  await waitFor(`!document.querySelector('#tools-menu')`, 'Tools closes on selection');
+  await waitFor(`!!document.querySelector('#markdown-live-source')`, 'ribbon navigation');
   console.log('PASS: live Markdown, safe HTML, task list/code/table, draft recovery, bounded file import, three exports, storage failures, math/diagram fallback, command tabs and responsive themes.');
 }
