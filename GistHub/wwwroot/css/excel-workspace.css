@@ -124,12 +124,20 @@
   .neo-main .workspace-ribbon .ribbon-tool { min-height: 32px; width: 100%; min-width: 0; }
 }
 
-.excel-topbar .profile-avatar { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 32px; width: 32px; height: 32px; padding: 0 !important; border: 1px solid hsl(var(--border)) !important; border-radius: 50% !important; overflow: hidden; background: hsl(var(--secondary)) !important; color: hsl(var(--foreground)) !important; box-shadow: none !important; }
-.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.profile-dropdown { position: fixed; inset: 52px 12px auto auto; margin: 0; width: min(280px, calc(100vw - 24px)); padding: 8px; border: 1px solid hsl(var(--border)); border-radius: 8px; background: hsl(var(--card)); color: hsl(var(--foreground)); box-shadow: 0 8px 24px hsl(var(--foreground) / .15); }
+.excel-topbar .profile-avatar { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; gap: 8px; min-width: 32px; height: 32px; padding: 0 !important; border: 0 !important; background: transparent !important; color: hsl(var(--foreground)) !important; box-shadow: none !important; }
+.profile-avatar img { width: 32px; height: 32px; object-fit: cover; border: 2px solid hsl(var(--card)); border-radius: 50%; outline: 1px solid hsl(var(--foreground)); outline-offset: 1px; }
+.profile-chevron { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 9px; background: hsl(var(--secondary)); }
+.profile-dropdown { position: fixed; inset: 52px 12px auto auto; margin: 0; width: min(360px, calc(100vw - 24px)); padding: 26px; border: 1px solid hsl(var(--border) / .4); border-radius: 18px; background: hsl(var(--card)); color: hsl(var(--foreground)); box-shadow: 0 6px 28px hsl(var(--foreground) / .12); font-family: var(--font-ui); }
 .profile-dropdown::backdrop { background: transparent; }
-.profile-dropdown-identity { display: flex; flex-direction: column; gap: 4px; padding: 8px; overflow-wrap: anywhere; }
-.profile-dropdown-identity span { font-size: 12px; color: hsl(var(--muted-foreground)); }
-.profile-signout { display: block; width: 100%; margin-top: 8px; padding: 8px; border-top: 1px solid hsl(var(--border)); text-align: left; color: hsl(var(--destructive)); }
-.profile-signout:hover { background: hsl(var(--accent)); }
-.excel-topbar .profile-avatar:focus-visible, .profile-signout:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
+.profile-section-label { display: block; margin: 0 0 24px; font-size: 14px; line-height: 20px; font-weight: 500; color: hsl(var(--muted-foreground)); }
+.profile-current-account { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+.profile-current-account > img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.profile-dropdown-identity { display: flex; flex-direction: column; gap: 2px; min-width: 0; overflow-wrap: anywhere; }
+.profile-dropdown-identity strong { font-size: 20px; line-height: 28px; font-weight: 600; }
+.profile-dropdown-identity p { margin: 0; font-size: 18px; line-height: 26px; color: hsl(var(--muted-foreground)); }
+.profile-dropdown-identity span { font-size: 16px; line-height: 24px; color: hsl(var(--muted-foreground)); }
+.profile-accounts { margin-bottom: 16px; text-decoration: none; }
+.profile-accounts:hover { color: hsl(var(--foreground)); }
+.profile-signout { display: block; width: 100%; padding: 4px 0; border: 0; background: transparent; text-align: left; font-size: 20px; line-height: 28px; color: hsl(var(--foreground)); }
+.profile-signout:hover { color: hsl(var(--primary)); }
+.excel-topbar .profile-avatar:focus-visible, .profile-dropdown :is(a, button):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }

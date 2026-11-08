@@ -6,13 +6,20 @@
 {
     <button @ref="Avatar" type="button" class="profile-avatar" popovertarget="profile-dropdown" aria-label="Open profile menu" aria-haspopup="dialog" title="Profile">
         <img src="@($"https://github.com/{Uri.EscapeDataString(profile.GithubUsername)}.png")" alt="" onerror="this.onerror=null;this.src='logo.svg'" />
+        <span class="profile-chevron" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m5 9 7 7 7-7"/></svg></span>
     </button>
     <div id="profile-dropdown" class="profile-dropdown" popover="auto" role="dialog" aria-label="Your profile">
-        <div class="profile-dropdown-identity">
-            <strong>@profile.Name</strong>
-            <span>@@@profile.GithubUsername</span>
+        <p class="profile-section-label">Currently in</p>
+        <div class="profile-current-account">
+            <img src="@($"https://github.com/{Uri.EscapeDataString(profile.GithubUsername)}.png")" alt="" onerror="this.onerror=null;this.src='logo.svg'" />
+            <div class="profile-dropdown-identity">
+                <strong>@profile.Name</strong>
+                <p>GitHub account</p>
+                <span>@@@profile.GithubUsername</span>
+            </div>
         </div>
-        <button type="button" class="profile-signout" popovertarget="profile-dropdown" popovertargetaction="hide" @onclick="ShowLogoutConfirm">Sign out</button>
+        <a href="login" class="profile-section-label profile-accounts">Your accounts</a>
+        <button type="button" class="profile-signout" popovertarget="profile-dropdown" popovertargetaction="hide" @onclick="ShowLogoutConfirm">Log out</button>
     </div>
 }
 else
