@@ -1937,8 +1937,8 @@ span[class~="rounded-md"][class~="border"] {
   transform: rotate(12deg);
 }
 
-.neo-login-screen > *,
-.neo-not-found > * {
+.neo-login-screen > :not(.fixed),
+.neo-not-found > :not(.fixed) {
   position: relative;
   z-index: 1;
 }
