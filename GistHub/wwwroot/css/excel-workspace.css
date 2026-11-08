@@ -1,0 +1,119 @@
+/* Excel-inspired ribbon geometry and light palette. */
+.neo-main > .excel-topbar,
+.neo-main > .workspace-ribbon {
+  color: #323130 !important;
+  background: #f3f3f3 !important;
+  font-family: "Segoe UI", Arial, sans-serif !important;
+  font-size: 14px;
+  letter-spacing: normal !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+.neo-main > .excel-topbar {
+  position: relative;
+  flex-shrink: 0;
+  min-height: 56px;
+  height: 56px;
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e1e1e1 !important;
+}
+.excel-topbar .neo-topbar-brand { gap: 8px !important; flex: 0 1 auto; }
+.excel-topbar .neo-topbar-brand .neo-brand-mark { display: block !important; width: 24px !important; height: 24px !important; border: 0 !important; border-radius: 4px !important; box-shadow: none !important; }
+.excel-topbar .neo-kicker { display: none !important; }
+.excel-topbar .neo-topbar-brand h1 { font: 400 15px "Segoe UI", Arial, sans-serif !important; border: 0 !important; outline: none !important; background: none !important; color: #323130 !important; }
+.excel-topbar .neo-topbar-brand h1 a { border: 0 !important; color: inherit !important; box-shadow: none !important; background: transparent !important; text-decoration: none !important; }
+.excel-workspace-title { position: absolute; left: 50%; transform: translateX(-50%); font-weight: 600; }
+.excel-topbar .neo-topbar-actions { gap: 8px !important; flex: 0 1 auto; }
+.neo-main > .excel-topbar .neo-topbar-actions :is(.neo-icon-button, .neo-new-snippet) {
+  min-width: 32px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 5px !important;
+  border: 0 !important;
+  border-radius: 4px !important;
+  background: transparent !important;
+  color: #666 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.excel-topbar .neo-new-snippet__label { display: none !important; }
+.neo-main > .workspace-ribbon { position: relative; z-index: 20; padding-bottom: 8px; border: 0 !important; border-bottom: 1px solid #e1e1e1 !important; }
+.workspace-ribbon .workspace-tabs { gap: 6px; height: 46px; padding: 0 24px; border: 0; align-items: stretch; }
+.neo-main .workspace-ribbon .workspace-tabs button {
+  position: relative;
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 8px 14px 12px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #666 !important;
+  font: 400 18px "Segoe UI", Arial, sans-serif !important;
+  box-shadow: none !important;
+  transform: none !important;
+  text-transform: none !important;
+}
+.neo-main .workspace-ribbon .workspace-tabs button[aria-selected="true"] { color: #323130 !important; font-weight: 600 !important; }
+.workspace-tabs button[aria-selected="true"]::after { content: ""; position: absolute; height: 4px; border-radius: 2px; background: #217346; bottom: 4px; left: 14px; right: 14px; }
+.neo-main .workspace-ribbon .workspace-commands {
+  margin: 0 14px;
+  padding: 10px 16px;
+  min-height: 120px;
+  gap: 16px;
+  border: 1px solid #e1e1e1 !important;
+  border-radius: 15px !important;
+  background: #fff !important;
+  box-shadow: 0 1px 2px #00000003 !important;
+}
+.workspace-ribbon .workspace-command-area { gap: 16px; align-items: center; }
+.workspace-ribbon .workspace-command-group { gap: 4px; align-items: center; }
+.workspace-ribbon .workspace-tools-group { border-right: 1px solid #e1e1e1; padding-right: 16px; }
+.neo-main .workspace-ribbon .workspace-command-group > :is(a, button) {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  width: 94px;
+  height: 88px;
+  min-height: 88px;
+  padding: 6px !important;
+  border: 0 !important;
+  border-radius: 4px !important;
+  background: transparent !important;
+  color: #323130 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  font: 400 14px/18px "Segoe UI", Arial, sans-serif !important;
+  text-transform: none !important;
+  text-align: center;
+  white-space: normal;
+}
+.workspace-ribbon .workspace-command-group > :is(a, button) > span { min-height: 36px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.workspace-ribbon .workspace-tools-trigger > svg { width: 32px; height: 32px; color: #217346; }
+.workspace-ribbon .ribbon-command-icon { flex-shrink: 0; color: #217346; }
+.neo-main .workspace-ribbon .workspace-command-group > :is(a, button):hover,
+.neo-main .excel-topbar .neo-topbar-actions :is(.neo-icon-button, .neo-new-snippet):hover { background: #e8e8e8 !important; }
+.neo-main .workspace-ribbon .workspace-command-group > a.active,
+.neo-main .workspace-ribbon .workspace-tools-trigger[aria-expanded="true"] { background: #e8e8e8 !important; }
+.neo-main .workspace-ribbon :is(button, a):focus-visible { outline: 2px solid #217346 !important; outline-offset: -2px; }
+.workspace-ribbon .ribbon-setting { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; min-height: 88px; padding: 0 8px; }
+.workspace-ribbon .workspace-account { padding-left: 16px; border-left: 1px solid #e1e1e1; }
+.neo-main .workspace-ribbon .workspace-account .neo-profile-card { border: 0 !important; box-shadow: none !important; background: transparent !important; color: #323130 !important; border-radius: 4px !important; }
+.neo-main .workspace-ribbon .workspace-account .neo-profile-card span { color: #323130 !important; }
+.workspace-ribbon .workspace-account .neo-profile-card .underline { color: #666 !important; }
+@media (max-width: 767px) {
+  .neo-main > .excel-topbar { min-height: 48px; height: auto; padding: 8px 12px !important; flex-wrap: wrap; gap: 8px; }
+  .excel-workspace-title { display: none; }
+  .excel-topbar .neo-topbar-brand { flex: 0 1 auto !important; }
+  .excel-topbar .neo-topbar-actions { flex: 0 1 auto !important; flex-wrap: wrap; gap: 4px !important; }
+  .workspace-ribbon .workspace-tabs { padding: 0 10px; gap: 0; }
+  .neo-main .workspace-ribbon .workspace-tabs button { padding-inline: 12px; font-size: 16px !important; }
+  .neo-main .workspace-ribbon .workspace-commands { margin-inline: 8px; padding: 8px; gap: 8px; }
+  .workspace-ribbon .workspace-command-area { gap: 8px; width: 100%; }
+  .workspace-ribbon .workspace-tools-group { padding-right: 8px; }
+  .workspace-ribbon .workspace-command-group { gap: 0; }
+  .neo-main .workspace-ribbon .workspace-command-group > :is(a, button) { width: 76px; font-size: 12px !important; }
+  .workspace-ribbon .workspace-account { border-left: 0; border-top: 1px solid #e1e1e1; padding: 4px 0 0; width: 100%; }
+}

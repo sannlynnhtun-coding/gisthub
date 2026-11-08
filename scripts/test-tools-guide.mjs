@@ -17,6 +17,17 @@ export async function checkToolsGuide({evaluate,send,sessionId,waitFor}) {
     return { top: Math.abs(tools.top-command.top), height: Math.abs(tools.height-command.height) };
   })()`);
   assert.ok(alignment.top <= 1 && alignment.height <= 1, 'Tools aligns with the ribbon commands');
+  const ribbon = await evaluate(`(() => {
+    const panel = getComputedStyle(document.querySelector('.workspace-commands'));
+    const tab = document.querySelector('.workspace-tabs [aria-selected="true"]');
+    return { background: panel.backgroundColor, radius: panel.borderTopLeftRadius,
+      underline: getComputedStyle(tab, '::after').backgroundColor,
+      icons: document.querySelectorAll('.workspace-command-group .ribbon-command-icon').length };
+  })()`);
+  assert.equal(ribbon.background, 'rgb(255, 255, 255)');
+  assert.equal(ribbon.radius, '15px');
+  assert.equal(ribbon.underline, 'rgb(33, 115, 70)');
+  assert.ok(ribbon.icons > 0, 'ribbon commands have labelled icons');
   await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="tools-guide-menu-item"]'))`, 'the guide modal link');
   await waitFor(`document.activeElement === document.querySelector('#tools-search')`, 'tools search keyboard focus');

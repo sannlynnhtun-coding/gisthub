@@ -6,9 +6,9 @@
      inert="@(IsModalOpen ? "" : null)">
 
     <main class="neo-main flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        <header class="neo-topbar flex items-center justify-between px-6 glass sticky top-0 z-40">
+        <header class="neo-topbar excel-topbar flex items-center justify-between px-6 glass sticky top-0 z-40">
             <div class="neo-topbar-brand flex items-center gap-4">
-                <a href="my-gists" aria-label="GistHub â€” My Collection" class="neo-brand-mark md:hidden w-9 h-9 overflow-hidden rounded-md">
+                <a href="my-gists" aria-label="GistHub â€” My Collection" class="neo-brand-mark w-9 h-9 overflow-hidden rounded-md">
                     <img src="logo.svg" class="w-full h-full object-cover" alt="" />
                 </a>
                 <div>
@@ -17,6 +17,7 @@
                 </div>
             </div>
 
+            <div class="excel-workspace-title">Local workspace</div>
             <div class="neo-topbar-actions flex items-center gap-3">
                 <NavLink href="editor" class="neo-new-snippet btn btn-primary btn-md" title="Create a new snippet" aria-label="New snippet">
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
