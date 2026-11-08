@@ -18,7 +18,10 @@ export async function checkProfileMenu({ evaluate, send, sessionId, waitFor }) {
     assert.equal(await evaluate(`document.querySelector('.profile-accounts').getAttribute('href')`), 'login');
     assert.equal(await evaluate(`document.querySelector('.profile-signout').textContent`), 'Log out');
     assert.equal(await evaluate(`getComputedStyle(document.querySelector('#profile-dropdown')).borderTopLeftRadius`), '18px');
-    assert.equal(await evaluate(`Math.round(document.querySelector('.profile-current-account > img').getBoundingClientRect().width)`), 80);
+    assert.equal(await evaluate(`getComputedStyle(document.querySelector('.profile-dropdown-identity strong')).fontSize`), '14px');
+    assert.equal(await evaluate(`getComputedStyle(document.querySelector('.profile-dropdown-identity span')).fontSize`), '12px');
+    assert.equal(await evaluate(`getComputedStyle(document.querySelector('.profile-signout')).fontSize`), '14px');
+    assert.equal(await evaluate(`Math.round(document.querySelector('.profile-current-account > img').getBoundingClientRect().width)`), 56);
     assert.ok(await evaluate(`document.querySelector('#profile-dropdown').getBoundingClientRect().right <= innerWidth`));
     assert.ok(await evaluate(`document.querySelector('.profile-avatar').getBoundingClientRect().right > innerWidth - 50`), 'avatar is at the top right');
     await send('Input.dispatchKeyEvent', {type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27,nativeVirtualKeyCode:27}, sessionId);
