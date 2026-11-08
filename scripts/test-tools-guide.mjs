@@ -9,6 +9,14 @@ export async function checkToolsGuide({evaluate,send,sessionId,waitFor}) {
   assert.equal(await evaluate(`document.querySelectorAll('[aria-label="Available tools"] article a, [aria-label="Available tools"] article button').length`),14);
   assert.ok(tools.find(tool=>tool.name==='Formula to Image').description.includes('MathML'));
   assert.ok(tools.find(tool=>tool.name==='YouTube Downloader').description.includes('Start-LocalDownloader.cmd'));
+  assert.equal(await evaluate(`document.querySelectorAll('[data-testid="tools-trigger"]').length`), 1);
+  assert.equal(await evaluate(`!!document.querySelector('.workspace-commands [data-testid="tools-trigger"]') && !document.querySelector('.neo-topbar [data-testid="tools-trigger"]')`), true);
+  const alignment = await evaluate(`(() => {
+    const tools = document.querySelector('[data-testid="tools-trigger"]').getBoundingClientRect();
+    const command = document.querySelector('.workspace-command-area .workspace-command-group:not(.workspace-tools-group) a').getBoundingClientRect();
+    return { top: Math.abs(tools.top-command.top), height: Math.abs(tools.height-command.height) };
+  })()`);
+  assert.ok(alignment.top <= 1 && alignment.height <= 1, 'Tools aligns with the ribbon commands');
   await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="tools-guide-menu-item"]'))`, 'the guide modal link');
   await waitFor(`document.activeElement === document.querySelector('#tools-search')`, 'tools search keyboard focus');

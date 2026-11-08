@@ -18,24 +18,6 @@
             </div>
 
             <div class="neo-topbar-actions flex items-center gap-3">
-                <div class="neo-toolbar-menu">
-                    <button data-testid="tools-trigger"
-                            @ref="ToolsMenuTrigger"
-                            @onclick="ToggleToolsMenu"
-                            class="neo-toolbar-menu__trigger neo-tools-trigger"
-                            type="button"
-                            aria-label="Tools"
-                            aria-haspopup="dialog"
-                            aria-expanded="@IsToolsMenuOpen"
-                            aria-controls="tools-menu"
-                            title="Open tools">
-                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5-5l2.1 2.1-1.4 1.4-2.1-2.1a4 4 0 0 0 5 5l-7.6 7.6a2.1 2.1 0 1 0 3 3l7.6-7.6a4 4 0 0 0 5-5l-2.1 2.1-1.4-1.4 2.1-2.1a4 4 0 0 0-5 5Z"/></svg>
-                        <span class="neo-toolbar-menu__label">Tools</span>
-                    </button>
-
-
-                </div>
-
                 <NavLink href="editor" class="neo-new-snippet btn btn-primary btn-md" title="Create a new snippet" aria-label="New snippet">
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
                     <span class="neo-new-snippet__label" aria-hidden="true">New Snippet</span>
@@ -68,7 +50,7 @@
                 </button>
             </div>
         </header>
-        <NavMenu OnOpenTools="OpenRibbonTools" />
+        <NavMenu @ref="WorkspaceNavigation" OnOpenTools="OpenRibbonTools" IsToolsMenuOpen="IsToolsMenuOpen" />
 
         <div class="neo-canvas flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
             <div class="neo-decor neo-decor--pink" aria-hidden="true"></div>
@@ -259,7 +241,7 @@
     private bool ShouldFocusToolsMenu { get; set; }
     private bool ShouldRestoreToolsFocus { get; set; }
     private bool ShouldRestoreSearchFocus { get; set; }
-    private ElementReference ToolsMenuTrigger { get; set; }
+    private NavMenu? WorkspaceNavigation;
     private ElementReference GlobalSearchTrigger { get; set; }
     private ElementReference ToolsSearchInput { get; set; }
     private ElementReference ToolsDialog { get; set; }
@@ -333,7 +315,7 @@
                 GuideToolTrigger = null;
                 await trigger.FocusAsync();
             }
-            else await ToolsMenuTrigger.FocusAsync();
+            else if (WorkspaceNavigation is not null) await WorkspaceNavigation.FocusToolsAsync();
         }
 
         if (ShouldRestoreSearchFocus)

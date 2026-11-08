@@ -89,10 +89,10 @@ export async function checkMarkdownLive({ evaluate: rawEvaluate, send, sessionId
   await send('Emulation.clearDeviceMetricsOverride', {}, sessionId);
   await evaluate(`document.querySelector('#workspace-tab-Tools').click()`);
   await waitFor(`document.querySelector('#workspace-tab-Tools').getAttribute('aria-selected') === 'true'`, 'ribbon Tools');
-  await evaluate(`Array.from(document.querySelectorAll('.workspace-command-group button')).find(button => button.textContent === 'All Tools').click()`);
+  await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
   await waitFor(`!!document.querySelector('#tools-menu')`, 'ribbon Tools dialog');
   await evaluate(`document.querySelector('#tools-menu').dispatchEvent(new KeyboardEvent('keydown', {key:'Escape',bubbles:true}))`);
-  await waitFor(`!document.querySelector('#tools-menu') && document.activeElement?.textContent === 'All Tools'`, 'ribbon Tools focus return');
+  await waitFor(`!document.querySelector('#tools-menu') && document.activeElement === document.querySelector('[data-testid="tools-trigger"]')`, 'ribbon Tools focus return');
   await evaluate(`document.querySelector('[data-testid="tools-trigger"]').click()`);
   await waitFor(`!!document.querySelector('[data-testid="markdown-live-preview-menu-item"]')`, 'Tools entry');
   await evaluate(`document.querySelector('[data-testid="markdown-live-preview-menu-item"]').click()`);
