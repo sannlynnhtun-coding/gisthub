@@ -145,10 +145,38 @@
 .profile-signout:hover { color: hsl(var(--primary)); }
 .excel-topbar .profile-avatar:focus-visible, .profile-dropdown :is(a, button):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
 
+.tool-page-backdrop { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; background: #0008; }
+.tool-page-backdrop[hidden] { display: none !important; }
+.tool-page-overlay { display: flex; flex-direction: column; width: min(1440px, 100%); height: calc(100dvh - 48px); max-height: 100%; min-width: 0; border: 1px solid hsl(var(--border)); border-radius: 12px; background: hsl(var(--background)); color: hsl(var(--foreground)); box-shadow: 0 16px 48px #0004; overflow: hidden; }
+.tool-page-header { display: flex; align-items: center; justify-content: space-between; flex: 0 0 auto; gap: 16px; min-height: 48px; padding: 8px 16px; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--card)); }
+.tool-page-header > h2 { margin: 0 !important; font-size: 18px !important; line-height: 24px !important; font-weight: 600 !important; letter-spacing: normal !important; }
+.tool-page-header > button { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 32px; height: 32px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: inherit; }
+.tool-page-header > button:hover { background: hsl(var(--accent)); }
+.tool-page-overlay :is(button, a, input, select, textarea):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
+.tool-page-content { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 16px; }
+.tool-page-content > .compact-tool-page { max-width: none; margin: 0; }
 .compact-tool-page > :is(div, header):first-child { gap: 8px; margin-bottom: 12px; padding-bottom: 12px !important; }
 .compact-tool-page > :is(div, header):first-child h2 { font-size: 18px !important; line-height: 24px !important; font-weight: 600 !important; letter-spacing: normal !important; margin: 0 !important; }
 .compact-tool-page > :is(div, header):first-child p { margin-top: 4px !important; font-size: 13px !important; line-height: 20px !important; }
 .compact-tool-page > :is(div, header):first-child .neo-kicker { display: none; }
+.tool-page-content .compact-tool-page > :is(div, header):first-child h2 { display: none; }
+.tool-page-content .compact-tool-page > :is(div, header):first-child { margin-bottom: 0; padding-bottom: 0 !important; }
+.tool-page-content .compact-tool-page > div:first-child:not(:has(p, button, a, input, select, textarea, details)) { display: none; }
+.tool-page-content .compact-tool-page:not(.skills-page) > * + * { margin-top: 12px; }
+.tool-page-content .skills-page { gap: 12px; }
 .compact-tool-page .skills-filters { padding: 12px; gap: 12px; }
 .compact-tool-page .skills-filters label { font-size: 12px !important; }
 .compact-tool-page .skills-filters :is(input, select, button) { min-height: 36px; padding: 6px 10px; font-size: 13px !important; }
+@media (max-width: 767px) {
+  .tool-page-backdrop { padding: 0; }
+  .tool-page-overlay { width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 0; }
+  .tool-page-header { padding-inline: 12px; }
+  .tool-page-header > h2 { font-size: 16px !important; }
+  .tool-page-content { padding: 12px; }
+}
+@media print {
+  body.printing-markdown .neo-app-shell, body.printing-markdown .tool-page-header { display: none !important; }
+  body.printing-markdown .tool-page-backdrop:not([hidden]) { position: static; display: block; padding: 0; background: transparent; }
+  body.printing-markdown .tool-page-overlay { height: auto; max-height: none; border: 0; overflow: visible; box-shadow: none; }
+  body.printing-markdown .tool-page-content { overflow: visible; padding: 0; }
+}

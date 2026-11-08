@@ -55,7 +55,7 @@ async function waitForDebugger() {
       throw new Error(`Chrome exited before DevTools was ready (${chrome.exitCode ?? chrome.signalCode})`);
     }
     const endpoint = await readFile(endpointFile, "utf8").catch((error) => {
-      if (error.code !== "ENOENT") throw error;
+      if (!["ENOENT", "EBUSY"].includes(error.code)) throw error;
       return "";
     });
     const [port, browserEndpoint] = endpoint.trim().split(/\r?\n/);
@@ -614,5 +614,5 @@ try {
   if (socket?.readyState === WebSocket.OPEN) socket.close();
   chrome.kill();
   await delay(250);
-  await rm(profilePath, { recursive: true, force: true });
+  await rm(profilePath, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
 }

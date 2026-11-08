@@ -2,7 +2,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<PageTitle>Formula to Image · GistHub</PageTitle>
+@if (!IsWorkbenchPopup) { <PageTitle>Formula to Image · GistHub</PageTitle> }
 <section class="compact-tool-page space-y-6" aria-labelledby="formula-title">
     <div>
         <div class="neo-kicker mb-2">Workbench / Math</div>
@@ -43,6 +43,7 @@
 </section>
 
 @code {
+    [CascadingParameter(Name = "IsWorkbenchPopup")] public bool IsWorkbenchPopup { get; set; }
     private string Source = "E = mc^2", Title = "", Author = "", Color = "#172033", Background = "#ffffff", Format = "png", Status = "Rendering preview…";
     private int FontSize = 40, Padding = 32, Quality = 90, Revision;
     private bool Transparent, DisplayMode = true, NeedsPreview = true, Ready, Exporting;

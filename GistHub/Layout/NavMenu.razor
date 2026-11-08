@@ -32,14 +32,14 @@
             case "Tools":
                 <div class="ribbon-tool-group" role="group" aria-label="Getting started">
                     <div class="ribbon-tool-items workspace-command-group">
-                        <a href="agent-skills" class="ribbon-tool" title="AI Tools &amp; Skills" data-testid="agent-skills-menu-item">
+                        <button type="button" @ref='ToolTriggers["AI Tools & Skills"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("AI Tools & Skills", ToolTriggers["AI Tools & Skills"]))' class="ribbon-tool" title="AI Tools &amp; Skills" data-testid="agent-skills-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">AI</span>
                             <span>AI Tools &amp; Skills</span>
-                        </a>
-                        <a href="tools" class="ribbon-tool" title="Tools Guide" data-testid="tools-guide-menu-item">
+                        </button>
+                        <button type="button" @ref='ToolTriggers["Tools Guide"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Tools Guide", ToolTriggers["Tools Guide"]))' class="ribbon-tool" title="Tools Guide" data-testid="tools-guide-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">?</span>
                             <span>Tools Guide</span>
-                        </a>
+                        </button>
                     </div>
                 </div>
                 break;
@@ -71,50 +71,50 @@
             case "Markdown":
                 <div class="ribbon-tool-group" role="group" aria-label="Markdown & documents">
                     <div class="ribbon-tool-items workspace-command-group">
-                        <a href="tools/markdown-live-preview" class="ribbon-tool" title="Markdown Live Preview" data-testid="markdown-live-preview-menu-item">
+                        <button type="button" @ref='ToolTriggers["Markdown Live Preview"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown Live Preview", ToolTriggers["Markdown Live Preview"]))' class="ribbon-tool" title="Markdown Live Preview" data-testid="markdown-live-preview-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">MD</span>
                             <span>Markdown Live Preview</span>
-                        </a>
-                        <a href="tools/markdown-to-docx" class="ribbon-tool" title="Markdown to DOCX" data-testid="markdown-docx-menu-item">
+                        </button>
+                        <button type="button" @ref='ToolTriggers["Markdown to DOCX"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown to DOCX", ToolTriggers["Markdown to DOCX"]))' class="ribbon-tool" title="Markdown to DOCX" data-testid="markdown-docx-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">W</span>
                             <span>Markdown to DOCX</span>
-                        </a>
-                        <a href="tools/markdown-to-cards" class="ribbon-tool" title="Markdown to Cards" data-testid="markdown-cards-menu-item">
+                        </button>
+                        <button type="button" @ref='ToolTriggers["Markdown to Cards"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown to Cards", ToolTriggers["Markdown to Cards"]))' class="ribbon-tool" title="Markdown to Cards" data-testid="markdown-cards-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">&#9636;</span>
                             <span>Markdown to Cards</span>
-                        </a>
-                        <a href="tools/markdown-to-text" class="ribbon-tool" title="Markdown to Text" data-testid="markdown-text-menu-item">
+                        </button>
+                        <button type="button" @ref='ToolTriggers["Markdown to Text"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown to Text", ToolTriggers["Markdown to Text"]))' class="ribbon-tool" title="Markdown to Text" data-testid="markdown-text-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">T</span>
                             <span>Markdown to Text</span>
-                        </a>
+                        </button>
                     </div>
                 </div>
                 break;
             case "Diagrams":
                 <div class="ribbon-tool-group" role="group" aria-label="Diagrams & math">
                     <div class="ribbon-tool-items workspace-command-group">
-                        <a href="tools/diagram-editor" class="ribbon-tool" title="draw.io Diagram Editor" data-testid="diagram-editor-menu-item">
+                        <button type="button" @ref='ToolTriggers["draw.io Diagram Editor"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("draw.io Diagram Editor", ToolTriggers["draw.io Diagram Editor"]))' class="ribbon-tool" title="draw.io Diagram Editor" data-testid="diagram-editor-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">&#9671;</span>
                             <span>draw.io Diagram Editor</span>
-                        </a>
-                        <a href="tools/mermaid-to-image" class="ribbon-tool" title="Mermaid to Image" data-testid="mermaid-image-menu-item">
+                        </button>
+                        <button type="button" @ref='ToolTriggers["Mermaid to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Mermaid to Image", ToolTriggers["Mermaid to Image"]))' class="ribbon-tool" title="Mermaid to Image" data-testid="mermaid-image-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">&#9671;</span>
                             <span>Mermaid to Image</span>
-                        </a>
-                        <a href="tools/formula-to-image" class="ribbon-tool" title="Formula to Image" data-testid="formula-image-menu-item">
+                        </button>
+                        <button type="button" @ref='ToolTriggers["Formula to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Formula to Image", ToolTriggers["Formula to Image"]))' class="ribbon-tool" title="Formula to Image" data-testid="formula-image-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">&#8721;</span>
                             <span>Formula to Image</span>
-                        </a>
+                        </button>
                     </div>
                 </div>
                 break;
             case "Media":
                 <div class="ribbon-tool-group" role="group" aria-label="Images & media">
                     <div class="ribbon-tool-items workspace-command-group">
-                        <a href="tools/html-to-image" class="ribbon-tool" title="HTML to Image" data-testid="html-image-menu-item">
+                        <button type="button" @ref='ToolTriggers["HTML to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("HTML to Image", ToolTriggers["HTML to Image"]))' class="ribbon-tool" title="HTML to Image" data-testid="html-image-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">&lt;/&gt;</span>
                             <span>HTML to Image</span>
-                        </a>
+                        </button>
                         <button data-testid="code-image-menu-item"
                                 @ref='ToolTriggers["Markdown + Code Converter"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown + Code Converter", ToolTriggers["Markdown + Code Converter"]))'
                                 class="ribbon-tool" title="Markdown + Code Converter"
@@ -126,17 +126,17 @@
                         </button>
                         @if (!IsVercelApp)
                         {
-                            <a href="tools/youtube-downloader" class="ribbon-tool" title="YouTube Downloader" data-testid="youtube-downloader-menu-item">
+                            <button type="button" @ref='ToolTriggers["YouTube Downloader"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("YouTube Downloader", ToolTriggers["YouTube Downloader"]))' class="ribbon-tool" title="YouTube Downloader" data-testid="youtube-downloader-menu-item">
                                 <span class="ribbon-tool-icon" aria-hidden="true">&#9654;</span>
                                 <span>YouTube Downloader</span>
-                            </a>
+                            </button>
                         }
                     </div>
                 </div>
                 break;
             case "View":
                 <div class="workspace-command-group" aria-label="Preferences">
-                    <NavLink href="settings"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg><span>Local settings</span></NavLink><div class="ribbon-setting"><ThemeToggle /><span>Appearance</span></div><div class="ribbon-setting"><SoundToggle /><span>Sound</span></div>
+                    <button type="button" @ref='ToolTriggers["Local settings"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Local settings", ToolTriggers["Local settings"]))'><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg><span>Local settings</span></button><div class="ribbon-setting"><ThemeToggle /><span>Appearance</span></div><div class="ribbon-setting"><SoundToggle /><span>Sound</span></div>
                 </div>
                 break;
         }

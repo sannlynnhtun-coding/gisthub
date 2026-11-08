@@ -2,7 +2,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<PageTitle>Markdown to Text · GistHub</PageTitle>
+@if (!IsWorkbenchPopup) { <PageTitle>Markdown to Text · GistHub</PageTitle> }
 <section @ref="Workbench" class="compact-tool-page space-y-6 bg-background p-2 overflow-auto" aria-labelledby="markdown-text-title">
     <div>
         <div class="neo-kicker mb-2">Workbench / Text</div>
@@ -34,6 +34,7 @@
 </section>
 
 @code {
+    [CascadingParameter(Name = "IsWorkbenchPopup")] public bool IsWorkbenchPopup { get; set; }
     private const int MaxSize = 1024 * 1024;
     private string Source = "# Plain text, ready to share\n\nRemove **bold**, *italic*, and ~~strikethrough~~ formatting.\n\n[Visit GistHub](https://github.com) keeps its label.\n\n- [x] Paste Markdown\n- [ ] Copy the result\n\n```csharp\nif (ready)\n{\n    Share();\n}\n```";
     private ConversionResult Result = new();

@@ -2,7 +2,7 @@
 @inject HttpClient Http
 @inject IJSRuntime JS
 
-<PageTitle>AI Agent Tools &amp; Skills · GistHub</PageTitle>
+@if (!IsWorkbenchPopup) { <PageTitle>AI Agent Tools &amp; Skills · GistHub</PageTitle> }
 <section class="compact-tool-page skills-page" aria-labelledby="skills-title">
     <header class="skills-heading">
         <div>
@@ -136,6 +136,7 @@
 </section>
 
 @code {
+    [CascadingParameter(Name = "IsWorkbenchPopup")] public bool IsWorkbenchPopup { get; set; }
     private List<AgentSkill> Skills = [];
     private readonly Dictionary<string, string> MethodSearches = new();
     private string Search = "", Category = "", Agent = "", Status = "";

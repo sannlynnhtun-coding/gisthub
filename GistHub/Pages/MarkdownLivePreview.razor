@@ -2,7 +2,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<PageTitle>Markdown Live Preview · GistHub</PageTitle>
+@if (!IsWorkbenchPopup) { <PageTitle>Markdown Live Preview · GistHub</PageTitle> }
 <section class="compact-tool-page markdown-workbench space-y-4" aria-labelledby="markdown-live-title">
     <div>
         <div class="neo-kicker">Workbench / Markdown</div>
@@ -35,6 +35,7 @@
 </section>
 
 @code {
+    [CascadingParameter(Name = "IsWorkbenchPopup")] public bool IsWorkbenchPopup { get; set; }
     private const int MaxSize = 1024 * 1024;
     private string Source = "# Your next document\n\nWrite **Markdown** and see it here.\n\n- [x] Live preview\n- [ ] Share your document\n\n| Tool | Output |\n| --- | --- |\n| Markdown | A readable document |\n\n```csharp\nConsole.WriteLine(\"Hello, workspace!\");\n```";
     private string Filename = "document", Status = "Opening local draft…";

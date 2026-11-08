@@ -17,18 +17,19 @@ export async function checkMarkdownLive({ evaluate: rawEvaluate, send, sessionId
   assert.equal(await evaluate(`new DOMParser().parseFromString((await import('/js/markdownLivePreview.js')).html(${JSON.stringify(source)}), 'text/html').querySelectorAll('script, img, [onerror], a[href^="javascript:"]').length`), 0);
   assert.equal(await evaluate(`(await import('/js/markdownLivePreview.js')).wordSource(${JSON.stringify(source)}).includes('Hello မြန်မာ')`), true);
 
-  // Tabs are commands, not routes: a tab change must keep the editor and draft alive.
-  await evaluate(`document.querySelector('#workspace-tab-Tools').click()`);
-  await waitFor(`document.querySelector('#workspace-tab-Tools').getAttribute('aria-selected') === 'true'`, 'Tools command tab');
+  // The workbench is modal: Tab and Shift+Tab stay inside its active dialog.
+  await evaluate(`(() => {
+    const dialog = document.querySelector('.tool-page-backdrop:not([hidden]) .tool-page-overlay');
+    const focusable = Array.from(dialog.querySelectorAll('a[href],button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),summary')).filter(element=>element.getClientRects().length);
+    window.markdownLastFocus = focusable.at(-1);
+    window.markdownLastFocus.focus();
+    window.markdownLastFocus.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));
+  })()`);
+  assert.equal(await evaluate(`document.activeElement?.getAttribute('aria-label')`), 'Close Markdown Live Preview');
+  await evaluate(`document.activeElement.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',shiftKey:true,bubbles:true}))`);
+  assert.equal(await evaluate(`document.activeElement === window.markdownLastFocus`), true);
   assert.equal(await evaluate(`location.pathname`), '/tools/markdown-live-preview');
   assert.equal(await evaluate(`document.querySelector('#markdown-live-source').value`), source);
-  await evaluate(`document.querySelector('#workspace-tab-Tools').dispatchEvent(new KeyboardEvent('keydown', {key: 'End', bubbles: true}))`);
-  await waitFor(`document.activeElement?.id === 'workspace-tab-View' && document.activeElement.getAttribute('aria-selected') === 'true'`, 'keyboard tab navigation');
-  assert.equal(await evaluate(`document.querySelectorAll('.neo-theme-picker').length`), 1);
-  assert.equal(await evaluate(`document.querySelector('.workspace-command-group .neo-sound-toggle').getClientRects().length > 0`), true);
-  await evaluate(`document.querySelector('#workspace-tab-View').dispatchEvent(new KeyboardEvent('keydown', {key: 'Home', bubbles: true}))`);
-  await waitFor(`document.activeElement?.id === 'workspace-tab-Home'`, 'Home key');
-  assert.equal(await evaluate(`document.querySelectorAll('.neo-sidebar, .neo-mobile-nav').length`), 0);
 
   await send('Page.reload', {}, sessionId);
   await waitFor(`document.querySelector('#markdown-live-source')?.value === ${JSON.stringify(source)} && !document.querySelector('#markdown-live-source').disabled`, 'draft recovery', 60000);
@@ -87,11 +88,7 @@ export async function checkMarkdownLive({ evaluate: rawEvaluate, send, sessionId
     }
   }
   await send('Emulation.clearDeviceMetricsOverride', {}, sessionId);
-  await evaluate(`document.querySelector('#workspace-tab-Markdown').click()`);
-  await waitFor(`document.querySelector('#workspace-tab-Markdown').getAttribute('aria-selected') === 'true'`, 'Markdown ribbon');
   assert.equal(await evaluate(`document.querySelectorAll('#tools-menu, #tools-search').length`), 0);
-  await waitFor(`!!document.querySelector('[data-testid="markdown-live-preview-menu-item"]')`, 'direct ribbon tool');
-  await evaluate(`document.querySelector('[data-testid="markdown-live-preview-menu-item"]').click()`);
-  await waitFor(`!!document.querySelector('#markdown-live-source')`, 'ribbon navigation');
+  assert.equal(await evaluate(`document.querySelector('.tool-page-backdrop:not([hidden]) .tool-page-overlay').dataset.toolName`), 'Markdown Live Preview');
   console.log('PASS: live Markdown, safe HTML, task list/code/table, draft recovery, bounded file import, three exports, storage failures, math/diagram fallback, command tabs and responsive themes.');
 }

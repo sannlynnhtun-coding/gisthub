@@ -3,7 +3,7 @@
 @inject IJSRuntime JS
 @using System.IO.Compression
 
-<PageTitle>Markdown to Cards · GistHub</PageTitle>
+@if (!IsWorkbenchPopup) { <PageTitle>Markdown to Cards · GistHub</PageTitle> }
 <section class="compact-tool-page space-y-6" aria-labelledby="cards-title">
     <div>
         <div class="neo-kicker mb-2">Workbench / Social cards</div>
@@ -56,6 +56,7 @@
 </section>
 
 @code {
+    [CascadingParameter(Name = "IsWorkbenchPopup")] public bool IsWorkbenchPopup { get; set; }
     private const int MaxSize = 128 * 1024;
     private static readonly string[] Themes = ["simple", "professional", "paper", "midnight", "signal", "grape"];
     private string Source = "# Share what you learn\n\nTurn one article into a carousel of useful ideas.\n\n## One idea per card\n\nKeep each section focused. Use **bold text** to emphasize the important part.\n\n- Make a clear point\n- Add a practical example\n\n## Make it useful\n\n| Step | Action |\n| --- | --- |\n| 1 | Write your notes |\n| 2 | Split into sections |\n| 3 | Share your cards |\n\n> Small ideas are easier to remember.";

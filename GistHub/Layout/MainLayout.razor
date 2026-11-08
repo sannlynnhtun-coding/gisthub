@@ -72,7 +72,7 @@
                 else
                 {
                     <CascadingValue Name="OpenWorkbenchTool" Value="OpenWorkbenchTool">
-                        @Body
+                        @if (RoutedTool is null) { @Body }
                     </CascadingValue>
                 }
             </div>
@@ -89,6 +89,10 @@
 <Base64Overlay IsOpen="@IsBase64Open" OnClose="CloseBase64" />
 <JsonTableOverlay IsOpen="@IsJsonTableOpen" OnClose="CloseJsonTable" />
 <CodeImageOverlay IsOpen="@IsCodeImageOpen" OnClose="CloseCodeImage" />
+@if (IsProfileReady && !ProfileLoadFailed)
+{
+    <ToolPageOverlay ActiveTool="@(IsUtilityOpen ? null : ActivePageTool)" OnClose="ClosePageTool" OnOpenWorkbenchTool="OpenWorkbenchTool" FocusOnOpen="@(!ShouldRestoreToolsFocus)" />
+}
 
 @inject AppState AppState
 @inject IStorageService Storage
@@ -118,11 +122,15 @@
         EventCallback.Factory.Create<(string Name, ElementReference Trigger)>(this, OpenToolFromGuide);
     private IJSObjectReference? AppShellModule { get; set; }
     private bool IsUtilityOpen => IsJsonParserOpen || IsCodeImageOpen || IsBase64Open || IsJsonTableOpen;
-    private bool IsModalOpen => IsUtilityOpen || IsGlobalSearchOpen;
+    private readonly List<(string Name, ElementReference? Trigger)> PageToolHistory = new();
+    private string? ActivePageTool => PageToolHistory.Count > 0 ? PageToolHistory[^1].Name : null;
+    private string? RoutedTool => ToolPageOverlay.Pages.FirstOrDefault(tool => tool.Value.Route == Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0].Trim('/')).Key;
+    private bool IsModalOpen => IsUtilityOpen || IsGlobalSearchOpen || (IsProfileReady && !ProfileLoadFailed && ActivePageTool is not null);
 
     protected override async Task OnInitializedAsync()
     {
         Navigation.LocationChanged += OnLocationChanged;
+        if (RoutedTool is { } tool) PageToolHistory.Add((tool, null));
         await LoadProfileAsync();
     }
 
@@ -190,7 +198,7 @@
 
     private void OpenGlobalSearch()
     {
-        if (IsUtilityOpen)
+        if (IsUtilityOpen || ActivePageTool is not null)
         {
             return;
         }
@@ -213,6 +221,8 @@
     private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
         GuideToolTrigger = null;
+        PageToolHistory.Clear();
+        if (RoutedTool is { } tool) PageToolHistory.Add((tool, null));
         _ = InvokeAsync(StateHasChanged);
     }
 
@@ -225,7 +235,20 @@
             case "JSON to Table": OpenJsonTable(); break;
             case "Base64 Encode / Decode": OpenBase64(); break;
             case "Markdown + Code Converter": OpenCodeImage(); break;
+            default:
+                if (ToolPageOverlay.Pages.ContainsKey(tool.Name) && tool.Name != ActivePageTool)
+                    PageToolHistory.Add((tool.Name, tool.Trigger));
+                break;
         }
+    }
+
+    private void ClosePageTool()
+    {
+        if (PageToolHistory.Count == 0) return;
+        GuideToolTrigger = PageToolHistory[^1].Trigger;
+        PageToolHistory.RemoveAt(PageToolHistory.Count - 1);
+        ShouldRestoreToolsFocus = true;
+        if (ActivePageTool is null && RoutedTool is not null) Navigation.NavigateTo("discovery");
     }
 
     private void OpenJsonParser()
