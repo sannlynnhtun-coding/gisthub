@@ -139,108 +139,17 @@
                 break;
         }
         </div>
-        <div class="workspace-account">
-            @if (AppState.IsAuthenticated)
-            {
-                <div class="neo-profile-card p-3 bg-secondary rounded-lg border border-border animate-in fade-in slide-in-from-bottom-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-muted flex items-center justify-center overflow-hidden border border-border">
-                            <img src="@($"https://github.com/{AppState.CurrentProfile?.GithubUsername}.png")" class="w-full h-full object-cover" onerror="this.src='https://github.com/identicons/slh.png'" />
-                        </div>
-                        <div class="flex flex-col min-w-0">
-                            <span class="text-sm font-semibold truncate leading-tight">@AppState.CurrentProfile?.Name</span>
-                            <span class="text-[10px] text-primary/70 truncate font-mono">@@@AppState.CurrentProfile?.GithubUsername</span>
-                        </div>
-                        <button @onclick="ShowLogoutConfirm" class="ml-auto p-1 hover:bg-destructive/10 text-muted-foreground hover:text-destructive rounded-md transition-all" title="Sign out" aria-label="Sign out">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                        </button>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <NavLink href="login" class="neo-profile-card p-3 bg-secondary/50 rounded-lg border border-border flex items-center gap-3 hover:bg-secondary transition-all group">
-                    <div class="w-8 h-8 rounded-lg bg-muted flex items-center justify-center overflow-hidden border border-border">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-2 text-muted-foreground"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
-                    </div>
-                    <div class="flex flex-col min-w-0">
-                        <span class="text-sm font-semibold truncate leading-tight">Guest Account</span>
-                        <span class="text-[10px] text-muted-foreground truncate underline decoration-dotted">Sign In Required</span>
-                    </div>
-                </NavLink>
-            }
-        </div>
     </div>
 </section>
-@if (IsLogoutConfirmOpen)
-{
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6">
-        <button class="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-default" aria-label="Cancel sign out" @onclick="CloseLogoutConfirm"></button>
-        <div class="relative w-full max-w-md bg-card border border-border rounded-xl p-5 space-y-5" role="dialog" aria-modal="true" aria-labelledby="logout-confirm-title">
-            <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-lg bg-destructive/5 text-destructive flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                </div>
-                <div class="space-y-1">
-                    <h2 id="logout-confirm-title" class="text-xl font-semibold tracking-tight">Sign out?</h2>
-                    <p class="text-sm text-muted-foreground">Are you sure you want to sign out of your account?</p>
-                </div>
-            </div>
 
-            <div class="flex items-center justify-end gap-2">
-                <button @onclick="CloseLogoutConfirm" class="btn btn-outline btn-md">Cancel</button>
-                <button @onclick="ConfirmLogout" class="btn btn-destructive btn-md">Sign out</button>
-            </div>
-        </div>
-    </div>
-}
-
-@implements IDisposable
-@inject AppState AppState
-@inject NavigationManager Navigation
 
 @code {
     private static readonly string[] Tabs = ["Home", "Discover", "Tools", "Data", "Markdown", "Diagrams", "Media", "View"];
     private string SelectedTab = "Home";
-    private bool IsLogoutConfirmOpen;
     private readonly Dictionary<string, ElementReference> TabButtons = new();
     private readonly Dictionary<string, ElementReference> ToolTriggers = new();
     [Parameter] public EventCallback<(string Name, ElementReference Trigger)> OnOpenWorkbenchTool { get; set; }
     [Parameter] public bool IsVercelApp { get; set; }
     public ValueTask FocusToolsAsync() => TabButtons["Tools"].FocusAsync();
 
-    protected override void OnInitialized()
-    {
-        AppState.OnChange += StateHasChanged;
-        Navigation.LocationChanged += OnLocationChanged;
-    }
-
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        _ = InvokeAsync(StateHasChanged);
-    }
-
-    private void ShowLogoutConfirm()
-    {
-        IsLogoutConfirmOpen = true;
-    }
-
-    private void CloseLogoutConfirm()
-    {
-        IsLogoutConfirmOpen = false;
-    }
-
-    private void ConfirmLogout()
-    {
-        IsLogoutConfirmOpen = false;
-        AppState.SetProfile(null);
-        Navigation.NavigateTo("/login");
-    }
-
-    public void Dispose()
-    {
-        AppState.OnChange -= StateHasChanged;
-        Navigation.LocationChanged -= OnLocationChanged;
-    }
 }
-

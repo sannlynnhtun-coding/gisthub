@@ -1,0 +1,66 @@
+@implements IDisposable
+@inject AppState AppState
+@inject NavigationManager Navigation
+
+@if (AppState.CurrentProfile is { } profile)
+{
+    <button @ref="Avatar" type="button" class="profile-avatar" popovertarget="profile-dropdown" aria-label="Open profile menu" aria-haspopup="dialog" title="Profile">
+        <img src="@($"https://github.com/{Uri.EscapeDataString(profile.GithubUsername)}.png")" alt="" onerror="this.onerror=null;this.src='logo.svg'" />
+    </button>
+    <div id="profile-dropdown" class="profile-dropdown" popover="auto" role="dialog" aria-label="Your profile">
+        <div class="profile-dropdown-identity">
+            <strong>@profile.Name</strong>
+            <span>@@@profile.GithubUsername</span>
+        </div>
+        <button type="button" class="profile-signout" popovertarget="profile-dropdown" popovertargetaction="hide" @onclick="ShowLogoutConfirm">Sign out</button>
+    </div>
+}
+else
+{
+    <NavLink href="login" class="profile-avatar" aria-label="Sign in" title="Sign in">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    </NavLink>
+}
+
+@if (IsLogoutConfirmOpen)
+{
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6">
+        <button class="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-default" aria-label="Cancel sign out" @onclick="CloseLogoutConfirm"></button>
+        <div class="relative w-full max-w-md bg-card border border-border rounded-xl p-5 space-y-5" role="dialog" aria-modal="true" aria-labelledby="logout-confirm-title">
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-lg bg-destructive/5 text-destructive flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                </div>
+                <div class="space-y-1">
+                    <h2 id="logout-confirm-title" class="text-xl font-semibold tracking-tight">Sign out?</h2>
+                    <p class="text-sm text-muted-foreground">Are you sure you want to sign out of your account?</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2">
+                <button @onclick="CloseLogoutConfirm" class="btn btn-outline btn-md">Cancel</button>
+                <button @onclick="ConfirmLogout" class="btn btn-destructive btn-md">Sign out</button>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    private bool IsLogoutConfirmOpen;
+    private ElementReference Avatar;
+    protected override void OnInitialized() => AppState.OnChange += StateHasChanged;
+    private void ShowLogoutConfirm() => IsLogoutConfirmOpen = true;
+    private async Task CloseLogoutConfirm()
+    {
+        IsLogoutConfirmOpen = false;
+        await Avatar.FocusAsync();
+    }
+    private void ConfirmLogout()
+    {
+        IsLogoutConfirmOpen = false;
+        AppState.SetProfile(null);
+        Navigation.NavigateTo("/login");
+    }
+    public void Dispose() => AppState.OnChange -= StateHasChanged;
+}

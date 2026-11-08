@@ -96,10 +96,6 @@
 .neo-main .workspace-ribbon .workspace-command-group > a.active { background: hsl(var(--accent)) !important; }
 .neo-main .workspace-ribbon :is(button, a):focus-visible { outline: 2px solid hsl(var(--primary)) !important; outline-offset: -2px; }
 .workspace-ribbon .ribbon-setting { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; min-height: 60px; padding: 0 8px; }
-.workspace-ribbon .workspace-account { padding-left: 16px; border-left: 1px solid hsl(var(--border)); }
-.neo-main .workspace-ribbon .workspace-account .neo-profile-card { border: 0 !important; box-shadow: none !important; background: transparent !important; color: hsl(var(--foreground)) !important; border-radius: 4px !important; }
-.neo-main .workspace-ribbon .workspace-account .neo-profile-card span { color: hsl(var(--foreground)) !important; }
-.workspace-ribbon .workspace-account .neo-profile-card .underline { color: hsl(var(--muted-foreground)) !important; }
 @media (max-width: 767px) {
   .neo-main > .excel-topbar { min-height: 44px; height: auto; padding: 8px 12px !important; flex-wrap: wrap; gap: 8px; }
   .excel-workspace-title { display: none; }
@@ -111,7 +107,6 @@
   .workspace-ribbon .workspace-command-area { gap: 8px; width: 100%; flex: 1; }
   .workspace-ribbon .workspace-command-group { gap: 0; }
   .neo-main .workspace-ribbon .workspace-command-group > :is(a, button) { width: 76px; font-size: 12px !important; }
-  .workspace-ribbon .workspace-account { border-left: 0; border-top: 1px solid hsl(var(--border)); padding: 4px 0 0; flex: 0 0 auto; max-width: none; width: 100%; font-size: 11px; }
 }
 
 .workspace-ribbon .ribbon-tool-group { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; padding-right: 12px; border-right: 1px solid hsl(var(--border)); }
@@ -128,3 +123,13 @@
   .workspace-ribbon .ribbon-tool-items { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; }
   .neo-main .workspace-ribbon .ribbon-tool { min-height: 32px; width: 100%; min-width: 0; }
 }
+
+.excel-topbar .profile-avatar { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 32px; width: 32px; height: 32px; padding: 0 !important; border: 1px solid hsl(var(--border)) !important; border-radius: 50% !important; overflow: hidden; background: hsl(var(--secondary)) !important; color: hsl(var(--foreground)) !important; box-shadow: none !important; }
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-dropdown { position: fixed; inset: 52px 12px auto auto; margin: 0; width: min(280px, calc(100vw - 24px)); padding: 8px; border: 1px solid hsl(var(--border)); border-radius: 8px; background: hsl(var(--card)); color: hsl(var(--foreground)); box-shadow: 0 8px 24px hsl(var(--foreground) / .15); }
+.profile-dropdown::backdrop { background: transparent; }
+.profile-dropdown-identity { display: flex; flex-direction: column; gap: 4px; padding: 8px; overflow-wrap: anywhere; }
+.profile-dropdown-identity span { font-size: 12px; color: hsl(var(--muted-foreground)); }
+.profile-signout { display: block; width: 100%; margin-top: 8px; padding: 8px; border-top: 1px solid hsl(var(--border)); text-align: left; color: hsl(var(--destructive)); }
+.profile-signout:hover { background: hsl(var(--accent)); }
+.excel-topbar .profile-avatar:focus-visible, .profile-signout:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }

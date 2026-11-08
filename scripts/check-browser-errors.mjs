@@ -198,6 +198,10 @@ try {
   await delay(waitMs);
 
   const verificationFailures = [];
+  if (process.env.BROWSER_CHECK_PROFILE === "1") {
+    const { checkProfileMenu } = await import('./test-profile-menu.mjs');
+    await checkProfileMenu({ evaluate, send, sessionId, waitFor });
+  }
   if (process.env.BROWSER_CHECK_LOGIN_TOAST === "1") {
     const { checkLoginToast } = await import('./test-login-toast.mjs');
     await checkLoginToast({ evaluate, send, sessionId, waitFor });
