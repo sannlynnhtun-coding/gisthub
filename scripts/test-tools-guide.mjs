@@ -22,6 +22,11 @@ export async function checkToolsGuide({evaluate,send,sessionId,waitFor}) {
   })()`);
   assert.equal(ribbon.radius, '8px');
   assert.ok(ribbon.icons > 0, 'ribbon commands have labelled icons');
+  const homeButton = await evaluate(`(() => {
+    const element = document.querySelector('.workspace-command-group > a');
+    const style = getComputedStyle(element);
+    return {height:element.getBoundingClientRect().height, font:style.fontSize, direction:style.flexDirection};
+  })()`);
   const initialTheme = await evaluate(`window.getGistHubTheme()`);
   for (const theme of ['light', 'dark']) {
     await evaluate(`window.applyGistHubTheme('${theme}')`);
@@ -45,9 +50,17 @@ export async function checkToolsGuide({evaluate,send,sessionId,waitFor}) {
     await waitFor(`document.querySelector('#workspace-tab-${tab}').getAttribute('aria-selected') === 'true'`, 'tool category tab');
     assert.equal(await evaluate(`document.querySelectorAll('.ribbon-tool-group').length`), 1);
     toolCount += await evaluate(`document.querySelectorAll('.ribbon-tool').length`);
+    const toolButton = await evaluate(`(() => {
+      const element = document.querySelector('.ribbon-tool'); const style = getComputedStyle(element);
+      return {height:element.getBoundingClientRect().height, font:style.fontSize, direction:style.flexDirection};
+    })()`);
+    assert.deepEqual(toolButton, homeButton, `${tab} commands match Home buttons`);
     assert.ok(await evaluate(`document.querySelector('.workspace-ribbon').getBoundingClientRect().height < 160`), 'compact category ribbon');
   }
   assert.equal(toolCount, 15);
+  await evaluate(`document.querySelector('#workspace-tab-View').click()`);
+  await waitFor(`document.querySelectorAll('.ribbon-setting').length === 2`, 'View controls');
+  assert.ok(await evaluate(`Array.from(document.querySelectorAll('.ribbon-setting')).every(element => element.getBoundingClientRect().height === ${homeButton.height} && getComputedStyle(element).fontSize === ${JSON.stringify(homeButton.font)})`), 'View controls match Home button sizing');
   for (const [id, selector] of [
     ['json-parser-menu-item','[aria-labelledby="json-parser-title"]'],
     ['json-to-table-menu-item','.json-table-overlay'],

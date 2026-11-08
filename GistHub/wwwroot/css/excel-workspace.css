@@ -109,19 +109,16 @@
   .neo-main .workspace-ribbon .workspace-command-group > :is(a, button) { width: 76px; font-size: 12px !important; }
 }
 
-.workspace-ribbon .ribbon-tool-group { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; padding-right: 12px; border-right: 1px solid hsl(var(--border)); }
-.workspace-ribbon .ribbon-tool-group:last-child { padding-right: 0; border-right: 0; }
-.workspace-ribbon .ribbon-tool-items { display: grid; grid-template-rows: repeat(3, 24px); grid-auto-flow: column; column-gap: 8px; }
-.neo-main .workspace-ribbon .ribbon-tool { display: flex; align-items: center; gap: 6px; width: 156px; min-height: 24px; padding: 2px 4px !important; border: 0 !important; border-radius: 3px !important; background: transparent !important; color: hsl(var(--foreground)) !important; box-shadow: none !important; transform: none !important; font: 400 11px/16px var(--font-ui) !important; text-align: left; text-transform: none !important; white-space: nowrap; }
-.workspace-ribbon .ribbon-tool > span:last-child { overflow: hidden; text-overflow: ellipsis; }
-.workspace-ribbon .ribbon-tool-icon { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 18px; font-size: 11px; font-weight: 600; color: hsl(var(--primary)); }
-.workspace-ribbon .ribbon-tool-icon svg { width: 16px; height: 16px; }
-.workspace-ribbon .ribbon-group-label { text-align: center; color: hsl(var(--muted-foreground)); font-size: 10px; line-height: 14px; white-space: nowrap; }
-.neo-main .workspace-ribbon .ribbon-tool:hover { background: hsl(var(--accent)) !important; }
+.workspace-ribbon .ribbon-tool-group { min-width: 0; max-width: 100%; }
+.workspace-ribbon .ribbon-tool > .ribbon-tool-icon { flex: 0 0 22px; min-height: 22px; height: 22px; font-size: 18px; font-weight: 600; color: hsl(var(--primary)); }
+.workspace-ribbon .ribbon-tool-icon svg { width: 22px; height: 22px; }
+.workspace-ribbon .ribbon-setting { width: 100px; height: 60px; gap: 0; padding: 0; font-size: 12px; line-height: 16px; text-align: center; }
+.workspace-ribbon .ribbon-setting > span { display: flex; min-height: 28px; align-items: center; justify-content: center; }
+.workspace-ribbon .ribbon-setting .neo-theme-trigger { padding: 4px; min-height: 32px; font-size: 12px; }
+.workspace-ribbon .ribbon-setting .neo-theme-trigger__name { display: none; }
+.workspace-ribbon .ribbon-setting .neo-sound-toggle { width: 32px; height: 32px; min-height: 32px; padding: 5px !important; border: 0 !important; background: transparent !important; box-shadow: none !important; color: hsl(var(--primary)); }
 @media (max-width: 767px) {
-  .workspace-ribbon .ribbon-tool-group { width: 100%; padding-right: 0; border-right: 0; }
-  .workspace-ribbon .ribbon-tool-items { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; }
-  .neo-main .workspace-ribbon .ribbon-tool { min-height: 32px; width: 100%; min-width: 0; }
+  .workspace-ribbon .ribbon-setting { width: 76px; }
 }
 
 .excel-topbar .profile-avatar { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; gap: 8px; min-width: 32px; height: 32px; padding: 0 !important; border: 0 !important; background: transparent !important; color: hsl(var(--foreground)) !important; box-shadow: none !important; }

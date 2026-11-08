@@ -24,7 +24,7 @@
                 break;
             case "Tools":
                 <div class="ribbon-tool-group" role="group" aria-label="Getting started">
-                    <div class="ribbon-tool-items">
+                    <div class="ribbon-tool-items workspace-command-group">
                         <a href="agent-skills" class="ribbon-tool" title="AI Tools &amp; Skills" data-testid="agent-skills-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">AI</span>
                             <span>AI Tools &amp; Skills</span>
@@ -34,12 +34,11 @@
                             <span>Tools Guide</span>
                         </a>
                     </div>
-                    <span class="ribbon-group-label">Getting started</span>
                 </div>
                 break;
             case "Data":
                 <div class="ribbon-tool-group" role="group" aria-label="Data & encoding">
-                    <div class="ribbon-tool-items">
+                    <div class="ribbon-tool-items workspace-command-group">
                         <button data-testid="json-parser-menu-item"
                                 @ref='ToolTriggers["JSON Parser"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("JSON Parser", ToolTriggers["JSON Parser"]))'
                                 class="ribbon-tool" title="JSON Parser"
@@ -60,12 +59,11 @@
                             <span>Base64 Encode / Decode</span>
                         </button>
                     </div>
-                    <span class="ribbon-group-label">Data & encoding</span>
                 </div>
                 break;
             case "Markdown":
                 <div class="ribbon-tool-group" role="group" aria-label="Markdown & documents">
-                    <div class="ribbon-tool-items">
+                    <div class="ribbon-tool-items workspace-command-group">
                         <a href="tools/markdown-live-preview" class="ribbon-tool" title="Markdown Live Preview" data-testid="markdown-live-preview-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">MD</span>
                             <span>Markdown Live Preview</span>
@@ -83,12 +81,11 @@
                             <span>Markdown to Text</span>
                         </a>
                     </div>
-                    <span class="ribbon-group-label">Markdown & documents</span>
                 </div>
                 break;
             case "Diagrams":
                 <div class="ribbon-tool-group" role="group" aria-label="Diagrams & math">
-                    <div class="ribbon-tool-items">
+                    <div class="ribbon-tool-items workspace-command-group">
                         <a href="tools/diagram-editor" class="ribbon-tool" title="draw.io Diagram Editor" data-testid="diagram-editor-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">&#9671;</span>
                             <span>draw.io Diagram Editor</span>
@@ -102,12 +99,11 @@
                             <span>Formula to Image</span>
                         </a>
                     </div>
-                    <span class="ribbon-group-label">Diagrams & math</span>
                 </div>
                 break;
             case "Media":
                 <div class="ribbon-tool-group" role="group" aria-label="Images & media">
-                    <div class="ribbon-tool-items">
+                    <div class="ribbon-tool-items workspace-command-group">
                         <a href="tools/html-to-image" class="ribbon-tool" title="HTML to Image" data-testid="html-image-menu-item">
                             <span class="ribbon-tool-icon" aria-hidden="true">&lt;/&gt;</span>
                             <span>HTML to Image</span>
@@ -129,7 +125,6 @@
                             </a>
                         }
                     </div>
-                    <span class="ribbon-group-label">Images & media</span>
                 </div>
                 break;
             case "View":
