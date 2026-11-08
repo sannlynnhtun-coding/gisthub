@@ -1,13 +1,20 @@
 <section class="workspace-ribbon" aria-label="Workspace toolbar">
+    <div class="workspace-tab-row">
     <div class="workspace-tabs" role="tablist" aria-label="Workspace commands">
         @foreach (var tab in Tabs)
         {
             <button @ref="TabButtons[tab]" data-testid="@(tab == "Tools" ? "tools-trigger" : null)" id="@($"workspace-tab-{tab}")" role="tab" type="button"
                     aria-selected="@(SelectedTab == tab ? "true" : "false")" aria-controls="workspace-commands"
-                    tabindex="@(SelectedTab == tab ? 0 : -1)" @onclick="() => SelectedTab = tab">@tab</button>
+                    tabindex="@(SelectedTab == tab ? 0 : -1)" @onclick="() => { SelectedTab = tab; IsCollapsed = false; }">@tab</button>
         }
     </div>
-    <div id="workspace-commands" role="tabpanel" aria-labelledby="@($"workspace-tab-{SelectedTab}")" class="workspace-commands">
+        <button type="button" class="ribbon-toggle" aria-controls="workspace-commands" aria-expanded="@(!IsCollapsed ? "true" : "false")"
+                aria-label="@(IsCollapsed ? "Expand ribbon" : "Collapse ribbon")" title="@(IsCollapsed ? "Expand ribbon" : "Collapse ribbon")"
+                @onclick="() => IsCollapsed = !IsCollapsed">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 15 6-6 6 6"/></svg>
+        </button>
+    </div>
+    <div id="workspace-commands" role="tabpanel" aria-labelledby="@($"workspace-tab-{SelectedTab}")" class="workspace-commands" hidden="@IsCollapsed">
         <div class="workspace-command-area">
         @switch (SelectedTab)
         {
@@ -141,6 +148,7 @@
 @code {
     private static readonly string[] Tabs = ["Home", "Discover", "Tools", "Data", "Markdown", "Diagrams", "Media", "View"];
     private string SelectedTab = "Home";
+    private bool IsCollapsed;
     private readonly Dictionary<string, ElementReference> TabButtons = new();
     private readonly Dictionary<string, ElementReference> ToolTriggers = new();
     [Parameter] public EventCallback<(string Name, ElementReference Trigger)> OnOpenWorkbenchTool { get; set; }

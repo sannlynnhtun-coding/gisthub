@@ -3,6 +3,16 @@ import assert from 'node:assert/strict';
 export async function checkToolsGuide({evaluate,send,sessionId,waitFor}) {
   await waitFor(`Boolean(document.querySelector('#tools-guide-title'))`, 'the Tools Guide',60000);
   await send('Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false},sessionId);
+  const expandedHeight = await evaluate(`document.querySelector('.workspace-ribbon').getBoundingClientRect().height`);
+  await evaluate(`document.querySelector('[aria-label="Collapse ribbon"]').click()`);
+  await waitFor(`document.querySelector('#workspace-commands').hidden && !!document.querySelector('[aria-label="Expand ribbon"]')`, 'collapsed ribbon');
+  assert.ok(await evaluate(`document.querySelector('.workspace-ribbon').getBoundingClientRect().height < ${expandedHeight}`));
+  assert.equal(await evaluate(`document.querySelectorAll('.workspace-tabs [role="tab"]').length`), 8);
+  await evaluate(`document.querySelector('[aria-label="Expand ribbon"]').click()`);
+  await waitFor(`!document.querySelector('#workspace-commands').hidden`, 'expanded ribbon');
+  await evaluate(`document.querySelector('[aria-label="Collapse ribbon"]').click()`);
+  await evaluate(`document.querySelector('#workspace-tab-Home').click()`);
+  await waitFor(`!document.querySelector('#workspace-commands').hidden`, 'tab selection expands commands');
   const tools=await evaluate(`Array.from(document.querySelectorAll('[aria-label="Available tools"] article')).map(card=>({name:card.querySelector('h3').textContent,description:card.querySelector('p').textContent,example:card.querySelector('p.text-sm').textContent,href:card.querySelector('a')?.getAttribute('href')||null}))`);
   assert.equal(tools.length,14);
   assert.ok(tools.every(tool=>tool.description.length>30&&tool.example.startsWith('Try it when:')));

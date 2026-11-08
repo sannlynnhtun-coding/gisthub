@@ -41,6 +41,12 @@
 .excel-topbar .neo-new-snippet__label { display: none !important; }
 .neo-main > .workspace-ribbon { position: relative; z-index: 20; padding-bottom: 8px; border: 0 !important; border-bottom: 1px solid hsl(var(--border)) !important; }
 .workspace-ribbon .workspace-tabs { gap: 6px; height: auto; min-height: 36px; flex-wrap: wrap; overflow: visible; padding: 0 24px; border: 0; align-items: stretch; }
+.workspace-tab-row { display: flex; align-items: flex-start; }
+.workspace-tab-row .workspace-tabs { flex: 1; min-width: 0; }
+.workspace-ribbon .ribbon-toggle { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 32px; height: 32px; margin: 2px 14px 2px 0; padding: 0; border: 0; border-radius: 4px; background: transparent; color: hsl(var(--muted-foreground)); }
+.workspace-ribbon .ribbon-toggle:hover { background: hsl(var(--accent)); }
+.ribbon-toggle[aria-expanded="false"] svg { transform: rotate(180deg); }
+.neo-main .workspace-ribbon .workspace-commands[hidden] { display: none !important; }
 .neo-main .workspace-ribbon .workspace-tabs button {
   position: relative;
   flex-shrink: 0;
