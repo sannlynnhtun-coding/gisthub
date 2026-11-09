@@ -89,6 +89,12 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   await waitFor(`document.querySelector('#password-result').value.split(' ').length === 6`, 'six-word passphrase');
   await type('#password-words', '8');
   await waitFor(`document.querySelector('#password-result').value.split(' ').length === 8`, 'custom word count');
+  await evaluate(`document.querySelector('#password-capitalize').click()`);
+  await waitFor(`document.querySelector('#password-result').value.split(' ').every(word => /^[A-Z][a-z-]+$/.test(word))`, 'capitalized words');
+  await evaluate(`document.querySelector('#password-include-number').click()`);
+  await waitFor(`/[0-9]$/.test(document.querySelector('#password-result').value)`, 'memorable random digit');
+  await evaluate(`document.querySelector('#password-capitalize').click(); document.querySelector('#password-include-number').click()`);
+  await waitFor(`/^[a-z -]+$/.test(document.querySelector('#password-result').value)`, 'plain memorable words');
   await type('#password-type', 'pin');
   await waitFor(`/^[0-9]{20}$/.test(document.querySelector('#password-result').value)`, 'PIN after memorable mode');
   await type('#password-type', 'random');

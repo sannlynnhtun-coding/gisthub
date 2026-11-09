@@ -35,6 +35,18 @@ for (const count of [4, 6, 10]) {
     }
 }
 for (const count of [3, 11, NaN, 6.5, '6']) assert.throws(() => generate('memorable', count));
+for (const capitalize of [false, true]) {
+    for (const number of [false, true]) {
+        const phrase = generate('memorable', 6, capitalize, false, number, false, ' ');
+        assert.equal(/[0-9]$/.test(phrase), number);
+        const selected = phrase.replace(/[0-9]$/, '').split(' ');
+        assert.equal(selected.length, 6);
+        for (const word of selected) {
+            assert.equal(/^[A-Z]/.test(word), capitalize);
+            assert.ok(words.includes(word.toLowerCase()));
+        }
+    }
+}
 assert.throws(() => generate('memorable', 6, false, false, false, false, '/'));
 const originalRandom = crypto.getRandomValues;
 try {
@@ -42,6 +54,13 @@ try {
     crypto.getRandomValues = array => { array[0] = samples.shift(); return array; };
     assert.equal(generate('memorable', 4), [words[7775], words[0], words[1], words[2]].join('-'));
     assert.equal(samples.length, 0, 'biased tail rejected and last word reachable');
+    for (const digit of [0, 9]) {
+        const numberedSamples = [0, 1, 2, 3, 2 ** 32 - 1, digit];
+        crypto.getRandomValues = array => { array[0] = numberedSamples.shift(); return array; };
+        assert.equal(generate('memorable', 4, true, false, true),
+            words.slice(0, 4).map(word => word[0].toUpperCase() + word.slice(1)).join('-') + digit);
+        assert.equal(numberedSamples.length, 0, 'biased digit tail rejected; zero and nine reachable');
+    }
 } finally { crypto.getRandomValues = originalRandom; }
 assert.equal(new Set(Array.from({ length: 100 }, () => generate('memorable', 6))).size, 100);
 console.log('PASS: passwords, PINs, memorable word counts/separators, word-list integrity, unbiased selection, invalid settings, and fresh output.');
