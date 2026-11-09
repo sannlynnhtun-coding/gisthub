@@ -6,6 +6,7 @@
 @inject AppState AppState
 @inject NavigationManager Navigation
 @inject IGithubService Github
+@inject GistSyncService SyncService
 
 <div class="neo-login-screen min-h-screen flex items-center justify-center p-6 bg-background relative overflow-hidden">
     <AutoDismissMessage @bind-Message="ErrorMessage">
@@ -174,25 +175,7 @@
             IsSyncing = true;
             StateHasChanged();
 
-            var syncToken = profileToSave.AccessToken;
-            var syncUsername = profileToSave.GithubUsername;
-            var userGistsList = await Github.GetUserGistsAsync(syncToken);
-            if (userGistsList != null)
-            {
-                var tasks = userGistsList.Select(async gist =>
-                {
-                    var fullGist = await Github.GetGistByIdAsync(gist.Id, syncToken);
-                    if (fullGist != null)
-                    {
-                        fullGist.IsSynced = true;
-                        fullGist.Tags = ParseTags(fullGist.Description);
-
-                        await Storage.SaveSyncedGistAsync(fullGist, syncUsername);
-                    }
-                });
-
-                await Task.WhenAll(tasks);
-            }
+            await SyncService.SyncAsync(profileToSave);
 
             Navigation.NavigateTo("/");
         }
@@ -224,16 +207,4 @@
         StateHasChanged();
     }
 
-    private List<string> ParseTags(string description)
-    {
-        if (string.IsNullOrEmpty(description)) return new List<string>();
-        var tags = new List<string>();
-        var parts = description.Split(' ');
-        foreach(var part in parts)
-        {
-            if (part.StartsWith("#") && part.Length > 1)
-                tags.Add(part.Substring(1).TrimEnd(',', '.', '!', '?', ';'));
-        }
-        return tags;
-    }
 }

@@ -1,6 +1,8 @@
 @implements IAsyncDisposable
 @inject IStorageService Storage
 @inject GistSearchService SearchService
+@inject GistSyncService SyncService
+@inject AppState AppState
 @inject IJSRuntime JS
 
 @if (IsOpen)
@@ -67,6 +69,16 @@
                         <span>Bookmarks</span>
                     </button>
                 </div>
+                <div class="flex flex-wrap items-center gap-3 mt-3">
+                    <button type="button" class="btn btn-outline btn-md" disabled="@(IsLoading || IsSyncing || !IsAuthenticated)" @onclick="SyncGistsAsync">
+                        @(IsSyncing ? "Syncing gists…" : "Sync gists")
+                    </button>
+                    <span role="status">@(IsSyncing ? "Downloading descriptions, filenames, and contents for offline search." : $"{Gists.Count} gists available for offline search.")</span>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(SyncError))
+                {
+                    <p role="alert">@SyncError</p>
+                }
             </header>
 
             <div class="global-search-body custom-scrollbar" id="global-search-results" role="listbox" aria-label="Gist search results">
@@ -225,6 +237,8 @@
     private string LoadError { get; set; } = string.Empty;
     private bool BookmarksOnly { get; set; }
     private bool IsLoading { get; set; }
+    private bool IsSyncing { get; set; }
+    private string SyncError { get; set; } = string.Empty;
     private bool WasOpen { get; set; }
     private bool LoadedAuthenticationState { get; set; }
     private bool ShouldFocusSearch { get; set; }
@@ -256,6 +270,7 @@
 
         if (isOpening || accountChangedWhileOpen)
         {
+            SyncError = string.Empty;
             LoadedAccountUsername = AccountUsername;
             LoadedAuthenticationState = IsAuthenticated;
             await LoadGistsAsync();
@@ -295,9 +310,12 @@
         }
 
         IsLoading = true;
+        var username = AccountUsername;
         try
         {
-            Gists = await Storage.GetLocalGistsAsync(AccountUsername);
+            var gists = await Storage.GetLocalGistsAsync(username);
+            if (!IsAuthenticated || !string.Equals(username, AccountUsername, StringComparison.OrdinalIgnoreCase)) return;
+            Gists = gists;
             ApplySearch();
         }
         catch (Exception ex)
@@ -317,6 +335,28 @@
     {
         Query = args.Value?.ToString() ?? string.Empty;
         ApplySearch();
+    }
+
+    private async Task SyncGistsAsync()
+    {
+        var profile = AppState.CurrentProfile;
+        if (IsSyncing || profile is null || !string.Equals(profile.GithubUsername, AccountUsername, StringComparison.OrdinalIgnoreCase)) return;
+        IsSyncing = true;
+        SyncError = string.Empty;
+        try
+        {
+            await SyncService.SyncAsync(profile);
+        }
+        catch (Exception ex)
+        {
+            if (ReferenceEquals(profile, AppState.CurrentProfile))
+                SyncError = $"Sync did not finish. Your cached gists are still searchable. {ex.Message}";
+        }
+        finally
+        {
+            IsSyncing = false;
+            await LoadGistsAsync();
+        }
     }
 
     private void ToggleBookmarksOnly()

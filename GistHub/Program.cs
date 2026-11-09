@@ -16,6 +16,7 @@ builder.Services.AddScoped<IGithubService>(sp =>
     new GithubService(sp.GetRequiredService<HttpClient>(), githubApiBaseUrl));
 builder.Services.AddScoped<IStorageService, IndexedDbService>();
 builder.Services.AddScoped<GistSearchService>();
+builder.Services.AddScoped<GistSyncService>();
 builder.Services.AddScoped<DiagramGistService>();
 builder.Services.AddScoped<AppState>();
 

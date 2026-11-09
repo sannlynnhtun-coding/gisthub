@@ -7,6 +7,7 @@
 @inject AppState AppState
 @inject NavigationManager Navigation
 @inject IGithubService Github
+@inject GistSyncService SyncService
 @inject IJSRuntime JS
 
 <SectionContent SectionName="collection-actions">
@@ -522,8 +523,6 @@
         if (!AppState.IsAuthenticated || IsSyncing) return;
 
         var profile = AppState.CurrentProfile!;
-        var username = profile.GithubUsername;
-        var token = profile.AccessToken;
         SyncError = "";
 
         IsSyncing = true;
@@ -531,27 +530,9 @@
 
         try
         {
-            var userGistsList = await Github.GetUserGistsAsync(token);
-            if (userGistsList != null)
-            {
-                var tasks = userGistsList.Select(async gist =>
-                {
-                    var fullGist = await Github.GetGistByIdAsync(gist.Id, token);
-                    if (fullGist == null)
-                    {
-                        return;
-                    }
-
-                    fullGist.IsSynced = true;
-                    fullGist.Tags = ParseTags(fullGist.Description);
-
-                    await Storage.SaveSyncedGistAsync(fullGist, username);
-                });
-
-                await Task.WhenAll(tasks);
-                await LoadLocalGists();
-                await LoadGroups();
-            }
+            await SyncService.SyncAsync(profile);
+            await LoadLocalGists();
+            await LoadGroups();
         }
         catch (Exception)
         {
@@ -583,19 +564,6 @@
         {
             await Github.DeleteGistAsync(gist.Id, AppState.CurrentProfile!.AccessToken);
         }
-    }
-
-    private List<string> ParseTags(string description)
-    {
-        if (string.IsNullOrEmpty(description)) return new List<string>();
-        var tags = new List<string>();
-        var parts = description.Split(' ');
-        foreach (var part in parts)
-        {
-            if (part.StartsWith("#") && part.Length > 1)
-                tags.Add(part.Substring(1).TrimEnd(',', '.', '!', '?', ';'));
-        }
-        return tags;
     }
 
     private async Task ToggleBookmark(LocalGist gist)
@@ -826,7 +794,7 @@
             }
 
             createdGist.IsSynced = true;
-            createdGist.Tags = ParseTags(createdGist.Description);
+            createdGist.Tags = GistSyncService.ParseTags(createdGist.Description);
 
             await Storage.SaveGistAsync(createdGist);
             await LoadLocalGists();
