@@ -1,6 +1,7 @@
 @implements IDisposable
 @inject AppState AppState
 @inject NavigationManager Navigation
+@inject IStorageService Storage
 
 @if (AppState.CurrentProfile is { } profile)
 {
@@ -18,7 +19,22 @@
                 <span>@@@profile.GithubUsername</span>
             </div>
         </div>
-        <a href="login" class="profile-section-label profile-accounts">Your accounts</a>
+        <p class="profile-section-label profile-accounts">Your accounts</p>
+        <button type="button" class="profile-signout" aria-expanded="@ShowAccounts" aria-controls="profile-account-list" @onclick="ToggleAccountsAsync">Switch accounts</button>
+        <div id="profile-account-list" hidden="@(!ShowAccounts)" class="space-y-2 max-h-80 overflow-y-auto">
+            @if (AccountsError is not null) { <p role="alert">@AccountsError</p> }
+            @foreach (var account in SavedProfiles)
+            {
+                var current = account.Id == profile.Id;
+                <button type="button" class="profile-current-account w-full text-left rounded-md p-2 hover:bg-accent"
+                        aria-current="@(current ? "true" : null)" aria-label="@($"Switch to {account.GithubUsername}")"
+                        popovertarget="profile-dropdown" popovertargetaction="hide" @onclick="() => SelectProfile(account)">
+                    <img src="@($"https://github.com/{Uri.EscapeDataString(account.GithubUsername)}.png")" alt="" onerror="this.onerror=null;this.src='logo.svg'" />
+                    <span class="profile-dropdown-identity min-w-0"><strong>@account.Name</strong><span>@@@account.GithubUsername</span>@if (current) { <span>Current account</span> }</span>
+                </button>
+            }
+            <button type="button" class="profile-signout" popovertarget="profile-dropdown" popovertargetaction="hide" @onclick='() => Navigation.NavigateTo("/login")'>Add another account</button>
+        </div>
         <button type="button" class="profile-signout" popovertarget="profile-dropdown" popovertargetaction="hide" @onclick="ShowLogoutConfirm">Log out</button>
     </div>
 }
@@ -56,7 +72,25 @@ else
 @code {
     private bool IsLogoutConfirmOpen;
     private ElementReference Avatar;
+    private bool ShowAccounts;
+    private List<GistProfile> SavedProfiles = new();
+    private string? AccountsError;
     protected override void OnInitialized() => AppState.OnChange += StateHasChanged;
+    private async Task ToggleAccountsAsync()
+    {
+        ShowAccounts = !ShowAccounts;
+        if (!ShowAccounts) return;
+        AccountsError = null;
+        SavedProfiles.Clear();
+        try { SavedProfiles = await Storage.GetProfilesAsync(); }
+        catch (Exception) { AccountsError = "Could not load saved accounts. Close and reopen Switch accounts to retry."; }
+    }
+    private void SelectProfile(GistProfile profile)
+    {
+        ShowAccounts = false;
+        AppState.SetProfile(profile);
+        Navigation.NavigateTo("/");
+    }
     private void ShowLogoutConfirm() => IsLogoutConfirmOpen = true;
     private async Task CloseLogoutConfirm()
     {

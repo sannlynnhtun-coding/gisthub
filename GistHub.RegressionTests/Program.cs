@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 await DiagramGistTests.RunAsync();
 await ProfileLoadingTests.RunAsync();
+await ProfileSwitchingTests.RunAsync();
 await MessageDismissalTests.RunAsync();
 await GistVisibilityTests.RunAsync();
 MarkdownDocxTests.Run();

@@ -15,7 +15,13 @@ export async function checkProfileMenu({ evaluate, send, sessionId, waitFor }) {
     assert.equal(await evaluate(`document.querySelector('.profile-dropdown-identity strong').textContent`), 'Full Profile Name');
     assert.equal(await evaluate(`document.querySelector('.profile-dropdown-identity span').textContent`), '@profile-user');
     assert.equal(await evaluate(`document.querySelector('.profile-dropdown > .profile-section-label').textContent`), 'Currently in');
-    assert.equal(await evaluate(`document.querySelector('.profile-accounts').getAttribute('href')`), 'login');
+    assert.equal(await evaluate(`document.querySelector('.profile-accounts').tagName`), 'P');
+    assert.equal(await evaluate(`document.querySelector('.profile-accounts').textContent`), 'Your accounts');
+    await evaluate(`document.querySelector('[aria-controls="profile-account-list"]').click()`);
+    await waitFor(`!!document.querySelector('#profile-account-list [aria-label="Switch to profile-user"]')`, 'saved accounts');
+    assert.equal(await evaluate(`document.querySelector('#profile-account-list [aria-label="Switch to profile-user"]').getAttribute('aria-current')`), 'true');
+    assert.equal(await evaluate(`document.querySelector('#profile-account-list').textContent.includes('Add another account')`), true);
+    await evaluate(`document.querySelector('[aria-controls="profile-account-list"]').click()`);
     assert.equal(await evaluate(`document.querySelector('.profile-signout').textContent`), 'Log out');
     assert.equal(await evaluate(`getComputedStyle(document.querySelector('#profile-dropdown')).borderTopLeftRadius`), '18px');
     assert.equal(await evaluate(`getComputedStyle(document.querySelector('.profile-dropdown-identity strong')).fontSize`), '14px');
