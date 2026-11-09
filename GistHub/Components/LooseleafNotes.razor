@@ -98,7 +98,7 @@
 
 @code {
     [Parameter] public IReadOnlyList<LocalGist> Gists { get; set; } = [];
-    [Parameter] public EventCallback OnSaved { get; set; }
+    [Parameter] public EventCallback<LocalGist> OnSaved { get; set; }
     [Parameter] public EventCallback<LocalGist> OnDelete { get; set; }
     [Parameter] public EventCallback<LocalGist> OnBookmark { get; set; }
     private string Query = "", Notebook = "", Filename = "";
@@ -163,7 +163,7 @@
     private async Task SavedAsync(LocalGist note)
     {
         Writing = false; Editor = null;
-        await OnSaved.InvokeAsync();
+        await OnSaved.InvokeAsync(note);
         SelectPage(note.Id); ShowPage = true; FocusPage = true;
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)

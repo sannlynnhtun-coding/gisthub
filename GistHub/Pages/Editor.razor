@@ -185,6 +185,7 @@
     private bool IsPublic { get; set; } = true;
     private bool IsBookmarked { get; set; } = false;
     private int BookmarkOrder { get; set; }
+    private List<string> CollectionNames = [];
     private bool IsLoading { get; set; } = false;
     private bool IsPreview { get; set; } = false;
     private bool IsEditorUnavailable { get; set; } = false;
@@ -273,6 +274,7 @@
         IsPublic = gist.Public;
         IsBookmarked = gist.IsBookmarked;
         BookmarkOrder = gist.BookmarkOrder;
+        CollectionNames = gist.CollectionNames.ToList();
     }
 
     private static bool HasEditableContent(LocalGist? gist)
@@ -346,6 +348,7 @@
                 result.IsSynced = true;
                 result.Tags = ParseTags(Description);
                 result.IsBookmarked = IsBookmarked;
+                result.CollectionNames = CollectionNames;
                 result.BookmarkOrder = IsBookmarked
                     ? BookmarkOrder > 0
                         ? BookmarkOrder

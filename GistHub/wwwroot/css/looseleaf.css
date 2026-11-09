@@ -70,6 +70,6 @@
  :root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-settings){grid-template-columns:minmax(0,1fr)}
  :root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-page-toolbar .btn){font-size:16px;padding:6px 8px}
 }
-@media(prefers-reduced-motion:reduce){.looseleaf-notes button{transition:none}}
+@media(prefers-reduced-motion:reduce){:root[data-interface-style="kit-looseleaf"][data-theme] .looseleaf-notes button{transition:none}}
 :root[data-interface-style="kit-looseleaf"][data-theme] .looseleaf-notes .btn-primary{background:hsl(var(--primary));color:hsl(var(--primary-foreground));border-color:hsl(var(--foreground))}
 :root[data-interface-style="kit-looseleaf"][data-theme] .looseleaf-notes .btn{box-shadow:2px 3px 0 hsl(var(--foreground)/.28)!important}

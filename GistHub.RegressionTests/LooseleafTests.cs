@@ -67,6 +67,15 @@ static class LooseleafTests
         Set(page, "LocalGists", new List<LocalGist> { note });
         await Call(page, "HandleDelete", note);
         Check(Get<List<LocalGist>>(page, "LocalGists").Count == 1 && Get<string>(page, "SyncError").Contains("kept"), "Failed remote deletion must keep the local note");
+        Set(page, "BookmarksOnly", true); Set(page, "CollectionFilter", "Work");
+        var created = new LocalGist { Id = "new" };
+        await Call(page, "HandleNotebookSaved", created);
+        Check(created.IsBookmarked && created.CollectionNames.Contains("Work"), "New pages must stay in the active notebook and bookmark view");
+        var profile = state.CurrentProfile;
+        Set(page, "Github", new GithubService(new HttpClient(new SwitchedAccountDelete(() => state.SetProfile(new GistProfile { GithubUsername = "bob" }))), "https://api.github.com"));
+        await Call(page, "HandleDelete", note);
+        Check(Get<List<LocalGist>>(page, "LocalGists").Count == 1, "An account switch during deletion must not remove another account's cached page");
+        state.SetProfile(profile);
         note.Files["first.md"].Truncated = false;
         var handler = new SaveHandler();
         using var provider = new ServiceCollection().AddLogging().AddSingleton(state)
@@ -88,6 +97,7 @@ static class LooseleafTests
             handler.Fail = false;
             await Call(mounted!, "HandleSave");
             Check(saved?.Id == "a" && !mounted!.HasUnsavedChanges, "Successful embedded saves notify the notebook and clear dirty state");
+            Check(saved!.CollectionNames.SequenceEqual(new[] { "Work" }), "Editing must preserve notebook memberships");
             using var payload = System.Text.Json.JsonDocument.Parse(handler.Body!);
             var files = payload.RootElement.GetProperty("files");
             Check(files.EnumerateObject().Count() == 1 && files.GetProperty("docker.txt").GetProperty("content").GetString() == "Edited secondary file", "Saving a secondary file must not overwrite other gist files");
@@ -119,6 +129,14 @@ static class LooseleafTests
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken token)
             => Task.FromResult(new HttpResponseMessage(HttpStatusCode.Forbidden) { Content = new StringContent("{\"message\":\"Forbidden\"}", Encoding.UTF8, "application/json") });
+    }
+    sealed class SwitchedAccountDelete(Action switchAccount) : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken token)
+        {
+            switchAccount();
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NoContent));
+        }
     }
     public sealed class EditorHost : ComponentBase
     {

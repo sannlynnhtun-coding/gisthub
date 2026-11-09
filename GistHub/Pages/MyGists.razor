@@ -157,7 +157,7 @@
 
     @if (AppState.IsAuthenticated)
     {
-        <LooseleafNotes Gists="@FilteredGists" OnSaved="LoadLocalGists" OnDelete="HandleDelete" OnBookmark="ToggleBookmark" />
+        <LooseleafNotes Gists="@FilteredGists" OnSaved="HandleNotebookSaved" OnDelete="HandleDelete" OnBookmark="ToggleBookmark" />
     }
     <div class="standard-gist-collection">
     @if (!AppState.IsAuthenticated)
@@ -551,6 +551,21 @@
         }
     }
 
+    private async Task HandleNotebookSaved(LocalGist gist)
+    {
+        if (!LocalGists.Any(existing => existing.Id == gist.Id))
+        {
+            if (!string.IsNullOrWhiteSpace(CollectionFilter)) gist.CollectionNames.Add(CollectionFilter);
+            if (BookmarksOnly)
+            {
+                gist.IsBookmarked = true;
+                gist.BookmarkOrder = LocalGists.Where(item => item.IsBookmarked).Select(item => item.BookmarkOrder).DefaultIfEmpty().Max() + 1;
+            }
+            await Storage.SaveGistAsync(gist);
+        }
+        await LoadLocalGists();
+    }
+
     private async Task HandleDelete(LocalGist gist)
     {
         if (string.IsNullOrEmpty(gist.Id)) return;
@@ -562,11 +577,12 @@
             return;
         }
 
-        if (AppState.IsAuthenticated)
+        var deletingProfile = AppState.CurrentProfile;
+        if (deletingProfile is not null)
         {
             try
             {
-                if (!await Github.DeleteGistAsync(gist.Id, AppState.CurrentProfile!.AccessToken))
+                if (!await Github.DeleteGistAsync(gist.Id, deletingProfile.AccessToken))
                 {
                     SyncError = "GitHub could not delete this gist. Your cached page has been kept.";
                     return;
@@ -578,6 +594,7 @@
                 return;
             }
         }
+        if (AppState.CurrentProfile?.Id != deletingProfile?.Id) return;
         await Storage.DeleteGistAsync(gist.Id);
         LocalGists.Remove(gist);
         StateHasChanged();
