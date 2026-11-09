@@ -9,6 +9,7 @@ await ProfileLoadingTests.RunAsync();
 await ProfileSwitchingTests.RunAsync();
 await MessageDismissalTests.RunAsync();
 await GistVisibilityTests.RunAsync();
+await LooseleafTests.RunAsync();
 MarkdownDocxTests.Run();
 AgentSkillTests.Run();
 

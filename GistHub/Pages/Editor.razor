@@ -9,11 +9,15 @@
 @inject NavigationManager Navigation
 @inject IGithubService Github
 
-<div data-update-draft="snippet" class="neo-page max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+@if (Embedded)
+{
+    <NavigationLock ConfirmExternalNavigation="@HasUnsavedChanges" OnBeforeInternalNavigation="ConfirmNavigation" />
+}
+<div data-update-draft="snippet" class="neo-page @(Embedded ? "looseleaf-write" : "") max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
     <!-- Header -->
     <div class="neo-page-heading flex flex-col md:flex-row md:items-center justify-between gap-6 pb-7 border-b">
         <div class="flex items-center gap-4">
-            <button @onclick='() => Navigation.NavigateTo("/my-gists")' class="btn btn-outline btn-icon">
+            <button type="button" aria-label="Back to notes" @onclick="CancelAsync" class="btn btn-outline btn-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
             </button>
             <div>
@@ -55,17 +59,17 @@
     {
     <div class="neo-editor-grid grid grid-cols-1 lg:grid-cols-4 gap-8">
         <!-- Sidebar Settings -->
-        <div class="lg:col-span-1 space-y-6">
-            <div class="bg-card border rounded-xl p-6 space-y-6">
+        <div class="neo-editor-sidebar lg:col-span-1 space-y-6">
+            <div class="neo-editor-settings bg-card border rounded-xl p-6 space-y-6">
                 <div class="space-y-2">
-                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Description</label>
-                    <textarea @bind="Description" rows="4" placeholder="What does this snippet do? #hashtags supported" class="w-full bg-secondary/30 border rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/10 outline-none transition-all text-sm resize-none"></textarea>
+                    <label for="gist-description" class="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Description</label>
+                    <textarea id="gist-description" @bind="Description" @bind:event="oninput" rows="4" placeholder="What does this snippet do? #hashtags supported" class="w-full bg-secondary/30 border rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/10 outline-none transition-all text-sm resize-none"></textarea>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Filename</label>
+                    <label for="gist-filename" class="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Filename</label>
                     <div class="relative">
-                        <input @bind="Filename" type="text" placeholder="script.js" class="w-full bg-secondary/30 border rounded-lg py-3 px-10 focus:ring-2 focus:ring-primary/10 outline-none transition-all font-mono text-xs" />
+                        <input id="gist-filename" @bind="Filename" @bind:event="oninput" type="text" placeholder="script.js" class="w-full bg-secondary/30 border rounded-lg py-3 px-10 focus:ring-2 focus:ring-primary/10 outline-none transition-all font-mono text-xs" />
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-code absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"><path d="M10 12.5 8 15l2 2.5"/><path d="m14 12.5 2 2.5-2 2.5"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/></svg>
                     </div>
                 </div>
@@ -125,7 +129,14 @@
                         <div class="w-2.5 h-2.5 rounded-full bg-border"></div>
                     </div>
                     <div class="flex items-center gap-4">
-                        @if (Filename.EndsWith(".md"))
+                        @if (Embedded)
+                        {
+                            <div role="group" aria-label="Page mode">
+                                <button type="button" aria-pressed="@IsPreview" @onclick="() => SetPreview(true)">Page</button>
+                                <button type="button" aria-pressed="@(!IsPreview)" @onclick="() => SetPreview(false)">Write</button>
+                            </div>
+                        }
+                        else if (Filename.EndsWith(".md"))
                         {
                             <button @onclick="TogglePreview" class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-md transition-all @(IsPreview ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:bg-accent")">
                                 Preview
@@ -136,13 +147,17 @@
                 </div>
 
                 <!-- Main Textarea / Preview -->
-                @if (IsPreview && Filename.EndsWith(".md"))
+                @if (IsPreview && Filename.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
                 {
                     <div @ref="previewContainer" class="neo-editor-input w-full h-full pt-16 p-8 overflow-auto prose prose-invert max-w-none prose-pre:bg-transparent prose-pre:p-0"></div>
                 }
+                else if (Embedded && IsPreview)
+                {
+                    <pre class="neo-editor-input w-full h-full pt-16 p-8 overflow-auto"><code>@Content</code></pre>
+                }
                 else
                 {
-                    <textarea @bind="Content" @bind:event="oninput" spellcheck="false" class="neo-editor-input w-full h-full pt-16 p-8 bg-transparent text-zinc-100 font-mono text-sm md:text-base leading-relaxed outline-none resize-none custom-scrollbar" placeholder="// Start writing your masterpiece here..."></textarea>
+                    <textarea aria-label="Note content" @bind="Content" @bind:event="oninput" spellcheck="false" class="neo-editor-input w-full h-full pt-16 p-8 bg-transparent text-zinc-100 font-mono text-sm md:text-base leading-relaxed outline-none resize-none custom-scrollbar" placeholder="// Start writing your masterpiece here..."></textarea>
                 }
                 
                 <!-- Status Bar -->
@@ -157,6 +172,10 @@
 
 @code {
     [Parameter] public string? GistId { get; set; }
+    [Parameter] public bool Embedded { get; set; }
+    [Parameter] public string? InitialFilename { get; set; }
+    [Parameter] public EventCallback<LocalGist> OnSaved { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
     [Inject] private IJSRuntime JS { get; set; }
 
     private string Description { get; set; } = "";
@@ -177,6 +196,29 @@
     private string? DraftKey;
     private bool DraftRecoveryReady;
     private bool EditorLoaded;
+    private string SavedState = "";
+    private string CurrentState => System.Text.Json.JsonSerializer.Serialize(new { Description, Filename, Content, IsPublic, IsBookmarked });
+    public bool HasUnsavedChanges => EditorLoaded && SavedState != CurrentState;
+
+    public async Task<bool> CanLeaveAsync()
+        => !IsLoading && (!HasUnsavedChanges || await JS.InvokeAsync<bool>("confirm", "Leave this page without saving your changes?"));
+
+    private async Task ConfirmNavigation(Microsoft.AspNetCore.Components.Routing.LocationChangingContext context)
+    {
+        if (!await CanLeaveAsync()) context.PreventNavigation();
+    }
+
+    private async Task CancelAsync()
+    {
+        if (Embedded) await OnCancel.InvokeAsync();
+        else Navigation.NavigateTo("/my-gists");
+    }
+
+    private void SetPreview(bool preview)
+    {
+        IsPreview = preview;
+        shouldRenderPreview = preview;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -190,6 +232,8 @@
         {
             await LoadGistForEditing();
         }
+        else if (Embedded) { Filename = "note.md"; IsPublic = false; }
+        SavedState = CurrentState;
         EditorLoaded = true;
     }
 
@@ -218,7 +262,9 @@
         }
 
         Description = gist.Description;
-        var firstFile = gist.Files.FirstOrDefault();
+        var firstFile = !string.IsNullOrEmpty(InitialFilename) && gist.Files.ContainsKey(InitialFilename)
+            ? new KeyValuePair<string, GistFile>(InitialFilename, gist.Files[InitialFilename])
+            : gist.Files.First();
         OriginalFilename = firstFile.Key ?? firstFile.Value?.Filename ?? "snippet.txt";
         Filename = string.IsNullOrWhiteSpace(firstFile.Value?.Filename)
             ? OriginalFilename
@@ -230,7 +276,7 @@
     }
 
     private static bool HasEditableContent(LocalGist? gist)
-        => gist?.Files.Values.Any(file => !string.IsNullOrEmpty(file.Content)) == true;
+        => gist?.Files.Count > 0 && gist.Files.Values.All(file => file?.Content is not null && !file.Truncated);
 
     private string BuildGithubErrorMessage(string action)
     {
@@ -316,7 +362,9 @@
                     try { await UpdateModule.InvokeVoidAsync("removeEditorDraft", DraftKey); }
                     catch (JSException) { Console.WriteLine("The saved snippet's temporary update draft could not be removed."); }
                 }
-                Navigation.NavigateTo("/my-gists");
+                SavedState = CurrentState;
+                if (Embedded) await OnSaved.InvokeAsync(result);
+                else Navigation.NavigateTo("/my-gists");
             }
             else
             {

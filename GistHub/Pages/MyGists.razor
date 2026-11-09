@@ -155,6 +155,11 @@
         </div>
     </AutoDismissMessage>
 
+    @if (AppState.IsAuthenticated)
+    {
+        <LooseleafNotes Gists="@FilteredGists" OnSaved="LoadLocalGists" OnDelete="HandleDelete" OnBookmark="ToggleBookmark" />
+    }
+    <div class="standard-gist-collection">
     @if (!AppState.IsAuthenticated)
     {
         <div class="flex flex-col items-center justify-center py-20 border border-dashed rounded-xl bg-[#FDEBEC]">
@@ -226,6 +231,7 @@
             </div>
         }
     }
+    </div>
 </div>
 
 @if (IsImportDialogOpen)
@@ -556,14 +562,25 @@
             return;
         }
 
-        LocalGists.Remove(gist);
-        await Storage.DeleteGistAsync(gist.Id);
-        StateHasChanged();
-
         if (AppState.IsAuthenticated)
         {
-            await Github.DeleteGistAsync(gist.Id, AppState.CurrentProfile!.AccessToken);
+            try
+            {
+                if (!await Github.DeleteGistAsync(gist.Id, AppState.CurrentProfile!.AccessToken))
+                {
+                    SyncError = "GitHub could not delete this gist. Your cached page has been kept.";
+                    return;
+                }
+            }
+            catch (HttpRequestException)
+            {
+                SyncError = "GitHub could not be reached. Your cached page has been kept.";
+                return;
+            }
         }
+        await Storage.DeleteGistAsync(gist.Id);
+        LocalGists.Remove(gist);
+        StateHasChanged();
     }
 
     private async Task ToggleBookmark(LocalGist gist)

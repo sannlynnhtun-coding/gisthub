@@ -1,0 +1,5 @@
+Looseleaf font and Notes/Notebook workflow adaptation
+Source: https://github.com/kevintngo/looseleaf
+Upstream commit: 4bdb647940e2fefb3cebb394f3bad25c766a27d2
+License: MIT (see Looseleaf-LICENSE.txt)
+Kevin Sans is bundled unchanged. Notebook, paper, shelf, Page/Write, and mobile focus behavior are adapted for Blazor from src/blocks/notes-app and src/components/ui/notebook.tsx. GistHub retains its own account, Markdown, sync, and GitHub save behavior. Dark surfaces are GistHub's adaptation.
