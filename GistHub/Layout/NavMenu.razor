@@ -40,6 +40,10 @@
                             <span class="ribbon-tool-icon" aria-hidden="true">?</span>
                             <span>Tools Guide</span>
                         </button>
+                        <button type="button" @ref='ToolTriggers["Password Generator"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Password Generator", ToolTriggers["Password Generator"]))' class="ribbon-tool" title="Password Generator" data-testid="password-generator-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">&#9919;</span>
+                            <span>Password Generator</span>
+                        </button>
                     </div>
                 </div>
                 break;

@@ -71,7 +71,19 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   await close();
 
   await open('Tools','tools-guide-menu-item','Tools Guide');
-  assert.equal(await evaluate(`document.querySelectorAll('[aria-label="Available tools"] article').length`),14);
+  assert.equal(await evaluate(`document.querySelectorAll('[aria-label="Available tools"] article').length`),15);
+  await evaluate(`document.querySelector('[aria-label="Open Password Generator"]').click()`);
+  await opened('Password Generator');
+  await waitFor(`document.querySelector('#password-result')?.value.length === 20`, 'generated password');
+  const password = await evaluate(`document.querySelector('#password-result').value`);
+  assert.match(password, /[A-Z]/);
+  assert.match(password, /[a-z]/);
+  assert.match(password, /[0-9]/);
+  assert.match(password, /[^A-Za-z0-9]/);
+  await evaluate(`document.querySelector('#password-generate').click()`);
+  await waitFor(`document.querySelector('#password-result').value !== ${JSON.stringify(password)}`, 'fresh password');
+  await evaluate(`document.querySelector(${JSON.stringify(active)}).querySelector('.tool-page-header > button').click()`);
+  await opened('Tools Guide');
   await evaluate(`document.querySelector('[aria-label="Open Markdown to DOCX"]').click()`);
   await opened('Markdown to DOCX');
   await evaluate(`document.querySelector(${JSON.stringify(active)}).querySelector('.tool-page-header > button').click()`);
