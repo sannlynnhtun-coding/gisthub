@@ -31,7 +31,7 @@
         <div id="@(ListId)-panel" role="tabpanel" aria-labelledby="@(PanelId)-themes-tab" class="neo-appearance-results">
         <div id="@ListId" class="neo-theme-options custom-scrollbar" role="listbox" aria-label="Available themes">
             <div role="group" aria-label="Color themes" data-appearance-group="themes">
-                @foreach (var palette in Palettes)
+                @foreach (var palette in Palettes.OrderBy(palette => palette.Name, StringComparer.OrdinalIgnoreCase))
                 {
                     <button @key="palette.Id" type="button" role="option" tabindex="-1" aria-selected="@(Theme == palette.Id ? "true" : "false")"
                             class="neo-theme-option" data-theme-option="@palette.Id" data-appearance-kind="themes" data-search-text="@(palette.Name + " " + palette.Source)" @onclick="() => SelectTheme(palette.Id)">
@@ -41,11 +41,8 @@
                     </button>
                 }
             </div>
-            @foreach (var group in Styles.GroupBy(style => style.Group))
-            {
-                <div role="group" aria-label="@group.Key" data-appearance-group="styles" hidden>
-                    <div class="neo-appearance-group-label">@group.Key</div>
-                    @foreach (var style in group)
+                <div role="group" aria-label="Interface styles" data-appearance-group="styles" hidden>
+                    @foreach (var style in Styles.OrderBy(style => style.Name, StringComparer.OrdinalIgnoreCase))
                     {
                         <button @key="style.Id" type="button" role="option" tabindex="-1" aria-selected="@(Style == style.Id ? "true" : "false")" class="neo-theme-option"
                                 data-style-option="@style.Id" data-appearance-kind="styles" data-search-text="@(style.Name + " " + style.Description)" @onclick="() => SelectStyle(style.Id)">
@@ -55,9 +52,8 @@
                         </button>
                     }
                 </div>
-            }
             <div role="group" aria-label="Style and theme combinations" data-appearance-group="presets" hidden>
-                @foreach (var preset in Presets)
+                @foreach (var preset in Presets.OrderBy(preset => preset.Name, StringComparer.OrdinalIgnoreCase))
                 {
                     var palette = Palettes.FirstOrDefault(p => p.Id == preset.Theme);
                     <button @key="preset.Id" type="button" role="option" tabindex="-1" aria-selected="@(SelectedPreset == preset.Id ? "true" : "false")" class="neo-theme-option"
@@ -68,11 +64,8 @@
                     </button>
                 }
             </div>
-            @foreach (var group in Fonts.GroupBy(font => font.Group))
-            {
-                <div role="group" aria-label="@group.Key" data-appearance-group="fonts" hidden>
-                    <div class="neo-appearance-group-label">@group.Key</div>
-                    @foreach (var font in group)
+                <div role="group" aria-label="Fonts" data-appearance-group="fonts" hidden>
+                    @foreach (var font in Fonts.OrderBy(font => font.Name, StringComparer.OrdinalIgnoreCase))
                     {
                         <button @key="font.Id" type="button" role="option" tabindex="-1" aria-selected="@(Font == font.Id ? "true" : "false")" class="neo-theme-option"
                                 data-font-option="@font.Id" data-appearance-kind="fonts" data-search-text="@(font.Name + " " + font.Group)" @onclick="() => SelectFont(font.Id)">
@@ -82,7 +75,6 @@
                         </button>
                     }
                 </div>
-            }
         </div>
         <p class="neo-theme-panel__empty" hidden>No matches. Try another name.</p>
         </div>
