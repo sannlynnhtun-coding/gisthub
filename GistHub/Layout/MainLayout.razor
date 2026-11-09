@@ -177,12 +177,12 @@
         if (ShouldRestoreToolsFocus)
         {
             ShouldRestoreToolsFocus = false;
-            if (GuideToolTrigger is { } trigger)
-            {
-                GuideToolTrigger = null;
-                await trigger.FocusAsync();
-            }
-            else if (WorkspaceNavigation is not null) await WorkspaceNavigation.FocusToolsAsync();
+            var trigger = GuideToolTrigger;
+            GuideToolTrigger = null;
+            // Ribbon commands can unmount while a tool is open.
+            var restored = trigger is { } element && AppShellModule is not null &&
+                await AppShellModule.InvokeAsync<bool>("tryFocus", element);
+            if (!restored && WorkspaceNavigation is not null) await WorkspaceNavigation.FocusToolsAsync();
         }
 
         if (ShouldRestoreSearchFocus)

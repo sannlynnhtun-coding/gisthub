@@ -81,6 +81,14 @@ export function deactivateFocusTrap(element) {
     focusTrapHandlers.delete(element);
 }
 
+export function tryFocus(element) {
+    if (!(element instanceof HTMLElement) || !element.isConnected ||
+        element.closest('[hidden], [inert]') || element.matches(':disabled') ||
+        element.getClientRects().length === 0) return false;
+    element.focus();
+    return document.activeElement === element;
+}
+
 export function scrollElementIntoView(elementId) {
     document.getElementById(elementId)?.scrollIntoView({ block: "nearest" });
 }
