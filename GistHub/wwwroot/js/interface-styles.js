@@ -56,7 +56,8 @@
         {"id": "nautical", "name": "Nautical", "description": "Striped canvas and rope-like paired panel trim"},
         {"id": "rebus", "name": "Rebus", "description": "Geometric symbol accents with clearly labeled controls"},
         {"id": "modular-typography", "name": "Modular Typography", "description": "Grid-aligned heading blocks and segmented rules"},
-        { id: 'cruip', name: 'Cruip', description: 'Artifact-inspired dashboard with quiet borders and rounded surfaces' }
+        { id: 'cruip', name: 'Cruip', description: 'Artifact-inspired dashboard with quiet borders and rounded surfaces' },
+        { id: 'boardui', name: 'BoardUI', description: 'BoardUI-inspired inset cards, layered buttons, segmented tabs and quiet dashboard surfaces' }
     ].map((style, index) => ({ ...style, group: index < 8 ? 'Original styles' : 'More design styles' }));
     const presets = [
         { id: 'bold-light', name: 'Neobrutalism + Light', style: 'neobrutalism', theme: 'light' },
@@ -65,7 +66,9 @@
         { id: 'retro-gruvbox', name: 'Retro Futurism + Gruvbox', style: 'retro-futurism', theme: 'vscode-jdinhlife-gruvbox-gruvbox-dark-hard' },
         { id: 'cyber-tokyo', name: 'Cyberpunk + Tokyo Night', style: 'cyberpunk', theme: 'vscode-enkia-tokyo-night-tokyo-night' },
         { id: 'glass-dark', name: 'Glassmorphism + Dark', style: 'glassmorphism', theme: 'dark' },
-        { id: 'flat-light', name: 'Flat + Light', style: 'flat', theme: 'light' }
+        { id: 'flat-light', name: 'Flat + Light', style: 'flat', theme: 'light' },
+        { id: 'boardui-light', name: 'BoardUI · Light', style: 'boardui', theme: 'boardui-light' },
+        { id: 'boardui-dark', name: 'BoardUI · Dark', style: 'boardui', theme: 'boardui-dark' }
     ];
     window.getGistHubStylePresets = () => presets;
     window.applyGistHubStylePreset = (root, id) => {

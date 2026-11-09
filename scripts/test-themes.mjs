@@ -20,8 +20,8 @@ function boot(saved, dark = true, blocked = false, explicitChoice = null) {
     return { window, root, saved: () => storage.theme, explicit: () => storage['gisthub:theme-choice'] };
 }
 const catalog = boot(null).window.getGistHubThemes();
-assert.equal(catalog.length, 155);
-assert.equal(new Set(catalog.map(theme => theme.id)).size, 155);
+assert.equal(catalog.length, 157);
+assert.equal(new Set(catalog.map(theme => theme.id)).size, 157);
 assert.equal(catalog.filter(theme => theme.id.startsWith('vscode-')).length, 100);
 assert.equal(catalog.filter(theme => theme.id.startsWith('figma-') && theme.name.startsWith('Figma-')).length, 53);
 assert.equal(boot(null, false).window.getGistHubTheme(), 'light');

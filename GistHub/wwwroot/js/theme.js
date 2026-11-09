@@ -3,6 +3,8 @@
     const catalog = [
         { id: 'light', name: 'Light', dark: false, chrome: '#FFD524', primary: '#ffd524', secondary: '#78dce8', source: 'GistHub · Default' },
         { id: 'dark', name: 'Dark', dark: true, chrome: '#24242F', primary: '#c6a344', secondary: '#609ba3', source: 'GistHub · Default' },
+        { id: 'boardui-light', name: 'BoardUI Light', dark: false, chrome: '#ffffff', primary: '#2563eb', secondary: '#f7f7f7', source: 'BoardUI-inspired · boardui.com' },
+        { id: 'boardui-dark', name: 'BoardUI Dark', dark: true, chrome: '#121212', primary: '#60a5fa', secondary: '#262626', source: 'BoardUI-inspired · boardui.com' },
         ...(window.gistHubThemes ?? []),
         ...(window.gistHubFigmaThemes ?? [])
     ];
