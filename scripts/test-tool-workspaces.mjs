@@ -82,6 +82,17 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   assert.match(password, /[^A-Za-z0-9]/);
   await evaluate(`document.querySelector('#password-generate').click()`);
   await waitFor(`document.querySelector('#password-result').value !== ${JSON.stringify(password)}`, 'fresh password');
+  await type('#password-type', 'memorable');
+  await waitFor(`!!document.querySelector('#password-words') && document.querySelector('#password-result').value.includes('-')`, 'memorable mode');
+  assert.equal(await evaluate(`document.querySelector('#password-words').value`), '6');
+  await type('#password-separator', ' ');
+  await waitFor(`document.querySelector('#password-result').value.split(' ').length === 6`, 'six-word passphrase');
+  await type('#password-words', '8');
+  await waitFor(`document.querySelector('#password-result').value.split(' ').length === 8`, 'custom word count');
+  await type('#password-type', 'pin');
+  await waitFor(`/^[0-9]{20}$/.test(document.querySelector('#password-result').value)`, 'PIN after memorable mode');
+  await type('#password-type', 'random');
+  await waitFor(`document.querySelector('#password-result').value.length === 20 && /[A-Z]/.test(document.querySelector('#password-result').value)`, 'random mode retains character length');
   await evaluate(`document.querySelector(${JSON.stringify(active)}).querySelector('.tool-page-header > button').click()`);
   await opened('Tools Guide');
   await evaluate(`document.querySelector('[aria-label="Open Markdown to DOCX"]').click()`);

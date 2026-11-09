@@ -1,4 +1,19 @@
-export function generate(type, length, uppercase, lowercase, numbers, symbols) {
+import { words } from './passwordWords.js';
+
+export function generate(type, length, uppercase, lowercase, numbers, symbols, separator = '-') {
+    if (type === 'memorable') {
+        if (!Number.isInteger(length) || length < 4 || length > 10) throw new Error('Choose 4 to 10 words.');
+        if (!['-', ' ', '_', '.'].includes(separator)) throw new Error('Choose a valid separator.');
+        const result = [];
+        const sample = new Uint32Array(1);
+        const limit = 2 ** 32 - (2 ** 32 % words.length);
+        while (result.length < length) {
+            crypto.getRandomValues(sample);
+            // Reject the uneven tail so every word has the same chance of selection.
+            if (sample[0] < limit) result.push(words[sample[0] % words.length]);
+        }
+        return result.join(separator);
+    }
     if (!Number.isInteger(length) || length < 4 || length > 128) throw new Error('Choose a length from 4 to 128.');
     if (type !== 'random' && type !== 'pin') throw new Error('Choose a valid password type.');
     const groups = type === 'pin' ? ['0123456789'] : [
