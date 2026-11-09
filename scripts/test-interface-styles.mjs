@@ -72,3 +72,13 @@ for (const style of app.getGistHubStyles().filter(s => s.id !== 'default')) {
     assert.ok(style.description.length > 10);
 }
 console.log('PASS: all catalog entries have visual rules; 58 additions have unique IDs and retain the existing styles.');
+
+const looseleafCss = readFileSync('GistHub/wwwroot/css/looseleaf.css', 'utf8');
+assert.doesNotMatch(looseleafCss, /:is\([^{}]*::/, 'Pseudo-elements cannot be placed inside :is(); notebook decorations would disappear.');
+for (const weight of ['Regular', 'Bold']) {
+    const filename = `KevinSans-${weight}.woff2`;
+    assert.ok(looseleafCss.includes(filename));
+    assert.equal(readFileSync(`GistHub/wwwroot/fonts/${filename}`).toString('ascii', 0, 4), 'wOF2');
+}
+assert.ok(readFileSync('GistHub/wwwroot/fonts/Looseleaf-LICENSE.txt', 'utf8').includes('MIT License'));
+console.log('PASS: Looseleaf notebook decorations use valid selectors and both local Kevin Sans fonts retain their license.');
