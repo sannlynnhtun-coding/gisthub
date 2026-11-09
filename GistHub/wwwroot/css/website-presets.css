@@ -8,83 +8,83 @@
 @font-face { font-family: 'Open Runde Preset'; src: url('../fonts/OpenRunde-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
 
 /* Scoped variables leave independently saved font choices intact when switching styles. */
-:root:is([data-interface-style="boardui"], [data-interface-style="kit-libraries"], [data-interface-style="kit-heroui"])[data-theme] { --font-ui: 'Inter Variable', 'Noto Sans Myanmar Variable', system-ui, sans-serif !important; --style-heading-font: var(--font-ui); }
-:root[data-interface-style="boardui"][data-theme] { --font-code: 'JetBrains Mono Variable', 'Noto Sans Myanmar Variable', monospace !important; }
-:root[data-interface-style="kit-sketchbook"][data-theme] { --font-ui: 'Inter Variable', 'Noto Sans Myanmar Variable', system-ui, sans-serif !important; --style-heading-font: 'Caveat Preset', 'Noto Sans Myanmar Variable', cursive; }
-:root[data-interface-style="kit-productive"][data-theme] { --font-ui: 'Instrument Sans Variable', 'Noto Sans Myanmar Variable', system-ui, sans-serif !important; --style-heading-font: 'Schibsted Grotesk Preset', 'Noto Sans Myanmar Variable', sans-serif; }
-:root[data-interface-style="kit-libraries"][data-theme] { --font-code: 'Roboto Mono Variable', 'Noto Sans Myanmar Variable', monospace !important; }
-:root:is([data-interface-style="kit-beui"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-goop"])[data-theme] { --font-ui: 'Geist Variable', 'Noto Sans Myanmar Variable', system-ui, sans-serif !important; --font-code: 'Geist Mono Variable', 'Noto Sans Myanmar Variable', monospace !important; --style-heading-font: var(--font-ui); }
-:root[data-interface-style="kit-goop"][data-theme] { --style-heading-font: 'DynaPuff Preset', 'Noto Sans Myanmar Variable', sans-serif; }
-:root[data-interface-style="kit-rare"][data-theme] { --font-ui: 'Inter Variable', 'Noto Sans Myanmar Variable', system-ui, sans-serif !important; --style-heading-font: 'Open Runde Preset', 'Noto Sans Myanmar Variable', sans-serif; --font-code: 'Geist Mono Variable', 'Noto Sans Myanmar Variable', monospace !important; }
-:root:is([data-interface-style="kit-sketchbook"], [data-interface-style="kit-productive"], [data-interface-style="kit-goop"], [data-interface-style="kit-rare"])[data-theme] :is(.neo-gist-card h3, .neo-page-heading h1, .global-search-heading h2) { font-family: var(--style-heading-font); }
+:root:is([data-interface-style="boardui"], [data-interface-style="kit-libraries"], [data-interface-style="kit-heroui"])[data-theme]:not([data-interface-style="default"]) { --font-ui: 'Inter Variable', 'Noto Sans Myanmar Variable', system-ui, sans-serif !important; --style-heading-font: var(--font-ui) !important; }
+:root[data-interface-style="boardui"][data-theme]:not([data-interface-style="default"]) { --font-code: 'JetBrains Mono Variable', 'Noto Sans Myanmar Variable', monospace !important; }
+:root[data-interface-style="kit-sketchbook"][data-theme]:not([data-interface-style="default"]) { --font-ui: 'Inter Variable', 'Noto Sans Myanmar Variable', system-ui, sans-serif !important; --style-heading-font: 'Caveat Preset', 'Noto Sans Myanmar Variable', cursive !important; }
+:root[data-interface-style="kit-productive"][data-theme]:not([data-interface-style="default"]) { --font-ui: 'Instrument Sans Variable', 'Noto Sans Myanmar Variable', system-ui, sans-serif !important; --style-heading-font: 'Schibsted Grotesk Preset', 'Noto Sans Myanmar Variable', sans-serif !important; }
+:root[data-interface-style="kit-libraries"][data-theme]:not([data-interface-style="default"]) { --font-code: 'Roboto Mono Variable', 'Noto Sans Myanmar Variable', monospace !important; }
+:root:is([data-interface-style="kit-beui"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-goop"])[data-theme]:not([data-interface-style="default"]) { --font-ui: 'Geist Variable', 'Noto Sans Myanmar Variable', system-ui, sans-serif !important; --font-code: 'Geist Mono Variable', 'Noto Sans Myanmar Variable', monospace !important; --style-heading-font: var(--font-ui) !important; }
+:root[data-interface-style="kit-goop"][data-theme]:not([data-interface-style="default"]) { --style-heading-font: 'DynaPuff Preset', 'Noto Sans Myanmar Variable', sans-serif !important; }
+:root[data-interface-style="kit-rare"][data-theme]:not([data-interface-style="default"]) { --font-ui: 'Inter Variable', 'Noto Sans Myanmar Variable', system-ui, sans-serif !important; --style-heading-font: 'Open Runde Preset', 'Noto Sans Myanmar Variable', sans-serif !important; --font-code: 'Geist Mono Variable', 'Noto Sans Myanmar Variable', monospace !important; }
+:root:is([data-interface-style="kit-sketchbook"], [data-interface-style="kit-productive"], [data-interface-style="kit-goop"], [data-interface-style="kit-rare"])[data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card h3, .neo-page-heading h1, .global-search-heading h2) { font-family: var(--style-heading-font); }
 
 /* Sketchbook: inked controls and irregular paper edges, without rotating the cards. */
-:root[data-interface-style="kit-sketchbook"][data-theme] :is(.neo-gist-card, .global-search-panel, .neo-toolbar-menu__panel) { border-radius: 13px 5px 16px 6px / 6px 15px 7px 14px !important; box-shadow: 3px 4px 0 hsl(var(--foreground) / .18) !important; }
-:root[data-interface-style="kit-sketchbook"][data-theme] :is(.btn, .workspace-tabs button, .global-search-result) { font-family: 'Caveat Preset', 'Noto Sans Myanmar Variable', cursive; font-size: max(1rem, 1em); }
-:root[data-interface-style="kit-sketchbook"][data-theme] .neo-gist-card h3 { font-size: max(1.25rem, 1em); }
-:root[data-interface-style="kit-sketchbook"][data-theme] .btn { border: 1.5px solid hsl(var(--foreground) / .7); box-shadow: 2px 3px 0 hsl(var(--foreground) / .22) !important; }
-:root[data-interface-style="kit-sketchbook"][data-theme] .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
-:root[data-interface-style="kit-sketchbook"][data-theme] :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border: 1.5px solid hsl(var(--input)); border-bottom-width: 2px; background: hsl(var(--card)); }
+:root[data-interface-style="kit-sketchbook"][data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card, .global-search-panel, .neo-toolbar-menu__panel) { border-radius: 13px 5px 16px 6px / 6px 15px 7px 14px !important; box-shadow: 3px 4px 0 hsl(var(--foreground) / .18) !important; }
+:root[data-interface-style="kit-sketchbook"][data-theme]:not([data-interface-style="default"]) :is(.btn, .workspace-tabs button, .global-search-result) { font-family: 'Caveat Preset', 'Noto Sans Myanmar Variable', cursive; font-size: max(1rem, 1em); }
+:root[data-interface-style="kit-sketchbook"][data-theme]:not([data-interface-style="default"]) .neo-gist-card h3 { font-size: max(1.25rem, 1em); }
+:root[data-interface-style="kit-sketchbook"][data-theme]:not([data-interface-style="default"]) .btn { border: 1.5px solid hsl(var(--foreground) / .7); box-shadow: 2px 3px 0 hsl(var(--foreground) / .22) !important; }
+:root[data-interface-style="kit-sketchbook"][data-theme]:not([data-interface-style="default"]) .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+:root[data-interface-style="kit-sketchbook"][data-theme]:not([data-interface-style="default"]) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border: 1.5px solid hsl(var(--input)); border-bottom-width: 2px; background: hsl(var(--card)); }
 
 /* Productive Schedule: drafting outlines, section labels and blue capsule controls. */
-:root[data-interface-style="kit-productive"][data-theme] :is(.neo-gist-card, .global-search-panel, .neo-toolbar-menu__panel) { border-radius: 14px !important; box-shadow: 0 8px 24px hsl(var(--primary) / .1), 0 1px 3px hsl(var(--foreground) / .08) !important; }
-:root[data-interface-style="kit-productive"][data-theme] .neo-gist-card h3 { font-weight: 700; letter-spacing: -.025em; border-bottom-style: dotted; }
-:root[data-interface-style="kit-productive"][data-theme] .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: 0 5px 12px hsl(var(--primary) / .25) !important; }
-:root[data-interface-style="kit-productive"][data-theme] .btn.btn-outline { border-style: dashed; background: hsl(var(--card)); }
-:root[data-interface-style="kit-productive"][data-theme] :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 9px !important; box-shadow: inset 0 1px 2px hsl(var(--foreground) / .05); }
-:root[data-interface-style="kit-productive"][data-theme] .global-search-result.is-selected { outline: 1px dashed hsl(var(--primary)); outline-offset: -3px; }
+:root[data-interface-style="kit-productive"][data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card, .global-search-panel, .neo-toolbar-menu__panel) { border-radius: 14px !important; box-shadow: 0 8px 24px hsl(var(--primary) / .1), 0 1px 3px hsl(var(--foreground) / .08) !important; }
+:root[data-interface-style="kit-productive"][data-theme]:not([data-interface-style="default"]) .neo-gist-card h3 { font-weight: 700; letter-spacing: -.025em; border-bottom-style: dotted; }
+:root[data-interface-style="kit-productive"][data-theme]:not([data-interface-style="default"]) .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: 0 5px 12px hsl(var(--primary) / .25) !important; }
+:root[data-interface-style="kit-productive"][data-theme]:not([data-interface-style="default"]) .btn.btn-outline { border-style: dashed; background: hsl(var(--card)); }
+:root[data-interface-style="kit-productive"][data-theme]:not([data-interface-style="default"]) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 9px !important; box-shadow: inset 0 1px 2px hsl(var(--foreground) / .05); }
+:root[data-interface-style="kit-productive"][data-theme]:not([data-interface-style="default"]) .global-search-result.is-selected { outline: 1px dashed hsl(var(--primary)); outline-offset: -3px; }
 
 /* Libraries: luminous edges and layered metallic controls, painted with CSS. */
-:root[data-interface-style="kit-libraries"][data-theme] :is(.neo-gist-card, .global-search-panel) { border-radius: 18px !important; box-shadow: inset 0 1px 0 hsl(var(--foreground) / .12), 0 5px 20px hsl(var(--foreground) / .07) !important; }
-:root[data-interface-style="kit-libraries"][data-theme] .btn:not(.btn-destructive) { border-radius: 999px !important; border-color: hsl(var(--input)); box-shadow: inset 0 1px 0 hsl(var(--foreground) / .15), inset 0 -2px 2px hsl(var(--foreground) / .08), 0 2px 4px hsl(var(--foreground) / .08) !important; }
-:root[data-interface-style="kit-libraries"][data-theme] .btn.btn-primary { background: linear-gradient(170deg, hsl(var(--primary)), color-mix(in srgb, hsl(var(--primary)), hsl(var(--foreground)) 12%), hsl(var(--primary))); color: hsl(var(--primary-foreground)); }
-:root[data-interface-style="kit-libraries"][data-theme] :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 10px !important; background: hsl(var(--muted)); border-color: hsl(var(--input)); }
-:root[data-interface-style="kit-libraries"][data-theme] .global-search-result.is-selected { box-shadow: inset 0 0 0 1px hsl(var(--primary)), 0 0 12px hsl(var(--primary) / .12); }
+:root[data-interface-style="kit-libraries"][data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card, .global-search-panel) { border-radius: 18px !important; box-shadow: inset 0 1px 0 hsl(var(--foreground) / .12), 0 5px 20px hsl(var(--foreground) / .07) !important; }
+:root[data-interface-style="kit-libraries"][data-theme]:not([data-interface-style="default"]) .btn:not(.btn-destructive) { border-radius: 999px !important; border-color: hsl(var(--input)); box-shadow: inset 0 1px 0 hsl(var(--foreground) / .15), inset 0 -2px 2px hsl(var(--foreground) / .08), 0 2px 4px hsl(var(--foreground) / .08) !important; }
+:root[data-interface-style="kit-libraries"][data-theme]:not([data-interface-style="default"]) .btn.btn-primary { background: linear-gradient(170deg, hsl(var(--primary)), color-mix(in srgb, hsl(var(--primary)), hsl(var(--foreground)) 12%), hsl(var(--primary))); color: hsl(var(--primary-foreground)); }
+:root[data-interface-style="kit-libraries"][data-theme]:not([data-interface-style="default"]) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 10px !important; background: hsl(var(--muted)); border-color: hsl(var(--input)); }
+:root[data-interface-style="kit-libraries"][data-theme]:not([data-interface-style="default"]) .global-search-result.is-selected { box-shadow: inset 0 0 0 1px hsl(var(--primary)), 0 0 12px hsl(var(--primary) / .12); }
 
 /* beUI Pro: lifted panels and a polished inset highlight. */
-:root[data-interface-style="kit-beui-pro"][data-theme] :is(.neo-gist-card, .global-search-panel, .neo-toolbar-menu__panel) { border-radius: 20px !important; box-shadow: inset 0 1px 0 hsl(var(--foreground) / .08), 0 6px 20px hsl(var(--foreground) / .08) !important; }
-:root[data-interface-style="kit-beui-pro"][data-theme] .btn { border-radius: 12px !important; box-shadow: inset 0 1px 0 hsl(var(--foreground) / .12), 0 2px 3px hsl(var(--foreground) / .08) !important; }
-:root[data-interface-style="kit-beui-pro"][data-theme] .btn.btn-primary { background: linear-gradient(hsl(var(--primary)), color-mix(in srgb, hsl(var(--primary)), black 8%)); color: hsl(var(--primary-foreground)); }
-:root[data-interface-style="kit-beui-pro"][data-theme] :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 12px !important; box-shadow: inset 0 2px 3px hsl(var(--foreground) / .05); }
-:root[data-interface-style="kit-beui-pro"][data-theme] .global-search-result.is-selected { background: hsl(var(--accent)); box-shadow: inset 0 1px 0 hsl(var(--foreground) / .1); }
+:root[data-interface-style="kit-beui-pro"][data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card, .global-search-panel, .neo-toolbar-menu__panel) { border-radius: 20px !important; box-shadow: inset 0 1px 0 hsl(var(--foreground) / .08), 0 6px 20px hsl(var(--foreground) / .08) !important; }
+:root[data-interface-style="kit-beui-pro"][data-theme]:not([data-interface-style="default"]) .btn { border-radius: 12px !important; box-shadow: inset 0 1px 0 hsl(var(--foreground) / .12), 0 2px 3px hsl(var(--foreground) / .08) !important; }
+:root[data-interface-style="kit-beui-pro"][data-theme]:not([data-interface-style="default"]) .btn.btn-primary { background: linear-gradient(hsl(var(--primary)), color-mix(in srgb, hsl(var(--primary)), black 8%)); color: hsl(var(--primary-foreground)); }
+:root[data-interface-style="kit-beui-pro"][data-theme]:not([data-interface-style="default"]) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 12px !important; box-shadow: inset 0 2px 3px hsl(var(--foreground) / .05); }
+:root[data-interface-style="kit-beui-pro"][data-theme]:not([data-interface-style="default"]) .global-search-result.is-selected { background: hsl(var(--accent)); box-shadow: inset 0 1px 0 hsl(var(--foreground) / .1); }
 
 /* HeroUI: filled fields, floating cards and pill-shaped actions. */
-:root[data-interface-style="kit-heroui"][data-theme] :is(.neo-gist-card, .global-search-panel, .neo-toolbar-menu__panel) { border-radius: 20px !important; border-color: transparent !important; box-shadow: 0 4px 16px hsl(var(--foreground) / .1) !important; }
-:root[data-interface-style="kit-heroui"][data-theme] .btn:not(.btn-destructive) { border-color: transparent; box-shadow: none !important; background: hsl(var(--muted)); }
-:root[data-interface-style="kit-heroui"][data-theme] .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
-:root[data-interface-style="kit-heroui"][data-theme] :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-color: hsl(var(--input)); border-bottom-width: 2px; box-shadow: none; }
-:root[data-interface-style="kit-heroui"][data-theme] .global-search-result.is-selected { background: hsl(var(--accent)); box-shadow: 0 2px 5px hsl(var(--foreground) / .08); }
+:root[data-interface-style="kit-heroui"][data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card, .global-search-panel, .neo-toolbar-menu__panel) { border-radius: 20px !important; border-color: transparent !important; box-shadow: 0 4px 16px hsl(var(--foreground) / .1) !important; }
+:root[data-interface-style="kit-heroui"][data-theme]:not([data-interface-style="default"]) .btn:not(.btn-destructive) { border-color: transparent; box-shadow: none !important; background: hsl(var(--muted)); }
+:root[data-interface-style="kit-heroui"][data-theme]:not([data-interface-style="default"]) .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+:root[data-interface-style="kit-heroui"][data-theme]:not([data-interface-style="default"]) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-color: hsl(var(--input)); border-bottom-width: 2px; box-shadow: none; }
+:root[data-interface-style="kit-heroui"][data-theme]:not([data-interface-style="default"]) .global-search-result.is-selected { background: hsl(var(--accent)); box-shadow: 0 2px 5px hsl(var(--foreground) / .08); }
 
 /* Rare: independently drawn folder-like surfaces; no Rare UI component code is ported. */
-:root[data-interface-style="kit-rare"][data-theme] :is(.neo-gist-card, .global-search-panel) { border-radius: 5px 18px 18px 18px !important; box-shadow: inset 0 3px 0 hsl(var(--primary) / .12), 0 3px 0 hsl(var(--primary) / .2), 0 7px 18px hsl(var(--foreground) / .07) !important; }
-:root[data-interface-style="kit-rare"][data-theme] .btn { font-family: 'Open Runde Preset', 'Noto Sans Myanmar Variable', sans-serif; border-radius: 10px !important; box-shadow: inset 0 1px 0 hsl(var(--foreground) / .12), 0 3px 0 hsl(var(--foreground) / .16) !important; }
-:root[data-interface-style="kit-rare"][data-theme] .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
-:root[data-interface-style="kit-rare"][data-theme] :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 10px !important; background: hsl(var(--muted)); }
+:root[data-interface-style="kit-rare"][data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card, .global-search-panel) { border-radius: 5px 18px 18px 18px !important; box-shadow: inset 0 3px 0 hsl(var(--primary) / .12), 0 3px 0 hsl(var(--primary) / .2), 0 7px 18px hsl(var(--foreground) / .07) !important; }
+:root[data-interface-style="kit-rare"][data-theme]:not([data-interface-style="default"]) .btn { font-family: 'Open Runde Preset', 'Noto Sans Myanmar Variable', sans-serif; border-radius: 10px !important; box-shadow: inset 0 1px 0 hsl(var(--foreground) / .12), 0 3px 0 hsl(var(--foreground) / .16) !important; }
+:root[data-interface-style="kit-rare"][data-theme]:not([data-interface-style="default"]) .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+:root[data-interface-style="kit-rare"][data-theme]:not([data-interface-style="default"]) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 10px !important; background: hsl(var(--muted)); }
 
 /* Goop: soft organic corners and a springy press, without SVG filters on text. */
-:root[data-interface-style="kit-goop"][data-theme] :is(.neo-gist-card, .global-search-panel) { border-radius: 25px 19px 28px 21px !important; box-shadow: 0 5px 18px hsl(var(--primary) / .12) !important; }
-:root[data-interface-style="kit-goop"][data-theme] .neo-gist-card h3 { font-weight: 500; letter-spacing: -.025em; }
-:root[data-interface-style="kit-goop"][data-theme] .btn:not(.btn-destructive) { border-radius: 22px 17px 24px 18px !important; box-shadow: inset 0 1px 0 hsl(var(--foreground) / .08) !important; }
-:root[data-interface-style="kit-goop"][data-theme] .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
-:root[data-interface-style="kit-goop"][data-theme] :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 14px 20px 13px 18px !important; background: hsl(var(--muted)); }
+:root[data-interface-style="kit-goop"][data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card, .global-search-panel) { border-radius: 25px 19px 28px 21px !important; box-shadow: 0 5px 18px hsl(var(--primary) / .12) !important; }
+:root[data-interface-style="kit-goop"][data-theme]:not([data-interface-style="default"]) .neo-gist-card h3 { font-weight: 500; letter-spacing: -.025em; }
+:root[data-interface-style="kit-goop"][data-theme]:not([data-interface-style="default"]) .btn:not(.btn-destructive) { border-radius: 22px 17px 24px 18px !important; box-shadow: inset 0 1px 0 hsl(var(--foreground) / .08) !important; }
+:root[data-interface-style="kit-goop"][data-theme]:not([data-interface-style="default"]) .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+:root[data-interface-style="kit-goop"][data-theme]:not([data-interface-style="default"]) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 14px 20px 13px 18px !important; background: hsl(var(--muted)); }
 
 /* beUI: compact outlined controls, capsule tabs and command-palette selection. */
-:root[data-interface-style="kit-beui"][data-theme] :is(.neo-gist-card, .neo-toolbar-menu__panel) { border-radius: 10px !important; box-shadow: 0 1px 2px hsl(var(--foreground) / .08) !important; }
-:root[data-interface-style="kit-beui"][data-theme] .btn { border-radius: 8px !important; box-shadow: 0 1px 1px hsl(var(--foreground) / .08) !important; }
-:root[data-interface-style="kit-beui"][data-theme] .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
-:root[data-interface-style="kit-beui"][data-theme] :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 8px !important; background: hsl(var(--background)); }
-:root[data-interface-style="kit-beui"][data-theme] .global-search-result.is-selected { background: hsl(var(--accent)); box-shadow: inset 3px 0 0 hsl(var(--primary)); }
+:root[data-interface-style="kit-beui"][data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card, .neo-toolbar-menu__panel) { border-radius: 10px !important; box-shadow: 0 1px 2px hsl(var(--foreground) / .08) !important; }
+:root[data-interface-style="kit-beui"][data-theme]:not([data-interface-style="default"]) .btn { border-radius: 8px !important; box-shadow: 0 1px 1px hsl(var(--foreground) / .08) !important; }
+:root[data-interface-style="kit-beui"][data-theme]:not([data-interface-style="default"]) .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+:root[data-interface-style="kit-beui"][data-theme]:not([data-interface-style="default"]) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { border-radius: 8px !important; background: hsl(var(--background)); }
+:root[data-interface-style="kit-beui"][data-theme]:not([data-interface-style="default"]) .global-search-result.is-selected { background: hsl(var(--accent)); box-shadow: inset 3px 0 0 hsl(var(--primary)); }
 
 /* All states keep the existing semantic controls, destructive colors and focus order. */
-:root[data-interface-style^="kit-"][data-theme] :is(button,a,input,textarea,select):focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
-:root[data-interface-style^="kit-"][data-theme] .btn:disabled { opacity: .55; }
+:root[data-interface-style^="kit-"][data-theme]:not([data-interface-style="default"]) :is(button,a,input,textarea,select):focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
+:root[data-interface-style^="kit-"][data-theme]:not([data-interface-style="default"]) .btn:disabled { opacity: .55; }
 @media (prefers-reduced-motion: no-preference) {
-  :root[data-interface-style="kit-sketchbook"][data-theme] .btn:hover:not(:disabled) { transform: translate(-1px,-1px) rotate(-.6deg); }
-  :root:is([data-interface-style="kit-productive"], [data-interface-style="kit-libraries"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-rare"], [data-interface-style="kit-beui"])[data-theme] .btn:hover:not(:disabled) { transform: translateY(-1px); }
-  :root[data-interface-style="kit-heroui"][data-theme] .btn:active:not(:disabled) { transform: scale(.97); }
-  :root[data-interface-style="kit-goop"][data-theme] .btn:hover:not(:disabled) { transform: scale(1.025); }
-  :root[data-interface-style="kit-goop"][data-theme] .btn:active:not(:disabled) { transform: scale(.97); }
+  :root[data-interface-style="kit-sketchbook"][data-theme]:not([data-interface-style="default"]) .btn:hover:not(:disabled) { transform: translate(-1px,-1px) rotate(-.6deg); }
+  :root:is([data-interface-style="kit-productive"], [data-interface-style="kit-libraries"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-rare"], [data-interface-style="kit-beui"])[data-theme]:not([data-interface-style="default"]) .btn:hover:not(:disabled) { transform: translateY(-1px); }
+  :root[data-interface-style="kit-heroui"][data-theme]:not([data-interface-style="default"]) .btn:active:not(:disabled) { transform: scale(.97); }
+  :root[data-interface-style="kit-goop"][data-theme]:not([data-interface-style="default"]) .btn:hover:not(:disabled) { transform: scale(1.025); }
+  :root[data-interface-style="kit-goop"][data-theme]:not([data-interface-style="default"]) .btn:active:not(:disabled) { transform: scale(.97); }
 }
 @media (prefers-reduced-motion: reduce) {
-  :root[data-interface-style^="kit-"][data-theme] .btn { animation: none !important; transition: none !important; transform: none !important; }
+  :root[data-interface-style^="kit-"][data-theme]:not([data-interface-style="default"]) .btn { animation: none !important; transition: none !important; transform: none !important; }
 }

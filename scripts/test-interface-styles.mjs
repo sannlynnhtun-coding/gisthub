@@ -104,4 +104,8 @@ for (const family of ['Geist Variable', 'Instrument Sans Variable', 'Inter Varia
     assert.ok((readFileSync('GistHub/wwwroot/css/fonts.css', 'utf8') + readFileSync('GistHub/wwwroot/css/font-library.css', 'utf8')).includes(`font-family: '${family}'`));
 }
 assert.ok(websiteCss.includes('prefers-reduced-motion: reduce') && websiteCss.includes(':focus-visible'));
+for (const heading of websiteCss.matchAll(/--style-heading-font:([^;]+);/g)) {
+    assert.ok(heading[1].includes('!important'), 'Preset headings must override independently saved inline heading fonts.');
+}
+assert.ok(websiteCss.includes('[data-theme]:not([data-interface-style="default"])'), 'Preset surfaces must outrank the shared compound card selectors.');
 console.log('PASS: remaining website presets have paired modes, licensed local fonts, accessible states and no collection layout overrides.');
