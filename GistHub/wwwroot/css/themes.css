@@ -98,6 +98,7 @@
 :root[data-theme^="vscode-"] .neo-decor { background: hsl(var(--muted)); }
 :root[data-theme^="vscode-"] .json-parser-pane--output { background: hsl(var(--card)); }
 .neo-gist-card button[aria-label="Remove bookmark"] { color: var(--neo-interactive) !important; }
+.neo-gist-card button.neo-gist-card__copy--copied { background: hsl(var(--primary)) !important; color: hsl(var(--primary-foreground)) !important; }
 .neo-gist-card button[class~="hover:bg-[#FBF3DB]"]:hover { background: var(--neo-yellow) !important; color: var(--neo-on-accent) !important; }
 /* Compact searchable appearance popup. */
 .neo-theme-panel:popover-open { display: flex; flex-direction: column; overflow: hidden; }
