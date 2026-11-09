@@ -57,7 +57,16 @@
         {"id": "rebus", "name": "Rebus", "description": "Geometric symbol accents with clearly labeled controls"},
         {"id": "modular-typography", "name": "Modular Typography", "description": "Grid-aligned heading blocks and segmented rules"},
         { id: 'cruip', name: 'Cruip', description: 'Artifact-inspired dashboard with quiet borders and rounded surfaces' },
-        { id: 'boardui', name: 'BoardUI', description: 'BoardUI-inspired inset cards, layered buttons, segmented tabs and quiet dashboard surfaces' }
+        { id: 'boardui', name: 'BoardUI', description: 'BoardUI-inspired inset cards, layered buttons, segmented tabs and quiet dashboard surfaces' },
+        { id: 'kit-sketchbook', name: 'Sketchbook UI', description: 'Hand-drawn frames, irregular corners and inked controls' },
+        { id: 'kit-looseleaf', name: 'Looseleaf', description: 'Lined paper cards, notebook margins and a sage desktop' },
+        { id: 'kit-productive', name: 'Productive Schedule', description: 'Blueprint dots, fine selection outlines and editorial section rules' },
+        { id: 'kit-libraries', name: 'Libraries.dev', description: 'Luminous edge accents, metal-like buttons and dark studio surfaces' },
+        { id: 'kit-beui-pro', name: 'beUI Pro', description: 'Layered ambient panels, inset highlights and polished call-to-action buttons' },
+        { id: 'kit-heroui', name: 'HeroUI', description: 'Soft rounded cards, filled inputs, pill controls and segmented navigation' },
+        { id: 'kit-rare', name: 'Rare UI', description: 'Folder-like card edges, tactile controls and gentle lift feedback' },
+        { id: 'kit-goop', name: 'Goop UI', description: 'Organic rounded surfaces and elastic button feedback' },
+        { id: 'kit-beui', name: 'beUI', description: 'Compact command panels, capsule tabs and crisp motion feedback' }
     ].map((style, index) => ({ ...style, group: index < 8 ? 'Original styles' : 'More design styles' }));
     const presets = [
         { id: 'bold-light', name: 'Neobrutalism + Light', style: 'neobrutalism', theme: 'light' },
@@ -68,7 +77,9 @@
         { id: 'glass-dark', name: 'Glassmorphism + Dark', style: 'glassmorphism', theme: 'dark' },
         { id: 'flat-light', name: 'Flat + Light', style: 'flat', theme: 'light' },
         { id: 'boardui-light', name: 'BoardUI · Light', style: 'boardui', theme: 'boardui-light' },
-        { id: 'boardui-dark', name: 'BoardUI · Dark', style: 'boardui', theme: 'boardui-dark' }
+        { id: 'boardui-dark', name: 'BoardUI · Dark', style: 'boardui', theme: 'boardui-dark' },
+        ...styles.filter(style => style.id.startsWith('kit-')).flatMap(style =>
+            ['light', 'dark'].map(mode => ({ id: `${style.id}-${mode}`, name: `${style.name} · ${mode === 'light' ? 'Light' : 'Dark'}`, style: style.id, theme: `${style.id}-${mode}` })))
     ];
     window.getGistHubStylePresets = () => presets;
     window.applyGistHubStylePreset = (root, id) => {

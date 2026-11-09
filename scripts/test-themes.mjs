@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
+import { contrast, hex } from './theme-color-roles.mjs';
 const script = readFileSync(new URL('../GistHub/wwwroot/js/theme.js', import.meta.url), 'utf8');
 const backupStateScript = readFileSync(new URL('../GistHub/wwwroot/js/backupState.js', import.meta.url), 'utf8');
 const catalogScript = readFileSync(new URL('../GistHub/wwwroot/js/vscode-theme-catalog.js', import.meta.url), 'utf8');
@@ -20,8 +21,8 @@ function boot(saved, dark = true, blocked = false, explicitChoice = null) {
     return { window, root, saved: () => storage.theme, explicit: () => storage['gisthub:theme-choice'] };
 }
 const catalog = boot(null).window.getGistHubThemes();
-assert.equal(catalog.length, 157);
-assert.equal(new Set(catalog.map(theme => theme.id)).size, 157);
+assert.equal(catalog.length, 175);
+assert.equal(new Set(catalog.map(theme => theme.id)).size, 175);
 assert.equal(catalog.filter(theme => theme.id.startsWith('vscode-')).length, 100);
 assert.equal(catalog.filter(theme => theme.id.startsWith('figma-') && theme.name.startsWith('Figma-')).length, 53);
 assert.equal(boot(null, false).window.getGistHubTheme(), 'light');
@@ -70,3 +71,29 @@ assert.ok(css.includes('.neo-code-window'));
 assert.ok(css.includes('.json-token-string'));
 assert.ok(!css.includes('hljs-github'));
 console.log('PASS: original Light/Dark defaults, 100 VS Code and 53 Figma palettes, preview rollback, saved selections, removed-theme migration, and blocked storage.');
+
+const libraryCss = readFileSync(new URL('../GistHub/wwwroot/css/design-styles.css', import.meta.url), 'utf8');
+function hslHex(value) {
+    const [h, s, l] = value.match(/[\d.]+/g).map(Number);
+    const a = s / 100 * Math.min(l / 100, 1 - l / 100);
+    return hex([0, 8, 4].map(n => {
+        const k = (n + h / 30) % 12;
+        return 255 * (l / 100 - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)));
+    }));
+}
+const libraryThemes = catalog.filter(theme => theme.id.startsWith('kit-'));
+assert.equal(libraryThemes.length, 18);
+for (const theme of libraryThemes) {
+    const declaration = libraryCss.split(`:root[data-theme="${theme.id}"]{`)[1]?.split('}')[0];
+    assert.ok(declaration, `Missing palette for ${theme.id}`);
+    const tokens = Object.fromEntries([...declaration.matchAll(/--([\w-]+):([^;]+);/g)].map(([, key, value]) => [key, value]));
+    for (const [fg, bg, minimum] of [['foreground', 'background', 4.5], ['foreground', 'card', 4.5],
+        ['muted-foreground', 'muted', 4.5], ['primary-foreground', 'primary', 4.5],
+        ['destructive-foreground', 'destructive', 4.5], ['accent-foreground', 'accent', 4.5],
+        ['ring', 'background', 3], ['input', 'card', 3]]) {
+        assert.ok(contrast(hslHex(tokens[fg]), hslHex(tokens[bg])) >= minimum, `${theme.id}: ${fg}/${bg} contrast`);
+    }
+    assert.ok(catalog.some(other => other.id === theme.id.replace(/-(light|dark)$/, theme.dark ? '-light' : '-dark')));
+}
+assert.ok(libraryCss.includes('@media (prefers-reduced-motion: reduce)'));
+console.log('PASS: all nine library presets have light/dark pairs, readable text, visible inputs/focus, and reduced-motion rules.');
