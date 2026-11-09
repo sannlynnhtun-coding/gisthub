@@ -85,3 +85,23 @@ const collectionPage = readFileSync('GistHub/Pages/MyGists.razor', 'utf8');
 assert.ok(collectionPage.includes('<GistCard'));
 assert.ok(!collectionPage.includes('LooseleafNotes') && !looseleafCss.includes('display:none'), 'Looseleaf must style the existing cards without replacing or hiding the collection flow.');
 console.log('PASS: Looseleaf preserves the collection card flow and bundles licensed Kevin Sans fonts.');
+
+const websiteCss = readFileSync('GistHub/wwwroot/css/website-presets.css', 'utf8');
+assert.ok(readFileSync('GistHub/wwwroot/index.html', 'utf8').includes('css/website-presets.css'));
+assert.doesNotMatch(websiteCss, /[;{]\s*(?:display|position|order|grid-template[\w-]*|flex-direction|width|height|padding|margin|overflow|visibility|content)\s*:/, 'Website presets must not replace, hide, reorder, or resize the collection layout.');
+assert.doesNotMatch(websiteCss, /:is\([^{}]*::/);
+for (const id of ['boardui', 'kit-sketchbook', 'kit-productive', 'kit-libraries', 'kit-beui-pro', 'kit-heroui', 'kit-rare', 'kit-goop', 'kit-beui']) {
+    assert.ok(websiteCss.includes(`[data-interface-style="${id}"]`), `Missing ${id} styling`);
+    for (const mode of ['light', 'dark']) assert.ok(app.getGistHubStylePresets().some(p => p.style === id && p.theme.endsWith(`-${mode}`)));
+}
+for (const match of websiteCss.matchAll(/url\('\.\.\/fonts\/([^']+)'\)/g)) {
+    assert.equal(readFileSync(`GistHub/wwwroot/fonts/${match[1]}`).toString('ascii', 0, 4), 'wOF2', `Invalid ${match[1]}`);
+}
+for (const license of ['caveat-preset', 'dynapuff-preset', 'schibsted-grotesk-preset', 'OpenRunde']) {
+    assert.match(readFileSync(`GistHub/wwwroot/fonts/${license}-LICENSE.txt`, 'utf8'), /SIL OPEN FONT LICENSE/);
+}
+for (const family of ['Geist Variable', 'Instrument Sans Variable', 'Inter Variable', 'Roboto Mono Variable', 'Geist Mono Variable']) {
+    assert.ok((readFileSync('GistHub/wwwroot/css/fonts.css', 'utf8') + readFileSync('GistHub/wwwroot/css/font-library.css', 'utf8')).includes(`font-family: '${family}'`));
+}
+assert.ok(websiteCss.includes('prefers-reduced-motion: reduce') && websiteCss.includes(':focus-visible'));
+console.log('PASS: remaining website presets have paired modes, licensed local fonts, accessible states and no collection layout overrides.');
