@@ -54,10 +54,14 @@
         </header>
         <NavMenu @ref="WorkspaceNavigation" OnOpenWorkbenchTool="OpenWorkbenchTool" IsVercelApp="IsVercelApp" />
 
-        <div class="neo-canvas flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
+        <div class="neo-canvas flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar @(IsToolWorkspaceVisible ? "neo-canvas--tool" : "")">
             <div class="neo-decor neo-decor--pink" aria-hidden="true"></div>
             <div class="neo-decor neo-decor--purple" aria-hidden="true"></div>
-            <div class="neo-content max-w-6xl mx-auto space-y-10 animate-in fade-in duration-500">
+            @if (IsProfileReady && !ProfileLoadFailed)
+            {
+                <ToolWorkspace ActiveTool="@(IsUtilityOpen ? null : ActivePageTool)" OnBack="BackFromTool" OnOpenWorkbenchTool="OpenWorkbenchTool" FocusOnOpen="@(!ShouldRestoreToolsFocus)" />
+            }
+            <div hidden="@IsToolWorkspaceVisible" class="neo-content max-w-6xl mx-auto space-y-10 animate-in fade-in duration-500">
                 @if (!IsProfileReady)
                 {
                     <p role="status">Loading your local workspaceâ€¦</p>
@@ -89,10 +93,7 @@
 <Base64Overlay IsOpen="@IsBase64Open" OnClose="CloseBase64" />
 <JsonTableOverlay IsOpen="@IsJsonTableOpen" OnClose="CloseJsonTable" />
 <CodeImageOverlay IsOpen="@IsCodeImageOpen" OnClose="CloseCodeImage" />
-@if (IsProfileReady && !ProfileLoadFailed)
-{
-    <ToolPageOverlay ActiveTool="@(IsUtilityOpen ? null : ActivePageTool)" OnClose="ClosePageTool" OnOpenWorkbenchTool="OpenWorkbenchTool" FocusOnOpen="@(!ShouldRestoreToolsFocus)" />
-}
+
 
 @inject AppState AppState
 @inject IStorageService Storage
@@ -124,8 +125,9 @@
     private bool IsUtilityOpen => IsJsonParserOpen || IsCodeImageOpen || IsBase64Open || IsJsonTableOpen;
     private readonly List<(string Name, ElementReference? Trigger)> PageToolHistory = new();
     private string? ActivePageTool => PageToolHistory.Count > 0 ? PageToolHistory[^1].Name : null;
-    private string? RoutedTool => ToolPageOverlay.Pages.FirstOrDefault(tool => tool.Value.Route == Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0].Trim('/')).Key;
-    private bool IsModalOpen => IsUtilityOpen || IsGlobalSearchOpen || (IsProfileReady && !ProfileLoadFailed && ActivePageTool is not null);
+    private string? RoutedTool => ToolWorkspace.Pages.FirstOrDefault(tool => tool.Value.Route == Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0].Trim('/')).Key;
+    private bool IsToolWorkspaceVisible => IsProfileReady && !ProfileLoadFailed && ActivePageTool is not null;
+    private bool IsModalOpen => IsUtilityOpen || IsGlobalSearchOpen;
 
     protected override async Task OnInitializedAsync()
     {
@@ -198,7 +200,7 @@
 
     private void OpenGlobalSearch()
     {
-        if (IsUtilityOpen || ActivePageTool is not null)
+        if (IsUtilityOpen)
         {
             return;
         }
@@ -236,13 +238,13 @@
             case "Base64 Encode / Decode": OpenBase64(); break;
             case "Markdown + Code Converter": OpenCodeImage(); break;
             default:
-                if (ToolPageOverlay.Pages.ContainsKey(tool.Name) && tool.Name != ActivePageTool)
+                if (ToolWorkspace.Pages.ContainsKey(tool.Name) && tool.Name != ActivePageTool)
                     PageToolHistory.Add((tool.Name, tool.Trigger));
                 break;
         }
     }
 
-    private void ClosePageTool()
+    private void BackFromTool()
     {
         if (PageToolHistory.Count == 0) return;
         GuideToolTrigger = PageToolHistory[^1].Trigger;

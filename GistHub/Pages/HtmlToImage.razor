@@ -2,7 +2,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-@if (!IsWorkbenchPopup) { <PageTitle>HTML to Image · GistHub</PageTitle> }
+@if (!IsToolWorkspace) { <PageTitle>HTML to Image · GistHub</PageTitle> }
 <section class="compact-tool-page space-y-6" aria-labelledby="html-image-title">
     <div>
         <div class="neo-kicker mb-2">Workbench / Web content</div>
@@ -40,7 +40,7 @@
 </section>
 
 @code {
-    [CascadingParameter(Name = "IsWorkbenchPopup")] public bool IsWorkbenchPopup { get; set; }
+    [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private string Source = "<!doctype html>\n<html><head><style>\n* { box-sizing: border-box; }\nbody { margin: 0; padding: 48px; font-family: Arial, sans-serif; color: #172033; background: linear-gradient(135deg, #fef3c7, #e0f2fe); }\n.card { padding: 32px; background: white; border: 2px solid #172033; border-radius: 16px; }\nh1 { font-size: 38px; margin: 0 0 16px; }\np { font-size: 20px; line-height: 1.6; }\n.features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }\n.features div { padding: 20px; background: #e0f2fe; border-radius: 8px; }\n</style></head><body>\n<article class=\"card\"><h1>Make something worth sharing.</h1>\n<p>Turn a small piece of HTML into an image for your next presentation or post.</p>\n<div class=\"features\"><div>Write HTML + CSS</div><div>Export locally</div></div></article>\n</body></html>";
     private string Filename = "html-image", Format = "png", Url = "", Status = "Rendering preview…";
     private int Width = 800, Quality = 90, Revision;

@@ -114,7 +114,7 @@ export async function checkAgentSkills({ evaluate, send, sessionId, waitFor }) {
   assert.equal(await evaluate(`(() => { const group = Array.from(document.querySelectorAll('.skills-group')).find(el => el.querySelector('.skills-name').textContent === 'Playwright CLI'); const list = group.querySelector('.skills-method-list'); return list.scrollHeight > list.clientHeight && list.clientHeight <= 384; })()`), true);
   await evaluate(`Array.from(document.querySelectorAll('.skills-group')).find(el => el.querySelector('.skills-name').textContent === 'Playwright CLI').scrollIntoView({ block: 'start' })`);
   await capture('large-methods');
-  await evaluate(`document.querySelector('.skills-filters button').click(); document.querySelector('.tool-page-backdrop:not([hidden]) .tool-page-content').scrollTop = 0`);
+  await evaluate(`document.querySelector('.skills-filters button').click(); document.querySelector('.tool-workspace-session:not([hidden]) .tool-page-content').scrollTop = 0`);
   await evaluate(`window.applyGistHubTheme('light')`);
   await waitFor(`window.getGistHubTheme() === 'light'`, 'light theme');
   await checkContrast();

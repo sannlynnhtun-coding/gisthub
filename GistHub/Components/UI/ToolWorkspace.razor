@@ -1,6 +1,3 @@
-@implements IAsyncDisposable
-@inject IJSRuntime JS
-
 @if (ActiveTool is not null)
 {
     <PageTitle>@ActiveTool · GistHub</PageTitle>
@@ -8,18 +5,18 @@
 @foreach (var name in OpenedTools)
 {
     var active = name == ActiveTool;
-    <div @key="name" class="tool-page-backdrop" hidden="@(!active)" @onclick="() => OnClose.InvokeAsync()">
-        <section @ref="Dialogs[name]" class="tool-page-overlay" role="dialog" aria-modal="true"
+    <div @key="name" class="tool-workspace-session" hidden="@(!active)">
+        <section class="tool-workspace"
                  aria-labelledby="@($"tool-page-title-{Pages[name].Component.Name}")" tabindex="-1"
-                 data-tool-name="@name" @onclick:stopPropagation="true" @onkeydown="HandleKeyDown">
+                 data-tool-name="@name">
             <header class="tool-page-header">
-                <h2 id="@($"tool-page-title-{Pages[name].Component.Name}")">@name</h2>
-                <button @ref="CloseButtons[name]" type="button" @onclick="() => OnClose.InvokeAsync()" aria-label="@($"Close {name}")" title="Close (Esc)">
-                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M6 18 18 6"/></svg>
+                <button @ref="BackButtons[name]" type="button" @onclick="() => OnBack.InvokeAsync()" aria-label="@($"Back from {name}")" title="Back">
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 5-7 7 7 7M5 12h14"/></svg>
                 </button>
+                <h2 id="@($"tool-page-title-{Pages[name].Component.Name}")">@name</h2>
             </header>
             <div class="tool-page-content" inert="@(!active ? "" : null)">
-                <CascadingValue Name="IsWorkbenchPopup" Value="true">
+                <CascadingValue Name="IsToolWorkspace" Value="true">
                     <CascadingValue Name="OpenWorkbenchTool" Value="OnOpenWorkbenchTool">
                         <DynamicComponent Type="Pages[name].Component" />
                     </CascadingValue>
@@ -48,13 +45,12 @@
         };
 
     [Parameter] public string? ActiveTool { get; set; }
-    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnBack { get; set; }
     [Parameter] public bool FocusOnOpen { get; set; } = true;
     [Parameter] public EventCallback<(string Name, ElementReference Trigger)> OnOpenWorkbenchTool { get; set; }
     // Keep mounted tool instances so closing and reopening never discards their in-memory drafts.
     private readonly HashSet<string> OpenedTools = new();
-    private readonly Dictionary<string, ElementReference> Dialogs = new(), CloseButtons = new();
-    private IJSObjectReference? Module;
+    private readonly Dictionary<string, ElementReference> BackButtons = new();
     private string? FocusedTool;
 
     protected override void OnParametersSet()
@@ -65,26 +61,11 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (FocusedTool == ActiveTool) return;
-        Module ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/appShell.js");
-        if (FocusedTool is not null) await Module.InvokeVoidAsync("deactivateFocusTrap", Dialogs[FocusedTool]);
         FocusedTool = ActiveTool;
         if (ActiveTool is not null)
         {
-            await Module.InvokeVoidAsync("activateFocusTrap", Dialogs[ActiveTool]);
-            if (FocusOnOpen) await CloseButtons[ActiveTool].FocusAsync();
+            if (FocusOnOpen) await BackButtons[ActiveTool].FocusAsync();
         }
     }
 
-    private Task HandleKeyDown(KeyboardEventArgs args) => args.Key == "Escape" ? OnClose.InvokeAsync() : Task.CompletedTask;
-
-    public async ValueTask DisposeAsync()
-    {
-        if (Module is null) return;
-        try
-        {
-            if (FocusedTool is not null) await Module.InvokeVoidAsync("deactivateFocusTrap", Dialogs[FocusedTool]);
-            await Module.DisposeAsync();
-        }
-        catch (JSDisconnectedException) { }
-    }
 }

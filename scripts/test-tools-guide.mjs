@@ -1,5 +1,5 @@
-import { checkToolPopups } from './test-tool-popups.mjs';
+import { checkToolWorkspaces } from './test-tool-workspaces.mjs';
 
 export async function checkToolsGuide(context) {
-  await checkToolPopups(context);
+  await checkToolWorkspaces(context);
 }

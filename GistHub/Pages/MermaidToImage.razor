@@ -2,7 +2,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-@if (!IsWorkbenchPopup) { <PageTitle>Mermaid to Image · GistHub</PageTitle> }
+@if (!IsToolWorkspace) { <PageTitle>Mermaid to Image · GistHub</PageTitle> }
 <section class="compact-tool-page space-y-6" aria-labelledby="mermaid-title">
     <div>
         <div class="neo-kicker mb-2">Workbench / Diagrams</div>
@@ -38,7 +38,7 @@
 </section>
 
 @code {
-    [CascadingParameter(Name = "IsWorkbenchPopup")] public bool IsWorkbenchPopup { get; set; }
+    [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private const string Flow = "flowchart TD\n    A[Write Mermaid] --> B{Preview looks right?}\n    B -- Yes --> C[Download image]\n    B -- No --> A";
     private string Source = Flow, Title = "My diagram", Author = "", Theme = "default", Format = "png", Status = "Rendering preview…";
     private int Quality = 90, Revision;

@@ -5,7 +5,7 @@
 @inject DiagramGistService DiagramGists
 @inject IStorageService Storage
 
-@if (!IsWorkbenchPopup) { <PageTitle>Diagram Editor · GistHub</PageTitle> }
+@if (!IsToolWorkspace) { <PageTitle>Diagram Editor · GistHub</PageTitle> }
 <NavigationLock ConfirmExternalNavigation="@Dirty" OnBeforeInternalNavigation="BeforeNavigation" />
 <section class="compact-tool-page diagram-workspace" @ref="Workspace">
     <header class="diagram-heading">
@@ -124,7 +124,7 @@
 </section>
 
 @code {
-    [CascadingParameter(Name = "IsWorkbenchPopup")] public bool IsWorkbenchPopup { get; set; }
+    [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private ElementReference Workspace, FrameHost, FileInput;
     private IJSObjectReference? Module, Editor;
     private DotNetObjectReference<DiagramEditor>? Callback;

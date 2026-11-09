@@ -5,12 +5,12 @@ export async function checkLocalSettings({ evaluate, send, sessionId, waitFor })
   await waitFor(ready, 'local settings page', 60000);
   assert.equal(await evaluate(`document.querySelector('.neo-backup-reminder').hidden`), true);
   await evaluate(`window.automaticDownloads=0;window.downloadTextFile=()=>{window.automaticDownloads++}`);
-  const closePopup = async () => {
-    await evaluate(`document.querySelector('.tool-page-backdrop:not([hidden]) .tool-page-header > button')?.click()`);
-    await waitFor(`!document.querySelector('.neo-app-shell').hasAttribute('inert')`, 'workspace available');
+  const closeWorkspace = async () => {
+    await evaluate(`document.querySelector('.tool-workspace-session:not([hidden]) .tool-page-header > button')?.click()`);
+    await waitFor(`!document.querySelector('.tool-workspace-session:not([hidden])')`, 'workspace available');
   };
   const openPicker = async () => {
-    await closePopup();
+    await closeWorkspace();
     await evaluate(`document.querySelector('#workspace-tab-View').click()`);
     await waitFor(`document.querySelector('.neo-theme-picker')?.dataset.appearanceReady === 'true'`, 'View appearance controls');
     await evaluate(`document.querySelector('.neo-theme-picker [popover]').showPopover()`);
@@ -52,7 +52,7 @@ export async function checkLocalSettings({ evaluate, send, sessionId, waitFor })
     window.downloadTextFile=(filename,text,type)=>{window.localBackupDownload={filename,text,type}};
   })()`);
   await evaluate(`document.querySelector('.workspace-command-group button').click()`);
-  await waitFor(`!!document.querySelector('.tool-page-backdrop:not([hidden]) [aria-labelledby="settings-title"]')`, 'settings popup reopened');
+  await waitFor(`!!document.querySelector('.tool-workspace-session:not([hidden]) [aria-labelledby="settings-title"]')`, 'settings workspace reopened');
   await evaluate(`document.querySelector('#local-settings-download').click()`);
   await waitFor(`Boolean(window.localBackupDownload)`, 'unified JSON download');
   const download = await evaluate('window.localBackupDownload');
@@ -99,7 +99,7 @@ export async function checkLocalSettings({ evaluate, send, sessionId, waitFor })
   await evaluate(`(async()=>await (await import('/js/localSettings.js')).restoreBackup(${JSON.stringify(withMissing)}))()`);
   assert.equal(await evaluate(`(async()=>(await(await import('/js/indexedDb.js')).getAllItems('groups')).length)()`), 2, 'Repeated restore must not duplicate playlists');
   assert.deepEqual(await evaluate(`(async()=>{const db=await import('/js/indexedDb.js');for(const gist of (await db.getAllItems('gists')).filter(g=>g.cacheOwnerUsername==='alice')){gist.bookmarkOrder=0;if(gist.id==='shared')gist.updated_at='2026-02-01T00:00:00Z';await db.saveItem('gists',gist)}return JSON.parse(await(await import('/js/localSettings.js')).createBackup()).gists.filter(g=>g.username==='alice'&&g.isBookmarked).map(g=>g.id)})()`), ['shared', 'existing'], 'Unranked bookmarks must retain the library date ordering in backups');
-  await closePopup();
+  await closeWorkspace();
   await evaluate(`window.reminderDownloads=0;window.downloadTextFile=()=>{window.reminderDownloads++};document.querySelector('#local-backup-reminder').click()`);
   await waitFor(`document.querySelector('.neo-backup-reminder').hidden`, 'header download clears reminder');
   assert.equal(await evaluate(`window.reminderDownloads`), 1);

@@ -1,6 +1,6 @@
 @page "/tools"
 
-@if (!IsWorkbenchPopup) { <PageTitle>Tools Guide · GistHub</PageTitle> }
+@if (!IsToolWorkspace) { <PageTitle>Tools Guide · GistHub</PageTitle> }
 <section class="compact-tool-page space-y-8" aria-labelledby="tools-guide-title">
     <div class="neo-page-heading space-y-3 pb-7 border-b">
         <div class="neo-kicker">Workbench / Guide</div>
@@ -21,7 +21,7 @@
 </section>
 
 @code {
-    [CascadingParameter(Name = "IsWorkbenchPopup")] public bool IsWorkbenchPopup { get; set; }
+    [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     [CascadingParameter(Name = "OpenWorkbenchTool")]
     public EventCallback<(string Name, ElementReference Trigger)> OpenWorkbenchTool { get; set; }
 

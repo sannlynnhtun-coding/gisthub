@@ -4,7 +4,7 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-@if (!IsWorkbenchPopup) { <PageTitle>YouTube Downloader · GistHub</PageTitle> }
+@if (!IsToolWorkspace) { <PageTitle>YouTube Downloader · GistHub</PageTitle> }
 <section class="compact-tool-page downloader space-y-6">
     <div>
         <div class="neo-kicker mb-2">Workbench / Local tools</div>
@@ -93,7 +93,7 @@
 </section>
 
 @code {
-    [CascadingParameter(Name = "IsWorkbenchPopup")] public bool IsWorkbenchPopup { get; set; }
+    [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private readonly CancellationTokenSource Lifetime = new();
     private string Url = "";
     private string Kind = "video";
