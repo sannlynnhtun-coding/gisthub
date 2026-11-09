@@ -168,7 +168,7 @@
 :root[data-interface-style="boardui"][data-theme] :is(.btn, .neo-icon-button):hover { filter: brightness(.97); transform: none; }
 :root[data-interface-style="boardui"][data-theme] :is(.neo-gist-card h3, .neo-page-heading h1, .global-search-heading h2) { font-family: var(--font-ui); font-weight: 600; letter-spacing: -.025em; }
 :root[data-interface-style="boardui"][data-theme] :is(.neo-code-preview, .neo-code-window-content, .neo-editor-input) {
-  background: hsl(var(--muted)); color: hsl(var(--foreground)); border: 1px solid hsl(var(--border)); border-radius: 10px;
+  background: hsl(var(--muted)) !important; color: hsl(var(--foreground)); border: 1px solid hsl(var(--border)) !important; border-radius: 10px;
 }
 :root[data-theme^="boardui-"] :is(.hljs, .neo-code-preview__content) { background: hsl(var(--muted)); color: hsl(var(--foreground)); }
 :root[data-interface-style="boardui"][data-theme] :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea, .global-search-input-wrap) {
