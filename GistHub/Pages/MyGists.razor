@@ -555,7 +555,8 @@
     {
         if (!LocalGists.Any(existing => existing.Id == gist.Id))
         {
-            if (!string.IsNullOrWhiteSpace(CollectionFilter)) gist.CollectionNames.Add(CollectionFilter);
+            if (!string.IsNullOrWhiteSpace(CollectionFilter) && !gist.CollectionNames.Contains(CollectionFilter, StringComparer.OrdinalIgnoreCase))
+                gist.CollectionNames.Add(CollectionFilter);
             if (BookmarksOnly)
             {
                 gist.IsBookmarked = true;

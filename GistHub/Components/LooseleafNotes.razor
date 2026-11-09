@@ -17,7 +17,7 @@
                 <button type="button" aria-pressed='@(Notebook == "" ? "true" : "false")' @onclick='() => Notebook = ""'>All pages <span>@Gists.Count</span></button>
                 @foreach (var name in Notebooks)
                 {
-                    <button type="button" aria-pressed="@(Notebook == name ? "true" : "false")" @onclick="() => Notebook = name">@name <span>@Gists.Count(g => g.CollectionNames.Contains(name))</span></button>
+                    <button type="button" aria-pressed="@(Notebook == name ? "true" : "false")" @onclick="() => Notebook = name">@name <span>@Gists.Count(g => g.CollectionNames.Contains(name, StringComparer.OrdinalIgnoreCase))</span></button>
                 }
             </nav>
             <div class="looseleaf-page-list">
@@ -116,7 +116,7 @@
     {
         get
         {
-            var pages = Gists.Where(g => Notebook == "" || g.CollectionNames.Contains(Notebook)).ToList();
+            var pages = Gists.Where(g => Notebook == "" || g.CollectionNames.Contains(Notebook, StringComparer.OrdinalIgnoreCase)).ToList();
             if (string.IsNullOrWhiteSpace(Query)) return pages;
             var ids = Search.Search(pages, Query, false, int.MaxValue).Results.Select(r => r.GistId).ToHashSet();
             return pages.Where(g => ids.Contains(g.Id)).ToList();
@@ -162,6 +162,8 @@
     private void ChangeFile(ChangeEventArgs args) { Filename = args.Value?.ToString() ?? ""; RenderMarkdown = true; }
     private async Task SavedAsync(LocalGist note)
     {
+        if (SelectedId is null && Notebook != "" && !note.CollectionNames.Contains(Notebook, StringComparer.OrdinalIgnoreCase))
+            note.CollectionNames.Add(Notebook);
         Writing = false; Editor = null;
         await OnSaved.InvokeAsync(note);
         SelectPage(note.Id); ShowPage = true; FocusPage = true;

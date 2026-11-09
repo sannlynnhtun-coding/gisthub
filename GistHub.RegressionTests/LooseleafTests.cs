@@ -29,6 +29,12 @@ static class LooseleafTests
         }
         Set(notes, "Notebook", "Personal");
         Check(Get<List<LocalGist>>(notes, "VisiblePages").Count == 0, "Search must respect notebook filters");
+        Set(notes, "Notebook", "work");
+        Check(Get<List<LocalGist>>(notes, "VisiblePages").Single().Id == "a", "Notebook names match without case sensitivity");
+        var notebookPage = new LocalGist { Id = "new-in-notebook" };
+        await Call(notes, "NewPageAsync");
+        await Call(notes, "SavedAsync", notebookPage);
+        Check(notebookPage.CollectionNames.SequenceEqual(new[] { "work" }), "New pages inherit the selected shelf notebook");
         await Call(notes, "OpenPageAsync", "a");
         Check(Get<bool>(notes, "ShowPage"), "Opening a page shows the mobile editor pane");
         await Call(notes, "BackAsync");
