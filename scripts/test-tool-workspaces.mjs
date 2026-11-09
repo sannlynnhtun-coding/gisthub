@@ -108,6 +108,8 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   await waitFor(`document.activeElement?.getAttribute('aria-label') === 'Open Markdown to DOCX'`,'return focus to guide');
   await evaluate(`document.querySelector('[aria-label="Open JSON Parser"]').click()`);
   await waitFor(`!!document.querySelector('[aria-labelledby="json-parser-title"]') && !document.querySelector(${JSON.stringify(active)})`,'guide launches original Data popup');
+  assert.equal(await evaluate(`document.querySelector('.neo-app-shell').inert`),true,'modal background is inaccessible and noninteractive');
+  assert.equal(await evaluate(`document.querySelector('.neo-app-shell').hasAttribute('aria-hidden')`),false,'inert avoids hiding an ancestor before focus moves into the modal');
   await evaluate(`document.querySelector('[aria-labelledby="json-parser-title"]').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))`);
   await opened('Tools Guide');
   await waitFor(`document.activeElement?.getAttribute('aria-label') === 'Open JSON Parser'`,'return from Data popup to guide');
