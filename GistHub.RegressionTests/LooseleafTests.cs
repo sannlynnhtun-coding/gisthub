@@ -6,6 +6,11 @@ using GistHub.Models;
 using GistHub.Pages;
 using GistHub.Services;
 using Microsoft.JSInterop;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 static class LooseleafTests
 {
@@ -62,6 +67,30 @@ static class LooseleafTests
         Set(page, "LocalGists", new List<LocalGist> { note });
         await Call(page, "HandleDelete", note);
         Check(Get<List<LocalGist>>(page, "LocalGists").Count == 1 && Get<string>(page, "SyncError").Contains("kept"), "Failed remote deletion must keep the local note");
+        note.Files["first.md"].Truncated = false;
+        var handler = new SaveHandler();
+        using var provider = new ServiceCollection().AddLogging().AddSingleton(state)
+            .AddSingleton<IJSRuntime>(js).AddSingleton<IStorageService>(new NotesStorage(note))
+            .AddSingleton<NavigationManager>(new FakeNavigationManager())
+            .AddSingleton<IGithubService>(new GithubService(new HttpClient(handler), "https://api.github.com")).BuildServiceProvider();
+        await using var renderer = new HtmlRenderer(provider, provider.GetRequiredService<ILoggerFactory>());
+        Editor? mounted = null; LocalGist? saved = null;
+        await renderer.Dispatcher.InvokeAsync(async () =>
+        {
+            await renderer.RenderComponentAsync<EditorHost>(ParameterView.FromDictionary(new Dictionary<string, object?> {
+                ["Capture"] = (Action<Editor>)(value => mounted = value),
+                ["Saved"] = EventCallback.Factory.Create<LocalGist>(new object(), (LocalGist value) => saved = value)
+            }));
+            Set(mounted!, "Content", "Edited secondary file");
+            await Call(mounted!, "HandleSave");
+            Check(saved is null && mounted!.HasUnsavedChanges, "Failed saves retain the editor and dirty content");
+            handler.Fail = false;
+            await Call(mounted!, "HandleSave");
+            Check(saved?.Id == "a" && !mounted!.HasUnsavedChanges, "Successful embedded saves notify the notebook and clear dirty state");
+            using var payload = System.Text.Json.JsonDocument.Parse(handler.Body!);
+            var files = payload.RootElement.GetProperty("files");
+            Check(files.EnumerateObject().Count() == 1 && files.GetProperty("docker.txt").GetProperty("content").GetString() == "Edited secondary file", "Saving a secondary file must not overwrite other gist files");
+        });
         Console.WriteLine("PASS: Looseleaf notebook search, mobile navigation, unsaved-change protection, selected-file editing and failed-delete recovery.");
     }
     static void Check(bool value, string message) { if (!value) throw new Exception(message); }
@@ -89,5 +118,26 @@ static class LooseleafTests
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken token)
             => Task.FromResult(new HttpResponseMessage(HttpStatusCode.Forbidden) { Content = new StringContent("{\"message\":\"Forbidden\"}", Encoding.UTF8, "application/json") });
+    }
+    public sealed class EditorHost : ComponentBase
+    {
+        [Parameter] public Action<Editor> Capture { get; set; } = null!;
+        [Parameter] public EventCallback<LocalGist> Saved { get; set; }
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            builder.OpenComponent<Editor>(0); builder.AddAttribute(1, "Embedded", true);
+            builder.AddAttribute(2, "GistId", "a"); builder.AddAttribute(3, "InitialFilename", "docker.txt");
+            builder.AddAttribute(4, "OnSaved", Saved); builder.AddComponentReferenceCapture(5, value => Capture((Editor)value)); builder.CloseComponent();
+        }
+    }
+    sealed class SaveHandler : HttpMessageHandler
+    {
+        public bool Fail = true; public string? Body;
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken token)
+        {
+            Body = await request.Content!.ReadAsStringAsync(token);
+            return new HttpResponseMessage(Fail ? HttpStatusCode.Forbidden : HttpStatusCode.OK) {
+                Content = new StringContent(Fail ? "{\"message\":\"Forbidden\"}" : "{\"id\":\"a\",\"description\":\"Notebook\",\"files\":{\"docker.txt\":{\"filename\":\"docker.txt\",\"content\":\"Edited secondary file\"}}}", Encoding.UTF8, "application/json") };
+        }
     }
 }
