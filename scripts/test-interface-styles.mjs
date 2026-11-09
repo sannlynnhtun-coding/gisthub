@@ -81,4 +81,7 @@ for (const weight of ['Regular', 'Bold']) {
     assert.equal(readFileSync(`GistHub/wwwroot/fonts/${filename}`).toString('ascii', 0, 4), 'wOF2');
 }
 assert.ok(readFileSync('GistHub/wwwroot/fonts/Looseleaf-LICENSE.txt', 'utf8').includes('MIT License'));
-console.log('PASS: Looseleaf notebook decorations use valid selectors and both local Kevin Sans fonts retain their license.');
+const collectionPage = readFileSync('GistHub/Pages/MyGists.razor', 'utf8');
+assert.ok(collectionPage.includes('<GistCard'));
+assert.ok(!collectionPage.includes('LooseleafNotes') && !looseleafCss.includes('display:none'), 'Looseleaf must style the existing cards without replacing or hiding the collection flow.');
+console.log('PASS: Looseleaf preserves the collection card flow and bundles licensed Kevin Sans fonts.');

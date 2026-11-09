@@ -1,75 +1,12 @@
-/* Notes/notebook layout adapted from kevintngo/looseleaf (MIT); attribution in fonts/. */
+/* Looseleaf visual styling only; collection markup and actions remain shared. */
 @font-face{font-family:"Kevin Sans";src:url("../fonts/KevinSans-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Kevin Sans";src:url("../fonts/KevinSans-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
-.looseleaf-notes{display:none}
-:root[data-interface-style="kit-looseleaf"][data-theme]{--font-ui:"Kevin Sans","Noto Sans Myanmar Variable",sans-serif!important;--style-heading-font:"Kevin Sans","Noto Sans Myanmar Variable",sans-serif}
-:root[data-interface-style="kit-looseleaf"][data-theme] .looseleaf-notes :is(.btn,input,textarea){border-radius:3px 7px 4px 6px!important}
-:root[data-interface-style="kit-looseleaf"]{--leaf-paper:hsl(var(--card));--leaf-rule:color-mix(in srgb,#8fb0d4 35%,transparent);--leaf-margin:color-mix(in srgb,#d9776a 65%,transparent);--leaf-font:"Kevin Sans","Noto Sans Myanmar Variable",sans-serif}
-:root[data-interface-style="kit-looseleaf"] body,
-:root[data-interface-style="kit-looseleaf"] .neo-app-shell{font-family:var(--leaf-font)!important}
-:root[data-interface-style="kit-looseleaf"] .standard-gist-collection{display:none}
-:root[data-interface-style="kit-looseleaf"] .looseleaf-notes{display:grid;grid-template-columns:minmax(250px,310px) minmax(0,1fr);gap:28px;align-items:start;font-family:var(--leaf-font);font-size:18px;line-height:1.5}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-notes :is(button,input,textarea,select)){font:inherit}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-notes :is(button,input,textarea,select):focus-visible){outline:3px solid hsl(var(--ring));outline-offset:4px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-notes :is(.btn,button,input,select)){border:1.5px solid hsl(var(--foreground));border-radius:3px 7px 4px 6px;box-shadow:2px 3px 0 color-mix(in srgb,hsl(var(--foreground)) 28%,transparent)}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-notes button){cursor:pointer;padding:7px 12px;transition:transform 100ms,box-shadow 100ms}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-notes button:active:not(:disabled)){transform:translate(1px,2px);box-shadow:none}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-notes button:disabled){cursor:default;opacity:.6}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-shelf){position:relative;background:var(--leaf-paper);border:1.5px solid hsl(var(--foreground));border-radius:5px 3px 8px 4px;padding:24px 18px 16px;box-shadow:3px 5px 0 color-mix(in srgb,hsl(var(--foreground)) 20%,transparent)}
-:root[data-interface-style="kit-looseleaf"][data-theme] .looseleaf-shelf::before{content:"";position:absolute;top:-12px;left:42%;width:48px;height:22px;border:3px solid hsl(var(--foreground));border-radius:4px;background:hsl(var(--muted));transform:rotate(-3deg)}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-shelf header,.looseleaf-page-toolbar){display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-shelf h2){font-size:32px;font-weight:700;margin:0}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-shelf label){display:block;margin-top:20px;font-size:16px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-shelf input){width:100%;min-width:0;background:hsl(var(--background));padding:9px 10px;margin:6px 0 18px;color:hsl(var(--foreground))}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-shelf nav){display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px dashed hsl(var(--border));padding-bottom:16px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-shelf nav button){font-size:16px;box-shadow:none;background:hsl(var(--muted));text-align:left}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-shelf nav span){opacity:.75;margin-left:6px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-notes button[aria-pressed="true"]){background:hsl(var(--primary));color:hsl(var(--primary-foreground))}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-page-list){max-height:65vh;overflow:auto;padding:0 5px 8px 0}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-page-list>p){font-size:15px;color:hsl(var(--muted-foreground));margin:12px 0}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-page-list ul){list-style:none;padding:0;margin:0;display:grid;gap:12px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-index-card){position:relative;display:flex;flex-direction:column;gap:7px;width:100%;text-align:left;background:var(--leaf-paper);color:hsl(var(--foreground));border-color:hsl(var(--border))!important;padding:14px!important;overflow-wrap:anywhere}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-index-card strong){font-size:21px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-index-card[aria-current="true"]){border-color:hsl(var(--foreground))!important;background:hsl(var(--accent));color:hsl(var(--accent-foreground))}
-:root[data-interface-style="kit-looseleaf"][data-theme] .looseleaf-index-card[aria-current="true"]::before{content:"";position:absolute;left:-1px;top:12px;width:7px;height:26px;background:hsl(var(--primary));transform:rotate(-3deg)}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-excerpt){display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:17px;white-space:pre-wrap}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-index-card small,.looseleaf-credit){font-size:14px;color:hsl(var(--muted-foreground))}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-credit){display:block;margin-top:18px;text-decoration:underline;text-underline-offset:4px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-page-pane){min-width:0;outline:none}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-page-toolbar){justify-content:flex-start;margin:0 0 18px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-notes [role="group"]){display:inline-flex;gap:0}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-notes [role="group"] button){box-shadow:none;background:var(--leaf-paper);color:hsl(var(--foreground))}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-page-pane>select){display:block;max-width:100%;background:var(--leaf-paper);color:hsl(var(--foreground));padding:7px;margin-bottom:16px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-paper){position:relative;min-height:580px;padding:32px 28px 24px 54px;border:1.5px solid hsl(var(--foreground));border-radius:4px 7px 3px 6px;background:linear-gradient(90deg,transparent 37px,var(--leaf-margin) 38px,transparent 39px),repeating-linear-gradient(transparent 0 27px,var(--leaf-rule) 27px 28px),var(--leaf-paper);box-shadow:4px 5px 0 hsl(var(--muted)),5px 6px 0 hsl(var(--border)),8px 10px 0 color-mix(in srgb,hsl(var(--foreground)) 12%,transparent);overflow-wrap:anywhere}
-:root[data-interface-style="kit-looseleaf"][data-theme] .looseleaf-paper::before{content:"";position:absolute;left:-9px;top:25px;bottom:25px;width:19px;background:repeating-linear-gradient(transparent 0 15px,hsl(var(--foreground)) 15px 17px,transparent 17px 28px);pointer-events:none}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-paper h2){font:700 36px/1.3 var(--leaf-font);margin:0 0 10px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-page-meta){font-size:15px;color:hsl(var(--muted-foreground));margin-bottom:24px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-paper .neo-markdown-preview){font:400 20px/28px var(--leaf-font)!important;background:transparent!important;padding:0!important;border:0!important;box-shadow:none!important}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-paper pre){max-width:100%;overflow:auto;white-space:pre;line-height:1.6;font:14px/1.7 var(--font-code,monospace);background:hsl(var(--muted));padding:14px;border:1px solid hsl(var(--border));border-radius:3px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-paper footer){margin-top:32px;padding-top:12px;border-top:1px dashed hsl(var(--border));font-size:15px;color:hsl(var(--muted-foreground))}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write){animation:none!important}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-page-heading){padding:0 0 16px;margin:0;gap:12px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-page-heading .neo-kicker,.looseleaf-write .neo-page-heading h1,.looseleaf-write .neo-page-heading p){display:none}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-grid){display:flex!important;flex-direction:column;gap:20px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-settings){display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0;padding:18px;background:var(--leaf-paper)}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-settings>*){margin:0!important;min-width:0}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-settings label,.looseleaf-write .neo-editor-settings legend,.looseleaf-write .neo-editor-settings span){letter-spacing:normal;text-transform:none;font-size:16px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-settings :is(input,textarea)){color:hsl(var(--foreground));background:hsl(var(--background));font-family:var(--leaf-font);font-size:18px}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-sidebar>div+div){display:none}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-console){min-height:480px;height:65vh}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-surface){background:var(--leaf-paper)!important;border:1.5px solid hsl(var(--foreground));border-radius:4px 7px 3px 6px;box-shadow:4px 5px 0 hsl(var(--muted))}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-toolbar){height:56px;padding:8px 14px;background:var(--leaf-paper)}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-toolbar>div:first-child,.looseleaf-write .neo-editor-toolbar span,.looseleaf-write .neo-editor-status){display:none}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-input){padding:76px 24px 24px 42px!important;color:hsl(var(--foreground))!important;background:linear-gradient(90deg,transparent 29px,var(--leaf-margin) 30px,transparent 31px),repeating-linear-gradient(transparent 0 27px,var(--leaf-rule) 27px 28px)!important;font:400 20px/28px var(--leaf-font)!important}
-:root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write pre.neo-editor-input){font:14px/28px var(--font-code,monospace)!important}
-@media(max-width:1099px){
- :root[data-interface-style="kit-looseleaf"] .looseleaf-notes{grid-template-columns:minmax(0,1fr)}
- :root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-notes[data-view="list"] .looseleaf-page-pane,.looseleaf-notes[data-view="page"] .looseleaf-shelf){display:none}
- :root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-page-list){max-height:none}
- :root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-paper){min-height:65vh;padding:24px 18px 24px 44px}
- :root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-write .neo-editor-settings){grid-template-columns:minmax(0,1fr)}
- :root[data-interface-style="kit-looseleaf"][data-theme] :is(.looseleaf-page-toolbar .btn){font-size:16px;padding:6px 8px}
-}
-@media(prefers-reduced-motion:reduce){:root[data-interface-style="kit-looseleaf"][data-theme] .looseleaf-notes button{transition:none}}
-:root[data-interface-style="kit-looseleaf"][data-theme] .looseleaf-notes .btn-primary{background:hsl(var(--primary));color:hsl(var(--primary-foreground));border-color:hsl(var(--foreground))}
-:root[data-interface-style="kit-looseleaf"][data-theme] .looseleaf-notes .btn{box-shadow:2px 3px 0 hsl(var(--foreground)/.28)!important}
+:root[data-interface-style="kit-looseleaf"][data-theme]{--font-ui:"Kevin Sans","Noto Sans Myanmar Variable",sans-serif!important;--style-heading-font:var(--font-ui);--style-radius:4px;--style-shadow:2px 3px 0 hsl(var(--foreground)/.18)}
+:root[data-interface-style="kit-looseleaf"][data-theme] .neo-gist-card{border:1.5px solid hsl(var(--foreground)/.65)!important;border-radius:4px 7px 3px 6px!important;box-shadow:3px 4px 0 hsl(var(--foreground)/.16)!important;background-image:linear-gradient(90deg,transparent 18px,hsl(var(--destructive)/.3) 18px 19px,transparent 19px),repeating-linear-gradient(transparent 0 27px,hsl(var(--primary)/.12) 27px 28px)}
+:root[data-interface-style="kit-looseleaf"][data-theme] .neo-gist-card h3{font-family:var(--font-ui);font-weight:700}
+:root[data-interface-style="kit-looseleaf"][data-theme] :is(.btn,input,textarea,select,.global-search-panel){border-radius:3px 7px 4px 6px!important}
+:root[data-interface-style="kit-looseleaf"][data-theme] .btn{box-shadow:2px 3px 0 hsl(var(--foreground)/.22)!important}
+:root[data-interface-style="kit-looseleaf"][data-theme] .btn-primary{background:hsl(var(--primary));color:hsl(var(--primary-foreground));border-color:hsl(var(--foreground)/.65)}
+:root[data-interface-style="kit-looseleaf"][data-theme] .btn:active:not(:disabled){transform:translate(1px,2px);box-shadow:none!important}
+:root[data-interface-style="kit-looseleaf"][data-theme] :is(button,a,input,textarea,select):focus-visible{outline:2px solid hsl(var(--ring));outline-offset:3px}
+@media(prefers-reduced-motion:reduce){:root[data-interface-style="kit-looseleaf"][data-theme] .btn{transition:none}}
