@@ -9,6 +9,8 @@
     <BlazorEnableCompression>false</BlazorEnableCompression>
     <BlazorCacheBootResources>false</BlazorCacheBootResources>
     <RunAOTCompilation>false</RunAOTCompilation>
+    <!-- The standalone DevServer does not serve dotnet-watch's settings endpoint. -->
+    <EnableHotReloadInRuntimeConfigDevFile Condition="'$(DOTNET_WATCH)' != '1' and '$(EnableHotReloadInRuntimeConfigDevFile)' == ''">false</EnableHotReloadInRuntimeConfigDevFile>
   </PropertyGroup>
 
   <ItemGroup>
