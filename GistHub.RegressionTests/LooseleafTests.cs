@@ -77,10 +77,11 @@ static class LooseleafTests
         Editor? mounted = null; LocalGist? saved = null;
         await renderer.Dispatcher.InvokeAsync(async () =>
         {
-            await renderer.RenderComponentAsync<EditorHost>(ParameterView.FromDictionary(new Dictionary<string, object?> {
+            var root = await renderer.RenderComponentAsync<EditorHost>(ParameterView.FromDictionary(new Dictionary<string, object?> {
                 ["Capture"] = (Action<Editor>)(value => mounted = value),
                 ["Saved"] = EventCallback.Factory.Create<LocalGist>(new object(), (LocalGist value) => saved = value)
             }));
+            Check(root.ToHtmlString().Contains("aria-pressed=\"true\">Write</button>"), "Write mode must expose its selected state to assistive technology");
             Set(mounted!, "Content", "Edited secondary file");
             await Call(mounted!, "HandleSave");
             Check(saved is null && mounted!.HasUnsavedChanges, "Failed saves retain the editor and dirty content");

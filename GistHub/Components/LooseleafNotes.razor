@@ -14,10 +14,10 @@
         <input id="looseleaf-search" type="search" placeholder="Title, filename, or content…" @bind="Query" @bind:event="oninput" />
         <div class="looseleaf-shelf-body">
             <nav aria-label="Notebooks">
-                <button type="button" aria-pressed="@(Notebook == "")" @onclick='() => Notebook = ""'>All pages <span>@Gists.Count</span></button>
+                <button type="button" aria-pressed='@(Notebook == "" ? "true" : "false")' @onclick='() => Notebook = ""'>All pages <span>@Gists.Count</span></button>
                 @foreach (var name in Notebooks)
                 {
-                    <button type="button" aria-pressed="@(Notebook == name)" @onclick="() => Notebook = name">@name <span>@Gists.Count(g => g.CollectionNames.Contains(name))</span></button>
+                    <button type="button" aria-pressed="@(Notebook == name ? "true" : "false")" @onclick="() => Notebook = name">@name <span>@Gists.Count(g => g.CollectionNames.Contains(name))</span></button>
                 }
             </nav>
             <div class="looseleaf-page-list">

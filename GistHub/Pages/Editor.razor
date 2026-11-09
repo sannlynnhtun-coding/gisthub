@@ -132,8 +132,8 @@
                         @if (Embedded)
                         {
                             <div role="group" aria-label="Page mode">
-                                <button type="button" aria-pressed="@IsPreview" @onclick="() => SetPreview(true)">Page</button>
-                                <button type="button" aria-pressed="@(!IsPreview)" @onclick="() => SetPreview(false)">Write</button>
+                                <button type="button" aria-pressed="@(IsPreview ? "true" : "false")" @onclick="() => SetPreview(true)">Page</button>
+                                <button type="button" aria-pressed="@(!IsPreview ? "true" : "false")" @onclick="() => SetPreview(false)">Write</button>
                             </div>
                         }
                         else if (Filename.EndsWith(".md"))
