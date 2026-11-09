@@ -157,7 +157,24 @@ public class GithubService : IGithubService
         => await SendGitHubJsonAsync<List<LocalGist>>(HttpMethod.Get, "/gists/public", token) ?? new List<LocalGist>();
 
     public async Task<List<LocalGist>> GetUserGistsAsync(string token)
-        => await SendGitHubJsonAsync<List<LocalGist>>(HttpMethod.Get, "/gists", token) ?? new List<LocalGist>();
+    {
+        var gists = new List<LocalGist>();
+        for (var page = 1; ; page++)
+        {
+            var batch = await SendGitHubJsonAsync<List<LocalGist>>(
+                HttpMethod.Get, $"/gists?per_page=100&page={page}", token);
+            if (batch is null)
+            {
+                throw new InvalidOperationException(LastError?.Message ?? "Could not load your gists from GitHub.");
+            }
+
+            gists.AddRange(batch);
+            if (batch.Count < 100)
+            {
+                return gists;
+            }
+        }
+    }
 
     public async Task<bool> DeleteGistAsync(string gistId, string token)
         => await SendGitHubForSuccessAsync(HttpMethod.Delete, $"/gists/{gistId}", token);

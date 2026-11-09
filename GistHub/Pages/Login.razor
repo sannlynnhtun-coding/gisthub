@@ -179,7 +179,7 @@
             var userGistsList = await Github.GetUserGistsAsync(syncToken);
             if (userGistsList != null)
             {
-                var tasks = userGistsList.Take(30).Select(async gist =>
+                var tasks = userGistsList.Select(async gist =>
                 {
                     var fullGist = await Github.GetGistByIdAsync(gist.Id, syncToken);
                     if (fullGist != null)
