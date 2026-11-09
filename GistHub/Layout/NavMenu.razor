@@ -152,7 +152,7 @@
 @code {
     private static readonly string[] Tabs = ["Home", "Discover", "Tools", "Data", "Markdown", "Diagrams", "Media", "View"];
     private string SelectedTab = "Home";
-    private bool IsCollapsed;
+    private bool IsCollapsed = true;
     private readonly Dictionary<string, ElementReference> TabButtons = new();
     private readonly Dictionary<string, ElementReference> ToolTriggers = new();
     [Parameter] public EventCallback<(string Name, ElementReference Trigger)> OnOpenWorkbenchTool { get; set; }
