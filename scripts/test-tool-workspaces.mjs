@@ -38,6 +38,7 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
 
   // Every routed workbench uses the same workspace host; each instance is created only once.
   const drafts = [
+    ['Tools','cron-expression-menu-item','Cron Expression','#cron-input','*/15 * * * *'],
     ['Markdown','markdown-live-preview-menu-item','Markdown Live Preview','#markdown-live-source','# Live draft မြန်မာ'],
     ['Markdown','markdown-docx-menu-item','Markdown to DOCX','#docx-source','# Word draft မြန်မာ'],
     ['Markdown','markdown-text-menu-item','Markdown to Text','#markdown-text-source','# Plain draft မြန်မာ'],

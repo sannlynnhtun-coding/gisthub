@@ -44,6 +44,10 @@
                             <span class="ribbon-tool-icon" aria-hidden="true">&#9919;</span>
                             <span>Password Generator</span>
                         </button>
+                        <button type="button" @ref='ToolTriggers["Cron Expression"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Cron Expression", ToolTriggers["Cron Expression"]))' class="ribbon-tool" title="Cron Expression" data-testid="cron-expression-menu-item">
+                            <span class="ribbon-tool-icon" aria-hidden="true">*</span>
+                            <span>Cron Expression</span>
+                        </button>
                     </div>
                 </div>
                 break;

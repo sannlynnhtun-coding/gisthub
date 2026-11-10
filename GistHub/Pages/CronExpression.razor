@@ -1,0 +1,74 @@
+@page "/tools/cron-expression"
+@inject IJSRuntime JS
+
+@if (!IsToolWorkspace) { <PageTitle>Cron Expression · GistHub</PageTitle> }
+<section class="compact-tool-page space-y-6 p-2" aria-labelledby="cron-title">
+    <div>
+        <div class="neo-kicker mb-2">Workbench / Scheduling</div>
+        <h2 id="cron-title" class="text-3xl font-black tracking-tight">Cron Expression</h2>
+        <p class="text-muted-foreground mt-2">Write a five-field cron schedule and read its meaning as you type. Runs locally; this tool does not schedule or execute jobs.</p>
+    </div>
+    <div class="bg-card border border-border rounded-md p-6 space-y-6">
+        <div>
+            <label for="cron-input" class="block font-bold mb-2">Cron expression</label>
+            <input id="cron-input" class="w-full bg-background border border-border rounded-md p-4 font-mono" @bind="Expression" @bind:event="oninput" @bind:after="Update" spellcheck="false" autocomplete="off" aria-invalid="@(Error is not null ? "true" : "false")" aria-describedby="cron-help cron-result" />
+            <p id="cron-help" class="text-sm text-muted-foreground mt-2">minute · hour · day of month · month · day of week</p>
+        </div>
+        <div id="cron-result" aria-live="polite">
+            @if (Error is not null) { <p role="alert" class="text-destructive">@Error</p> }
+            else { <p class="text-xl font-bold">@Description</p> }
+        </div>
+        <button type="button" class="btn btn-primary btn-md" @onclick="CopyAsync" disabled="@(Error is not null)">Copy expression</button>
+        <p role="status">@Status</p>
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Example schedules">
+            @foreach (var preset in Presets)
+            {
+                <button type="button" class="btn btn-outline btn-sm" @onclick="() => SetPreset(preset.Value)">@preset.Name</button>
+            }
+        </div>
+    </div>
+    <div class="overflow-auto">
+        <table class="w-full text-left">
+            <caption class="text-left font-bold mb-2">Field guide</caption>
+            <thead><tr><th scope="col" class="p-2">Field</th><th scope="col" class="p-2">Allowed values</th></tr></thead>
+            <tbody>
+                <tr><th scope="row" class="p-2">Minute</th><td class="p-2">0–59</td></tr>
+                <tr><th scope="row" class="p-2">Hour</th><td class="p-2">0–23</td></tr>
+                <tr><th scope="row" class="p-2">Day of month</th><td class="p-2">1–31</td></tr>
+                <tr><th scope="row" class="p-2">Month</th><td class="p-2">1–12 or JAN–DEC</td></tr>
+                <tr><th scope="row" class="p-2">Day of week</th><td class="p-2">0–7 or SUN–SAT (0 and 7 mean Sunday)</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="text-sm text-muted-foreground">Use * for every value, commas for lists (1,3,5), a hyphen for ranges (1-5), and / for steps (*/15 or 0-30/5). Steps reset within each field, rather than measuring elapsed time. When both day fields are restricted, either may match; if either starts with *, both must match. Dates absent from a month are skipped.</p>
+    <p class="text-sm text-muted-foreground">Schedules use your cron host’s timezone and daylight saving rules. Seconds, years, commands, macros, and Quartz syntax (?, L, W, #) are not supported.</p>
+    <p class="text-sm text-muted-foreground">Inspired by <a class="underline" href="https://crontab.guru/" target="_blank" rel="noopener noreferrer">crontab.guru</a>.</p>
+</section>
+
+@code {
+    [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
+    private string Expression = "* * * * *", Description = "Every minute.", Status = "";
+    private string? Error;
+    private static readonly (string Name, string Value)[] Presets =
+    [
+        ("Every minute", "* * * * *"), ("Every 15 minutes", "*/15 * * * *"),
+        ("Every hour", "0 * * * *"), ("Daily at 09:00", "0 9 * * *"),
+        ("Weekdays at 09:00", "0 9 * * MON-FRI"), ("Monthly", "0 0 1 * *")
+    ];
+
+    private void Update()
+    {
+        Status = "";
+        Error = null;
+        try { Description = CronExpressionHelper.Describe(Expression); }
+        catch (FormatException ex) { Error = ex.Message; }
+    }
+
+    private void SetPreset(string value) { Expression = value; Update(); }
+
+    private async Task CopyAsync()
+    {
+        try { Status = await JS.InvokeAsync<bool>("copyToClipboard", Expression) ? "Expression copied." : "Could not copy. Select and copy the expression manually."; }
+        catch (JSException) { Status = "Clipboard access is unavailable. Select and copy the expression manually."; }
+    }
+}
