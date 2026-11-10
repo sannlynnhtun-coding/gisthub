@@ -1,0 +1,29 @@
+@inject IJSRuntime JS
+
+@if (ToolHelpContent.Entries.TryGetValue(Name, out var help))
+{
+    <button type="button" class="tool-help-button" aria-label="@($"About {Name} / အသုံးပြုပုံ")" title="About this tool / အသုံးပြုပုံ" @onclick="OpenAsync">ⓘ</button>
+    <dialog @ref="Dialog" class="tool-help-dialog" aria-labelledby="@TitleId" @onkeydown:stopPropagation="true">
+        <header class="flex items-center justify-between gap-4">
+            <h2 id="@TitleId">@Name</h2>
+            <form method="dialog"><button type="submit" class="tool-help-button" aria-label="Close / ပိတ်ရန်">×</button></form>
+        </header>
+        <section lang="en">
+            <h3>English</h3>
+            <p>@help.Purpose</p>
+            <p><strong>Try it when:</strong> @help.Example</p>
+        </section>
+        <section lang="my">
+            <h3>မြန်မာ</h3>
+            <p>@help.Myanmar</p>
+        </section>
+        <form method="dialog"><button type="submit" class="btn btn-outline btn-md">Close / ပိတ်ရန်</button></form>
+    </dialog>
+}
+
+@code {
+    [Parameter, EditorRequired] public string Name { get; set; } = "";
+    private readonly string TitleId = $"tool-help-{Guid.NewGuid():N}";
+    private ElementReference Dialog;
+    private async Task OpenAsync() => await JS.InvokeVoidAsync("gistHubToolHelp.open", Dialog);
+}

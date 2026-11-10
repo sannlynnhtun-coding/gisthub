@@ -1,5 +1,42 @@
+import assert from 'node:assert/strict';
 import { checkToolWorkspaces } from './test-tool-workspaces.mjs';
 
 export async function checkToolsGuide(context) {
   await checkToolWorkspaces(context);
+  const { evaluate, send, sessionId, waitFor } = context;
+  await evaluate(`document.querySelector('#workspace-tab-Tools').click()`);
+  await waitFor(`!!document.querySelector('[data-testid="cron-expression-menu-item"]')`, 'tool launcher');
+  await evaluate(`document.querySelector('[data-testid="cron-expression-menu-item"]').parentElement.querySelector('.tool-help-button').focus(); document.activeElement.click()`);
+  await waitFor(`!!document.querySelector('dialog.tool-help-dialog[open]')`, 'list help');
+  assert.equal(await evaluate(`document.querySelector('dialog[open] h2').textContent`), 'Cron Expression');
+  assert.ok(await evaluate(`document.querySelector('dialog[open] [lang="en"]').textContent.length > 30 && /[\u1000-\u109f]/.test(document.querySelector('dialog[open] [lang="my"]').textContent)`));
+  await send('Input.dispatchKeyEvent', {type:'keyDown', key:'Escape', code:'Escape', windowsVirtualKeyCode:27}, sessionId);
+  await send('Input.dispatchKeyEvent', {type:'keyUp', key:'Escape', code:'Escape', windowsVirtualKeyCode:27}, sessionId);
+  await waitFor(`!document.querySelector('dialog[open]')`, 'Escape closes help');
+  assert.equal(await evaluate(`document.activeElement.classList.contains('tool-help-button')`), true, 'focus returns to info button');
+  await evaluate(`document.querySelector('[data-testid="cron-expression-menu-item"]').click()`);
+  const active = '.tool-workspace-session:not([hidden])';
+  await waitFor(`!!document.querySelector('${active} #cron-input')`, 'cron tool');
+  await evaluate(`document.querySelector('${active} #cron-input').value = '*/7 * * * *'; document.querySelector('${active} #cron-input').dispatchEvent(new Event('input', {bubbles:true})); document.querySelector('${active} .tool-page-header .tool-help-button').click()`);
+  await waitFor(`!!document.querySelector('dialog[open]')`, 'page title help');
+  await evaluate(`document.querySelector('dialog[open] > form button').click()`);
+  await waitFor(`!document.querySelector('dialog[open]')`, 'close button');
+  assert.equal(await evaluate(`document.querySelector('${active} #cron-input').value`), '*/7 * * * *', 'help preserves the draft');
+  await send('Emulation.setDeviceMetricsOverride', {width:390,height:844,deviceScaleFactor:1,mobile:true}, sessionId);
+  await evaluate(`document.querySelector('${active} .tool-page-header .tool-help-button').click()`);
+  await waitFor(`!!document.querySelector('dialog[open]')`, 'mobile help');
+  assert.ok(await evaluate(`(() => { const r = document.querySelector('dialog[open]').getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.top >= 0 && r.bottom <= innerHeight; })()`), 'help fits mobile viewport');
+  await evaluate(`document.querySelector('dialog[open] > form button').click()`);
+  await send('Emulation.clearDeviceMetricsOverride', {}, sessionId);
+  await evaluate(`document.querySelector('#workspace-tab-Data').click()`);
+  await waitFor(`!!document.querySelector('[data-testid="json-parser-menu-item"]')`, 'data launcher');
+  await evaluate(`document.querySelector('[data-testid="json-parser-menu-item"]').click()`);
+  await waitFor(`!!document.querySelector('[aria-labelledby="json-parser-title"] .tool-help-button')`, 'overlay title info');
+  await evaluate(`document.querySelector('[aria-labelledby="json-parser-title"] .tool-help-button').click()`);
+  await waitFor(`!!document.querySelector('dialog[open]')`, 'overlay help');
+  await send('Input.dispatchKeyEvent', {type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27}, sessionId);
+  await send('Input.dispatchKeyEvent', {type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27}, sessionId);
+  await waitFor(`!document.querySelector('dialog[open]')`, 'overlay help closed');
+  assert.ok(await evaluate(`!!document.querySelector('[aria-labelledby="json-parser-title"]')`), 'Escape closes help while keeping the tool open');
+  console.log('PASS: bilingual list and title help, Escape, focus restoration, close, and draft preservation');
 }

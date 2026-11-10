@@ -72,7 +72,7 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   await close();
 
   await open('Tools','tools-guide-menu-item','Tools Guide');
-  assert.equal(await evaluate(`document.querySelectorAll('[aria-label="Available tools"] article').length`),15);
+  assert.equal(await evaluate(`document.querySelectorAll('[aria-label="Available tools"] article').length`),16);
   await evaluate(`document.querySelector('[aria-label="Open Password Generator"]').click()`);
   await opened('Password Generator');
   await waitFor(`document.querySelector('#password-result')?.value.length === 20`, 'generated password');

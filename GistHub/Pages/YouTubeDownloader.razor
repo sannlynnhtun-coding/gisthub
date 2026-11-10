@@ -8,7 +8,7 @@
 <section class="compact-tool-page downloader space-y-6">
     <div>
         <div class="neo-kicker mb-2">Workbench / Local tools</div>
-        <h2 class="text-3xl font-black tracking-tight">YouTube Downloader</h2>
+        <div class="tool-heading-inline"><h2 class="text-3xl font-black tracking-tight">YouTube Downloader</h2> @if (!IsToolWorkspace) { <ToolHelp Name="YouTube Downloader" /> }</div>
         <p class="text-muted-foreground mt-2">Choose a video or audio format and save it to your computer.</p>
     </div>
     @if (!Ready)

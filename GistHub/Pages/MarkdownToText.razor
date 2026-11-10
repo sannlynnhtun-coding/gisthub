@@ -6,7 +6,7 @@
 <section @ref="Workbench" class="compact-tool-page space-y-6 bg-background p-2 overflow-auto" aria-labelledby="markdown-text-title">
     <div>
         <div class="neo-kicker mb-2">Workbench / Text</div>
-        <h2 id="markdown-text-title" class="text-3xl font-black tracking-tight">Markdown to Text</h2>
+        <div class="tool-heading-inline"><h2 id="markdown-text-title" class="text-3xl font-black tracking-tight">Markdown to Text</h2> @if (!IsToolWorkspace) { <ToolHelp Name="Markdown to Text" /> }</div>
         <p class="text-muted-foreground mt-2">Remove Markdown formatting, keep readable text, and copy or download the result. Conversion stays in your browser.</p>
     </div>
     <div class="flex flex-wrap items-center gap-4">

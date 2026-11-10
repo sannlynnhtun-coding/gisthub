@@ -75,7 +75,7 @@
 }
 .workspace-ribbon .workspace-command-area { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; overflow: visible; min-width: 0; }
 .workspace-ribbon .workspace-command-group { gap: 4px; align-items: center; flex-wrap: wrap; min-width: 0; }
-.neo-main .workspace-ribbon .workspace-command-group > :is(a, button) {
+.neo-main .workspace-ribbon .workspace-command-group > :is(a, button), .neo-main .workspace-ribbon .tool-list-entry > button:not(.tool-help-button) {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
@@ -95,7 +95,7 @@
   text-align: center;
   white-space: normal;
 }
-.workspace-ribbon .workspace-command-group > :is(a, button) > span { min-height: 28px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.workspace-ribbon .workspace-command-group > :is(a, button) > span, .workspace-ribbon .tool-list-entry > button:not(.tool-help-button) > span { min-height: 28px; display: flex; align-items: center; justify-content: center; gap: 4px; }
 .workspace-ribbon .ribbon-command-icon { width: 22px; height: 22px; flex-shrink: 0; color: hsl(var(--primary)); }
 .neo-main .workspace-ribbon .workspace-command-group > :is(a, button):hover,
 .neo-main .excel-topbar .neo-topbar-actions :is(.neo-icon-button, .neo-new-snippet):hover { background: hsl(var(--accent)) !important; }
@@ -181,3 +181,19 @@
   body.printing-markdown .tool-workspace { height: auto; overflow: visible; }
   body.printing-markdown .tool-page-content { overflow: visible; padding: 0; }
 }
+
+.tool-list-entry { display: flex; align-items: center; gap: 2px; }
+.tool-help-button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: hsl(var(--foreground)); font-size: 20px; cursor: pointer; }
+.tool-help-button:hover { background: hsl(var(--accent)); }
+.tool-help-button:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
+.tool-help-dialog { width: min(560px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 24px; overflow: auto; border: 1px solid hsl(var(--border)); border-radius: 12px; background: hsl(var(--card)); color: hsl(var(--foreground)); box-shadow: 0 16px 48px #0004; }
+.tool-help-dialog::backdrop { background: #0008; }
+.tool-help-dialog h2 { font-size: 20px; font-weight: 700; }
+.tool-help-dialog h3 { font-weight: 700; margin-bottom: 8px; }
+.tool-help-dialog section { margin: 20px 0; }
+.tool-help-dialog p { margin: 8px 0; line-height: 1.8; }
+.tool-help-dialog [lang="my"] { line-height: 1.9; }
+@media (max-width: 640px) { .neo-main .workspace-ribbon .tool-list-entry > button:not(.tool-help-button) { width: 76px; } }
+
+.tool-heading-inline { display: flex; align-items: center; gap: 8px; }
+.tool-heading-inline > :is(h1, h2) { min-width: 0; }

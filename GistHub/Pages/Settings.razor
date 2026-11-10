@@ -7,7 +7,7 @@
 <section class="compact-tool-page space-y-6" aria-labelledby="settings-title">
     <div>
         <div class="neo-kicker mb-2">Local workspace</div>
-        <h2 id="settings-title" class="text-3xl font-black tracking-tight">Local settings</h2>
+        <div class="tool-heading-inline"><h2 id="settings-title" class="text-3xl font-black tracking-tight">Local settings</h2> @if (!IsToolWorkspace) { <ToolHelp Name="Local settings" /> }</div>
         <p class="text-muted-foreground mt-2">Keep your appearance favorites, preferences, bookmarks, and playlists in one JSON backup.</p>
     </div>
     <div class="bg-card border border-border rounded-md p-6 space-y-4">

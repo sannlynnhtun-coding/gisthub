@@ -6,7 +6,7 @@
 <section class="compact-tool-page space-y-6" aria-labelledby="html-image-title">
     <div>
         <div class="neo-kicker mb-2">Workbench / Web content</div>
-        <h2 id="html-image-title" class="text-3xl font-black tracking-tight">HTML to Image</h2>
+        <div class="tool-heading-inline"><h2 id="html-image-title" class="text-3xl font-black tracking-tight">HTML to Image</h2> @if (!IsToolWorkspace) { <ToolHelp Name="HTML to Image" /> }</div>
         <p class="text-muted-foreground mt-2">Paste HTML with CSS, preview it in an isolated frame, and download an image or print to PDF.</p>
     </div>
     <fieldset disabled="@Importing" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

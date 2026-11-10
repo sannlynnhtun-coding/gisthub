@@ -5,7 +5,7 @@
 <section class="compact-tool-page space-y-6 p-2" aria-labelledby="cron-title">
     <div>
         <div class="neo-kicker mb-2">Workbench / Scheduling</div>
-        <h2 id="cron-title" class="text-3xl font-black tracking-tight">Cron Expression</h2>
+        <div class="tool-heading-inline"><h2 id="cron-title" class="text-3xl font-black tracking-tight">Cron Expression</h2> @if (!IsToolWorkspace) { <ToolHelp Name="Cron Expression" /> }</div>
         <p class="text-muted-foreground mt-2">Write a five-field cron schedule and read its meaning as you type. Runs locally; this tool does not schedule or execute jobs.</p>
     </div>
     <div class="bg-card border border-border rounded-md p-6 space-y-6">

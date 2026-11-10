@@ -9,7 +9,7 @@
 <NavigationLock ConfirmExternalNavigation="@Dirty" OnBeforeInternalNavigation="BeforeNavigation" />
 <section class="compact-tool-page diagram-workspace" @ref="Workspace">
     <header class="diagram-heading">
-        <div><div class="neo-kicker">Workbench</div><h2>Diagram Editor</h2></div>
+        <div><div class="neo-kicker">Workbench</div><div class="tool-heading-inline"><h2>Diagram Editor</h2> @if (!IsToolWorkspace) { <ToolHelp Name="draw.io Diagram Editor" /> }</div></div>
         <div class="diagram-actions">
             <button @onclick="() => LibraryVisible = !LibraryVisible" aria-expanded="@LibraryVisible">Library</button>
             <button @onclick="Fullscreen">Fullscreen</button>

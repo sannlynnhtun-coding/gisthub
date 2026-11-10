@@ -7,7 +7,7 @@
 {
     <section @ref="Dialog" tabindex="-1" class="json-parser-overlay json-table-overlay" role="dialog" aria-modal="true" aria-labelledby="json-table-title" @onkeydown="HandleKeyDown">
         <header class="json-parser-header">
-            <div class="json-parser-title-group"><div class="json-parser-mark" aria-hidden="true">▦</div><div><div class="neo-kicker">Workbench</div><h1 id="json-table-title">JSON to Table</h1></div></div>
+            <div class="json-parser-title-group"><div class="json-parser-mark" aria-hidden="true">▦</div><div><div class="neo-kicker">Workbench</div><div class="tool-heading-inline"><h1 id="json-table-title">JSON to Table</h1><ToolHelp Name="JSON to Table" /></div></div></div>
             <button type="button" class="json-parser-close" @onclick="CloseAsync" aria-label="Close JSON to Table" title="Close (Esc)">✕</button>
         </header>
         <div class="base64-options"><button type="button" class="btn btn-secondary btn-md" @onclick="ToggleInput" aria-expanded="@(!InputHidden)" aria-controls="json-table-input-panel">@(InputHidden ? "Show JSON" : "Hide JSON")</button><span>Paste or upload JSON → explore the table → export. Processed locally.</span></div>

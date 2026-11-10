@@ -4,17 +4,18 @@
 <section class="compact-tool-page space-y-8" aria-labelledby="tools-guide-title">
     <div class="neo-page-heading space-y-3 pb-7 border-b">
         <div class="neo-kicker">Workbench / Guide</div>
-        <h2 id="tools-guide-title" class="text-3xl font-black tracking-tight">Find the right tool</h2>
+        <div class="tool-heading-inline"><h2 id="tools-guide-title" class="text-3xl font-black tracking-tight">Find the right tool</h2> @if (!IsToolWorkspace) { <ToolHelp Name="Tools Guide" /> }</div>
         <p class="text-muted-foreground">Clean up data, prepare documents, or turn an idea into something you can share. Here’s what each tool does and when to use it.</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6" aria-label="Available tools">
-        @foreach (var tool in ToolsList)
+        @foreach (var name in ToolsList)
         {
+            var tool = ToolHelpContent.Entries[name];
             <article class="bg-card border border-border rounded-md p-6 flex flex-col gap-4">
-                <h3 class="text-xl font-bold">@tool.Name</h3>
+                <div class="flex items-center gap-2"><h3 class="text-xl font-bold">@name</h3><ToolHelp Name="@name" /></div>
                 <p>@tool.Purpose</p>
                 <p class="text-sm text-muted-foreground"><strong>Try it when:</strong> @tool.Example</p>
-                <button type="button" @ref="ToolTriggers[tool.Name]" @onclick="() => OpenWorkbenchTool.InvokeAsync((tool.Name, ToolTriggers[tool.Name]))" class="btn btn-outline btn-md mt-auto self-start" aria-label="@($"Open {tool.Name}")">Open tool →</button>
+                <button type="button" @ref="ToolTriggers[name]" @onclick="() => OpenWorkbenchTool.InvokeAsync((name, ToolTriggers[name]))" class="btn btn-outline btn-md mt-auto self-start" aria-label="@($"Open {name}")">Open tool →</button>
             </article>
         }
     </div>
@@ -27,39 +28,23 @@
 
     private readonly Dictionary<string, ElementReference> ToolTriggers = new();
 
-    private static readonly (string Name, string Purpose, string Example)[] ToolsList =
+    private static readonly string[] ToolsList =
     [
-        ("Cron Expression", "Write and validate five-field cron schedules with live English explanations, examples, and a field guide.",
-            "You need a schedule for a recurring job and want to check what it means."),
-        ("Password Generator", "Generate random passwords, memorable word passphrases, or PINs locally. Customize length, character types, word separators, capitalization, or a random digit, then copy the result. Inspired by 1Password’s password generator.",
-            "You need a unique password for a new account."),
-        ("AI Tools & Skills", "Browse AI skills and CLIs in a searchable spreadsheet with English and Myanmar descriptions, setup methods, and invocation examples.",
-            "You need to find a skill by category and copy how to use it."),
-        ("JSON Parser", "Turn escaped or JSON-encoded strings into readable, formatted JSON.",
-            "You copied a JSON string from a log and need to inspect the actual object."),
-        ("JSON to Table", "Explore JSON records as a table, search and sort rows, choose nested fields, and export CSV or HTML.",
-            "You want to review an API response in a spreadsheet."),
-        ("Base64 Encode / Decode", "Convert text or files to and from Base64. This is an encoding tool, not encryption.",
-            "You need to inspect an encoded payload or recover a Base64-encoded file."),
-        ("Markdown Live Preview", "Write Markdown with a live preview, recover your local draft, open files, and export Markdown, HTML, Word or print to PDF.",
-            "You want to edit a README or document and see the formatted result while you type."),
-        ("Markdown to Text", "Remove Markdown formatting and images while keeping readable text. Copy plain text or sanitized HTML, or download a .txt file.",
-            "You want to paste a README into an email without Markdown symbols."),
-        ("Markdown + Code Converter", "Style code or Markdown with themes and canvas sizes, then export PNG, JPEG, WebP, or use the browser’s Save as PDF.",
-            "You want a shareable image of a code snippet or a short document."),
-        ("HTML to Image", "Preview HTML and CSS in an isolated frame, then export PNG, JPEG, WebP, or print to PDF. Supports files and CORS-permitted URL imports; scripts and external assets are blocked.",
-            "You want an image of a styled HTML card, report, or email layout."),
-        ("Markdown to DOCX", "Convert Markdown into an editable Word document with headings, lists, tables, and code. Images become links; math and diagrams keep their source.",
-            "You need to hand off Markdown notes to someone who edits in Word."),
-        ("Markdown to Cards", "Split an article by headings, a delimiter, or length into numbered image cards. Preview the cards and download individual images or a ZIP.",
-            "You want to turn a tutorial into a social carousel or a set of teaching cards."),
-        ("draw.io Diagram Editor", "Draw workflows, architecture, and other diagrams visually. Save editable .drawio source or export PNG/SVG. The online editor receives your diagram source.",
-            "You prefer arranging shapes and connectors on a canvas instead of writing diagram code."),
-        ("Mermaid to Image", "Write diagram syntax, see a live preview, choose a theme, and export PNG, JPEG, WebP, SVG, or print to PDF. Loading the renderer requires internet.",
-            "You want a flowchart, sequence, or class diagram that you can maintain as text."),
-        ("Formula to Image", "Render LaTeX math with size, color, padding, and transparent backgrounds. Export PNG, JPEG, WebP, or browser-compatible SVG; use PNG for editors without MathML support.",
-            "You need a crisp equation, matrix, or integral for a slide or a document."),
-        ("YouTube Downloader", "Choose a video or audio format and save it on your computer. Requires the local Windows version started with Start-LocalDownloader.cmd.",
-            "You are using the local app and need a video or audio file, including MP3.")
+        "Cron Expression",
+        "Password Generator",
+        "AI Tools & Skills",
+        "JSON Parser",
+        "JSON to Table",
+        "Base64 Encode / Decode",
+        "Markdown Live Preview",
+        "Markdown to Text",
+        "Markdown + Code Converter",
+        "HTML to Image",
+        "Markdown to DOCX",
+        "Markdown to Cards",
+        "draw.io Diagram Editor",
+        "Mermaid to Image",
+        "Formula to Image",
+        "YouTube Downloader",
     ];
 }

@@ -14,6 +14,7 @@
                     <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 5-7 7 7 7M5 12h14"/></svg>
                 </button>
                 <h2 id="@($"tool-page-title-{Pages[name].Component.Name}")">@name</h2>
+                <ToolHelp Name="@name" />
             </header>
             <div class="tool-page-content" inert="@(!active ? "" : null)">
                 <CascadingValue Name="IsToolWorkspace" Value="true">
