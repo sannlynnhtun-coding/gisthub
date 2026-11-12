@@ -206,6 +206,7 @@ window.initializeGistHubThemePicker = async (root) => {
             visible[next].scrollIntoView({ block: 'nearest' });
         }
     });
+    root.addEventListener('appearance-imported', () => { restore(); filter(); });
     filter();
     root.dataset.appearanceReady = 'true';
 };

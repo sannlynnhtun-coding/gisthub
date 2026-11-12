@@ -12,6 +12,22 @@
             <div><span class="neo-theme-panel__eyebrow">Make it yours</span><h2>Choose your appearance</h2></div>
             <span class="neo-theme-panel__badge">LIVE</span>
         </header>
+        <div class="flex flex-wrap items-center gap-2 p-3" role="group" aria-label="Copy and paste appearance">
+            <button type="button" class="btn btn-sm" @onclick="CopyAppearance">Copy style</button>
+            <button type="button" class="btn btn-sm" @onclick="OpenAppearancePaste">Paste style</button>
+        </div>
+        @if (ShowAppearanceJson)
+        {
+            <div class="p-3 space-y-2">
+                <label for="@(PanelId)-json">Appearance JSON</label>
+                <textarea @ref="JsonInput" id="@(PanelId)-json" @bind="AppearanceJson" rows="5" class="w-full border rounded-lg p-2" spellcheck="false"></textarea>
+                <button type="button" class="btn btn-sm" @onclick="ImportAppearance">Apply style</button>
+                <button type="button" class="btn btn-sm" @onclick="() => ShowAppearanceJson = false">Cancel</button>
+            </div>
+        }
+        <AutoDismissMessage @bind-Message="AppearanceFeedback">
+            <p role="status" aria-live="polite" class="px-3 text-sm">@AppearanceFeedback</p>
+        </AutoDismissMessage>
         <div class="neo-appearance-tabs" role="tablist" aria-label="Appearance categories">
             <button type="button" id="@(PanelId)-themes-tab" role="tab" aria-selected="true" aria-controls="@(ListId)-panel" data-appearance-tab="themes">Themes</button>
             <button type="button" id="@(PanelId)-styles-tab" role="tab" aria-selected="false" aria-controls="@ListId" tabindex="-1" data-appearance-tab="styles">Styles</button>
@@ -87,6 +103,46 @@
 
 @code {
     private ElementReference Picker;
+    private IJSObjectReference? Sharing;
+    private bool ShowAppearanceJson;
+    private bool FocusJson;
+    private ElementReference JsonInput;
+    private string AppearanceJson = "";
+    private string AppearanceFeedback = "";
+    private async Task<IJSObjectReference> GetSharing()
+        => Sharing ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/appearanceSharing.js");
+    private async Task CopyAppearance()
+    {
+        try
+        {
+            AppearanceJson = await (await GetSharing()).InvokeAsync<string>("exportAppearance", Picker);
+            var copied = await JS.InvokeAsync<bool>("copyToClipboard", AppearanceJson);
+            ShowAppearanceJson = !copied;
+            FocusJson = !copied;
+            AppearanceFeedback = copied ? "Appearance copied." : "Could not copy. Select the JSON and copy it manually.";
+        }
+        catch (JSException) { AppearanceFeedback = "Could not copy appearance. Check clipboard and browser storage access."; }
+    }
+    private void OpenAppearancePaste()
+    {
+        AppearanceJson = "";
+        ShowAppearanceJson = true;
+        FocusJson = true;
+        AppearanceFeedback = "Paste appearance JSON, then choose Apply style.";
+    }
+    private async Task ImportAppearance()
+    {
+        try
+        {
+            var result = await (await GetSharing()).InvokeAsync<AppearanceSelection>("importAppearance", Picker, AppearanceJson);
+            Theme = result.Theme; Style = result.Style; Font = result.Font;
+            ShowAppearanceJson = false;
+            AppearanceFeedback = "Appearance applied.";
+        }
+        catch (JSException ex) { AppearanceFeedback = $"Could not apply appearance: {ex.Message}"; }
+    }
+    private sealed record AppearanceSelection(string Theme, string Style, string Font);
+
     private string Font = "default";
     private List<FontOption> Fonts = [];
     private sealed record FontOption(string Id, string Name, string Family, string Group);
@@ -130,6 +186,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (FocusJson && ShowAppearanceJson)
+        {
+            FocusJson = false;
+            await JsonInput.FocusAsync();
+        }
         if (firstRender)
         {
             Fonts.AddRange(await JS.InvokeAsync<FontOption[]>("getGistHubFonts"));
@@ -163,6 +224,10 @@
 
     public async ValueTask DisposeAsync()
     {
+        if (Sharing is not null)
+        {
+            try { await Sharing.DisposeAsync(); } catch (JSDisconnectedException) { }
+        }
         if (IsInitialized)
         {
             try { await JS.InvokeVoidAsync("closeGistHubThemePicker", Picker); }

@@ -4,6 +4,7 @@ using GistHub.Services;
 using Microsoft.AspNetCore.Components;
 
 await DiagramGistTests.RunAsync();
+await EditorAppearanceTests.RunAsync();
 await GistSearchSyncTests.RunAsync();
 await ProfileLoadingTests.RunAsync();
 await ProfileSwitchingTests.RunAsync();

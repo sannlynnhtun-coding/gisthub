@@ -58,17 +58,27 @@
         <div class="lg:col-span-1 space-y-6">
             <div class="bg-card border rounded-xl p-6 space-y-6">
                 <div class="space-y-2">
-                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Description</label>
-                    <textarea @bind="Description" rows="4" placeholder="What does this snippet do? #hashtags supported" class="w-full bg-secondary/30 border rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/10 outline-none transition-all text-sm resize-none"></textarea>
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1" for="gist-description">Description</label>
+                    <textarea id="gist-description" @ref="DescriptionInput" @bind="Description" @bind:event="oninput" rows="4" placeholder="What does this snippet do? #hashtags supported" class="w-full bg-secondary/30 border rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/10 outline-none transition-all text-sm resize-none"></textarea>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Filename</label>
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1" for="gist-filename">Filename</label>
                     <div class="relative">
-                        <input @bind="Filename" type="text" placeholder="script.js" class="w-full bg-secondary/30 border rounded-lg py-3 px-10 focus:ring-2 focus:ring-primary/10 outline-none transition-all font-mono text-xs" />
+                        <input id="gist-filename" @ref="FilenameInput" @bind="Filename" @bind:event="oninput" @bind:after="() => FilenameEdited = true" @onblur="NormalizeEditedFilename" type="text" placeholder="script.js" class="w-full bg-secondary/30 border rounded-lg py-3 px-10 focus:ring-2 focus:ring-primary/10 outline-none transition-all font-mono text-xs" />
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-code absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"><path d="M10 12.5 8 15l2 2.5"/><path d="m14 12.5 2 2.5-2 2.5"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/></svg>
                     </div>
                 </div>
+
+                <div class="flex items-center gap-2">
+                    <label><input type="checkbox" @bind="FilenameKebabEnabled" @bind:after="NormalizeFilename" /> Kebab case</label>
+                    <button type="button" class="btn btn-sm" aria-label="Explain filename kebab case" @onclick="() => FilenameHelp = FilenameHelpText">ⓘ</button>
+                </div>
+                <AutoDismissMessage @bind-Message="FilenameHelp">
+                    <div role="status" class="fixed bottom-6 right-6 z-50 max-w-sm bg-card border rounded-lg p-3 text-sm shadow-lg">@FilenameHelp
+                        <button type="button" class="btn btn-sm" aria-label="Dismiss filename help" @onclick='() => FilenameHelp = ""'>Dismiss</button>
+                    </div>
+                </AutoDismissMessage>
 
                 <fieldset class="space-y-2">
                     <legend class="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Privacy Level</legend>
@@ -157,14 +167,33 @@
 
 @code {
     [Parameter] public string? GistId { get; set; }
-    [Inject] private IJSRuntime JS { get; set; }
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    private ElementReference DescriptionInput;
+    private ElementReference FilenameInput;
+    private IJSObjectReference? TextModule;
+    private bool FilenameEdited;
+    private bool FilenameKebabEnabled { get; set; } = true;
+    private const string FilenameHelpText = "Kebab case turns My Useful Snippet.cs into my-useful-snippet.cs. Extensions are kept. Turn it off to keep your filename.";
+    private string FilenameHelp = "";
+    private void NormalizeEditedFilename() { if (FilenameEdited) NormalizeFilename(); }
+    private void NormalizeFilename()
+    {
+        if (FilenameKebabEnabled) Filename = EditorTextConverter.KebabFilename(Filename);
+    }
+    [JSInvokable]
+    public void FilenamePasted()
+    {
+        NormalizeFilename();
+        StateHasChanged();
+    }
 
     private string Description { get; set; } = "";
     private string Filename { get; set; } = "main.cs";
     private string OriginalFilename { get; set; } = "";
     private string Content { get; set; } = "";
-    private bool IsPublic { get; set; } = true;
-    private bool IsBookmarked { get; set; } = false;
+    private bool IsPublic { get; set; } = false;
+    private bool IsBookmarked { get; set; } = true;
     private int BookmarkOrder { get; set; }
     private List<string> CollectionNames = [];
     private bool IsLoading { get; set; } = false;
@@ -259,8 +288,14 @@
 
     private async Task HandleSave()
     {
+        NormalizeEditedFilename();
         var filename = Filename.Trim();
         ErrorMessage = "";
+        if (filename.Contains('/') || filename.Contains((char)92) || filename.Any(char.IsControl) || filename is "." or "..")
+        {
+            ErrorMessage = "Use a filename without path separators or control characters.";
+            return;
+        }
         if (string.IsNullOrWhiteSpace(filename) || string.IsNullOrEmpty(Content))
         {
             ErrorMessage = "Filename and content are required.";
@@ -369,6 +404,9 @@
                 UpdateModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/appUpdates.js");
                 DraftKey = $"gisthub:update-draft:{AppState.CurrentProfile!.Id}:{GistId ?? "new"}";
                 UpdateReference = DotNetObjectReference.Create(this);
+                TextModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/editorText.js");
+                await TextModule.InvokeVoidAsync("attachDescriptionPaste", DescriptionInput);
+                await TextModule.InvokeVoidAsync("attachFilenamePaste", FilenameInput, UpdateReference);
                 await UpdateModule.InvokeVoidAsync("registerDraftGuard", "snippet", UpdateReference);
                 var draft = await UpdateModule.InvokeAsync<UpdateDraft?>("loadEditorDraft", DraftKey);
                 DraftRecoveryReady = true;
@@ -376,6 +414,7 @@
                 {
                     Description = draft.Description; Filename = draft.Filename; Content = draft.Content;
                     IsPublic = draft.IsPublic; IsBookmarked = draft.IsBookmarked;
+                    FilenameKebabEnabled = draft.FilenameKebabEnabled;
                     ErrorMessage = "Your local draft was restored after updating. It has not been published to GitHub.";
                     StateHasChanged();
                 }
@@ -397,7 +436,7 @@
         await UpdateModule.InvokeVoidAsync("saveEditorDraft", DraftKey, new UpdateDraft
         {
             Description = Description, Filename = Filename, Content = Content,
-            IsPublic = IsPublic, IsBookmarked = IsBookmarked
+            IsPublic = IsPublic, IsBookmarked = IsBookmarked, FilenameKebabEnabled = FilenameKebabEnabled
         });
     }
 
@@ -408,11 +447,17 @@
             try { await UpdateModule.InvokeVoidAsync("unregisterDraftGuard", "snippet"); await UpdateModule.DisposeAsync(); }
             catch (JSDisconnectedException) { }
         }
+        if (TextModule is not null)
+        {
+            try { await TextModule.InvokeVoidAsync("detachDescriptionPaste", DescriptionInput); await TextModule.InvokeVoidAsync("detachDescriptionPaste", FilenameInput); await TextModule.DisposeAsync(); }
+            catch (JSDisconnectedException) { }
+        }
         UpdateReference?.Dispose();
     }
 
     public sealed class UpdateDraft
     {
+        public bool FilenameKebabEnabled { get; set; } = true;
         public string Description { get; set; } = "";
         public string Filename { get; set; } = "";
         public string Content { get; set; } = "";
