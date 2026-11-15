@@ -1,0 +1,68 @@
+@page "/tools/markdown-converters"
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+<section class="compact-tool-page space-y-6">
+    <h2 class="text-3xl font-black">Markdown converters</h2>
+    <p>Paste content, choose a format, then convert and copy or download. Google Docs, Notion and rich text accept pasted content or exported HTML. PDF imports extract text, not scanned images. URL import requires the source to allow browser access.</p>
+    <label for="converter-format">Conversion</label>
+    <select id="converter-format" class="bg-card border rounded-md p-3" @bind="Format" disabled="@Busy">
+        @foreach (var group in Formats) { <optgroup label="@group.Key">@foreach (var name in group.Value) { <option>@name</option> }</optgroup> }
+    </select>
+    <p>For PDF and DOCX imports, choose a file (up to 10 MB). Other inputs are limited to 1 MB. Document import libraries load from jsDelivr; document content stays in this browser. No cloud account connection is required.</p>
+    <input id="converter-file" type="file" aria-label="Import source file" disabled="@Busy" />
+    <label for="converter-source">Source (or URL for URL to Markdown)</label>
+    <textarea id="converter-source" class="w-full bg-card border rounded-md p-4 font-mono" rows="14" maxlength="1048576" @bind="Source" disabled="@Busy"></textarea>
+    <div class="flex flex-wrap gap-3">
+        <button class="btn btn-primary btn-md" @onclick="Convert" disabled="@Busy">@(Busy ? "Convertingâ€¦" : "Convert")</button>
+        <button class="btn btn-secondary btn-md" @onclick="Copy" disabled="@(Busy || Result.Length == 0)">Copy result</button>
+        <button class="btn btn-secondary btn-md" @onclick="Download" disabled="@(Busy || Result.Length == 0)">Download result</button>
+    </div>
+    <p role="status">@Status</p>
+    <label for="converter-result">Result</label>
+    <textarea id="converter-result" class="w-full bg-card border rounded-md p-4 font-mono" rows="14" readonly value="@Result"></textarea>
+    <div @ref="Preview" aria-label="Converted document preview" class="code-image-markdown border rounded-md p-4"></div>
+</section>
+@code {
+    private static readonly Dictionary<string, string[]> Formats = new() {
+        ["From Markdown"] = ["Markdown to PDF", "Markdown to Word", "Markdown to DOCX", "Markdown to HTML", "Markdown to Rich Text", "Markdown to Google Docs", "Markdown to Jira", "Markdown to BBCode", "Markdown to Confluence", "Remove Markdown"],
+        ["For chat apps"] = ["Markdown to Slack", "Markdown to Discord", "Markdown to Telegram", "Markdown to WhatsApp", "LinkedIn Text Formatter"],
+        ["To Markdown"] = ["Text to Markdown", "HTML to Markdown", "PDF to Markdown", "DOCX to Markdown", "Google Docs to Markdown", "Notion to Markdown", "Confluence to Markdown", "Jira to Markdown", "Rich Text to Markdown", "URL to Markdown", "OpenAPI to Markdown"]
+    };
+    private string Format = "Markdown to HTML", Source = "# Hello\n\nConvert **Markdown** to another format.", Result = "", Status = "";
+    private string ConvertedFormat = "", ConvertedSource = "";
+    private bool Busy;
+    private ElementReference Preview;
+    private IJSObjectReference? Module;
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (!firstRender) return;
+        try {
+            Module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/markdownConverters.js");
+            await Module.InvokeVoidAsync("enableRichPaste");
+        } catch (JSException) { Status = "Could not initialize rich paste. Reload to retry; plain text input is still available."; StateHasChanged(); }
+    }
+    private async Task Convert() {
+        Busy = true; Status = "";
+        try {
+            Module ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/markdownConverters.js");
+            var result = await Module.InvokeAsync<string[]>("convert", Format, Source, Preview);
+            Result = result[0]; Source = result[1]; ConvertedFormat = Format; ConvertedSource = Source; Status = "Converted. Review the result before sharing; platform formatting support varies.";
+        } catch (JSException ex) { Status = ex.Message; }
+        finally { Busy = false; }
+    }
+    private async Task Copy() {
+        try { await Module!.InvokeVoidAsync("copy", Result, ConvertedFormat); Status = "Copied."; }
+        catch (JSException) { Status = "Could not access the clipboard. Select and copy the result manually."; }
+    }
+    private async Task Download() {
+        try {
+            if (ConvertedFormat is "Markdown to DOCX" or "Markdown to Word") {
+                var html = await Module!.InvokeAsync<string>("wordHtml", ConvertedSource);
+                var bytes = MarkdownDocxConverter.Create(html);
+                await using var downloads = await JS.InvokeAsync<IJSObjectReference>("import", "./js/appShell.js");
+                await downloads.InvokeVoidAsync("downloadBytes", "document.docx", bytes);
+            } else await Module!.InvokeVoidAsync("download", Result, ConvertedFormat, Preview);
+            Status = "Export opened.";
+        } catch (Exception ex) when (ex is JSException or System.Xml.XmlException or InvalidOperationException) { Status = "Export failed. Your source and result are still available."; }
+    }
+    public async ValueTask DisposeAsync() { if (Module is not null) { await Module.InvokeVoidAsync("disableRichPaste"); await Module.DisposeAsync(); } }
+}
