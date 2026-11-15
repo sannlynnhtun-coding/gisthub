@@ -1,0 +1,57 @@
+.markdown-converters {
+    min-width: 0;
+}
+.markdown-converters select,
+.markdown-converters input[type="file"] {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+.markdown-converters textarea {
+    max-width: 100%;
+    resize: vertical;
+}
+.markdown-converters summary {
+    cursor: pointer;
+    padding-block: 12px;
+}
+.markdown-converters [role="status"] {
+    overflow-wrap: anywhere;
+}
+.markdown-converters .code-image-markdown {
+    min-width: 0;
+    max-width: 100%;
+    overflow: auto;
+    overflow-wrap: anywhere;
+}
+.markdown-converters ::deep pre {
+    max-width: 100%;
+    overflow-x: auto;
+}
+@media (max-width: 1024px) {
+    .markdown-converters :is(select, input, textarea, button) {
+        font-size: 16px;
+    }
+    .markdown-converters :is(select, input[type="file"], button) {
+        min-height: 44px;
+    }
+    .markdown-converters input[type="file"]::file-selector-button {
+        min-height: 44px;
+    }
+}
+@media (max-width: 767px) {
+    .markdown-converters textarea {
+        height: clamp(10rem, 35svh, 18rem);
+    }
+    .converter-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .converter-actions button:first-child {
+        grid-column: 1 / -1;
+    }
+    .converter-actions button {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}

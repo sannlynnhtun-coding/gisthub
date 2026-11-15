@@ -1,4 +1,4 @@
-# Browser validation â€” 2026-11-15
+# Browser validation — 2026-11-15
 
 Site started at http://localhost:5187/tools/markdown-converters using dotnet run. Chrome DevTools used after in-app browser bridge failed.
 
@@ -15,3 +15,14 @@ Build: dotnet build GistHub/GistHub.csproj --no-restore -v quiet passed, zero wa
 Re-run: temporarily copy scripts/fixtures/markdown-converters.html to GistHub/wwwroot/converter-test.html before starting the site. Evaluate exported checkAllConverters from scripts/test-markdown-converters-browser.mjs in the live page. Remove the temporary web fixture afterward. The harness intercepts download clicks to inspect Blobs without saving 25 files.
 
 Not tested: actual destination apps/accounts, full document-format fidelity, mobile viewport, OS print/save dialog, scanned-document OCR (unsupported). Common formatting is supported; cloud inputs require pasted/exported content and URL inputs require CORS.
+
+
+## Mobile browser validation — 2026-11-15
+
+Final Chrome touch/mobile emulation matrix: 320×740 (DPR 2), 390×844 (DPR 3), 844×390 landscape (DPR 3), 768×1024 tablet (DPR 2). All 26 converters passed at each size (104 checks), including non-PDF export Blobs, DOCX round trip and PDF extraction. No document/workbench horizontal overflow. Source, actions, result and help remained reachable by scrolling. Stress-tested wide tables, long code lines and URLs; these remain contained within preview scrolling. Expanded help and long filenames also fit at tablet size. No console errors/warnings.
+
+Fixed file-input intrinsic-width overflow at 320 px, increased controls to 44 px minimum height and 16 px text through tablet widths, wrapped phone actions into a grid, constrained phone editor height, contained preview overflow and long status strings, removed duplicate workspace heading using the existing header structure, and moved lengthy import notes into expandable help. No conversion or storage behavior changed.
+
+Reproduction: use checkAllConverters from test-markdown-converters-browser.mjs together with checkMobileConverters from test-markdown-converters-mobile.mjs in the live page. Run at each viewport above with the temporary URL fixture described earlier.
+
+Limits: Chrome emulation only; physical iOS/Android keyboards, native file pickers, platform share/download UI and Safari-specific behavior were not tested.

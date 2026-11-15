@@ -1,19 +1,24 @@
 @page "/tools/markdown-converters"
 @implements IAsyncDisposable
 @inject IJSRuntime JS
-<section class="compact-tool-page space-y-6">
-    <h2 class="text-3xl font-black">Markdown converters</h2>
-    <p>Paste content, choose a format, then convert and copy or download. Google Docs, Notion and rich text accept pasted content or exported HTML. PDF imports extract text, not scanned images. URL import requires the source to allow browser access.</p>
+<section class="compact-tool-page markdown-converters space-y-6">
+    <div>
+        <h2 class="text-3xl font-black">Markdown converters</h2>
+        <p>Choose a format, paste or import content, then convert and copy or download.</p>
+    </div>
     <label for="converter-format">Conversion</label>
     <select id="converter-format" class="bg-card border rounded-md p-3" @bind="Format" disabled="@Busy">
         @foreach (var group in Formats) { <optgroup label="@group.Key">@foreach (var name in group.Value) { <option>@name</option> }</optgroup> }
     </select>
-    <p>For PDF and DOCX imports, choose a file (up to 10 MB). Other inputs are limited to 1 MB. Document import libraries load from jsDelivr; document content stays in this browser. No cloud account connection is required.</p>
+    <details>
+        <summary>Import limits and supported content</summary>
+        <p>PDF and DOCX files: up to 10 MB. Other inputs: up to 1 MB. PDF imports extract text, not scanned images. Google Docs, Notion and rich text accept pasted content or exported HTML. URL imports require the source to allow browser access. Document import libraries load from jsDelivr; content stays in this browser. No cloud account connection is required.</p>
+    </details>
     <input id="converter-file" type="file" aria-label="Import source file" disabled="@Busy" />
     <label for="converter-source">Source (or URL for URL to Markdown)</label>
     <textarea id="converter-source" class="w-full bg-card border rounded-md p-4 font-mono" rows="14" maxlength="1048576" @bind="Source" disabled="@Busy"></textarea>
-    <div class="flex flex-wrap gap-3">
-        <button class="btn btn-primary btn-md" @onclick="Convert" disabled="@Busy">@(Busy ? "Convertingâ€¦" : "Convert")</button>
+    <div class="converter-actions flex flex-wrap gap-3">
+        <button class="btn btn-primary btn-md" @onclick="Convert" disabled="@Busy">@(Busy ? "Converting…" : "Convert")</button>
         <button class="btn btn-secondary btn-md" @onclick="Copy" disabled="@(Busy || Result.Length == 0)">Copy result</button>
         <button class="btn btn-secondary btn-md" @onclick="Download" disabled="@(Busy || Result.Length == 0)">Download result</button>
     </div>
