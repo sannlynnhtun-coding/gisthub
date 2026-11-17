@@ -3969,6 +3969,18 @@ span[class~="rounded-md"][class~="border"] {
 .workspace-tools-trigger { gap: .5rem; }
 .workspace-tools-trigger[aria-expanded="true"] { background: hsl(var(--accent)); }
 .workspace-command-group { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.workspace-tabs button { white-space: nowrap; }
+.ribbon-command { display: flex; flex-direction: column; align-items: stretch; gap: .25rem; max-width: 100%; border: 2px solid transparent; border-radius: .25rem; }
+.ribbon-command:focus-visible { outline: 2px solid hsl(var(--primary)); }
+.ribbon-command.is-drop-target { border-left-color: hsl(var(--primary)); background: hsl(var(--accent)); }
+.quick-access-actions { display: flex; justify-content: flex-end; gap: .25rem; }
+.quick-access-actions button { min-width: 2rem; min-height: 2rem; padding: .25rem; border: 1px solid hsl(var(--border)); border-radius: .25rem; }
+.quick-access-actions button:hover { background: hsl(var(--accent)); }
+.quick-access-actions button:disabled { opacity: .45; cursor: default; }
+.quick-access-drag { display: inline-flex; align-items: center; justify-content: center; min-width: 2rem; cursor: grab; user-select: none; }
+.quick-access-status { font-size: .875rem; }
+.quick-access-status:empty { display: none; }
+@media (pointer: coarse) { .quick-access-actions button { min-width: 2.75rem; min-height: 2.75rem; } }
 .workspace-command-group > a, .workspace-command-group > button { display: inline-flex; align-items: center; justify-content: center; padding: .5rem .75rem; min-height: 2.75rem; line-height: 1.25rem; border: 1px solid hsl(var(--border)); border-radius: .25rem; font-size: .875rem; font-weight: 600; }
 .workspace-command-group > a:hover, .workspace-command-group > button:hover, .workspace-command-group > a.active { background: hsl(var(--accent)); }
 .workspace-command-group .neo-sound-toggle { display: inline-flex !important; }

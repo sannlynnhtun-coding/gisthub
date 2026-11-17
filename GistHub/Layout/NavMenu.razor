@@ -1,11 +1,14 @@
-<section class="workspace-ribbon" aria-label="Workspace toolbar">
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<section data-dragging="@DraggedId" class="workspace-ribbon" aria-label="Workspace toolbar">
     <div class="workspace-tab-row">
     <div class="workspace-tabs" role="tablist" aria-label="Workspace commands">
         @foreach (var tab in Tabs)
         {
-            <button @ref="TabButtons[tab]" data-testid="@(tab == "Tools" ? "tools-trigger" : null)" id="@($"workspace-tab-{tab}")" role="tab" type="button"
+            <button @ref="TabButtons[tab]" data-testid="@(tab == "Tools" ? "tools-trigger" : null)" id="@($"workspace-tab-{tab.Replace(" ", "")}")" role="tab" type="button"
                     aria-selected="@(SelectedTab == tab ? "true" : "false")" aria-controls="workspace-commands"
-                    tabindex="@(SelectedTab == tab ? 0 : -1)" @onclick="() => { SelectedTab = tab; IsCollapsed = false; }">@tab</button>
+                    tabindex="@(SelectedTab == tab ? 0 : -1)" @onclick="() => { SelectedTab = tab; IsCollapsed = false; EndDrag(); }">@tab</button>
         }
     </div>
         <button type="button" class="ribbon-toggle" aria-controls="workspace-commands" aria-expanded="@(!IsCollapsed ? "true" : "false")"
@@ -14,47 +17,235 @@
             <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 15 6-6 6 6"/></svg>
         </button>
     </div>
-    <div id="workspace-commands" role="tabpanel" aria-labelledby="@($"workspace-tab-{SelectedTab}")" class="workspace-commands" hidden="@IsCollapsed">
+    <div id="workspace-commands" role="tabpanel" aria-labelledby="@($"workspace-tab-{SelectedTab.Replace(" ", "")}")" class="workspace-commands" hidden="@IsCollapsed">
         <div class="workspace-command-area">
-        @switch (SelectedTab)
-        {
-            case "Home":
-                <div class="workspace-command-group" aria-label="Collection">
-                    <NavLink href="my-gists?favorites=true"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" fill="hsl(var(--secondary))"/><path d="M7 8h10M7 12h10M7 16h6"/></svg><span>My Collection</span></NavLink><NavLink href="editor"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z" fill="hsl(var(--secondary))"/><path d="M14 3v5h5M8 13h8M12 9v8"/></svg><span>New Snippet</span></NavLink>
-                    <NavLink href="collections"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" fill="hsl(var(--secondary))"/><path d="M7 8h10M7 12h10M7 16h6"/></svg><span>Playlists</span></NavLink><NavLink href="slh-collection"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8l2 3h10l-3 11H2z" fill="hsl(var(--secondary))"/><path d="M2 9h20"/></svg><span>SLH Collection</span></NavLink>
-                </div>
-                break;
-            case "Discover":
-                <div class="workspace-command-group" aria-label="Explore">
-                    <NavLink href="discovery"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" fill="hsl(var(--secondary))"/><path d="m16 8-2 6-6 2 2-6z"/></svg><span>Discovery</span></NavLink><NavLink href="trending"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 16l5-6 4 3 6-9M15 4h5v5" fill="none"/></svg><span>Trending Now</span></NavLink>
-                </div>
-                break;
-            case "Tools":
-                <div class="ribbon-tool-group" role="group" aria-label="Getting started">
-                    <div class="ribbon-tool-items workspace-command-group">
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["AI Tools & Skills"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("AI Tools & Skills", ToolTriggers["AI Tools & Skills"]))' class="ribbon-tool" title="AI Tools &amp; Skills" data-testid="agent-skills-menu-item">
-                            <span class="ribbon-tool-icon" aria-hidden="true">AI</span>
-                            <span>AI Tools &amp; Skills</span>
-                        </button><ToolHelp Name="AI Tools & Skills" /></div>
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Tools Guide"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Tools Guide", ToolTriggers["Tools Guide"]))' class="ribbon-tool" title="Tools Guide" data-testid="tools-guide-menu-item">
-                            <span class="ribbon-tool-icon" aria-hidden="true">?</span>
-                            <span>Tools Guide</span>
-                        </button><ToolHelp Name="Tools Guide" /></div>
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Password Generator"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Password Generator", ToolTriggers["Password Generator"]))' class="ribbon-tool" title="Password Generator" data-testid="password-generator-menu-item">
-                            <span class="ribbon-tool-icon" aria-hidden="true">&#9919;</span>
-                            <span>Password Generator</span>
-                        </button><ToolHelp Name="Password Generator" /></div>
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Cron Expression"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Cron Expression", ToolTriggers["Cron Expression"]))' class="ribbon-tool" title="Cron Expression" data-testid="cron-expression-menu-item">
-                            <span class="ribbon-tool-icon" aria-hidden="true">*</span>
-                            <span>Cron Expression</span>
-                        </button><ToolHelp Name="Cron Expression" /></div>
+        <div class="workspace-command-group" aria-label="@SelectedTab">
+            @if (SelectedTab == "Quick Access" && VisibleQuickCommands.Count == 0)
+            {
+                <p>Add commands from the other tabs using their ☆ buttons.</p>
+            }
+            @foreach (var command in DisplayedCommands)
+            {
+                <div @key="command.Id" @ref="CommandElements[command.Id]" tabindex="-1" data-command-id="@command.Id"
+                     class="ribbon-command @(DropTarget == command.Id ? "is-drop-target" : "")"
+                     @ondragenter="() => SetDropTarget(command.Id)" @ondragover:preventDefault="true"
+                     @ondrop="() => DropAsync(command.Id)">
+                    <div class="tool-list-entry workspace-command-group">@RenderCommand(command.Id)</div>
+                    <div class="quick-access-actions">
+                        @if (SelectedTab == "Quick Access")
+                        {
+                            <span role="img" draggable="@(Saving ? "false" : "true")" class="quick-access-drag"
+                                    aria-label="@($"Drag {command.Name} to reorder")" title="Drag to reorder"
+                                  @ondragstart="() => BeginDrag(command.Id)" @ondragend="EndDrag">⠿</span>
+                            <button type="button" disabled="@(Saving || VisibleQuickCommands[0].Id == command.Id)"
+                                    aria-label="@($"Move {command.Name} earlier")" title="Move earlier"
+                                    @onclick="() => MoveAsync(command.Id, -1)">←</button>
+                            <button type="button" disabled="@(Saving || VisibleQuickCommands[^1].Id == command.Id)"
+                                    aria-label="@($"Move {command.Name} later")" title="Move later"
+                                    @onclick="() => MoveAsync(command.Id, 1)">→</button>
+                        }
+                        <button type="button" data-quick-access-toggle="@command.Id" disabled="@(Saving || !Loaded)"
+                                aria-label="@($"{(QuickIds.Contains(command.Id) ? "Remove" : "Add")} {command.Name} {(QuickIds.Contains(command.Id) ? "from" : "to")} Quick Access")"
+                                title="@(QuickIds.Contains(command.Id) ? "Remove from Quick Access" : "Add to Quick Access")"
+                                aria-pressed="@(QuickIds.Contains(command.Id) ? "true" : "false")"
+                                @onclick="() => ToggleAsync(command.Id)">@(QuickIds.Contains(command.Id) ? "★" : "☆")</button>
                     </div>
                 </div>
+            }
+        </div>
+        </div>
+        <p class="quick-access-status" role="status" aria-live="polite">@Status</p>
+    </div>
+</section>
+
+@code {
+    private sealed record RibbonCommand(string Id, string Name, string Tab);
+    private static readonly RibbonCommand[] Commands =
+    [
+        new("my-collection", "My Collection", "Home"),
+        new("new-snippet", "New Snippet", "Home"),
+        new("playlists", "Playlists", "Home"),
+        new("slh-collection", "SLH Collection", "Home"),
+        new("discovery", "Discovery", "Discover"),
+        new("trending", "Trending Now", "Discover"),
+        new("agent-skills", "AI Tools & Skills", "Tools"),
+        new("tools-guide", "Tools Guide", "Tools"),
+        new("password-generator", "Password Generator", "Tools"),
+        new("cron-expression", "Cron Expression", "Tools"),
+        new("json-parser", "JSON Parser", "Data"),
+        new("json-to-table", "JSON to Table", "Data"),
+        new("base64", "Base64 Encode / Decode", "Data"),
+        new("markdown-live-preview", "Markdown Live Preview", "Markdown"),
+        new("markdown-to-docx", "Markdown to DOCX", "Markdown"),
+        new("markdown-to-cards", "Markdown to Cards", "Markdown"),
+        new("markdown-converters", "Markdown converters", "Markdown"),
+        new("markdown-to-text", "Markdown to Text", "Markdown"),
+        new("diagram-editor", "draw.io Diagram Editor", "Diagrams"),
+        new("mermaid-to-image", "Mermaid to Image", "Diagrams"),
+        new("formula-to-image", "Formula to Image", "Diagrams"),
+        new("html-to-image", "HTML to Image", "Media"),
+        new("code-image", "Markdown + Code Converter", "Media"),
+        new("youtube-downloader", "YouTube Downloader", "Media"),
+        new("local-settings", "Local settings", "View"),
+        new("appearance", "Appearance", "View"),
+        new("sound", "Sound", "View"),
+    ];
+    private static readonly string[] Tabs = ["Home", "Quick Access", "Discover", "Tools", "Data", "Markdown", "Diagrams", "Media", "View"];
+    private string SelectedTab = "Home";
+    private bool IsCollapsed = true;
+    private readonly Dictionary<string, ElementReference> TabButtons = new();
+    private readonly Dictionary<string, ElementReference> ToolTriggers = new();
+    private readonly Dictionary<string, ElementReference> CommandElements = new();
+    private List<string> QuickIds = [];
+    private IJSObjectReference? Module;
+    private bool Loaded, Saving;
+    private string Status = "";
+    private string? DraggedId, DropTarget, FocusAfterRemove;
+    private bool Available(RibbonCommand command) => command.Id != "youtube-downloader" || !IsVercelApp;
+    private List<RibbonCommand> VisibleQuickCommands => QuickIds.Select(id => Commands.First(c => c.Id == id)).Where(Available).ToList();
+    private IEnumerable<RibbonCommand> DisplayedCommands => SelectedTab == "Quick Access"
+        ? VisibleQuickCommands : Commands.Where(c => c.Tab == SelectedTab && Available(c));
+    [Parameter] public EventCallback<(string Name, ElementReference Trigger)> OnOpenWorkbenchTool { get; set; }
+    [Parameter] public bool IsVercelApp { get; set; }
+    public ValueTask FocusToolsAsync() => TabButtons["Tools"].FocusAsync();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                Module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/quickAccess.js");
+                QuickIds = await Module.InvokeAsync<List<string>>("read");
+            }
+            catch (JSException) { Status = "Quick Access could not be loaded. Add commands to start a new list."; }
+            Loaded = true;
+            StateHasChanged();
+        }
+        if (FocusAfterRemove is { } id)
+        {
+            FocusAfterRemove = null;
+            if (CommandElements.TryGetValue(id, out var element)) await element.FocusAsync();
+            else await TabButtons["Quick Access"].FocusAsync();
+        }
+    }
+
+    private async Task ToggleAsync(string id)
+    {
+        if (Saving || !Loaded) return;
+        var next = new List<string>(QuickIds);
+        var removed = next.Remove(id);
+        if (!removed) next.Add(id);
+        var name = Commands.First(c => c.Id == id).Name;
+        if (await SaveAsync(next, removed ? $"Removed {name} from Quick Access." : $"Added {name} to Quick Access.") && removed && SelectedTab == "Quick Access")
+        {
+            FocusAfterRemove = VisibleQuickCommands.FirstOrDefault()?.Id ?? "";
+        }
+    }
+
+    private async Task<bool> SaveAsync(List<string> next, string message)
+    {
+        if (Saving) return false;
+        Saving = true;
+        try
+        {
+            if (Module is null) throw new JSException("Preference storage is unavailable.");
+            await Module.InvokeVoidAsync("save", next);
+            QuickIds = next;
+            Status = message;
+            return true;
+        }
+        catch (JSException) { Status = "Quick Access could not be saved. Your saved order has been kept."; return false; }
+        finally { Saving = false; }
+    }
+
+    private void BeginDrag(string id)
+    {
+        if (!Saving && SelectedTab == "Quick Access" && VisibleQuickCommands.Any(c => c.Id == id)) DraggedId = id;
+    }
+    private void SetDropTarget(string id)
+    {
+        if (DraggedId is not null && SelectedTab == "Quick Access" && id != DraggedId) DropTarget = id;
+    }
+    private void EndDrag() { DraggedId = null; DropTarget = null; }
+    private async Task DropAsync(string target)
+    {
+        var source = DraggedId;
+        EndDrag();
+        if (source is not null) await ReorderAsync(source, target);
+    }
+    private async Task ReorderAsync(string source, string target, bool after = false)
+    {
+        var visible = VisibleQuickCommands;
+        if (Saving || SelectedTab != "Quick Access" || source == target ||
+            !visible.Any(c => c.Id == source) || !visible.Any(c => c.Id == target)) return;
+        var next = new List<string>(QuickIds);
+        next.Remove(source);
+        next.Insert(next.IndexOf(target) + (after ? 1 : 0), source);
+        var name = Commands.First(c => c.Id == source).Name;
+        var position = next.Where(id => visible.Any(c => c.Id == id)).ToList().IndexOf(source) + 1;
+        await SaveAsync(next, $"Moved {name} to position {position}. Quick Access order saved.");
+    }
+    private Task MoveAsync(string id, int direction)
+    {
+        var visible = VisibleQuickCommands;
+        var index = visible.FindIndex(c => c.Id == id);
+        var target = index + direction;
+        return index < 0 || target < 0 || target >= visible.Count ? Task.CompletedTask
+            : ReorderAsync(id, visible[target].Id, direction > 0);
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (Module is not null) await Module.DisposeAsync();
+    }
+
+    private RenderFragment RenderCommand(string id) => @<text>
+        @switch (id)
+        {
+            case "my-collection":
+                <NavLink href="my-gists?favorites=true"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" fill="hsl(var(--secondary))"/><path d="M7 8h10M7 12h10M7 16h6"/></svg><span>My Collection</span></NavLink>
                 break;
-            case "Data":
-                <div class="ribbon-tool-group" role="group" aria-label="Data & encoding">
-                    <div class="ribbon-tool-items workspace-command-group">
-                        <div class="tool-list-entry"><button data-testid="json-parser-menu-item"
+            case "new-snippet":
+                <NavLink href="editor"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z" fill="hsl(var(--secondary))"/><path d="M14 3v5h5M8 13h8M12 9v8"/></svg><span>New Snippet</span></NavLink>
+                break;
+            case "playlists":
+                <NavLink href="collections"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" fill="hsl(var(--secondary))"/><path d="M7 8h10M7 12h10M7 16h6"/></svg><span>Playlists</span></NavLink>
+                break;
+            case "slh-collection":
+                <NavLink href="slh-collection"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8l2 3h10l-3 11H2z" fill="hsl(var(--secondary))"/><path d="M2 9h20"/></svg><span>SLH Collection</span></NavLink>
+                break;
+            case "discovery":
+                <NavLink href="discovery"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" fill="hsl(var(--secondary))"/><path d="m16 8-2 6-6 2 2-6z"/></svg><span>Discovery</span></NavLink>
+                break;
+            case "trending":
+                <NavLink href="trending"><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 16l5-6 4 3 6-9M15 4h5v5" fill="none"/></svg><span>Trending Now</span></NavLink>
+                break;
+            case "agent-skills":
+                <button type="button" @ref='ToolTriggers["AI Tools & Skills"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("AI Tools & Skills", ToolTriggers["AI Tools & Skills"]))' class="ribbon-tool" title="AI Tools &amp; Skills" data-testid='@(SelectedTab == "Quick Access" ? "quick-agent-skills-menu-item" : "agent-skills-menu-item")'>
+                            <span class="ribbon-tool-icon" aria-hidden="true">AI</span>
+                            <span>AI Tools &amp; Skills</span>
+                        </button><ToolHelp Name="AI Tools & Skills" />
+                break;
+            case "tools-guide":
+                <button type="button" @ref='ToolTriggers["Tools Guide"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Tools Guide", ToolTriggers["Tools Guide"]))' class="ribbon-tool" title="Tools Guide" data-testid='@(SelectedTab == "Quick Access" ? "quick-tools-guide-menu-item" : "tools-guide-menu-item")'>
+                            <span class="ribbon-tool-icon" aria-hidden="true">?</span>
+                            <span>Tools Guide</span>
+                        </button><ToolHelp Name="Tools Guide" />
+                break;
+            case "password-generator":
+                <button type="button" @ref='ToolTriggers["Password Generator"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Password Generator", ToolTriggers["Password Generator"]))' class="ribbon-tool" title="Password Generator" data-testid='@(SelectedTab == "Quick Access" ? "quick-password-generator-menu-item" : "password-generator-menu-item")'>
+                            <span class="ribbon-tool-icon" aria-hidden="true">&#9919;</span>
+                            <span>Password Generator</span>
+                        </button><ToolHelp Name="Password Generator" />
+                break;
+            case "cron-expression":
+                <button type="button" @ref='ToolTriggers["Cron Expression"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Cron Expression", ToolTriggers["Cron Expression"]))' class="ribbon-tool" title="Cron Expression" data-testid='@(SelectedTab == "Quick Access" ? "quick-cron-expression-menu-item" : "cron-expression-menu-item")'>
+                            <span class="ribbon-tool-icon" aria-hidden="true">*</span>
+                            <span>Cron Expression</span>
+                        </button><ToolHelp Name="Cron Expression" />
+                break;
+            case "json-parser":
+                <button data-testid='@(SelectedTab == "Quick Access" ? "quick-json-parser-menu-item" : "json-parser-menu-item")'
                                 @ref='ToolTriggers["JSON Parser"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("JSON Parser", ToolTriggers["JSON Parser"]))'
                                 class="ribbon-tool" title="JSON Parser"
                                 type="button">
@@ -62,69 +253,75 @@
                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg>
                             </span>
                             <span>JSON Parser</span>
-                        </button><ToolHelp Name="JSON Parser" /></div>
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["JSON to Table"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("JSON to Table", ToolTriggers["JSON to Table"]))' class="ribbon-tool" title="JSON to Table" data-testid="json-to-table-menu-item">
+                        </button><ToolHelp Name="JSON Parser" />
+                break;
+            case "json-to-table":
+                <button type="button" @ref='ToolTriggers["JSON to Table"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("JSON to Table", ToolTriggers["JSON to Table"]))' class="ribbon-tool" title="JSON to Table" data-testid='@(SelectedTab == "Quick Access" ? "quick-json-to-table-menu-item" : "json-to-table-menu-item")'>
                             <span class="ribbon-tool-icon">
                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 9v12M3 15h18"/></svg>
                             </span>
                             <span>JSON to Table</span>
-                        </button><ToolHelp Name="JSON to Table" /></div>
-                        <div class="tool-list-entry"><button data-testid="base64-menu-item" @ref='ToolTriggers["Base64 Encode / Decode"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Base64 Encode / Decode", ToolTriggers["Base64 Encode / Decode"]))' class="ribbon-tool" title="Base64 Encode / Decode" type="button">
+                        </button><ToolHelp Name="JSON to Table" />
+                break;
+            case "base64":
+                <button data-testid='@(SelectedTab == "Quick Access" ? "quick-base64-menu-item" : "base64-menu-item")' @ref='ToolTriggers["Base64 Encode / Decode"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Base64 Encode / Decode", ToolTriggers["Base64 Encode / Decode"]))' class="ribbon-tool" title="Base64 Encode / Decode" type="button">
                             <span class="ribbon-tool-icon" aria-hidden="true">64</span>
                             <span>Base64 Encode / Decode</span>
-                        </button><ToolHelp Name="Base64 Encode / Decode" /></div>
-                    </div>
-                </div>
+                        </button><ToolHelp Name="Base64 Encode / Decode" />
                 break;
-            case "Markdown":
-                <div class="ribbon-tool-group" role="group" aria-label="Markdown & documents">
-                    <div class="ribbon-tool-items workspace-command-group">
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Markdown Live Preview"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown Live Preview", ToolTriggers["Markdown Live Preview"]))' class="ribbon-tool" title="Markdown Live Preview" data-testid="markdown-live-preview-menu-item">
+            case "markdown-live-preview":
+                <button type="button" @ref='ToolTriggers["Markdown Live Preview"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown Live Preview", ToolTriggers["Markdown Live Preview"]))' class="ribbon-tool" title="Markdown Live Preview" data-testid='@(SelectedTab == "Quick Access" ? "quick-markdown-live-preview-menu-item" : "markdown-live-preview-menu-item")'>
                             <span class="ribbon-tool-icon" aria-hidden="true">MD</span>
                             <span>Markdown Live Preview</span>
-                        </button><ToolHelp Name="Markdown Live Preview" /></div>
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Markdown to DOCX"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown to DOCX", ToolTriggers["Markdown to DOCX"]))' class="ribbon-tool" title="Markdown to DOCX" data-testid="markdown-docx-menu-item">
+                        </button><ToolHelp Name="Markdown Live Preview" />
+                break;
+            case "markdown-to-docx":
+                <button type="button" @ref='ToolTriggers["Markdown to DOCX"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown to DOCX", ToolTriggers["Markdown to DOCX"]))' class="ribbon-tool" title="Markdown to DOCX" data-testid='@(SelectedTab == "Quick Access" ? "quick-markdown-docx-menu-item" : "markdown-docx-menu-item")'>
                             <span class="ribbon-tool-icon" aria-hidden="true">W</span>
                             <span>Markdown to DOCX</span>
-                        </button><ToolHelp Name="Markdown to DOCX" /></div>
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Markdown to Cards"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown to Cards", ToolTriggers["Markdown to Cards"]))' class="ribbon-tool" title="Markdown to Cards" data-testid="markdown-cards-menu-item">
+                        </button><ToolHelp Name="Markdown to DOCX" />
+                break;
+            case "markdown-to-cards":
+                <button type="button" @ref='ToolTriggers["Markdown to Cards"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown to Cards", ToolTriggers["Markdown to Cards"]))' class="ribbon-tool" title="Markdown to Cards" data-testid='@(SelectedTab == "Quick Access" ? "quick-markdown-cards-menu-item" : "markdown-cards-menu-item")'>
                             <span class="ribbon-tool-icon" aria-hidden="true">&#9636;</span>
                             <span>Markdown to Cards</span>
-                        </button><ToolHelp Name="Markdown to Cards" /></div>
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Markdown converters"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown converters", ToolTriggers["Markdown converters"]))' class="ribbon-tool" title="Markdown converters"><span class="ribbon-tool-icon" aria-hidden="true">M</span><span>Markdown converters</span></button><ToolHelp Name="Markdown converters" /></div>
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Markdown to Text"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown to Text", ToolTriggers["Markdown to Text"]))' class="ribbon-tool" title="Markdown to Text" data-testid="markdown-text-menu-item">
+                        </button><ToolHelp Name="Markdown to Cards" />
+                break;
+            case "markdown-converters":
+                <button type="button" @ref='ToolTriggers["Markdown converters"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown converters", ToolTriggers["Markdown converters"]))' class="ribbon-tool" title="Markdown converters"><span class="ribbon-tool-icon" aria-hidden="true">M</span><span>Markdown converters</span></button><ToolHelp Name="Markdown converters" />
+                break;
+            case "markdown-to-text":
+                <button type="button" @ref='ToolTriggers["Markdown to Text"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown to Text", ToolTriggers["Markdown to Text"]))' class="ribbon-tool" title="Markdown to Text" data-testid='@(SelectedTab == "Quick Access" ? "quick-markdown-text-menu-item" : "markdown-text-menu-item")'>
                             <span class="ribbon-tool-icon" aria-hidden="true">T</span>
                             <span>Markdown to Text</span>
-                        </button><ToolHelp Name="Markdown to Text" /></div>
-                    </div>
-                </div>
+                        </button><ToolHelp Name="Markdown to Text" />
                 break;
-            case "Diagrams":
-                <div class="ribbon-tool-group" role="group" aria-label="Diagrams & math">
-                    <div class="ribbon-tool-items workspace-command-group">
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["draw.io Diagram Editor"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("draw.io Diagram Editor", ToolTriggers["draw.io Diagram Editor"]))' class="ribbon-tool" title="draw.io Diagram Editor" data-testid="diagram-editor-menu-item">
+            case "diagram-editor":
+                <button type="button" @ref='ToolTriggers["draw.io Diagram Editor"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("draw.io Diagram Editor", ToolTriggers["draw.io Diagram Editor"]))' class="ribbon-tool" title="draw.io Diagram Editor" data-testid='@(SelectedTab == "Quick Access" ? "quick-diagram-editor-menu-item" : "diagram-editor-menu-item")'>
                             <span class="ribbon-tool-icon" aria-hidden="true">&#9671;</span>
                             <span>draw.io Diagram Editor</span>
-                        </button><ToolHelp Name="draw.io Diagram Editor" /></div>
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Mermaid to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Mermaid to Image", ToolTriggers["Mermaid to Image"]))' class="ribbon-tool" title="Mermaid to Image" data-testid="mermaid-image-menu-item">
+                        </button><ToolHelp Name="draw.io Diagram Editor" />
+                break;
+            case "mermaid-to-image":
+                <button type="button" @ref='ToolTriggers["Mermaid to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Mermaid to Image", ToolTriggers["Mermaid to Image"]))' class="ribbon-tool" title="Mermaid to Image" data-testid='@(SelectedTab == "Quick Access" ? "quick-mermaid-image-menu-item" : "mermaid-image-menu-item")'>
                             <span class="ribbon-tool-icon" aria-hidden="true">&#9671;</span>
                             <span>Mermaid to Image</span>
-                        </button><ToolHelp Name="Mermaid to Image" /></div>
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Formula to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Formula to Image", ToolTriggers["Formula to Image"]))' class="ribbon-tool" title="Formula to Image" data-testid="formula-image-menu-item">
+                        </button><ToolHelp Name="Mermaid to Image" />
+                break;
+            case "formula-to-image":
+                <button type="button" @ref='ToolTriggers["Formula to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Formula to Image", ToolTriggers["Formula to Image"]))' class="ribbon-tool" title="Formula to Image" data-testid='@(SelectedTab == "Quick Access" ? "quick-formula-image-menu-item" : "formula-image-menu-item")'>
                             <span class="ribbon-tool-icon" aria-hidden="true">&#8721;</span>
                             <span>Formula to Image</span>
-                        </button><ToolHelp Name="Formula to Image" /></div>
-                    </div>
-                </div>
+                        </button><ToolHelp Name="Formula to Image" />
                 break;
-            case "Media":
-                <div class="ribbon-tool-group" role="group" aria-label="Images & media">
-                    <div class="ribbon-tool-items workspace-command-group">
-                        <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["HTML to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("HTML to Image", ToolTriggers["HTML to Image"]))' class="ribbon-tool" title="HTML to Image" data-testid="html-image-menu-item">
+            case "html-to-image":
+                <button type="button" @ref='ToolTriggers["HTML to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("HTML to Image", ToolTriggers["HTML to Image"]))' class="ribbon-tool" title="HTML to Image" data-testid='@(SelectedTab == "Quick Access" ? "quick-html-image-menu-item" : "html-image-menu-item")'>
                             <span class="ribbon-tool-icon" aria-hidden="true">&lt;/&gt;</span>
                             <span>HTML to Image</span>
-                        </button><ToolHelp Name="HTML to Image" /></div>
-                        <div class="tool-list-entry"><button data-testid="code-image-menu-item"
+                        </button><ToolHelp Name="HTML to Image" />
+                break;
+            case "code-image":
+                <button data-testid='@(SelectedTab == "Quick Access" ? "quick-code-image-menu-item" : "code-image-menu-item")'
                                 @ref='ToolTriggers["Markdown + Code Converter"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown + Code Converter", ToolTriggers["Markdown + Code Converter"]))'
                                 class="ribbon-tool" title="Markdown + Code Converter"
                                 type="button">
@@ -132,36 +329,23 @@
                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 9-3 3 3 3"/><path d="m15 9 3 3-3 3"/></svg>
                             </span>
                             <span>Markdown + Code Converter</span>
-                        </button><ToolHelp Name="Markdown + Code Converter" /></div>
-                        @if (!IsVercelApp)
-                        {
-                            <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["YouTube Downloader"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("YouTube Downloader", ToolTriggers["YouTube Downloader"]))' class="ribbon-tool" title="YouTube Downloader" data-testid="youtube-downloader-menu-item">
+                        </button><ToolHelp Name="Markdown + Code Converter" />
+                break;
+            case "youtube-downloader":
+                <button type="button" @ref='ToolTriggers["YouTube Downloader"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("YouTube Downloader", ToolTriggers["YouTube Downloader"]))' class="ribbon-tool" title="YouTube Downloader" data-testid='@(SelectedTab == "Quick Access" ? "quick-youtube-downloader-menu-item" : "youtube-downloader-menu-item")'>
                                 <span class="ribbon-tool-icon" aria-hidden="true">&#9654;</span>
                                 <span>YouTube Downloader</span>
-                            </button><ToolHelp Name="YouTube Downloader" /></div>
-                        }
-                    </div>
-                </div>
+                            </button><ToolHelp Name="YouTube Downloader" />
                 break;
-            case "View":
-                <div class="workspace-command-group" aria-label="Preferences">
-                    <div class="tool-list-entry"><button type="button" @ref='ToolTriggers["Local settings"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Local settings", ToolTriggers["Local settings"]))'><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg><span>Local settings</span></button><ToolHelp Name="Local settings" /></div><div class="ribbon-setting"><ThemeToggle /><span>Appearance</span></div><div class="ribbon-setting"><SoundToggle /><span>Sound</span></div>
-                </div>
+            case "local-settings":
+                <button type="button" @ref='ToolTriggers["Local settings"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Local settings", ToolTriggers["Local settings"]))'><svg class="ribbon-command-icon" aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg><span>Local settings</span></button><ToolHelp Name="Local settings" />
+                break;
+            case "appearance":
+                <div class="ribbon-setting"><ThemeToggle /><span>Appearance</span></div>
+                break;
+            case "sound":
+                <div class="ribbon-setting"><SoundToggle /><span>Sound</span></div>
                 break;
         }
-        </div>
-    </div>
-</section>
-
-
-@code {
-    private static readonly string[] Tabs = ["Home", "Discover", "Tools", "Data", "Markdown", "Diagrams", "Media", "View"];
-    private string SelectedTab = "Home";
-    private bool IsCollapsed = true;
-    private readonly Dictionary<string, ElementReference> TabButtons = new();
-    private readonly Dictionary<string, ElementReference> ToolTriggers = new();
-    [Parameter] public EventCallback<(string Name, ElementReference Trigger)> OnOpenWorkbenchTool { get; set; }
-    [Parameter] public bool IsVercelApp { get; set; }
-    public ValueTask FocusToolsAsync() => TabButtons["Tools"].FocusAsync();
-
+    </text>;
 }

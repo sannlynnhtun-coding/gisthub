@@ -168,7 +168,7 @@ try {
       searchGistCount: document.querySelector('.global-search-panel')?.dataset.gistCount ?? null,
       blazorErrorVisible: !document.querySelector('#blazor-error-ui')?.classList.contains('hidden')
     })`);
-    throw new Error(`Timed out waiting for ${description}: ${JSON.stringify(snapshot)}`);
+    throw new Error(`Timed out waiting for ${description}: ${JSON.stringify(snapshot)}\n${observedMessages.slice(-10).join('\n')}`);
   };
 
   if (process.env.BROWSER_CHECK_PRESEED_IDB === "1") {
@@ -388,7 +388,7 @@ try {
     const blurPreference = await evaluate(`localStorage.getItem('gisthub:files-blurred')`);
     if (blurPreference !== "true") verificationFailures.push("Blur Files was not persisted to localStorage.");
 
-    await waitFor(`document.querySelectorAll('.workspace-tabs [role="tab"]').length === 8`, "workspace command tabs");
+    await waitFor(`document.querySelectorAll('.workspace-tabs [role="tab"]').length === 9`, "workspace command tabs");
     if (await evaluate(`Boolean(document.querySelector('.neo-sidebar, .neo-mobile-nav'))`))
       verificationFailures.push("Legacy sidebar or mobile navigation remains beside the workspace tabs.");
 
@@ -581,6 +581,11 @@ try {
   if (process.env.BROWSER_CHECK_HTML_IMAGE === "1") {
     const { checkHtmlImage } = await import('./test-html-image.mjs');
     await checkHtmlImage({ evaluate, send, sessionId, waitFor });
+  }
+
+  if (process.env.BROWSER_CHECK_QUICK_ACCESS === "1") {
+    const { checkQuickAccess } = await import('./test-quick-access.mjs');
+    await checkQuickAccess({ evaluate, send, sessionId, waitFor });
   }
 
   if (process.env.BROWSER_CHECK_LOCAL_SETTINGS === "1") {
