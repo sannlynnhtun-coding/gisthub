@@ -18,7 +18,7 @@
     </details>
     <input id="converter-file" type="file" aria-label="Import source file" disabled="@Busy" />
     <label for="converter-source">Source (or URL for URL to Markdown)</label>
-    <textarea id="converter-source" class="w-full bg-card border rounded-md p-4 font-mono" rows="14" maxlength="1048576" @bind="Source" disabled="@Busy"></textarea>
+    <textarea id="converter-source" class="w-full bg-card border rounded-md p-4 font-mono" rows="14" maxlength="1048576" @bind="Source" @bind:event="oninput" disabled="@Busy"></textarea>
     <div class="converter-actions flex flex-wrap gap-3">
         <button class="btn btn-primary btn-md" @onclick="Convert" disabled="@Busy">@(Busy ? "Converting…" : "Convert")</button>
         <button class="btn btn-secondary btn-md" @onclick="Copy" disabled="@(Busy || Result.Length == 0)">Copy result</button>
@@ -29,6 +29,8 @@
     <textarea id="converter-result" class="w-full bg-card border rounded-md p-4 font-mono" rows="14" readonly value="@Result"></textarea>
     <div @ref="Preview" aria-label="Converted document preview" class="code-image-markdown border rounded-md p-4"></div>
 </section>
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
+
 @code {
     protected override void OnInitialized()
     {

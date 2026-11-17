@@ -23,17 +23,17 @@
         <fieldset class="space-y-4 min-w-0" disabled="@Busy">
             <legend class="font-bold mb-4">Card settings</legend>
             <div class="cards-fields">
-                <label>Title<input maxlength="80" @bind="Title" @bind:after="MarkDirty" /></label>
-                <label>Author / subtitle<input maxlength="80" @bind="Author" @bind:after="MarkDirty" /></label>
+                <label>Title<input maxlength="80" @bind="Title" @bind:event="oninput" @bind:after="MarkDirty" /></label>
+                <label>Author / subtitle<input maxlength="80" @bind="Author" @bind:event="oninput" @bind:after="MarkDirty" /></label>
                 <label>Split by<select id="cards-strategy" @bind="Strategy" @bind:after="MarkDirty"><option value="h2">H2 headings (##)</option><option value="h1">H1 headings (#)</option><option value="h3">H3 headings (###)</option><option value="delimiter">Custom delimiter</option><option value="length">Length, between blocks</option></select></label>
-                @if (Strategy == "delimiter") { <label>Delimiter (separate paragraph)<input id="cards-delimiter" maxlength="80" @bind="Delimiter" @bind:after="MarkDirty" /></label> }
-                @if (Strategy == "length") { <label>Target characters<input type="number" min="200" max="4000" @bind="TargetLength" @bind:after="MarkDirty" /></label> }
+                @if (Strategy == "delimiter") { <label>Delimiter (separate paragraph)<input id="cards-delimiter" maxlength="80" @bind="Delimiter" @bind:event="oninput" @bind:after="MarkDirty" /></label> }
+                @if (Strategy == "length") { <label>Target characters<input type="number" min="200" max="4000" @bind="TargetLength" @bind:event="oninput" @bind:after="MarkDirty" /></label> }
                 <label>Theme<select id="cards-theme" @bind="Theme" @bind:after="MarkDirty">@foreach (var theme in Themes) { <option value="@theme">@theme</option> }</select></label>
                 <label>Canvas<select id="cards-canvas" @bind="Canvas" @bind:after="MarkDirty"><option value="square">Square · 1:1</option><option value="portrait">Portrait · 4:5</option><option value="landscape">Landscape · 16:9</option><option value="auto">Auto height</option></select></label>
                 <label>Image format<select id="cards-format" @bind="Format" @bind:after="MarkDirty"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="webp">WebP</option></select></label>
-                <label>Type size: @FontSize px<input type="range" min="14" max="26" @bind="FontSize" @bind:after="MarkDirty" /></label>
-                <label>Canvas padding: @Padding px<input type="range" min="32" max="96" step="8" @bind="Padding" @bind:after="MarkDirty" /></label>
-                @if (Format != "png") { <label>Quality: @Quality%<input type="range" min="50" max="100" step="5" @bind="Quality" @bind:after="MarkDirty" /></label> }
+                <label>Type size: @FontSize px<input type="range" min="14" max="26" @bind="FontSize" @bind:event="oninput" @bind:after="MarkDirty" /></label>
+                <label>Canvas padding: @Padding px<input type="range" min="32" max="96" step="8" @bind="Padding" @bind:event="oninput" @bind:after="MarkDirty" /></label>
+                @if (Format != "png") { <label>Quality: @Quality%<input type="range" min="50" max="100" step="5" @bind="Quality" @bind:event="oninput" @bind:after="MarkDirty" /></label> }
             </div>
             <p class="text-sm text-muted-foreground">Up to 24 cards at 2× resolution. Introductory text becomes a cover card. Lists, code blocks, and tables stay together; split oversized blocks manually. Remote images appear as labels.</p>
         </fieldset>
@@ -56,6 +56,8 @@
         }
     </div>
 </section>
+
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
 
 @code {
     protected override void OnInitialized()

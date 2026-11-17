@@ -18,7 +18,7 @@
         </div>
         <div>
             <label for="docx-name" class="block text-sm font-bold mb-2">Document name</label>
-            <input id="docx-name" class="bg-card border border-border rounded-md px-4 py-3" maxlength="100" @bind="Filename" />
+            <input id="docx-name" class="bg-card border border-border rounded-md px-4 py-3" maxlength="100" @bind="Filename" @bind:event="oninput" />
         </div>
         <button class="btn btn-primary btn-md" disabled="@(Busy || Module is null || string.IsNullOrWhiteSpace(Source))" @onclick="ExportAsync">@(Busy ? "Creating…" : "Download .docx")</button>
     </div>
@@ -36,6 +36,8 @@
         </div>
     </div>
 </section>
+
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
 
 @code {
     protected override void OnInitialized()

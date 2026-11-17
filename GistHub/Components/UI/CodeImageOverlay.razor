@@ -152,7 +152,7 @@
                 {
                     <label class="code-image-range">
                         <span><strong>Image quality</strong><output>@Quality%</output></span>
-                        <input type="range" min="50" max="100" step="5" @bind="Quality" />
+                        <input type="range" min="50" max="100" step="5" @bind="Quality" @bind:event="oninput" />
                     </label>
                 }
             </aside>
@@ -306,7 +306,11 @@
 
 @inject IJSRuntime JS
 
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
+
 @code {
+    public object CaptureDraft() => (CodeContent, MarkdownContent, SelectedMode, OutputFormat, Quality, SelectedLanguage, SelectedTheme, SelectedFormat, CodeTitle, MarkdownTitle, Author, ShowLineNumbers, FontSize, CanvasPadding);
+
     public void Dispose() => Drafts.Save(GetType(), (CodeContent, MarkdownContent, SelectedMode, OutputFormat, Quality, SelectedLanguage, SelectedTheme, SelectedFormat, CodeTitle, MarkdownTitle, Author, ShowLineNumbers, FontSize, CanvasPadding));
     protected override void OnInitialized()
     {

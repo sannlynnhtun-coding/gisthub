@@ -28,7 +28,7 @@
         {
             <aside class="diagram-library" aria-label="Local diagrams">
                 <label for="diagram-title">Diagram name</label>
-                <input id="diagram-title" @bind="Title" maxlength="120" />
+                <input id="diagram-title" @bind="Title" @bind:event="oninput" maxlength="120" />
                 <div class="diagram-actions">
                     <button disabled="@(Editor is null || Busy)" @onclick="New">New</button>
                     <label class="diagram-upload">Import .drawio<input type="file" accept=".drawio,.xml" @ref="FileInput" @onchange="Import" disabled="@(Editor is null || Busy)" /></label>
@@ -71,11 +71,11 @@
                 <div class="diagram-preset-grid">
                     <label>Saved preset<select value="@Export.Id" @onchange="ChoosePreset"><option value="">Custom settings</option>@foreach (var preset in Presets) { <option value="@preset.Id">@preset.Name</option> }</select></label>
                     <label>Format<select @bind="Export.Format"><option value="png">PNG</option><option value="svg">SVG</option></select></label>
-                    <label>PNG scale<input type="number" min="1" max="4" step="0.5" @bind="Export.Scale" disabled="@(Export.Format != "png")" /></label>
-                    <label>Border (pixels)<input type="number" min="0" max="100" @bind="Export.Border" /></label>
+                    <label>PNG scale<input type="number" min="1" max="4" step="0.5" @bind="Export.Scale" @bind:event="oninput" disabled="@(Export.Format != "png")" /></label>
+                    <label>Border (pixels)<input type="number" min="0" max="100" @bind="Export.Border" @bind:event="oninput" /></label>
                     <label class="diagram-checkbox"><input type="checkbox" @bind="Export.Transparent" disabled="@(Export.Format != "png")" /> Transparent PNG</label>
                     <label class="diagram-checkbox"><input type="checkbox" @bind="Export.CurrentPage" /> Current page only</label>
-                    <label>Preset name<input @bind="Export.Name" maxlength="80" /></label>
+                    <label>Preset name<input @bind="Export.Name" @bind:event="oninput" maxlength="80" /></label>
                 </div>
                 <div class="diagram-actions">
                     <button disabled="@(Editor is null || Busy)" @onclick="SavePreset">Save preset</button>
@@ -87,7 +87,7 @@
                 <summary>GitHub Gist</summary>
                 <label for="diagram-gist-id">Open Gist ID or URL</label>
                 <div class="diagram-actions">
-                    <input id="diagram-gist-id" @bind="GistInput" placeholder="https://gist.github.com/…" />
+                    <input id="diagram-gist-id" @bind="GistInput" @bind:event="oninput" placeholder="https://gist.github.com/…" />
                     <button disabled="@(Editor is null || Busy)" @onclick="FindGist">Find diagram files</button>
                 </div>
                 @if (RemoteGist is not null)
@@ -107,7 +107,7 @@
                 else
                 {
                     <label for="diagram-gist-name">Filename for a new Gist</label>
-                    <input id="diagram-gist-name" @bind="GistFilename" maxlength="127" />
+                    <input id="diagram-gist-name" @bind="GistFilename" @bind:event="oninput" maxlength="127" />
                     <label class="diagram-checkbox"><input type="checkbox" @bind="PublicGist" /> Make new Gist public</label>
                     <p>Secret Gists are accessible to anyone with their link.</p>
                     <div class="diagram-actions">
@@ -124,6 +124,8 @@
         </div>
     </div>
 </section>
+
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
 
 @code {
     private string? DraftDocumentId;

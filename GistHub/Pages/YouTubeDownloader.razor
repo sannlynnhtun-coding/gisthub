@@ -28,7 +28,7 @@
     <form class="downloader-input" @onsubmit="InspectAsync" @onsubmit:preventDefault>
         <div class="flex-1 min-w-0">
             <label for="youtube-url" class="block text-sm font-bold mb-2">YouTube video URL</label>
-            <input id="youtube-url" type="url" required maxlength="2048" @bind="Url" placeholder="https://www.youtube.com/watch?v=…" disabled="@Busy" class="w-full bg-card border border-border rounded-md px-4 py-3" />
+            <input id="youtube-url" type="url" required maxlength="2048" @bind="Url" @bind:event="oninput" placeholder="https://www.youtube.com/watch?v=…" disabled="@Busy" class="w-full bg-card border border-border rounded-md px-4 py-3" />
         </div>
         <button class="btn btn-primary btn-md" type="submit" disabled="@(!Ready || Busy)">@(Inspecting ? "Looking up…" : "Find downloads")</button>
     </form>
@@ -93,6 +93,8 @@
         <p class="text-xs text-muted-foreground">Sizes marked ≈ are estimates. MP3 size is determined after conversion.</p>
     }
 </section>
+
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
 
 @code {
     protected override void OnInitialized()

@@ -52,6 +52,8 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
     await open(tab,id,name); await type(selector,value); await close();
     assert.equal(await evaluate(`document.activeElement?.dataset.testid`),id,'focus returns to ribbon launcher');
   }
+  await send('Page.reload', {ignoreCache:true}, sessionId);
+  await waitFor(`!!document.querySelector('#workspace-tab-Tools')`, 'workspace after refresh', 60000);
   await open('Markdown','markdown-live-preview-menu-item','Markdown Live Preview');
   await evaluate(`document.body.classList.add('printing-markdown')`);
   await send('Emulation.setEmulatedMedia',{media:'print'},sessionId);
@@ -65,6 +67,18 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
     assert.equal(await evaluate(`document.querySelector(${JSON.stringify(selector)}).value`),value,name+' draft survives closing and switching tools');
     await close();
   }
+  await open('Markdown','markdown-docx-menu-item','Markdown to DOCX');
+  await evaluate(`(() => {
+    const input = document.querySelector('#docx-name');
+    input.value = 'Draft before refresh';
+    input.dispatchEvent(new Event('input', {bubbles:true}));
+  })()`);
+  await waitFor(`localStorage.getItem('gisthub:tool-draft:v1:GistHub.Pages.MarkdownToDocx')?.includes('Draft before refresh')`, 'autosave without leaving the form');
+  await send('Page.reload', {ignoreCache:true}, sessionId);
+  await waitFor(`!!document.querySelector('#workspace-tab-Tools')`, 'fresh app instance', 60000);
+  await open('Markdown','markdown-docx-menu-item','Markdown to DOCX');
+  assert.equal(await evaluate(`document.querySelector('#docx-name').value`), 'Draft before refresh', 'open tool draft survives refresh without blur');
+  await close();
   await open('Tools','agent-skills-menu-item','AI Tools & Skills');
   await type('#skills-search','markdown'); await close();
   await open('Tools','agent-skills-menu-item','AI Tools & Skills');
@@ -132,7 +146,7 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
     ['Data', 'json-parser-menu-item', 'json-parser-title', '{"draft":true}'],
     ['Data', 'json-to-table-menu-item', 'json-table-title', '[{"draft":"table"}]'],
     ['Data', 'base64-menu-item', 'base64-title', 'ZHJhZnQ='],
-    ['Markdown', 'code-image-menu-item', 'code-image-title', '# Image draft']
+    ['Media', 'code-image-menu-item', 'code-image-title', '# Image draft']
   ]) {
     const dialog = `[aria-labelledby="${title}"]`;
     const launch = async () => {
@@ -142,7 +156,7 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
       await waitFor(`!!document.querySelector(${JSON.stringify(dialog + ' textarea')})`, title);
     };
     const dismiss = async () => {
-      await evaluate(`document.querySelector(${JSON.stringify(dialog + ' header button[aria-label^="Close"]')}).click()`);
+      await evaluate(`document.querySelector(${JSON.stringify(dialog + ' > header > button[aria-label^="Close"]')}).click()`);
       await waitFor(`!document.querySelector(${JSON.stringify(dialog)})`, 'popup released');
     };
     await launch();
@@ -174,5 +188,5 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   await close();
   await send('Emulation.clearDeviceMetricsOverride',{},sessionId);
   assert.equal(await evaluate(`Array.from(document.querySelectorAll('[id]')).map(element=>element.id).filter((id,index,all)=>all.indexOf(id)!==index).length`),0,'tool switching does not create duplicate IDs');
-  console.log('PASS: all page tools fill the workspace with an interactive ribbon, original route stays put, drafts and filters survive reopening, nested guide/Data flow and Back navigation, focus restoration, released diagram host, settings and mobile layout.');
+  console.log('PASS: all page tools fill the workspace with an interactive ribbon, original route stays put, drafts and filters survive reopening and refresh, nested guide/Data flow and Back navigation, focus restoration, released diagram host, settings and mobile layout.');
 }

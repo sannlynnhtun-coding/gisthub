@@ -1,3 +1,4 @@
+using Microsoft.JSInterop;
 using System.Reflection;
 using GistHub.Services;
 
@@ -5,11 +6,14 @@ internal static class ToolDraftTests
 {
     public static void Run()
     {
-        var store = new ToolDraftStore();
+        var browser = new DraftBrowser();
+        var store = new ToolDraftStore(browser);
         var cases = new (Type Type, string Field, object Value)[]
         {
             (typeof(GistHub.Pages.CronExpression), "Expression", "*/15 * * * *"),
             (typeof(GistHub.Pages.PasswordGenerator), "Separator", " "),
+            (typeof(GistHub.Pages.PasswordGenerator), "Uppercase", false),
+            (typeof(GistHub.Pages.FormulaToImage), "Transparent", true),
             (typeof(GistHub.Pages.MarkdownToDocx), "Source", "# Word draft မြန်မာ"),
             (typeof(GistHub.Pages.MarkdownToText), "Source", "# Plain draft"),
             (typeof(GistHub.Pages.MarkdownConverters), "Source", "# Converter draft"),
@@ -34,12 +38,45 @@ internal static class ToolDraftTests
             var original = Create();
             type.GetField(field, flags)!.SetValue(original, value);
             store.Save(type, ((IToolDraft)original).CaptureDraft());
+            store = new ToolDraftStore(browser);
             var reopened = Create();
             if (ReferenceEquals(original, reopened) || !Equals(type.GetField(field, flags)!.GetValue(reopened), value))
                 throw new InvalidOperationException($"{type.Name} must restore input into a new component.");
         }
         if (store.Restore(typeof(string), "default") != "default")
             throw new InvalidOperationException("Unopened tools must keep their defaults.");
-        Console.WriteLine("PASS: tool drafts restore input into fresh component instances without retaining their previews.");
+        var key = "gisthub:tool-draft:v1:" + typeof(GistHub.Pages.CronExpression).FullName;
+        browser.Values[key] = "{broken";
+        store = new ToolDraftStore(browser);
+        if (store.Restore(typeof(GistHub.Pages.CronExpression), "default") != "default" || store.Error is null)
+            throw new InvalidOperationException("Damaged drafts must fall back with a warning.");
+        store.Save(typeof(GistHub.Pages.CronExpression), "recovered");
+        if (browser.Values[key + ":unreadable"] != "{broken") throw new InvalidOperationException("Preserve damaged draft before replacing it.");
+        browser.FailWrites = true;
+        store.Save(typeof(GistHub.Pages.CronExpression), "unsaved input");
+        if (store.Error is null || store.Restore(typeof(GistHub.Pages.CronExpression), "default") != "unsaved input" || browser.Values[key] != "\"recovered\"")
+            throw new InvalidOperationException("Failed writes must keep the previous saved copy and current input, and warn the user.");
+        browser.FailWrites = false;
+        store.Save(typeof(string), "another tool");
+        if (store.Error is null) throw new InvalidOperationException("Saving another tool must not hide an unsaved draft warning.");
+        store.Save(typeof(GistHub.Pages.CronExpression), "unsaved input");
+        if (store.Error is not null) throw new InvalidOperationException("A successful retry must clear the warning.");
+        Console.WriteLine("PASS: local tool drafts survive a fresh store, preserve Unicode and nested tuple options, and handle corrupt drafts and failed writes.");
+    }
+    private sealed class DraftBrowser : IJSInProcessRuntime
+    {
+        public Dictionary<string, string> Values { get; } = new();
+        public bool FailWrites;
+        public TValue Invoke<TValue>(string identifier, params object?[]? args)
+        {
+            var key = (string)args![0]!;
+            if (identifier == "localStorage.getItem") return (TValue)(object?)Values.GetValueOrDefault(key)!;
+            if (identifier != "localStorage.setItem") throw new InvalidOperationException(identifier);
+            if (FailWrites) throw new JSException("Storage quota exceeded.");
+            Values[key] = (string)args[1]!;
+            return default!;
+        }
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => ValueTask.FromResult(Invoke<TValue>(identifier, args));
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) => InvokeAsync<TValue>(identifier, args);
     }
 }

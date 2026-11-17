@@ -36,6 +36,8 @@
     </div>
 </section>
 
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
+
 @code {
     protected override void OnInitialized() => (Source, Filename) = Drafts.Restore(GetType(), (Source, Filename));
     public object CaptureDraft() => (Source, Filename);

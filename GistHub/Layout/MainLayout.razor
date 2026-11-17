@@ -1,5 +1,6 @@
 @inherits LayoutComponentBase
 @implements IAsyncDisposable
+@inject ToolDraftStore Drafts
 
 <div class="neo-app-shell relative min-h-screen flex bg-background text-foreground @(AreFilesBlurred ? "gist-files-blurred" : "")"
      inert="@(IsModalOpen ? "" : null)">
@@ -83,6 +84,11 @@
     </main>
 </div>
 
+@if (Drafts.Error is { } draftError)
+{
+    <p role="alert" class="fixed bottom-4 left-4 right-4 z-50 bg-card border border-border rounded-md p-4">@draftError</p>
+}
+
 <GlobalGistSearch IsOpen="@IsGlobalSearchOpen"
                   IsAuthenticated="@AppState.IsAuthenticated"
                   AccountUsername="@(AppState.CurrentProfile?.GithubUsername ?? string.Empty)"
@@ -132,10 +138,13 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Drafts.ErrorChanged += OnDraftErrorChanged;
         Navigation.LocationChanged += OnLocationChanged;
         if (RoutedTool is { } tool) PageToolHistory.Add((tool, null));
         await LoadProfileAsync();
     }
+
+    private void OnDraftErrorChanged() => _ = InvokeAsync(StateHasChanged);
 
     private async Task LoadProfileAsync()
     {
@@ -307,6 +316,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        Drafts.ErrorChanged -= OnDraftErrorChanged;
         Navigation.LocationChanged -= OnLocationChanged;
 
         if (AppShellModule is not null)

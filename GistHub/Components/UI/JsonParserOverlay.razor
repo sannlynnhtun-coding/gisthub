@@ -169,7 +169,11 @@
 
 @inject IJSRuntime JS
 
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
+
 @code {
+    public object CaptureDraft() => (InputText, WriteIndented);
+
     public void Dispose() => Drafts.Save(GetType(), (InputText, WriteIndented));
     protected override void OnInitialized()
     {

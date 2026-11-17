@@ -1,0 +1,18 @@
+@inject ToolDraftStore Drafts
+
+@code {
+    [Parameter, EditorRequired] public Type Tool { get; set; } = default!;
+    [Parameter, EditorRequired] public Func<object> Capture { get; set; } = default!;
+
+    private static readonly System.Text.Json.JsonSerializerOptions Options = new() { IncludeFields = true };
+    private string? Previous;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        var draft = Capture();
+        var json = System.Text.Json.JsonSerializer.Serialize(draft, draft.GetType(), Options);
+        // The initial render is a baseline; later input or imported content changes trigger saves.
+        if (!firstRender && json != Previous) Drafts.Save(Tool, draft);
+        Previous = json;
+    }
+}

@@ -55,7 +55,11 @@
     </section>
 }
 
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
+
 @code {
+    public object CaptureDraft() => (Input, Search, SortColumn, Descending, InputHidden, TableSource, HiddenFields);
+
     protected override void OnInitialized()
     {
         (Input, Search, SortColumn, Descending, InputHidden, TableSource, HiddenFields) = Drafts.Restore(GetType(), (Input, Search, SortColumn, Descending, InputHidden, TableSource, HiddenFields));

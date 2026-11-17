@@ -12,11 +12,11 @@
         <p class="text-muted-foreground mt-2">Paste HTML with CSS, preview it in an isolated frame, and download an image or print to PDF.</p>
     </div>
     <fieldset disabled="@Importing" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <label class="code-image-field"><span>File name</span><input maxlength="80" @bind="Filename" /></label>
-        <label class="code-image-field"><span>Canvas width (320–1600 px)</span><input id="html-image-width" type="number" min="320" max="1600" step="80" @bind="Width" @bind:after="Changed" /></label>
+        <label class="code-image-field"><span>File name</span><input maxlength="80" @bind="Filename" @bind:event="oninput" /></label>
+        <label class="code-image-field"><span>Canvas width (320–1600 px)</span><input id="html-image-width" type="number" min="320" max="1600" step="80" @bind="Width" @bind:event="oninput" @bind:after="Changed" /></label>
         <label class="code-image-field"><span>Export format</span><select id="html-image-format" @bind="Format"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="webp">WebP</option><option value="pdf">PDF (browser print)</option></select></label>
-        @if (Format is "jpeg" or "webp") { <label class="code-image-field"><span>Quality: @Quality%</span><input type="range" min="50" max="100" step="5" @bind="Quality" /></label> }
-        <label class="code-image-field"><span>Import URL (site must permit CORS)</span><input id="html-image-url" type="url" maxlength="2048" @bind="Url" placeholder="https://example.com/page.html" /></label>
+        @if (Format is "jpeg" or "webp") { <label class="code-image-field"><span>Quality: @Quality%</span><input type="range" min="50" max="100" step="5" @bind="Quality" @bind:event="oninput" /></label> }
+        <label class="code-image-field"><span>Import URL (site must permit CORS)</span><input id="html-image-url" type="url" maxlength="2048" @bind="Url" @bind:event="oninput" placeholder="https://example.com/page.html" /></label>
         <button id="html-image-import-url" class="btn btn-secondary btn-md self-end" @onclick="ImportUrlAsync" disabled="@(Module is null || string.IsNullOrWhiteSpace(Url))">Import URL</button>
     </fieldset>
     <div class="flex flex-wrap items-center gap-4">
@@ -40,6 +40,8 @@
     </div>
     <p class="text-sm text-muted-foreground">Images export at 2× resolution, up to 4096 CSS pixels tall. Scripts, forms, navigation, external stylesheets, fonts, and images are blocked. Use inline CSS and embedded PNG/JPEG/GIF/WebP images. URL import fetches the page in your browser; it cannot bypass CORS. Drafts are not auto-saved.</p>
 </section>
+
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
 
 @code {
     protected override void OnInitialized()

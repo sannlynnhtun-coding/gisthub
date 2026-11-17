@@ -34,6 +34,8 @@
     <p id="local-settings-status" role="status" aria-live="polite">@Status</p>
 </section>
 
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
+
 @code {
     protected override void OnInitialized() => (Json, Preview) = Drafts.Restore(GetType(), (Json, Preview));
     public object CaptureDraft() => (Json, Preview);

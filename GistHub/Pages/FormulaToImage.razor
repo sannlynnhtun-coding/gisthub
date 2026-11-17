@@ -14,14 +14,14 @@
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         <label class="code-image-field"><span>Title (optional)</span><input id="formula-name" maxlength="80" @bind="Title" @bind:event="oninput" @bind:after="Changed" /></label>
         <label class="code-image-field"><span>Author (optional)</span><input maxlength="80" @bind="Author" @bind:event="oninput" @bind:after="Changed" /></label>
-        <label class="code-image-field"><span>Formula size: @FontSize px</span><input id="formula-size" type="range" min="18" max="96" @bind="FontSize" @bind:after="Changed" /></label>
-        <label class="code-image-field"><span>Padding: @Padding px</span><input type="range" min="0" max="96" step="4" @bind="Padding" @bind:after="Changed" /></label>
-        <label class="code-image-field"><span>Text color</span><input id="formula-color" type="color" @bind="Color" @bind:after="Changed" /></label>
-        <label class="code-image-field"><span>Background color</span><input type="color" @bind="Background" @bind:after="Changed" disabled="@Transparent" /></label>
+        <label class="code-image-field"><span>Formula size: @FontSize px</span><input id="formula-size" type="range" min="18" max="96" @bind="FontSize" @bind:event="oninput" @bind:after="Changed" /></label>
+        <label class="code-image-field"><span>Padding: @Padding px</span><input type="range" min="0" max="96" step="4" @bind="Padding" @bind:event="oninput" @bind:after="Changed" /></label>
+        <label class="code-image-field"><span>Text color</span><input id="formula-color" type="color" @bind="Color" @bind:event="oninput" @bind:after="Changed" /></label>
+        <label class="code-image-field"><span>Background color</span><input type="color" @bind="Background" @bind:event="oninput" @bind:after="Changed" disabled="@Transparent" /></label>
         <label class="flex items-center gap-2"><input id="formula-transparent" type="checkbox" @bind="Transparent" @bind:after="Changed" />Transparent background (PNG, WebP, SVG)</label>
         <label class="flex items-center gap-2"><input type="checkbox" @bind="DisplayMode" @bind:after="Changed" />Display math</label>
         <label class="code-image-field"><span>Export format</span><select id="formula-format" @bind="Format"><option value="png">PNG</option><option value="jpeg">JPEG (white behind transparency)</option><option value="webp">WebP</option><option value="svg">SVG (browser MathML)</option></select></label>
-        @if (Format is "jpeg" or "webp") { <label class="code-image-field"><span>Quality: @Quality%</span><input type="range" min="50" max="100" step="5" @bind="Quality" /></label> }
+        @if (Format is "jpeg" or "webp") { <label class="code-image-field"><span>Quality: @Quality%</span><input type="range" min="50" max="100" step="5" @bind="Quality" @bind:event="oninput" /></label> }
         <label class="code-image-field"><span>Load example</span><select id="formula-example" @onchange="LoadExample"><option value="einstein">Mass–energy</option><option value="quadratic">Quadratic formula</option><option value="integral">Gaussian integral</option><option value="matrix">Matrix</option><option value="sum">Infinite sum</option></select></label>
     </div>
     <div class="flex flex-wrap gap-4 items-center">
@@ -43,6 +43,8 @@
     </div>
     <p class="text-sm text-muted-foreground">PNG and WebP export at 2× resolution. SVG includes MathML for modern browsers; use PNG for slides and editors without MathML support. KaTeX supports math syntax, not full LaTeX documents. Drafts are not saved automatically.</p>
 </section>
+
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
 
 @code {
     protected override void OnInitialized()

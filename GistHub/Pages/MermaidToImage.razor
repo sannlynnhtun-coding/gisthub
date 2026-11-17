@@ -16,7 +16,7 @@
         <label class="code-image-field"><span>Author</span><input maxlength="80" @bind="Author" @bind:event="oninput" @bind:after="Changed" /></label>
         <label class="code-image-field"><span>Diagram theme</span><select id="mermaid-theme" @bind="Theme" @bind:after="Changed"><option value="default">Default</option><option value="neutral">Neutral</option><option value="dark">Dark</option><option value="forest">Forest</option></select></label>
         <label class="code-image-field"><span>Export format</span><select id="mermaid-format" @bind="Format"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="webp">WebP</option><option value="svg">SVG</option><option value="pdf">PDF (browser print)</option></select></label>
-        @if (Format is "jpeg" or "webp") { <label class="code-image-field"><span>Quality: @Quality%</span><input type="range" min="50" max="100" step="5" @bind="Quality" /></label> }
+        @if (Format is "jpeg" or "webp") { <label class="code-image-field"><span>Quality: @Quality%</span><input type="range" min="50" max="100" step="5" @bind="Quality" @bind:event="oninput" /></label> }
         <label class="code-image-field"><span>Load example</span><select id="mermaid-example" @onchange="LoadExample"><option value="flow">Flowchart</option><option value="sequence">Sequence</option><option value="class">Class diagram</option></select></label>
     </div>
     <div class="flex flex-wrap gap-4 items-center">
@@ -38,6 +38,8 @@
     </div>
     <p class="text-sm text-muted-foreground">The renderer uses the app’s existing Mermaid CDN library. Your source stays in this browser. PDF opens the browser print dialog. Drafts are not saved automatically.</p>
 </section>
+
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
 
 @code {
     protected override void OnInitialized()

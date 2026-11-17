@@ -70,7 +70,11 @@
     </section>
 }
 
+<ToolDraftAutosave Tool="GetType()" Capture="CaptureDraft" />
+
 @code {
+    public object CaptureDraft() => (Input, Decode, EachLine, UrlSafe, Latin1, Live);
+
     protected override void OnInitialized()
     {
         (Input, Decode, EachLine, UrlSafe, Latin1, Live) = Drafts.Restore(GetType(), (Input, Decode, EachLine, UrlSafe, Latin1, Live));
