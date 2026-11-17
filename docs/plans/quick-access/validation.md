@@ -17,3 +17,11 @@ The ribbon shares original command markup with Quick Access and stores ordered c
 The scripted browser scenarios dispatch DragEvents with DataTransfer. On 2026-11-17, a separate visible in-app browser test also used mouse-coordinate dragging: added My Collection, New Snippet and Playlists through their ribbon controls, dragged the Playlists handle onto My Collection, and observed the saved order Playlists → My Collection → New Snippet. Reloaded the page, reopened Quick Access and compared all three rendered command IDs; the order matched exactly. No implementation change was needed. Windows native capture/click helpers failed, so this check used the in-app browser. Physical touch dragging remains untested; earlier/later controls provide the tested touch alternative.
 
 No deployment, GitHub writes or browser preference migration was performed. Other simultaneous workspace changes are outside this feature's scope.
+
+## Compact toolbar follow-up
+
+On 2026-11-17, replaced the Excel-style vertical tiles with compact horizontal command rows, a single scrollable category row and an always-visible collapse control. Help and favorite actions stay beside each command; Quick Access keeps its drag and keyboard ordering controls. Success announcements no longer occupy a permanent visible row; storage failures remain visible.
+
+Design direction: Data terminal, seed 978701021, preserving the existing palette and font. Applied its thin selection underline and quiet chrome to this toolbar only. The whole-page design inspector also reported existing canvas gradients, button shadows and settings-page spacing outside this change; these were left intact.
+
+Validation: .NET regression runner and build passed. Browser checks cover existing tools/help, Quick Access ordering and persistence. Responsive assertions at 1440, 701 and 390 CSS pixels verify one tab row, no page overflow, visible collapse control and no command/help overlap. Preview captures are in artifacts/toolbar-preview/. Touch target checks require 44px help, favorite and collapse controls on coarse-pointer devices.

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
 
 export async function checkQuickAccess({ evaluate, send, sessionId, waitFor }) {
   const key = 'gisthub:quick-access';
@@ -147,8 +148,35 @@ export async function checkQuickAccess({ evaluate, send, sessionId, waitFor }) {
     assert.equal(await evaluate(`localStorage.getItem('${key}')`), '{', 'bad storage not overwritten on load');
     await tab('Data'); await toggle('json-parser');
     assert.deepEqual(await order(), ['json-parser']);
+    await tab('Diagrams');
+    await mkdir('artifacts/toolbar-preview', {recursive:true});
+    for (const width of [1440, 701, 390]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height:835,deviceScaleFactor:1,mobile:false},sessionId);
+      const layout = await evaluate(`(()=>{
+        const tabs=[...document.querySelectorAll('.workspace-tabs [role="tab"]')];
+        const toggle=document.querySelector('.ribbon-toggle').getBoundingClientRect();
+        const commands=[...document.querySelectorAll('.ribbon-command')];
+        return {tops:tabs.map(t=>t.getBoundingClientRect().top), overflow:document.documentElement.scrollWidth>innerWidth,
+          toggleVisible:toggle.left>=0 && toggle.right<=innerWidth,
+          labelOverlap:commands.some(c=>{const b=c.querySelector('.ribbon-tool'),h=c.querySelector('.tool-help-button');return b.getBoundingClientRect().right>h.getBoundingClientRect().left+1}),
+          panelHeight:document.querySelector('#workspace-commands').getBoundingClientRect().height,
+          ribbonBottom:Math.ceil(document.querySelector('.workspace-ribbon').getBoundingClientRect().bottom)};
+      })()`);
+      assert.equal(new Set(layout.tops).size,1,'category tabs stay on one scrollable line');
+      assert.equal(layout.overflow,false,`no page overflow at ${width}`);
+      assert.equal(layout.toggleVisible,true,'collapse button remains visible');
+      assert.equal(layout.labelOverlap,false,`command/help controls do not overlap at ${width}`);
+      assert.ok(layout.panelHeight<190,`compact panel at ${width}: ${layout.panelHeight}`);
+      const screenshot=await send('Page.captureScreenshot',{format:'png',clip:{x:0,y:0,width,height:layout.ribbonBottom+4,scale:1}},sessionId);
+      await writeFile(`artifacts/toolbar-preview/toolbar-${width}.png`,Buffer.from(screenshot.data,'base64'));
+    }
+    await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1},sessionId);
+    assert.equal(await evaluate(`matchMedia('(pointer: coarse)').matches && [...document.querySelectorAll('.quick-access-actions button, .tool-list-entry > .tool-help-button, .ribbon-toggle')].every(e=>{const r=e.getBoundingClientRect();return r.width>=44 && r.height>=44})`),true,'touch actions keep 44px targets');
+    await send('Emulation.setTouchEmulationEnabled',{enabled:false},sessionId);
+    await send('Emulation.clearDeviceMetricsOverride',{},sessionId);
     console.log('PASS: Quick Access membership, browser drag/drop, move buttons, persistence, focus, reusable commands, backup, mobile, malformed storage and failed saves.');
   } finally {
+    await send('Emulation.setTouchEmulationEnabled',{enabled:false},sessionId);
     await evaluate(`if(window.quickAccessSetItem)Storage.prototype.setItem=window.quickAccessSetItem;${original===null ? `localStorage.removeItem('${key}')` : `localStorage.setItem('${key}',${JSON.stringify(original)})`}`);
     await send('Emulation.clearDeviceMetricsOverride',{},sessionId);
   }

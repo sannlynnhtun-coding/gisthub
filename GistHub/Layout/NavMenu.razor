@@ -1,7 +1,7 @@
 @inject IJSRuntime JS
 @implements IAsyncDisposable
 
-<section data-dragging="@DraggedId" class="workspace-ribbon" aria-label="Workspace toolbar">
+<section data-dragging="@DraggedId" class="workspace-ribbon @(SelectedTab == "Quick Access" ? "is-quick-access" : "")" aria-label="Workspace toolbar">
     <div class="workspace-tab-row">
     <div class="workspace-tabs" role="tablist" aria-label="Workspace commands">
         @foreach (var tab in Tabs)
@@ -54,7 +54,7 @@
             }
         </div>
         </div>
-        <p class="quick-access-status" role="status" aria-live="polite">@Status</p>
+        <p class="quick-access-status @(Status.Contains("could not", StringComparison.OrdinalIgnoreCase) ? "" : "sr-only")" role="status" aria-live="polite">@Status</p>
     </div>
 </section>
 
