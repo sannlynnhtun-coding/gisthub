@@ -51,6 +51,18 @@ export async function checkQuickAccess({ evaluate, send, sessionId, waitFor }) {
     assert.deepEqual(await order(), ['my-collection','json-parser','markdown-live-preview']);
     await tab('QuickAccess');
     assert.deepEqual(await visible(), await order());
+    const target = (await send('Target.getTargetInfo', {}, sessionId)).targetInfo.targetId;
+    const other = (await send('Target.createTarget', {url:'about:blank'})).targetId;
+    try {
+      await send('Target.activateTarget', {targetId:other});
+      await waitFor(`document.hidden && document.querySelector('#workspace-commands').hidden`, 'inactive page collapses ribbon');
+    } finally {
+      await send('Target.closeTarget', {targetId:other});
+      await send('Target.activateTarget', {targetId:target});
+    }
+    await waitFor(`!document.hidden`, 'original browser tab active');
+    assert.equal(await evaluate(`document.querySelector('#workspace-commands').hidden`), true, 'returning stays collapsed');
+    await tab('QuickAccess');
     await drag('markdown-live-preview','my-collection');
     assert.deepEqual(await order(), ['markdown-live-preview','my-collection','json-parser']);
     await drag('json-parser','json-parser');

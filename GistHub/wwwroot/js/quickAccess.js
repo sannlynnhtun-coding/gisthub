@@ -18,3 +18,17 @@ export function save(ids) {
     validate(json);
     window.gistHubBackup.setPreference(key, json);
 }
+
+let visibilityHandler;
+export function watchVisibility(callback) {
+    unwatchVisibility();
+    visibilityHandler = () => {
+        if (document.hidden) callback.invokeMethodAsync('CollapseWhenInactive');
+    };
+    document.addEventListener('visibilitychange', visibilityHandler);
+}
+
+export function unwatchVisibility() {
+    if (visibilityHandler) document.removeEventListener('visibilitychange', visibilityHandler);
+    visibilityHandler = null;
+}

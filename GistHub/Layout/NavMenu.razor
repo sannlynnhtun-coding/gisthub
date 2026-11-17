@@ -99,6 +99,7 @@
     private readonly Dictionary<string, ElementReference> CommandElements = new();
     private List<string> QuickIds = [];
     private IJSObjectReference? Module;
+    private DotNetObjectReference<NavMenu>? VisibilityCallback;
     private bool Loaded, Saving;
     private string Status = "";
     private string? DraggedId, DropTarget, FocusAfterRemove;
@@ -117,6 +118,8 @@
             try
             {
                 Module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/quickAccess.js");
+                VisibilityCallback = DotNetObjectReference.Create(this);
+                await Module.InvokeVoidAsync("watchVisibility", VisibilityCallback);
                 QuickIds = await Module.InvokeAsync<List<string>>("read");
             }
             catch (JSException) { Status = "Quick Access could not be loaded. Add commands to start a new list."; }
@@ -169,6 +172,13 @@
         if (DraggedId is not null && SelectedTab == "Quick Access" && id != DraggedId) DropTarget = id;
     }
     private void EndDrag() { DraggedId = null; DropTarget = null; }
+    [JSInvokable]
+    public Task CollapseWhenInactive() => InvokeAsync(() =>
+    {
+        IsCollapsed = true;
+        EndDrag();
+        StateHasChanged();
+    });
     private async Task DropAsync(string target)
     {
         var source = DraggedId;
@@ -197,7 +207,12 @@
     }
     public async ValueTask DisposeAsync()
     {
-        if (Module is not null) await Module.DisposeAsync();
+        if (Module is not null)
+        {
+            await Module.InvokeVoidAsync("unwatchVisibility");
+            await Module.DisposeAsync();
+        }
+        VisibilityCallback?.Dispose();
     }
 
     private RenderFragment RenderCommand(string id) => @<text>
