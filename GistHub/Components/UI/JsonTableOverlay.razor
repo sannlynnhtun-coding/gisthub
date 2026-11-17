@@ -1,3 +1,4 @@
+@inject ToolDraftStore Drafts
 @using System.Text.Json
 @using System.Text
 @implements IAsyncDisposable
@@ -55,6 +56,14 @@
 }
 
 @code {
+    protected override void OnInitialized()
+    {
+        (Input, Search, SortColumn, Descending, InputHidden, TableSource, HiddenFields) = Drafts.Restore(GetType(), (Input, Search, SortColumn, Descending, InputHidden, TableSource, HiddenFields));
+        var sortColumn = SortColumn;
+        Parse(Drafts.Contains(GetType()) && TableSource.Length == 0);
+        SortColumn = sortColumn;
+    }
+
     [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     private ElementReference Dialog, InputElement;
@@ -67,7 +76,7 @@
     private string TableSource = "";
     private IReadOnlyList<string> ArrayProperties = [];
     private IReadOnlyList<JsonTableField> Fields = [];
-    private readonly HashSet<string> HiddenFields = new(StringComparer.Ordinal);
+    private HashSet<string> HiddenFields = new(StringComparer.Ordinal);
     private JsonTableData? Data;
     private JsonTableData VisibleData
     {
@@ -90,9 +99,9 @@
         if (InputHidden) await Dialog.FocusAsync(); else await InputElement.FocusAsync();
     }
     private void InputChanged(ChangeEventArgs args) { Input = args.Value?.ToString() ?? ""; Parse(); }
-    private void Parse()
+    private void Parse(bool keepEntireJson = false)
     {
-        var keepEntireJson = Data is not null && TableSource.Length == 0;
+        keepEntireJson |= Data is not null && TableSource.Length == 0;
         Data = null; Root = default; Fields = []; ArrayProperties = []; Error = Feedback = ""; SortColumn = -1;
         if (string.IsNullOrWhiteSpace(Input)) return;
         if (Input.Length > 2 * 1024 * 1024) { Error = "Use JSON under 2 MB."; return; }
@@ -152,6 +161,7 @@
     private async Task CloseAsync() { if (Module is not null) await Module.InvokeVoidAsync("deactivateFocusTrap", Dialog); await OnClose.InvokeAsync(); }
     public async ValueTask DisposeAsync()
     {
+        Drafts.Save(GetType(), (Input, Search, SortColumn, Descending, InputHidden, TableSource, HiddenFields));
         if (Module is null) return;
         try { await Module.InvokeVoidAsync("deactivateFocusTrap", Dialog); await Module.DisposeAsync(); } catch (JSDisconnectedException) { }
     }

@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/tools/markdown-to-cards"
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -56,6 +58,13 @@
 </section>
 
 @code {
+    protected override void OnInitialized()
+    {
+        (Source, Title, Author, Strategy, Delimiter, Theme, Canvas, Format, TargetLength, FontSize, Padding, Quality) = Drafts.Restore(GetType(), (Source, Title, Author, Strategy, Delimiter, Theme, Canvas, Format, TargetLength, FontSize, Padding, Quality));
+    }
+
+    public object CaptureDraft() => (Source, Title, Author, Strategy, Delimiter, Theme, Canvas, Format, TargetLength, FontSize, Padding, Quality);
+
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private const int MaxSize = 128 * 1024;
     private static readonly string[] Themes = ["simple", "professional", "paper", "midnight", "signal", "grape"];
@@ -79,7 +88,7 @@
             UpdateReference = DotNetObjectReference.Create(this);
             await Updates.InvokeVoidAsync("registerDraftGuard", "markdown-cards", UpdateReference);
             var draft = await Module.InvokeAsync<string?>("loadDraft");
-            if (draft is not null) { Source = draft; DraftSaved = true; }
+            if (draft is not null && !Drafts.Contains(GetType())) { Source = draft; DraftSaved = true; }
             await GenerateAsync();
         }
         catch (JSException) { Error = "Could not load the card generator. Reload the page and try again."; }

@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/tools/markdown-to-text"
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -34,6 +36,13 @@
 </section>
 
 @code {
+    protected override void OnInitialized()
+    {
+        (Source, Filename) = Drafts.Restore(GetType(), (Source, Filename));
+    }
+
+    public object CaptureDraft() => (Source, Filename);
+
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private const int MaxSize = 1024 * 1024;
     private string Source = "# Plain text, ready to share\n\nRemove **bold**, *italic*, and ~~strikethrough~~ formatting.\n\n[Visit GistHub](https://github.com) keeps its label.\n\n- [x] Paste Markdown\n- [ ] Copy the result\n\n```csharp\nif (ready)\n{\n    Share();\n}\n```";

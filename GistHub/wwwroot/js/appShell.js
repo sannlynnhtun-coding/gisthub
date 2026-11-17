@@ -92,3 +92,9 @@ export function tryFocus(element) {
 export function scrollElementIntoView(elementId) {
     document.getElementById(elementId)?.scrollIntoView({ block: "nearest" });
 }
+
+export function focusToolLauncher(name) {
+    const label = `Open ${name}`;
+    return Array.from(document.querySelectorAll('.tool-workspace button[aria-label]'))
+        .some(button => button.getAttribute('aria-label') === label && tryFocus(button));
+}

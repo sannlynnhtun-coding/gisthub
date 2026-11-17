@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/tools/cron-expression"
 @inject IJSRuntime JS
 
@@ -46,6 +48,14 @@
 </section>
 
 @code {
+    protected override void OnInitialized()
+    {
+        Expression = Drafts.Restore(GetType(), Expression);
+        Update();
+    }
+
+    public object CaptureDraft() => Expression;
+
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private string Expression = "* * * * *", Description = "Every minute.", Status = "";
     private string? Error;

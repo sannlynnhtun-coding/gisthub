@@ -58,7 +58,7 @@
             <div class="neo-decor neo-decor--purple" aria-hidden="true"></div>
             @if (IsProfileReady && !ProfileLoadFailed)
             {
-                <ToolWorkspace ActiveTool="@(IsUtilityOpen ? null : ActivePageTool)" OnBack="BackFromTool" OnOpenWorkbenchTool="OpenWorkbenchTool" FocusOnOpen="@(!ShouldRestoreToolsFocus)" />
+                <ToolWorkspace @ref="ToolWorkspaceHost" ActiveTool="@(IsUtilityOpen ? null : ActivePageTool)" OnBack="BackFromTool" OnOpenWorkbenchTool="OpenWorkbenchTool" FocusOnOpen="@(!ShouldRestoreToolsFocus)" />
             }
             <div hidden="@IsToolWorkspaceVisible" class="neo-content max-w-6xl mx-auto space-y-10 animate-in fade-in duration-500">
                 @if (!IsProfileReady)
@@ -88,10 +88,10 @@
                   AccountUsername="@(AppState.CurrentProfile?.GithubUsername ?? string.Empty)"
                   OnClose="CloseGlobalSearch"
                   OnSelectGist="OpenGistFromSearch" />
-<JsonParserOverlay IsOpen="@IsJsonParserOpen" OnClose="CloseJsonParser" />
-<Base64Overlay IsOpen="@IsBase64Open" OnClose="CloseBase64" />
-<JsonTableOverlay IsOpen="@IsJsonTableOpen" OnClose="CloseJsonTable" />
-<CodeImageOverlay IsOpen="@IsCodeImageOpen" OnClose="CloseCodeImage" />
+@if (IsJsonParserOpen) { <JsonParserOverlay IsOpen="@IsJsonParserOpen" OnClose="CloseJsonParser" /> }
+@if (IsBase64Open) { <Base64Overlay IsOpen="@IsBase64Open" OnClose="CloseBase64" /> }
+@if (IsJsonTableOpen) { <JsonTableOverlay IsOpen="@IsJsonTableOpen" OnClose="CloseJsonTable" /> }
+@if (IsCodeImageOpen) { <CodeImageOverlay IsOpen="@IsCodeImageOpen" OnClose="CloseCodeImage" /> }
 
 
 @inject AppState AppState
@@ -116,6 +116,8 @@
     private bool ShouldRestoreToolsFocus { get; set; }
     private bool ShouldRestoreSearchFocus { get; set; }
     private NavMenu? WorkspaceNavigation;
+    private ToolWorkspace? ToolWorkspaceHost;
+    private string? GuideToolName;
     private ElementReference GlobalSearchTrigger { get; set; }
     private ElementReference? GuideToolTrigger;
     private EventCallback<(string Name, ElementReference Trigger)> OpenWorkbenchTool =>
@@ -181,6 +183,9 @@
             // Ribbon commands can unmount while a tool is open.
             var restored = trigger is { } element && AppShellModule is not null &&
                 await AppShellModule.InvokeAsync<bool>("tryFocus", element);
+            if (!restored && GuideToolName is not null && AppShellModule is not null)
+                restored = await AppShellModule.InvokeAsync<bool>("focusToolLauncher", GuideToolName);
+            GuideToolName = null;
             if (!restored && WorkspaceNavigation is not null) await WorkspaceNavigation.FocusToolsAsync();
         }
 
@@ -227,8 +232,10 @@
         _ = InvokeAsync(StateHasChanged);
     }
 
-    private void OpenToolFromGuide((string Name, ElementReference Trigger) tool)
+    private async Task OpenToolFromGuide((string Name, ElementReference Trigger) tool)
     {
+        if (ToolWorkspaceHost is not null && !await ToolWorkspaceHost.SaveDraftAsync()) return;
+        GuideToolName = tool.Name;
         GuideToolTrigger = tool.Trigger;
         switch (tool.Name)
         {
@@ -243,9 +250,11 @@
         }
     }
 
-    private void BackFromTool()
+    private async Task BackFromTool()
     {
         if (PageToolHistory.Count == 0) return;
+        if (ToolWorkspaceHost is not null && !await ToolWorkspaceHost.SaveDraftAsync()) return;
+        GuideToolName = PageToolHistory[^1].Name;
         GuideToolTrigger = PageToolHistory[^1].Trigger;
         PageToolHistory.RemoveAt(PageToolHistory.Count - 1);
         ShouldRestoreToolsFocus = true;

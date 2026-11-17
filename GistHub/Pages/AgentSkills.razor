@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/agent-skills"
 @inject HttpClient Http
 @inject IJSRuntime JS
@@ -136,9 +138,16 @@
 </section>
 
 @code {
+    protected override void OnInitialized()
+    {
+        (Search, Category, Agent, MethodsExpanded, CurrentPage, MethodSearches) = Drafts.Restore(GetType(), (Search, Category, Agent, MethodsExpanded, CurrentPage, MethodSearches));
+    }
+
+    public object CaptureDraft() => (Search, Category, Agent, MethodsExpanded, CurrentPage, MethodSearches);
+
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private List<AgentSkill> Skills = [];
-    private readonly Dictionary<string, string> MethodSearches = new();
+    private Dictionary<string, string> MethodSearches = new();
     private string Search = "", Category = "", Agent = "", Status = "";
     private bool Loading = true;
     private bool MethodsExpanded = true;

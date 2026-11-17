@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/settings"
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
@@ -33,6 +35,9 @@
 </section>
 
 @code {
+    protected override void OnInitialized() => (Json, Preview) = Drafts.Restore(GetType(), (Json, Preview));
+    public object CaptureDraft() => (Json, Preview);
+
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private IJSObjectReference? Module;
     private bool Busy;

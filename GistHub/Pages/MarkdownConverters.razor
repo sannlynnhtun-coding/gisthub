@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/tools/markdown-converters"
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -28,6 +30,13 @@
     <div @ref="Preview" aria-label="Converted document preview" class="code-image-markdown border rounded-md p-4"></div>
 </section>
 @code {
+    protected override void OnInitialized()
+    {
+        (Format, Source) = Drafts.Restore(GetType(), (Format, Source));
+    }
+
+    public object CaptureDraft() => (Format, Source);
+
     private static readonly Dictionary<string, string[]> Formats = new() {
         ["From Markdown"] = ["Markdown to PDF", "Markdown to Word", "Markdown to DOCX", "Markdown to HTML", "Markdown to Rich Text", "Markdown to Google Docs", "Markdown to Jira", "Markdown to BBCode", "Markdown to Confluence", "Remove Markdown"],
         ["For chat apps"] = ["Markdown to Slack", "Markdown to Discord", "Markdown to Telegram", "Markdown to WhatsApp", "LinkedIn Text Formatter"],

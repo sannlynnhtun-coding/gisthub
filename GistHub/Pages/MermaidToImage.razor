@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/tools/mermaid-to-image"
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -38,6 +40,13 @@
 </section>
 
 @code {
+    protected override void OnInitialized()
+    {
+        (Source, Title, Author, Theme, Format, Quality) = Drafts.Restore(GetType(), (Source, Title, Author, Theme, Format, Quality));
+    }
+
+    public object CaptureDraft() => (Source, Title, Author, Theme, Format, Quality);
+
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private const string Flow = "flowchart TD\n    A[Write Mermaid] --> B{Preview looks right?}\n    B -- Yes --> C[Download image]\n    B -- No --> A";
     private string Source = Flow, Title = "My diagram", Author = "", Theme = "default", Format = "png", Status = "Rendering preview…";

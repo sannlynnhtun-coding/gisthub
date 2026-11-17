@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/tools/formula-to-image"
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -43,6 +45,13 @@
 </section>
 
 @code {
+    protected override void OnInitialized()
+    {
+        (Source, Title, Author, Color, Background, Format, FontSize, Padding, Quality, Transparent, DisplayMode) = Drafts.Restore(GetType(), (Source, Title, Author, Color, Background, Format, FontSize, Padding, Quality, Transparent, DisplayMode));
+    }
+
+    public object CaptureDraft() => (Source, Title, Author, Color, Background, Format, FontSize, Padding, Quality, Transparent, DisplayMode);
+
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private string Source = "E = mc^2", Title = "", Author = "", Color = "#172033", Background = "#ffffff", Format = "png", Status = "Rendering preview…";
     private int FontSize = 40, Padding = 32, Quality = 90, Revision;

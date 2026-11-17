@@ -14,6 +14,7 @@ await GistDeletionTests.RunAsync();
 MarkdownDocxTests.Run();
 AgentSkillTests.Run();
 CronExpressionTests.Run();
+ToolDraftTests.Run();
 
 using (var tableDocument = System.Text.Json.JsonDocument.Parse("[{\"name\":\"<script>alert(1)</script>\",\"nested\":{\"x\":1}},{\"extra\":null,\"name\":\"=1+1\"}]"))
 {

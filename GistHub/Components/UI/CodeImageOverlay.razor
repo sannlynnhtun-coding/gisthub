@@ -1,3 +1,5 @@
+@implements IDisposable
+@inject ToolDraftStore Drafts
 @if (IsOpen)
 {
     <section class="code-image-overlay" role="dialog" aria-modal="true" aria-labelledby="code-image-title" @onkeydown="HandleKeyDown">
@@ -305,6 +307,12 @@
 @inject IJSRuntime JS
 
 @code {
+    public void Dispose() => Drafts.Save(GetType(), (CodeContent, MarkdownContent, SelectedMode, OutputFormat, Quality, SelectedLanguage, SelectedTheme, SelectedFormat, CodeTitle, MarkdownTitle, Author, ShowLineNumbers, FontSize, CanvasPadding));
+    protected override void OnInitialized()
+    {
+        (CodeContent, MarkdownContent, SelectedMode, OutputFormat, Quality, SelectedLanguage, SelectedTheme, SelectedFormat, CodeTitle, MarkdownTitle, Author, ShowLineNumbers, FontSize, CanvasPadding) = Drafts.Restore(GetType(), (CodeContent, MarkdownContent, SelectedMode, OutputFormat, Quality, SelectedLanguage, SelectedTheme, SelectedFormat, CodeTitle, MarkdownTitle, Author, ShowLineNumbers, FontSize, CanvasPadding));
+    }
+
     private bool CopyFailed;
     private const long MaxMarkdownFileSize = 1024 * 1024;
     private const string ExampleCode = "public record Gist(string Id, string Description);\n\npublic static string BuildShareUrl(Gist gist)\n{\n    ArgumentNullException.ThrowIfNull(gist);\n    return $\"https://gist.github.com/{gist.Id}\";\n}";

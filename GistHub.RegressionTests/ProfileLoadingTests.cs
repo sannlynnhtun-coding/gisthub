@@ -22,6 +22,7 @@ static class ProfileLoadingTests
             services.AddSingleton<NavigationManager>(new FakeNavigationManager());
             services.AddSingleton<IJSRuntime>(new NoJs());
             services.AddSingleton<GistSearchService>();
+            services.AddSingleton<ToolDraftStore>();
             services.AddSingleton<IGithubService>(new ThrowingGithubService());
             services.AddSingleton<GistSyncService>();
             using var provider = services.BuildServiceProvider();

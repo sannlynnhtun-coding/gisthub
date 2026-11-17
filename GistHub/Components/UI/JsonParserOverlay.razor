@@ -1,3 +1,5 @@
+@implements IDisposable
+@inject ToolDraftStore Drafts
 @if (IsOpen)
 {
     <section class="json-parser-overlay" role="dialog" aria-modal="true" aria-labelledby="json-parser-title" @onkeydown="HandleKeyDown">
@@ -168,6 +170,13 @@
 @inject IJSRuntime JS
 
 @code {
+    public void Dispose() => Drafts.Save(GetType(), (InputText, WriteIndented));
+    protected override void OnInitialized()
+    {
+        (InputText, WriteIndented) = Drafts.Restore(GetType(), (InputText, WriteIndented));
+        ParseInput();
+    }
+
     private bool CopyFailed;
     private const string ExampleInput = "\"{\\\"Yescutility\\\":null,\\\"TranId\\\":null,\\\"AccountNo\\\":null,\\\"RespCode\\\":\\\"E0004\\\",\\\"RespDescription\\\":\\\"Wallet account doesn't exist for this user\\\"}\"";
 

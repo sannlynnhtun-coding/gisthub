@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/tools/diagram-editor"
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -124,6 +126,20 @@
 </section>
 
 @code {
+    private string? DraftDocumentId;
+    private string DraftOwner = "";
+    protected override void OnInitialized()
+    {
+        (Title, Search, GistInput, GistFilename, PublicGist, Export, LibraryVisible, DraftDocumentId, DraftOwner) =
+            Drafts.Restore(GetType(), (Title, Search, GistInput, GistFilename, PublicGist, Export, LibraryVisible, DraftDocumentId, DraftOwner));
+    }
+    public object CaptureDraft() => (Title, Search, GistInput, GistFilename, PublicGist, Export, LibraryVisible, Selected?.Id, CurrentOwner);
+    public async Task SaveDraftAsync()
+    {
+        if (Busy) throw new InvalidOperationException("Wait for the diagram operation to finish.");
+        if (Editor is not null) await Editor.InvokeVoidAsync("checkpoint");
+    }
+
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private ElementReference Workspace, FrameHost, FileInput;
     private IJSObjectReference? Module, Editor;
@@ -152,6 +168,12 @@
             CurrentOwner = Owner;
             Editor = await Module.InvokeAsync<IJSObjectReference>("create", FrameHost, Callback, CurrentOwner);
             await Refresh();
+            if (DraftOwner == CurrentOwner && DraftDocumentId is not null && Documents.Any(doc => doc.Id == DraftDocumentId))
+            {
+                var title = Title;
+                Select(await Editor.InvokeAsync<DiagramDocument>("open", DraftDocumentId));
+                Title = title;
+            }
         });
     }
 

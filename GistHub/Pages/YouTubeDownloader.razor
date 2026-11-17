@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/tools/youtube-downloader"
 @implements IAsyncDisposable
 @inject HttpClient Http
@@ -93,6 +95,13 @@
 </section>
 
 @code {
+    protected override void OnInitialized()
+    {
+        (Url, Kind) = Drafts.Restore(GetType(), (Url, Kind));
+    }
+
+    public object CaptureDraft() => (Url, Kind);
+
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private readonly CancellationTokenSource Lifetime = new();
     private string Url = "";

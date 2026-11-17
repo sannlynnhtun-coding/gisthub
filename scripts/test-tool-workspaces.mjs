@@ -16,6 +16,7 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
       return {bottom:rect.bottom, width:rect.width, height:rect.height, viewport:innerHeight,
         canvasWidth:document.querySelector('.neo-canvas').clientWidth, modal:tool.getAttribute('aria-modal')};
     })()`);
+    assert.equal(await evaluate(`document.querySelectorAll('.tool-workspace-session').length`),1,'only the active tool remains mounted');
     assert.equal(geometry.modal, null, 'tool is a page region, not a modal');
     assert.ok(Math.abs(geometry.bottom - geometry.viewport) < 2 && geometry.height > 0, `tool fills the remaining viewport: ${name} ${JSON.stringify(geometry)}`);
     assert.ok(Math.abs(geometry.width - geometry.canvasWidth) < 2, 'tool uses the full workspace width');
@@ -29,14 +30,14 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   };
   const close = async () => {
     await evaluate(`document.querySelector(${JSON.stringify(active+' > header > button')}).click()`);
-    await waitFor(`!document.querySelector(${JSON.stringify(active)}) && !document.querySelector('.neo-app-shell').hasAttribute('inert')`,'return to workspace');
+    await waitFor(`!document.querySelector('.tool-workspace-session') && !document.querySelector('.neo-app-shell').hasAttribute('inert')`,'return to workspace');
   };
   const type = async (selector,value) => {
     await waitFor(`document.querySelector(${JSON.stringify(selector)}) && !document.querySelector(${JSON.stringify(selector)}).disabled`,'editable tool',60000);
     await evaluate(`(() => {const input=document.querySelector(${JSON.stringify(selector)});input.value=${JSON.stringify(value)};input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));})()`);
   };
 
-  // Every routed workbench uses the same workspace host; each instance is created only once.
+  // Reopening creates a fresh component with its previous input values.
   const drafts = [
     ['Tools','cron-expression-menu-item','Cron Expression','#cron-input','*/15 * * * *'],
     ['Markdown','markdown-live-preview-menu-item','Markdown Live Preview','#markdown-live-source','# Live draft မြန်မာ'],
@@ -72,7 +73,7 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   await close();
 
   await open('Tools','tools-guide-menu-item','Tools Guide');
-  assert.equal(await evaluate(`document.querySelectorAll('[aria-label="Available tools"] article').length`),16);
+  assert.equal(await evaluate(`document.querySelectorAll('[aria-label="Available tools"] article').length`),17);
   await evaluate(`document.querySelector('[aria-label="Open Password Generator"]').click()`);
   await opened('Password Generator');
   await waitFor(`document.querySelector('#password-result')?.value.length === 20`, 'generated password');
@@ -116,12 +117,39 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   await waitFor(`document.activeElement?.getAttribute('aria-label') === 'Open JSON Parser'`,'return from Data popup to guide');
   await close();
 
+  for (const [tab, id, title, value] of [
+    ['Data', 'json-parser-menu-item', 'json-parser-title', '{"draft":true}'],
+    ['Data', 'json-to-table-menu-item', 'json-table-title', '[{"draft":"table"}]'],
+    ['Data', 'base64-menu-item', 'base64-title', 'ZHJhZnQ='],
+    ['Markdown', 'code-image-menu-item', 'code-image-title', '# Image draft']
+  ]) {
+    const dialog = `[aria-labelledby="${title}"]`;
+    const launch = async () => {
+      await evaluate(`document.querySelector('#workspace-tab-${tab}').click()`);
+      await waitFor(`!!document.querySelector('[data-testid="${id}"]')`, id);
+      await evaluate(`document.querySelector('[data-testid="${id}"]').click()`);
+      await waitFor(`!!document.querySelector(${JSON.stringify(dialog + ' textarea')})`, title);
+    };
+    const dismiss = async () => {
+      await evaluate(`document.querySelector(${JSON.stringify(dialog + ' header button[aria-label^="Close"]')}).click()`);
+      await waitFor(`!document.querySelector(${JSON.stringify(dialog)})`, 'popup released');
+    };
+    await launch();
+    await type(dialog + ' textarea', value);
+    await dismiss();
+    await launch();
+    assert.equal(await evaluate(`document.querySelector(${JSON.stringify(dialog + ' textarea')}).value`), value, title + ' draft restores');
+    await dismiss();
+  }
+
   await open('Diagrams','diagram-editor-menu-item','draw.io Diagram Editor');
   await waitFor(`!!document.querySelector('.diagram-frame')`,'diagram host');
+  await waitFor(`Array.from(document.querySelectorAll('.diagram-workspace button, .diagram-editor button, .tool-workspace button')).some(button => button.textContent.trim() === 'New' && !button.disabled)`, 'diagram library ready');
   await evaluate(`window.popupDiagramHost=document.querySelector('.diagram-frame')`);
   await close();
   await open('Diagrams','diagram-editor-menu-item','draw.io Diagram Editor');
-  assert.equal(await evaluate(`window.popupDiagramHost === document.querySelector('.diagram-frame')`),true,'diagram host is retained');
+  await waitFor(`!!document.querySelector('.diagram-frame') && Array.from(document.querySelectorAll('.tool-workspace button')).some(button => button.textContent.trim() === 'New' && !button.disabled)`, 'reopened diagram library ready');
+  assert.equal(await evaluate(`window.popupDiagramHost === document.querySelector('.diagram-frame')`),false,'diagram host is recreated');
   await close();
   await open('Media','youtube-downloader-menu-item','YouTube Downloader'); await close();
   await evaluate(`document.querySelector('#workspace-tab-View').click()`);
@@ -134,6 +162,6 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   assert.ok(await evaluate(`document.querySelector(${JSON.stringify(active)}).getBoundingClientRect().width <= innerWidth`));
   await close();
   await send('Emulation.clearDeviceMetricsOverride',{},sessionId);
-  assert.equal(await evaluate(`Array.from(document.querySelectorAll('[id]')).map(element=>element.id).filter((id,index,all)=>all.indexOf(id)!==index).length`),0,'retained tools do not create duplicate IDs');
-  console.log('PASS: all page tools fill the workspace with an interactive ribbon, original route stays put, drafts and filters survive reopening, nested guide/Data flow and Back navigation, focus restoration, retained diagram host, settings and mobile layout.');
+  assert.equal(await evaluate(`Array.from(document.querySelectorAll('[id]')).map(element=>element.id).filter((id,index,all)=>all.indexOf(id)!==index).length`),0,'tool switching does not create duplicate IDs');
+  console.log('PASS: all page tools fill the workspace with an interactive ribbon, original route stays put, drafts and filters survive reopening, nested guide/Data flow and Back navigation, focus restoration, released diagram host, settings and mobile layout.');
 }

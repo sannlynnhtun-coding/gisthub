@@ -1,3 +1,5 @@
+@inject ToolDraftStore Drafts
+@implements IToolDraft
 @page "/tools/markdown-live-preview"
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -35,6 +37,9 @@
 </section>
 
 @code {
+    protected override void OnInitialized() => (Source, Filename) = Drafts.Restore(GetType(), (Source, Filename));
+    public object CaptureDraft() => (Source, Filename);
+
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private const int MaxSize = 1024 * 1024;
     private string Source = "# Your next document\n\nWrite **Markdown** and see it here.\n\n- [x] Live preview\n- [ ] Share your document\n\n| Tool | Output |\n| --- | --- |\n| Markdown | A readable document |\n\n```csharp\nConsole.WriteLine(\"Hello, workspace!\");\n```";
@@ -52,7 +57,7 @@
             {
                 Module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/markdownLivePreview.js");
                 var draft = await Module.InvokeAsync<Draft>("restore");
-                if (draft.Source is not null) { Source = draft.Source; Filename = draft.Filename; }
+                if (draft.Source is not null && !Drafts.Contains(GetType())) { Source = draft.Source; Filename = draft.Filename; }
                 Error = draft.Warning;
                 Ready = true;
                 NeedsRender = true;

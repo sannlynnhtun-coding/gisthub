@@ -19,5 +19,6 @@ builder.Services.AddScoped<GistSearchService>();
 builder.Services.AddScoped<GistSyncService>();
 builder.Services.AddScoped<DiagramGistService>();
 builder.Services.AddScoped<AppState>();
+builder.Services.AddScoped<ToolDraftStore>();
 
 await builder.Build().RunAsync();

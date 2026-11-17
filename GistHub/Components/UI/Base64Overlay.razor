@@ -1,3 +1,4 @@
+@inject ToolDraftStore Drafts
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
@@ -70,6 +71,12 @@
 }
 
 @code {
+    protected override void OnInitialized()
+    {
+        (Input, Decode, EachLine, UrlSafe, Latin1, Live) = Drafts.Restore(GetType(), (Input, Decode, EachLine, UrlSafe, Latin1, Live));
+        Refresh();
+    }
+
     [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     private ElementReference Dialog, InputElement;
@@ -165,6 +172,7 @@
     }
     public async ValueTask DisposeAsync()
     {
+        Drafts.Save(GetType(), (Input, Decode, EachLine, UrlSafe, Latin1, Live));
         if (Module is null) return;
         try { await Module.InvokeVoidAsync("deactivateFocusTrap", Dialog); await Module.DisposeAsync(); }
         catch (JSDisconnectedException) { }
