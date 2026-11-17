@@ -1,0 +1,166 @@
+@page "/tools/visual-studio-shortcuts"
+
+@if (!IsToolWorkspace) { <PageTitle>Visual Studio Shortcuts · GistHub</PageTitle> }
+<section class="compact-tool-page space-y-6" aria-labelledby="vs-shortcuts-title">
+    <div class="neo-page-heading space-y-3 pb-7 border-b">
+        <div class="neo-kicker">Workbench / Reference</div>
+        <div class="tool-heading-inline"><h2 id="vs-shortcuts-title" class="text-3xl font-black tracking-tight">Visual Studio Shortcuts</h2> @if (!IsToolWorkspace) { <ToolHelp Name="Visual Studio Shortcuts" /> }</div>
+        <p class="text-muted-foreground">Keyboard shortcuts for Visual Studio on Windows. Bindings can vary by keyboard profile, version, and extensions.</p>
+        <p class="text-sm text-muted-foreground">Key notation follows the reference sheet; some commands use successive key combinations. Configure bindings in Tools → Options → Environment → Keyboard.</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        @foreach (var category in Categories)
+        {
+            <section class="bg-card border border-border rounded-md p-4 md:p-6 min-w-0">
+                <table class="w-full text-left table-fixed text-sm">
+                    <caption class="text-left text-xl font-bold mb-4">@category.Title</caption>
+                    <thead><tr class="border-b border-border"><th scope="col" class="py-2 pr-3">Action</th><th scope="col" class="py-2">Shortcut</th></tr></thead>
+                    <tbody>
+                        @foreach (var row in category.Rows)
+                        {
+                            <tr class="border-b border-border"><th scope="row" class="py-3 pr-3 font-normal break-words">@row.Action</th><td class="py-3 break-words"><kbd class="font-mono text-xs bg-muted border border-border rounded px-1">@row.Keys</kbd></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+        }
+    </div>
+</section>
+
+@code {
+    [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
+
+    public static readonly (string Title, (string Action, string Keys)[] Rows)[] Categories =
+    [
+        ("Code editing", [
+            ("Complete word", "Ctrl + Space"),
+            ("Show signature help", "Ctrl + Shift + Space"),
+            ("Move line up / down", "Alt + ↑ / ↓"),
+            ("Duplicate line", "Ctrl + D"),
+            ("Delete line", "Ctrl + Shift + L"),
+            ("Insert line below", "Ctrl + Enter"),
+            ("Insert line above", "Ctrl + Shift + Enter"),
+            ("Scroll line up / down", "Ctrl + ↑ / ↓"),
+            ("Scroll page up / down", "Ctrl + PgUp / PgDn"),
+            ("Scroll page horizontally", "Shift + mouse wheel"),
+            ("Toggle line comment", "Ctrl + /"),
+            ("Toggle block comment", "Ctrl + Shift + /"),
+            ("Format document", "Ctrl + K + D"),
+            ("Format selection", "Ctrl + K + F"),
+            ("Ask Copilot (inline chat)", "Alt + /"),
+            ("Toggle word wrap", "Ctrl + E + W"),
+            ("Toggle view whitespace", "Ctrl + R + W"),
+            ("Sort lines", "Shift + Alt + L + S"),
+            ("Join lines", "Shift + Alt + L + J")
+        ]),
+        ("Search and replace", [
+            ("Find", "Ctrl + F"),
+            ("Replace", "Ctrl + H"),
+            ("Find in files", "Ctrl + Shift + F"),
+            ("Replace in files", "Ctrl + Shift + H"),
+            ("Go to next / previous error", "F8 / Shift + F8")
+        ]),
+        ("Refactoring", [
+            ("Show quick actions", "Ctrl + . or Alt + Enter"),
+            ("Extract method", "Ctrl + R + M"),
+            ("Extract interface", "Ctrl + R + I"),
+            ("Rename", "Ctrl + R + R"),
+            ("Remove and sort usings", "Ctrl + R + G"),
+            ("Code cleanup", "Ctrl + K + E"),
+            ("Surround with (if, try, etc.)", "Ctrl + K + S"),
+            ("Sort lines", "Shift + Alt + L + S"),
+            ("Join lines", "Shift + Alt + L + J")
+        ]),
+        ("Navigation", [
+            ("Feature search", "Ctrl + Q or Ctrl + Shift + P"),
+            ("Code search", "Ctrl + T"),
+            ("Go to line", "Ctrl + G"),
+            ("Go to next / prev error", "F8 / Shift + F8"),
+            ("Go to definition", "F12"),
+            ("Peek definition", "Alt + F12"),
+            ("Go to implementation", "Ctrl + F12"),
+            ("Find all references", "Shift + F12"),
+            ("Go to base class", "Alt + Home"),
+            ("Navigate backward / forward", "Ctrl + - / Ctrl + Shift + -"),
+            ("Go to last edit location", "Ctrl + Shift + Backspace"),
+            ("Go to next / prev reference", "Ctrl + Shift + ↑ / ↓"),
+            ("Toggle bookmark", "Ctrl + K + K"),
+            ("Go to next / prev bookmark", "Ctrl + K + N / P"),
+            ("Clear all bookmarks", "Ctrl + K + L")
+        ]),
+        ("Debugging", [
+            ("Start/continue debugging", "F5"),
+            ("Stop debugging", "Shift + F5"),
+            ("Start without debugging", "Ctrl + F5"),
+            ("Toggle breakpoint", "F9"),
+            ("Clear all breakpoints", "Ctrl + Shift + F9"),
+            ("Step over", "F10"),
+            ("Step into", "F11"),
+            ("Step out", "Shift + F11"),
+            ("Attach to process...", "Ctrl + Alt + P"),
+            ("Reattach to process", "Shift + Alt + P"),
+            ("Launch profiler", "Alt + F2"),
+            ("Relaunch profiler", "Shift + Alt + F2")
+        ]),
+        ("Multi caret and selection", [
+            ("Insert caret", "Ctrl + Alt + mouse click"),
+            ("Insert next matching caret", "Shift + Alt + ."),
+            ("Insert all matching carets", "Shift + Alt + ;"),
+            ("Remove last caret", "Shift + Alt + ,"),
+            ("Move last caret down", "Shift + Alt + /"),
+            ("Column (box) selection", "Shift + Alt + ↑ / ↓"),
+            ("Column (box) selection", "Alt + drag mouse"),
+            ("Expand / collapse selection", "Shift + Alt + = / -")
+        ]),
+        ("Projects and solutions", [
+            ("New project", "Ctrl + Shift + N"),
+            ("Open project", "Ctrl + Shift + O"),
+            ("Build selection", "Ctrl + B"),
+            ("Build solution", "Ctrl + Shift + B"),
+            ("Add new item", "Ctrl + Shift + A"),
+            ("Add existing item", "Shift + Alt + A"),
+            ("Quick add item", "Shift + F2"),
+            ("Properties", "Alt + Enter")
+        ]),
+        ("File management", [
+            ("New file", "Ctrl + N"),
+            ("Open file", "Ctrl + O"),
+            ("Save all", "Ctrl + Shift + S"),
+            ("Go to document on left / right", "Ctrl + Alt + PgUp / PgDn"),
+            ("Close tab", "Ctrl + F4"),
+            ("Restore closed tabs", "Ctrl + K + Z"),
+            ("Reveal active file in Explorer", "Ctrl + [ + S"),
+            ("Cycle through tabs", "Ctrl + Tab"),
+            ("Toggle designer and code view", "F7 / Shift + F7"),
+            ("Properties", "F4")
+        ]),
+        ("Windows and display", [
+            ("Toggle full screen", "Shift + Alt + Enter"),
+            ("Toggle last dock/float location", "Ctrl + double-click on window"),
+            ("Switch saved window layout", "Ctrl + Alt + 1–9"),
+            ("Close active tool window", "Shift + Esc"),
+            ("Activate Solution Explorer", "Ctrl + Alt + L"),
+            ("Activate GitHub Copilot Chat", "Ctrl + \\ + C"),
+            ("Activate Error List", "Ctrl + \\ + E"),
+            ("Activate Output window", "Ctrl + Alt + O"),
+            ("Set focus on editor", "Esc")
+        ]),
+        ("Git", [
+            ("Git Changes window", "Alt + G + C"),
+            ("Git Repository window", "Alt + G + M"),
+            ("Branch picker", "Ctrl + Alt + F3"),
+            ("Repository picker", "Ctrl + Alt + F4"),
+            ("Git actions menu", "Ctrl + E + C"),
+            ("Commit", "Ctrl + Enter")
+        ]),
+        ("Unit testing", [
+            ("Test Explorer", "Ctrl + E + T"),
+            ("Run all tests", "Ctrl + R + A"),
+            ("Repeat last run", "Ctrl + R + L"),
+            ("Run until failure", "Ctrl + R + U"),
+            ("Run failed tests", "Ctrl + R + F"),
+            ("Run not run tests", "Ctrl + R + N"),
+            ("Clear all results", "Ctrl + R + Del")
+        ])
+    ];
+}

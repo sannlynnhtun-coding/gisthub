@@ -14,6 +14,7 @@ await GistVisibilityTests.RunAsync();
 await GistDeletionTests.RunAsync();
 MarkdownDocxTests.Run();
 AgentSkillTests.Run();
+VisualStudioShortcutsTests.Run();
 CronExpressionTests.Run();
 ToolDraftTests.Run();
 

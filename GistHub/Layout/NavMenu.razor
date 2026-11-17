@@ -70,6 +70,7 @@
         new("trending", "Trending Now", "Discover"),
         new("agent-skills", "AI Tools & Skills", "Tools"),
         new("tools-guide", "Tools Guide", "Tools"),
+        new("visual-studio-shortcuts", "Visual Studio Shortcuts", "Tools"),
         new("password-generator", "Password Generator", "Tools"),
         new("cron-expression", "Cron Expression", "Tools"),
         new("json-parser", "JSON Parser", "Data"),
@@ -231,6 +232,12 @@
                             <span class="ribbon-tool-icon" aria-hidden="true">?</span>
                             <span>Tools Guide</span>
                         </button><ToolHelp Name="Tools Guide" />
+                break;
+            case "visual-studio-shortcuts":
+                <button type="button" @ref='ToolTriggers["Visual Studio Shortcuts"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Visual Studio Shortcuts", ToolTriggers["Visual Studio Shortcuts"]))' class="ribbon-tool" title="Visual Studio Shortcuts" data-testid='@(SelectedTab == "Quick Access" ? "quick-visual-studio-shortcuts-menu-item" : "visual-studio-shortcuts-menu-item")'>
+                    <span class="ribbon-tool-icon" aria-hidden="true">⌨</span>
+                    <span>Visual Studio Shortcuts</span>
+                </button><ToolHelp Name="Visual Studio Shortcuts" />
                 break;
             case "password-generator":
                 <button type="button" @ref='ToolTriggers["Password Generator"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Password Generator", ToolTriggers["Password Generator"]))' class="ribbon-tool" title="Password Generator" data-testid='@(SelectedTab == "Quick Access" ? "quick-password-generator-menu-item" : "password-generator-menu-item")'>

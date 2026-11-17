@@ -72,8 +72,19 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   assert.ok(await evaluate(`getComputedStyle(document.querySelector('#skills-search')).fontSize === '13px'`));
   await close();
 
+  await open('Tools','visual-studio-shortcuts-menu-item','Visual Studio Shortcuts');
+  assert.equal(await evaluate(`document.querySelectorAll('#vs-shortcuts-title').length`),1);
+  assert.equal(await evaluate(`document.querySelectorAll('.tool-page-content table caption').length`),11);
+  assert.equal(await evaluate(`document.querySelectorAll('.tool-page-content tbody tr').length`),108);
+  await send('Emulation.setDeviceMetricsOverride', {width:375,height:844,deviceScaleFactor:1,mobile:true}, sessionId);
+  assert.ok(await evaluate(`(() => { const page = document.querySelector('.tool-page-content'); return page.scrollWidth <= page.clientWidth; })()`), 'shortcut tables fit a narrow workspace');
+  await send('Emulation.clearDeviceMetricsOverride', {}, sessionId);
+  await close();
+  await waitFor(`document.activeElement?.dataset.testid === 'visual-studio-shortcuts-menu-item'`, 'shortcut launcher focus restored');
+
   await open('Tools','tools-guide-menu-item','Tools Guide');
-  assert.equal(await evaluate(`document.querySelectorAll('[aria-label="Available tools"] article').length`),17);
+  assert.equal(await evaluate(`document.querySelectorAll('[aria-label="Available tools"] article').length`),18);
+  assert.ok(await evaluate(`!!document.querySelector('[aria-label="Open Visual Studio Shortcuts"]')`));
   await evaluate(`document.querySelector('[aria-label="Open Password Generator"]').click()`);
   await opened('Password Generator');
   await waitFor(`document.querySelector('#password-result')?.value.length === 20`, 'generated password');
