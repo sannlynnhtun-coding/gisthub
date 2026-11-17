@@ -9,7 +9,7 @@
 @inject NavigationManager Navigation
 @inject IGithubService Github
 
-<div data-update-draft="snippet" class="neo-page max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div class="neo-page max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
     <!-- Header -->
     <div class="neo-page-heading flex flex-col md:flex-row md:items-center justify-between gap-6 pb-7 border-b">
         <div class="flex items-center gap-4">
@@ -202,10 +202,9 @@
     private string ErrorMessage { get; set; } = "";
     private ElementReference previewContainer;
     private bool shouldRenderPreview = false;
-    private IJSObjectReference? UpdateModule;
-    private DotNetObjectReference<Editor>? UpdateReference;
+    private IJSObjectReference? DraftModule;
+    private DotNetObjectReference<Editor>? EditorReference;
     private string? DraftKey;
-    private bool DraftRecoveryReady;
     private bool EditorLoaded;
 
     protected override async Task OnInitializedAsync()
@@ -348,10 +347,10 @@
                             .Max() + 1
                     : 0;
                 await Storage.SaveGistAsync(result);
-                if (UpdateModule is not null && DraftKey is not null)
+                if (DraftModule is not null && DraftKey is not null)
                 {
                     // A local cleanup failure must not turn a successful GitHub save into a retry.
-                    try { await UpdateModule.InvokeVoidAsync("removeEditorDraft", DraftKey); }
+                    try { await DraftModule.InvokeVoidAsync("removeEditorDraft", DraftKey); }
                     catch (JSException) { Console.WriteLine("The saved snippet's temporary update draft could not be removed."); }
                 }
                 Navigation.NavigateTo("/my-gists");
@@ -397,29 +396,27 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (UpdateModule is null && EditorLoaded && AppState.IsAuthenticated && !IsEditorUnavailable)
+        if (DraftModule is null && EditorLoaded && AppState.IsAuthenticated && !IsEditorUnavailable)
         {
             try
             {
-                UpdateModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/appUpdates.js");
+                DraftModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/editorDrafts.js");
                 DraftKey = $"gisthub:update-draft:{AppState.CurrentProfile!.Id}:{GistId ?? "new"}";
-                UpdateReference = DotNetObjectReference.Create(this);
+                EditorReference = DotNetObjectReference.Create(this);
                 TextModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/editorText.js");
                 await TextModule.InvokeVoidAsync("attachDescriptionPaste", DescriptionInput);
-                await TextModule.InvokeVoidAsync("attachFilenamePaste", FilenameInput, UpdateReference);
-                await UpdateModule.InvokeVoidAsync("registerDraftGuard", "snippet", UpdateReference);
-                var draft = await UpdateModule.InvokeAsync<UpdateDraft?>("loadEditorDraft", DraftKey);
-                DraftRecoveryReady = true;
+                await TextModule.InvokeVoidAsync("attachFilenamePaste", FilenameInput, EditorReference);
+                var draft = await DraftModule.InvokeAsync<EditorDraft?>("loadEditorDraft", DraftKey);
                 if (draft is not null)
                 {
                     Description = draft.Description; Filename = draft.Filename; Content = draft.Content;
                     IsPublic = draft.IsPublic; IsBookmarked = draft.IsBookmarked;
                     FilenameKebabEnabled = draft.FilenameKebabEnabled;
-                    ErrorMessage = "Your local draft was restored after updating. It has not been published to GitHub.";
+                    ErrorMessage = "Your local draft was restored. It has not been published to GitHub.";
                     StateHasChanged();
                 }
             }
-            catch (JSException) { ErrorMessage = "Could not prepare local draft recovery. Updating is blocked until you save or leave this editor."; StateHasChanged(); }
+            catch (JSException) { ErrorMessage = "Could not load local draft recovery. Keep a copy of your work before leaving this editor."; StateHasChanged(); }
         }
         if (shouldRenderPreview && previewContainer.Id != null)
         {
@@ -428,23 +425,11 @@
         }
     }
 
-    [JSInvokable]
-    public async Task SaveUpdateDraft()
-    {
-        if (IsLoading || UpdateModule is null || DraftKey is null || IsEditorUnavailable || !DraftRecoveryReady)
-            throw new InvalidOperationException("Finish saving the snippet before updating.");
-        await UpdateModule.InvokeVoidAsync("saveEditorDraft", DraftKey, new UpdateDraft
-        {
-            Description = Description, Filename = Filename, Content = Content,
-            IsPublic = IsPublic, IsBookmarked = IsBookmarked, FilenameKebabEnabled = FilenameKebabEnabled
-        });
-    }
-
     public async ValueTask DisposeAsync()
     {
-        if (UpdateModule is not null)
+        if (DraftModule is not null)
         {
-            try { await UpdateModule.InvokeVoidAsync("unregisterDraftGuard", "snippet"); await UpdateModule.DisposeAsync(); }
+            try { await DraftModule.DisposeAsync(); }
             catch (JSDisconnectedException) { }
         }
         if (TextModule is not null)
@@ -452,10 +437,10 @@
             try { await TextModule.InvokeVoidAsync("detachDescriptionPaste", DescriptionInput); await TextModule.InvokeVoidAsync("detachDescriptionPaste", FilenameInput); await TextModule.DisposeAsync(); }
             catch (JSDisconnectedException) { }
         }
-        UpdateReference?.Dispose();
+        EditorReference?.Dispose();
     }
 
-    public sealed class UpdateDraft
+    public sealed class EditorDraft
     {
         public bool FilenameKebabEnabled { get; set; } = true;
         public string Description { get; set; } = "";

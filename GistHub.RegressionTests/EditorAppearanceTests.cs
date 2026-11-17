@@ -37,10 +37,10 @@ static class EditorAppearanceTests
         Check((string)Get(editor, "Filename")! == "Keep My Name.cs", "Focusing and blurring an unchanged existing name must not rename it.");
         Check(gist.Public && !gist.IsBookmarked && gist.Files.ContainsKey("Keep My Name.cs"), "Loading must not mutate stored gist data.");
         var oldJson = "{\"description\":\"keep-kebab\",\"filename\":\"Keep My Name.cs\",\"content\":\"keep\",\"isPublic\":true,\"isBookmarked\":false}";
-        var draft = JsonSerializer.Deserialize<Editor.UpdateDraft>(oldJson, new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+        var draft = JsonSerializer.Deserialize<Editor.EditorDraft>(oldJson, new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
         Check(draft.Description == "keep-kebab" && draft.Filename == "Keep My Name.cs" && draft.IsPublic && !draft.IsBookmarked && draft.FilenameKebabEnabled, "Older draft values must be retained with a compatible toggle default.");
         draft.FilenameKebabEnabled = false;
-        Check(!JsonSerializer.Deserialize<Editor.UpdateDraft>(JsonSerializer.Serialize(draft))!.FilenameKebabEnabled, "Draft toggle Off must round-trip.");
+        Check(!JsonSerializer.Deserialize<Editor.EditorDraft>(JsonSerializer.Serialize(draft))!.FilenameKebabEnabled, "Draft toggle Off must round-trip.");
         Console.WriteLine("PASS: filename conversion, new defaults, existing gist immutability and legacy draft compatibility.");
     }
     private sealed class ExistingStorage(LocalGist gist) : FakeStorageService

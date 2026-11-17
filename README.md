@@ -36,7 +36,6 @@ Blazor pages and components
 
 ## Main features
 
-- Deployment update notifications: a header bell offers an explicit update after protecting local drafts and downloading the new WASM assets. Optional OneSignal Web Push is sent after production deploys, without version polling. See [setup and limitations](docs/web-push-updates.md).
 
 - Appearance picker: select a theme, style, preset, or font, then use **Favorite** to keep it in that category's **Favorites only** list. Favorites persist locally across reloads.
 - A download button with a reminder dot appears in the header when backed-up local preferences, favorites, bookmarks, playlists, or tags change. It stays visible across reloads until you click it or download a full backup from Local settings. Changes during a download keep the reminder visible. Backups never download automatically, including after bookmark restore.

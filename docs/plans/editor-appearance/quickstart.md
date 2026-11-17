@@ -12,7 +12,7 @@ dotnet run --project GistHub/GistHub.csproj
 Run the focused Node checks:
 ```powershell
 node scripts/test-editor-appearance.mjs
-node scripts/test-app-updates.mjs
+node scripts/test-editor-drafts.mjs
 ```
 The existing scripts/test-local-settings.mjs exports a browser-harness check rather than a standalone Node test. See validation.md for checks actually completed.
 

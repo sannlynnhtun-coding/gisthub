@@ -55,16 +55,10 @@ jobs:
           curl --fail --silent --show-error --retry 20 --retry-connrefused --retry-delay 1 http://127.0.0.1:5187/tools > /dev/null
           node scripts/check-browser-errors.mjs http://127.0.0.1:5187/tools
 
+      - name: Check editor draft recovery
+        run: node scripts/test-editor-drafts.mjs
+
       # 4. Compile the Wasm Project for Production
-      - name: Check update notification flow
-        run: node scripts/test-app-updates.mjs
-
-      - name: Configure Web Push
-        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
-        env:
-          ONESIGNAL_APP_ID: ${{ vars.ONESIGNAL_APP_ID }}
-        run: node scripts/configure-web-push.mjs
-
       - name: Publish GistHub
         if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
         run: dotnet publish GistHub/GistHub.csproj -c Release -o publish_output
@@ -86,11 +80,3 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: npx --yes vercel@52.0.0 deploy --prod --yes
-
-      - name: Notify subscribed browsers after production is live
-        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
-        env:
-          ONESIGNAL_APP_ID: ${{ vars.ONESIGNAL_APP_ID }}
-          ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
-          GISTHUB_PUBLIC_URL: ${{ vars.GISTHUB_PUBLIC_URL }}
-        run: node scripts/send-update-push.mjs publish_output/wwwroot/service-worker-assets.js
