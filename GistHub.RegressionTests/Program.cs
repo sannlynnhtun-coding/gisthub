@@ -278,7 +278,8 @@ static void Assert(bool condition, string message)
 sealed class ThrowingGithubService : IGithubService
 {
     public GithubApiError? LastError => null;
-    public Task<GithubDashboardResult> GetPublicDashboardAsync(string username) => throw new HttpRequestException("GitHub is unreachable.");
+    public Task<GithubDashboardAnalytics> GetDashboardAnalyticsAsync(string login, string token, DateOnly since) => Task.FromResult(new GithubDashboardAnalytics(null, null));
+    public Task<GithubDashboardResult> GetPublicDashboardAsync(string username, string? token = null) => throw new HttpRequestException("GitHub is unreachable.");
 
     public Task<GithubUser?> GetUserInfoAsync(string token)
         => throw new HttpRequestException("GitHub is unreachable.");

@@ -2,8 +2,37 @@
 @using GistHub.Services
 @using System.Globalization
 <section id="view-overview" data-gitpulse-view="overview" class="gitpulse-view tab-panel space-y-5">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <div class="lg:col-span-4 bento-card p-6 flex flex-col justify-between">
+      @Analytics
+      <h2 class="overview-section-heading">Repository activity &amp; workflow</h2>
+      <div class="overview-card-grid">
+        <div class="overview-card-column">
+        <div class="bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full bg-[#1E2025] border border-white/[0.08] flex items-center justify-center text-cyan-400">
+                  <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Ecosystem &amp; stars by stack</h2>
+                  <p class="text-xs text-[#8E939E]">Click any legend item to filter repos</p>
+                </div>
+              </div>
+              <button class="text-xs text-indigo-400" @onclick='() => LanguageSelected.InvokeAsync("")'>Reset ×</button>
+            </div>
+            <div class="flex items-baseline gap-2.5 mb-2">
+              <span id="polar-total-stars" class="text-3xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">@Rows.Sum(r => r.Stars).ToString("N0") ★</span>
+              <span id="polar-total-forks" class="text-xs font-mono text-cyan-400">@Rows.Sum(r => r.Forks).ToString("N0") forks</span>
+            </div>
+            <div class="relative h-56 w-full flex items-center justify-center">
+              @{ var polarGroups = GithubDashboardSummary.LanguageStars(Rows).Take(6).ToArray(); }
+              <div class="bento-subcard absolute bottom-2 left-2 z-10 px-3 py-2 text-[11px]"><strong class="block font-mono text-cyan-400">@(polarGroups.FirstOrDefault().Name ?? "No data")</strong><span class="block text-[#8E939E]">@polarGroups.FirstOrDefault().Stars.ToString("N0") ★ · Measured</span></div>
+              <svg viewBox="0 0 320 224" class="w-full h-full" role="img" aria-label="Stars by primary repository language"><circle cx="160" cy="112" r="22" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="44" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="66" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="88" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="110" fill="none" stroke="#8e939e" opacity=".14"/>@{ var groups = polarGroups; }@for (var i = 0; i < groups.Length; i++) { var item = groups[i]; <path d="@Sector(i, groups.Length, item.Stars, groups.Max(g => g.Stars))" fill="@Colors[i % Colors.Length]" fill-opacity=".8" stroke="var(--gp-card)" stroke-width="2"><title>@item.Name: @item.Stars stars</title></path> }</svg>
+            </div>
+          </div>
+          <div id="polar-legend-grid" class="grid grid-cols-2 gap-x-5 gap-y-2 text-xs pt-3 border-t border-black/5 dark:border-white/[0.07]">@{ var colorIndex = 0; }@foreach (var item in polarGroups) { var color = Colors[colorIndex++ % Colors.Length]; <button class="flex justify-between gap-2 text-left" @onclick="() => LanguageSelected.InvokeAsync(item.Name)"><span class="inline-flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-xs" style="@($"background:{color}")"></span>@item.Name</span><strong class="font-mono text-[#8E939E]">@item.Stars.ToString("N0") ★</strong></button> }</div>
+        </div>
+        <div class="bento-card p-6 flex flex-col justify-between">
           <div>
             <div class="flex items-start justify-between gap-2 mb-4">
               <div class="flex items-center gap-2.5">
@@ -75,7 +104,10 @@
             </div>
           </div>
         </div>
-        <div class="lg:col-span-8 bento-card p-6 flex flex-col justify-between">
+        </div>
+        <div class="overview-card-column">
+          <div class="bento-card p-6">@Explorer</div>
+        <div class="bento-card p-6 flex flex-col justify-between">
           <div>
             <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
               <div class="flex items-center gap-2.5">
@@ -135,41 +167,14 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <div class="lg:col-span-5 bento-card p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex items-start justify-between gap-2 mb-3">
-              <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-full bg-[#1E2025] border border-white/[0.08] flex items-center justify-center text-cyan-400">
-                  <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>
-                </div>
-                <div>
-                  <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Ecosystem &amp; stars by stack</h2>
-                  <p class="text-xs text-[#8E939E]">Click any legend item to filter repos</p>
-                </div>
-              </div>
-              <button class="text-xs text-indigo-400" @onclick='() => LanguageSelected.InvokeAsync("")'>Reset ×</button>
-            </div>
-            <div class="flex items-baseline gap-2.5 mb-2">
-              <span id="polar-total-stars" class="text-3xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">@Rows.Sum(r => r.Stars).ToString("N0") ★</span>
-              <span id="polar-total-forks" class="text-xs font-mono text-cyan-400">@Rows.Sum(r => r.Forks).ToString("N0") forks</span>
-            </div>
-            <div class="relative h-56 w-full flex items-center justify-center">
-              @{ var polarGroups = GithubDashboardSummary.LanguageStars(Rows).Take(6).ToArray(); }
-              <div class="bento-subcard absolute bottom-2 left-2 z-10 px-3 py-2 text-[11px]"><strong class="block font-mono text-cyan-400">@(polarGroups.FirstOrDefault().Name ?? "No data")</strong><span class="block text-[#8E939E]">@polarGroups.FirstOrDefault().Stars.ToString("N0") ★ · Measured</span></div>
-              <svg viewBox="0 0 320 224" class="w-full h-full" role="img" aria-label="Stars by primary repository language"><circle cx="160" cy="112" r="22" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="44" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="66" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="88" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="110" fill="none" stroke="#8e939e" opacity=".14"/>@{ var groups = polarGroups; }@for (var i = 0; i < groups.Length; i++) { var item = groups[i]; <path d="@Sector(i, groups.Length, item.Stars, groups.Max(g => g.Stars))" fill="@Colors[i % Colors.Length]" fill-opacity=".8" stroke="var(--gp-card)" stroke-width="2"><title>@item.Name: @item.Stars stars</title></path> }</svg>
-            </div>
-          </div>
-          <div id="polar-legend-grid" class="grid grid-cols-2 gap-x-5 gap-y-2 text-xs pt-3 border-t border-black/5 dark:border-white/[0.07]">@{ var colorIndex = 0; }@foreach (var item in polarGroups) { var color = Colors[colorIndex++ % Colors.Length]; <button class="flex justify-between gap-2 text-left" @onclick="() => LanguageSelected.InvokeAsync(item.Name)"><span class="inline-flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-xs" style="@($"background:{color}")"></span>@item.Name</span><strong class="font-mono text-[#8E939E]">@item.Stars.ToString("N0") ★</strong></button> }</div>
         </div>
-        <div class="lg:col-span-7 bento-card p-6">@Explorer</div>
       </div>
     <p class="sr-only" role="status" aria-live="polite">@Feedback</p></section>
 @code {
     private string Feedback = "";
 
     [Parameter] public IReadOnlyList<GithubRepository> Rows { get; set; } = [];
+    [Parameter] public RenderFragment? Analytics { get; set; }
     [Parameter] public RenderFragment? Explorer { get; set; }
     [Parameter] public EventCallback<string> LanguageSelected { get; set; }
     private string KeyClass(string key) => key == ActiveKey ? "bg-gradient-to-br from-indigo-500 to-violet-500 text-white border-indigo-300" : key switch {

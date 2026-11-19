@@ -10,7 +10,8 @@ namespace GistHub.Services;
 public interface IGithubService
 {
     GithubApiError? LastError { get; }
-    Task<GithubDashboardResult> GetPublicDashboardAsync(string username);
+    Task<GithubDashboardResult> GetPublicDashboardAsync(string username, string? token = null);
+    Task<GithubDashboardAnalytics> GetDashboardAnalyticsAsync(string login, string token, DateOnly since);
     Task<List<LocalGist>> GetPublicGistsAsync(string? token = null);
     Task<List<LocalGist>> GetUserGistsAsync(string token);
     Task<bool> DeleteGistAsync(string gistId, string token);
@@ -154,7 +155,7 @@ public class GithubService : IGithubService
         return null;
     }
 
-    public async Task<GithubDashboardResult> GetPublicDashboardAsync(string username)
+    public async Task<GithubDashboardResult> GetPublicDashboardAsync(string username, string? token = null)
     {
         username = username.Trim().TrimStart('@');
         GithubDashboardResult Failure(GithubApiError error) => new(null, [], DateTimeOffset.UtcNow, false, error);
@@ -163,14 +164,16 @@ public class GithubService : IGithubService
         try
         {
             // Dashboard requests keep their errors local; gist callers still own LastError.
-            using var userRequest = CreateGitHubRequest(HttpMethod.Get, $"/users/{Uri.EscapeDataString(username)}");
+            using var userRequest = CreateGitHubRequest(HttpMethod.Get, token is null ? $"/users/{Uri.EscapeDataString(username)}" : "/user", token);
             using var userResponse = await _http.SendAsync(userRequest);
             if (!userResponse.IsSuccessStatusCode) return Failure(await CreateGithubApiErrorAsync(userResponse));
             var developer = await userResponse.Content.ReadFromJsonAsync<GithubDeveloper>(JsonOptions);
             if (developer is null || !GithubDashboardSummary.ValidUsername(developer.Login))
                 return Failure(new(null, "GitHub returned an invalid developer profile.", null));
+            if (!developer.Login.Equals(username, StringComparison.OrdinalIgnoreCase))
+                return Failure(new(null, "This GitHub token does not match the selected account. Reconnect the profile.", null));
             // shortcut: one public page (100 rows); add pagination when full-account analytics are requested.
-            using var repoRequest = CreateGitHubRequest(HttpMethod.Get, $"/users/{Uri.EscapeDataString(username)}/repos?per_page=100&sort=updated&direction=desc");
+            using var repoRequest = CreateGitHubRequest(HttpMethod.Get, $"/users/{Uri.EscapeDataString(username)}/repos?per_page=100&sort=updated&direction=desc", token);
             using var repoResponse = await _http.SendAsync(repoRequest);
             if (!repoResponse.IsSuccessStatusCode) return Failure(await CreateGithubApiErrorAsync(repoResponse));
             var repositories = await repoResponse.Content.ReadFromJsonAsync<List<GithubRepository>>(JsonOptions);
@@ -187,6 +190,33 @@ public class GithubService : IGithubService
         catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException or NotSupportedException)
         {
             return Failure(new(null, "Could not load public GitHub data. " + ex.Message, null));
+        }
+    }
+
+    public async Task<GithubDashboardAnalytics> GetDashboardAnalyticsAsync(string login, string token, DateOnly since)
+    {
+        if (!GithubDashboardSummary.ValidUsername(login) || string.IsNullOrWhiteSpace(token))
+            return new(null, null);
+
+        var commits = SearchDashboardAsync<GithubAnalyticsCommit>("commits", $"user:{login} is:public author-date:>={since:yyyy-MM-dd}", "author-date", token);
+        var pulls = SearchDashboardAsync<GithubAnalyticsPull>("issues", $"user:{login} is:public is:pr created:>={since:yyyy-MM-dd}", "created", token);
+        await Task.WhenAll(commits, pulls);
+        return new(await commits, await pulls);
+    }
+
+    private async Task<GithubAnalyticsSearch<T>?> SearchDashboardAsync<T>(string resource, string query, string sort, string token)
+    {
+        try
+        {
+            using var request = CreateGitHubRequest(HttpMethod.Get, $"/search/{resource}?q={Uri.EscapeDataString(query)}&sort={sort}&order=desc&per_page=100", token);
+            using var response = await _http.SendAsync(request);
+            return response.IsSuccessStatusCode
+                ? await response.Content.ReadFromJsonAsync<GithubAnalyticsSearch<T>>(JsonOptions)
+                : null;
+        }
+        catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException or NotSupportedException)
+        {
+            return null;
         }
     }
 

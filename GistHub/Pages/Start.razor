@@ -12,46 +12,69 @@
 <PageTitle>Home · GistHub</PageTitle>
 <div class="neo-page dashboard" data-testid="home-dashboard">
     <header class="neo-page-heading dashboard-heading">
-        <div class="gp-heading-details">
-            <span class="neo-kicker">@(Result?.Developer is { } breadcrumb ? $"github.com/{breadcrumb.Login} • {Views.First(v => v.Id == ActiveView).Name}" : "GitHub engineering workspace")</span>
-            <h1>@(Result?.Developer is { } headingDeveloper ? $"{headingDeveloper.Name ?? headingDeveloper.Login} — {Views.First(v => v.Id == ActiveView).Name}" : "Engineering Telemetry")</h1>
-            @if (Result?.Developer is { } developer)
-            {
-                <section class="dashboard-profile" aria-label="Viewed developer"><a href="@($"https://github.com/{developer.Login}")" target="_blank" rel="noopener noreferrer">@@@developer.Login ↗</a><span class="gp-followers">@(developer.Followers is >= 0 ? $"{developer.Followers:N0} followers" : "Followers unavailable") · @(developer.Following is >= 0 ? $"{developer.Following:N0} following" : "Following unavailable")</span></section>
-                <p class="text-muted-foreground">@(developer.Bio ?? "Public repository telemetry")</p><small class="dashboard-scope">@Result.Scope · Loaded @Result.LoadedAt.ToLocalTime().ToString("g")</small>
-            }
-            else { <p class="text-muted-foreground">Public repositories, developer workflow and engineering insights.</p> }
-        </div>
-        <div class="gp-hero-actions"><div class="gp-profile-presets"><span>Profiles:</span>@foreach (var sample in new[] { "sannlynnhtun-coding", "tiangolo", "shadcn", "sindresorhus", "gaearon" }) { <button type="button" class="@(Result?.Developer?.Login == sample ? "selected" : "")" @onclick="() => LoadDeveloperAsync(sample)">@@@sample</button> }</div>
-        <button id="dashboard-export" aria-label="Export loaded repositories" class="btn btn-secondary btn-md" disabled="@(Result is null || Rows.Count == 0 || Loading)" @onclick="ExportAsync"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export CSV</button></div>
+        <h1>Engineering Telemetry</h1>
+        <button id="dashboard-export" aria-label="Export loaded repositories" class="btn btn-secondary btn-md" disabled="@(Result is null || Rows.Count == 0 || Loading)" @onclick="ExportAsync"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export CSV</button>
     </header>
-    <form class="dashboard-load" @onsubmit="LoadAsync" @onsubmit:preventDefault>
-        <label for="dashboard-username">GitHub username</label>
-        <div class="dashboard-input-row"><span aria-hidden="true">@@</span><input id="dashboard-username" @bind="Username" autocomplete="off" spellcheck="false" maxlength="40" placeholder="Enter a public username" /><button class="btn btn-primary btn-md" type="submit">@(Loading ? "Load another" : "Load developer")</button></div>
-        <span class="dashboard-badge">Public data · Read only</span>
-    </form>
-    <p class="dashboard-status" role="status" aria-live="polite">@Status</p>
-    @if (!string.IsNullOrEmpty(Error)) { <div class="dashboard-notice" role="alert"><p>@Error</p><button class="btn btn-outline btn-md" @onclick="LoadAsync">Retry</button></div> }
+    @if (AppState.CurrentProfile is null || NeedsSignIn)
+    {
+        <div class="dashboard-notice"><a class="btn btn-outline btn-md" href="login">Connect GitHub account</a></div>
+    }
+    @if (!string.IsNullOrEmpty(Status)) { <p class="dashboard-status" role="status">@Status</p> }
+    @if (!string.IsNullOrEmpty(Error))
+    {
+        <div class="dashboard-notice" role="alert">
+            <p>@Error</p>
+            @if (!NeedsSignIn) { <button class="btn btn-outline btn-md" @onclick="LoadAsync">Retry</button> }
+        </div>
+    }
     <nav class="dashboard-tabs" aria-label="Dashboard views">
-        @foreach (var view in Views) { <button type="button" class="@(ActiveView == view.Id ? "selected" : "")" aria-pressed="@(ActiveView == view.Id ? "true" : "false")" @onclick="() => ActiveView = view.Id">@view.Name</button> }
+        @foreach (var view in Views) { <button type="button" class="@(ActiveView == view.Id ? "selected" : "")" aria-pressed="@(ActiveView == view.Id ? "true" : "false")" @onclick="() => SelectView(view.Id)">@view.Name</button> }
     </nav>
-    @if (Loading) { <div class="dashboard-empty" aria-busy="true">Loading public developer and repositories…</div> }
+    @if (Loading) { <div class="dashboard-empty" aria-busy="true">Loading your GitHub repositories…</div> }
     @if (ActiveView == "overview")
     {
+        var matches = Explore(Rows, Search, LanguageFilter, Sort).ToArray();
+        var first = (Page - 1) * PageSize;
         <GitPulseOverview Rows="Rows" LanguageSelected="SelectLanguage">
+            <Analytics>
+                @if (Result?.Developer is { } developer && AppState.CurrentProfile is { } profile)
+                {
+                    <GitPulseAnalytics @key="Revision" DataRequest="GetAnalytics(developer.Login, profile.AccessToken)" ReviewSelected="OpenReview" />
+                }
+            </Analytics>
             <Explorer>
             <section class="dashboard-explorer"><div class="gp-explorer-header"><h2>Live Repository Explorer</h2>
-                <div class="dashboard-filters"><label><span class="sr-only">Search</span><input id="dashboard-search" @bind="Search" @bind:event="oninput" placeholder="Name or description" /></label><label><span class="sr-only">Language</span><select id="dashboard-language" @bind="LanguageFilter"><option value="">All languages</option>@foreach (var item in Languages(Rows)) { <option value="@item.Name">@item.Name</option> }</select></label><label><span class="sr-only">Sort</span><select id="dashboard-sort" @bind="Sort"><option value="updated">Recently updated</option><option value="stars">Most stars</option><option value="forks">Most forks</option><option value="name">Name</option></select></label></div></div>
-                @if (!VisibleRows.Any()) { <p class="dashboard-empty">@(Rows.Count == 0 ? "No public repositories found." : "No repositories match your filters.")</p> }
+                <div class="dashboard-filters"><label><span class="sr-only">Search</span><input id="dashboard-search" @bind="Search" @bind:event="oninput" @bind:after="ResetPage" placeholder="Name or description" /></label><label><span class="sr-only">Language</span><select id="dashboard-language" @bind="LanguageFilter" @bind:after="ResetPage"><option value="">All languages</option>@foreach (var item in Languages(Rows)) { <option value="@item.Name">@item.Name</option> }</select></label><label><span class="sr-only">Sort</span><select id="dashboard-sort" @bind="Sort" @bind:after="ResetPage"><option value="updated">Recently updated</option><option value="stars">Most stars</option><option value="forks">Most forks</option><option value="name">Name</option></select></label></div></div>
+                @if (matches.Length == 0) { <p class="dashboard-empty">@(Rows.Count == 0 ? "No public repositories found." : "No repositories match your filters.")</p> }
                 else { <div class="dashboard-table-scroll"><table><caption class="sr-only">Loaded public repositories. Open issue counts may include pull requests.</caption><thead><tr><th scope="col">Repository</th><th scope="col">Stack</th><th scope="col">Stars</th><th scope="col">Forks</th><th scope="col">Updated</th></tr></thead><tbody>
-                    @foreach (var repo in VisibleRows) { <tr @key="repo.Id"><td><button id="@($"inspect-{repo.Id}")" class="dashboard-repo" @onclick="() => InspectAsync(repo)">@repo.Name</button><p>@(repo.Description ?? "No description")</p>@if (repo.Archived) { <small>Archived</small> } @if (repo.Fork) { <small>Fork</small> }</td><td>@Language(repo)</td><td>@repo.Stars.ToString("N0")</td><td>@repo.Forks.ToString("N0")</td><td>@(repo.UpdatedAt?.ToString("yyyy-MM-dd") ?? "Unknown")</td></tr> }
+                    @foreach (var repo in matches.Skip(first).Take(PageSize)) { <tr @key="repo.Id"><td><button id="@($"inspect-{repo.Id}")" class="dashboard-repo" @onclick="() => InspectAsync(repo)">@repo.Name</button><p>@(repo.Description ?? "No description")</p>@if (repo.Archived) { <small>Archived</small> } @if (repo.Fork) { <small>Fork</small> }</td><td>@Language(repo)</td><td>@repo.Stars.ToString("N0")</td><td>@repo.Forks.ToString("N0")</td><td>@(repo.UpdatedAt?.ToString("yyyy-MM-dd") ?? "Unknown")</td></tr> }
                 </tbody></table></div> }
-                <div class="gp-explorer-footer"><span>@VisibleRows.Count() of @Rows.Count results</span><span>Click a repository for details →</span></div>
+                <div class="gp-explorer-footer" aria-label="Repository pagination">
+                    <span role="status">@(matches.Length == 0 ? "0 results" : $"{first + 1}–{Math.Min(first + PageSize, matches.Length)} of {matches.Length} results")</span>
+                    @if (matches.Length > PageSize)
+                    {
+                        <div class="dashboard-page-actions">
+                            <button type="button" class="btn btn-outline" disabled="@(Page == 1)" @onclick="() => Page--">Previous</button>
+                            <button type="button" class="btn btn-outline" disabled="@(first + PageSize >= matches.Length)" @onclick="() => Page++">Next</button>
+                        </div>
+                    }
+                </div>
             </section>
             </Explorer>
         </GitPulseOverview>
     }
-    else if (ActiveView == "quality") { <GitPulseQuality Rows="Rows" /> }
+    else if (ActiveView == "repos")
+    {
+        <GitPulseAnalytics @key="Revision" View="Repos" Rows="Rows" Scope="@(Result?.Scope ?? "")" RepositorySelected="InspectAnalyticsRepositoryAsync" />
+    }
+    else if (ActiveView == "quality")
+    {
+        <GitPulseQuality Rows="Rows" />
+        @if (Result?.Developer is { } developer && AppState.CurrentProfile is { } profile)
+        {
+            <GitPulseAnalytics @key="Revision" View="Code Review" DataRequest="GetAnalytics(developer.Login, profile.AccessToken)" InitialReview="RequestedReview" />
+        }
+    }
     else if (ActiveView == "benchmarks") { <GitPulseBenchmarks Rows="Rows" RepositorySelected="InspectCityRepositoryAsync" /> }
     else { <GitPulseCadence /> }
     <dialog id="dashboard-inspector" class="dashboard-inspector" aria-labelledby="inspector-title">
@@ -67,37 +90,96 @@
 </div>
 
 @code {
-    private static readonly (string Id, string Name)[] Views = [("overview", "Overview"), ("quality", "Quality & Review"), ("benchmarks", "Benchmarks & CI"), ("cadence", "Cadence & Goals")];
-    private string Username = "", ActiveView = "overview", Search = "", LanguageFilter = "", Sort = "updated", Status = "", Error = "", InspectorStatus = "";
-    private bool Loading, Disposed;
+    private static readonly (string Id, string Name)[] Views = [("overview", "Overview"), ("repos", "Repos"), ("quality", "Quality & Review"), ("benchmarks", "Benchmarks & CI"), ("cadence", "Cadence & Goals")];
+    private string ActiveView = "overview", Search = "", LanguageFilter = "", Sort = "updated", Status = "", Error = "", InspectorStatus = "";
+    private bool Loading, Disposed, NeedsSignIn;
+    private const int PageSize = 3;
+    private int Page = 1;
     private int Revision;
     private GithubDashboardResult? Result;
     private GithubRepository? Inspected;
     private IJSObjectReference? Module;
     private IReadOnlyList<GithubRepository> Rows => Result?.Repositories ?? [];
-    private IEnumerable<GithubRepository> VisibleRows => Explore(Rows, Search, LanguageFilter, Sort);
-    protected override async Task OnInitializedAsync() { AppState.OnChange += ProfileChanged; Username = AppState.CurrentProfile?.GithubUsername ?? ""; if (!string.IsNullOrWhiteSpace(Username)) await LoadAsync(); }
-    private void ProfileChanged() => _ = InvokeAsync(async () => { if (Disposed) return; ++Revision; Result = null; Inspected = null; Error = Status = ""; Loading = false; if (Module is not null) await Module.InvokeVoidAsync("closeDashboardInspector"); Username = AppState.CurrentProfile?.GithubUsername ?? ""; if (!string.IsNullOrWhiteSpace(Username)) await LoadAsync(); StateHasChanged(); });
-    private Task LoadDeveloperAsync(string username) { Username = username; return LoadAsync(); }
-    private void SelectLanguage(string language) { LanguageFilter = LanguageFilter == language ? "" : language; ActiveView = "overview"; }
+    protected override Task OnInitializedAsync()
+    {
+        AppState.OnChange += ProfileChanged;
+        return LoadAsync();
+    }
+
+    private void ProfileChanged() => _ = InvokeAsync(async () =>
+    {
+        if (Disposed) return;
+        var loading = LoadAsync();
+        StateHasChanged();
+        await CloseInspectorAsync();
+        await loading;
+        if (!Disposed) StateHasChanged();
+    });
+
+    private void ResetPage() => Page = 1;
+    private void SelectLanguage(string language)
+    {
+        LanguageFilter = LanguageFilter == language ? "" : language;
+        ActiveView = "overview";
+        ResetPage();
+    }
+
+    private Task<GithubDashboardAnalytics>? AnalyticsRequest;
+    private GithubAnalyticsPull? RequestedReview;
+
+    private Task<GithubDashboardAnalytics> GetAnalytics(string login, string token) =>
+        AnalyticsRequest ??= Github.GetDashboardAnalyticsAsync(login, token, DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-29));
+
+    private void SelectView(string view)
+    {
+        RequestedReview = null;
+        ActiveView = view;
+    }
+
+    private void OpenReview(GithubAnalyticsPull pull)
+    {
+        RequestedReview = pull;
+        ActiveView = "quality";
+    }
+
     private async Task LoadAsync()
     {
         var revision = ++Revision;
-        Username = Username.Trim(); if (Username.StartsWith('@')) Username = Username[1..];
-        Result = null; Inspected = null; Search = LanguageFilter = Error = Status = ""; Sort = "updated"; Loading = false;
-        if (!ValidUsername(Username)) { Error = "Enter a valid GitHub username: 1–39 letters, digits or single hyphens, with no leading or trailing hyphen."; return; }
-        Loading = true; Status = "Loading public data…";
+        var profile = AppState.CurrentProfile;
+        Result = null;
+        AnalyticsRequest = null;
+        RequestedReview = null;
+        Inspected = null;
+        Search = LanguageFilter = Error = Status = "";
+        Sort = "updated";
+        ResetPage();
+        Loading = false;
+        NeedsSignIn = profile is not null && string.IsNullOrWhiteSpace(profile.AccessToken);
+        if (profile is null || NeedsSignIn) return;
+
+        Loading = true;
         try
         {
-            var result = await Github.GetPublicDashboardAsync(Username);
+            var result = await Github.GetPublicDashboardAsync(profile.GithubUsername, profile.AccessToken);
             if (Disposed || revision != Revision) return;
-            if (result.Error is { } error) { Error = error.Message + (error.RateLimitReset is { } reset ? $" Retry after {reset.ToLocalTime():g}." : ""); Status = "Could not load this developer."; }
-            else { Result = result; Status = $"Loaded {result.Repositories.Count} public repositories for {result.Developer?.Login}."; }
+            if (result.Error is { } error)
+            {
+                NeedsSignIn = error.StatusCode == System.Net.HttpStatusCode.Unauthorized;
+                Error = error.Message + (error.RateLimitReset is { } reset ? $" Retry after {reset.ToLocalTime():g}." : "");
+            }
+            else Result = result;
         }
-        catch (Exception) { if (!Disposed && revision == Revision) Error = "Could not load public GitHub data. Check your connection and retry."; }
-        finally { if (!Disposed && revision == Revision) Loading = false; }
+        catch (Exception)
+        {
+            if (!Disposed && revision == Revision) Error = "Could not load GitHub data. Check your connection and retry.";
+        }
+        finally
+        {
+            if (!Disposed && revision == Revision) Loading = false;
+        }
     }
     private async Task<IJSObjectReference> GetModuleAsync() => Module ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/appShell.js");
+    private Task InspectAnalyticsRepositoryAsync(GithubRepository repo) => InspectAsync(repo, $"analytics-repo-{repo.Id}");
     private Task InspectCityRepositoryAsync(GithubRepository repo) => InspectAsync(repo, $"city-{repo.Id}");
     private async Task InspectAsync(GithubRepository repo, string? triggerId = null) { Inspected = repo; InspectorStatus = ""; await InvokeAsync(StateHasChanged); var module = await GetModuleAsync(); await module.InvokeVoidAsync("openDashboardInspector", triggerId ?? $"inspect-{repo.Id}"); }
     private async Task CloseInspectorAsync() { if (Module is not null) await Module.InvokeVoidAsync("closeDashboardInspector"); }

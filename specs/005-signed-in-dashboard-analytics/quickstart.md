@@ -1,0 +1,3 @@
+# Quickstart
+
+Run dotnet run --project GistHub and open the printed local address. Sign in through the existing GitHub authentication flow. Home should load automatically. With more than 3 repositories, move forward and change a filter to verify the page resets. Open and close a repository and verify focus returns to the trigger. Export from the second page and verify the export includes all loaded rows. Under Analytics, exercise all three views, period and status filters, and repository inspection. Switch profiles and confirm no previous-account data remains. Run dotnet run --project GistHub.RegressionTests for the service and workflow regression suite.

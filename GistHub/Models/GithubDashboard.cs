@@ -45,3 +45,28 @@ public sealed class GithubLicense
 {
     [JsonPropertyName("spdx_id")] public string? SpdxId { get; set; }
 }
+
+public sealed record GithubDashboardAnalytics(GithubAnalyticsSearch<GithubAnalyticsCommit>? Commits, GithubAnalyticsSearch<GithubAnalyticsPull>? Pulls);
+
+public sealed record GithubAnalyticsSearch<T>(
+    [property: JsonPropertyName("total_count")] int TotalCount,
+    [property: JsonPropertyName("incomplete_results")] bool Incomplete,
+    T[] Items)
+{
+    public bool IsPartial => Incomplete || TotalCount > Items.Length;
+}
+
+public sealed record GithubAnalyticsCommit(GithubDeveloper? Author, GithubCommitMetadata? Commit);
+public sealed record GithubCommitMetadata(GithubCommitAuthor? Author);
+public sealed record GithubCommitAuthor(DateTimeOffset? Date);
+
+public sealed record GithubAnalyticsPull(
+    long Id, int Number, string Title, string State, string? Body, GithubDeveloper? User,
+    [property: JsonPropertyName("created_at")] DateTimeOffset CreatedAt,
+    [property: JsonPropertyName("html_url")] string? HtmlUrl,
+    [property: JsonPropertyName("pull_request")] GithubPullMetadata? PullRequest)
+{
+    public string Status => PullRequest?.MergedAt is not null ? "Merged" : State == "open" ? "Open" : "Closed";
+}
+
+public sealed record GithubPullMetadata([property: JsonPropertyName("merged_at")] DateTimeOffset? MergedAt);

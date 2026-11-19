@@ -54,21 +54,21 @@ static class GithubDashboardTests
         var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
         typeof(GistHub.Pages.Start).GetProperty("Github", flags)!.SetValue(page, new GithubService(new HttpClient(delayed), "https://example.test"));
         typeof(GistHub.Pages.Start).GetProperty("AppState", flags)!.SetValue(page, new AppState());
-        var usernameField = typeof(GistHub.Pages.Start).GetField("Username", flags)!;
+        var state = (AppState)typeof(GistHub.Pages.Start).GetProperty("AppState", flags)!.GetValue(page)!;
         var loadMethod = typeof(GistHub.Pages.Start).GetMethod("LoadAsync", flags)!;
         var resultField = typeof(GistHub.Pages.Start).GetField("Result", flags)!;
-        usernameField.SetValue(page, "slow");
+        state.SetProfile(new GistProfile { GithubUsername = "slow", AccessToken = "slow" });
         var slowLoad = (Task)loadMethod.Invoke(page, null)!;
-        usernameField.SetValue(page, "bob");
+        state.SetProfile(new GistProfile { GithubUsername = "bob", AccessToken = "bob" });
         await (Task)loadMethod.Invoke(page, null)!;
         delayed.Gate.SetResult(); await slowLoad;
         Check(((GithubDashboardResult)resultField.GetValue(page)!).Developer?.Login == "bob", "Late requests must not overwrite current developer.");
-        delayed.Gate = new(); usernameField.SetValue(page, "slow");
+        delayed.Gate = new(); state.SetProfile(new GistProfile { GithubUsername = "slow", AccessToken = "slow" });
         slowLoad = (Task)loadMethod.Invoke(page, null)!;
         await page.DisposeAsync(); delayed.Gate.SetResult(); await slowLoad;
         Check(resultField.GetValue(page) is null, "Disposed page must ignore late completions.");
         var profileState = new AppState();
-        profileState.SetProfile(new GistProfile { GithubUsername = "slow" });
+        profileState.SetProfile(new GistProfile { GithubUsername = "slow", AccessToken = "slow" });
         var profileHandler = new DelayedHandler();
         var services = new ServiceCollection();
         services.AddLogging(); services.AddSingleton(profileState);
@@ -77,10 +77,10 @@ static class GithubDashboardTests
         using var provider = services.BuildServiceProvider();
         await using var renderer = new HtmlRenderer(provider, provider.GetRequiredService<ILoggerFactory>());
         var root = await renderer.Dispatcher.InvokeAsync(() => renderer.BeginRenderingComponent<GistHub.Pages.Start>());
-        await renderer.Dispatcher.InvokeAsync(() => profileState.SetProfile(new GistProfile { GithubUsername = "bob" }));
+        await renderer.Dispatcher.InvokeAsync(() => profileState.SetProfile(new GistProfile { GithubUsername = "bob", AccessToken = "bob" }));
         profileHandler.Gate.SetResult(); await root.QuiescenceTask;
         var html = await renderer.Dispatcher.InvokeAsync(root.ToHtmlString);
-        Check(html.Contains("for bob") && !html.Contains("for slow"), "Profile changes must clear and invalidate old developer loads.");
+        Check(html.Contains("bob-repo") && !html.Contains("slow-repo") && !html.Contains("dashboard-username"), "Profile changes must clear and invalidate old developer loads.");
         Console.WriteLine("PASS: dashboard public requests, validation, scope, errors, summary/filter/coverage and safe export/clone.");
     }
     sealed class NoJs : IJSRuntime
@@ -93,9 +93,16 @@ static class GithubDashboardTests
         public TaskCompletionSource Gate = new();
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var username = request.RequestUri!.AbsolutePath.Split('/')[2];
-            if (username == "slow" && !request.RequestUri.AbsolutePath.EndsWith("/repos")) await Gate.Task;
-            return new(HttpStatusCode.OK) { Content = new StringContent(request.RequestUri.AbsolutePath.EndsWith("/repos") ? "[]" : JsonSerializer.Serialize(new { login = username })) };
+            var username = request.Headers.Authorization!.Parameter!;
+            var path = request.RequestUri!.AbsolutePath;
+            if (path == "/user" && username == "slow") await Gate.Task;
+            var json = path switch
+            {
+                "/user" => JsonSerializer.Serialize(new { login = username }),
+                "/search/issues" or "/search/commits" => """{"total_count":0,"items":[]}""",
+                _ => JsonSerializer.Serialize(new[] { new { id = 1, name = username + "-repo" } })
+            };
+            return new(HttpStatusCode.OK) { Content = new StringContent(json) };
         }
     }
     sealed class Handler : HttpMessageHandler

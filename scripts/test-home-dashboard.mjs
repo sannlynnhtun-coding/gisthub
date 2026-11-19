@@ -1,98 +1,103 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+
 const start = await readFile(new URL('../GistHub/Pages/Start.razor', import.meta.url), 'utf8');
-assert.ok(start.includes('Home') && !start.includes('Navigation.NavigateTo'), 'Root must render Home instead of redirecting');
+assert.ok(start.includes('@page "/"') && !start.includes('dashboard-username'));
 const nav = await readFile(new URL('../GistHub/Layout/NavMenu.razor', import.meta.url), 'utf8');
-assert.ok(nav.indexOf('new("home"') < nav.indexOf('new("my-collection"'), 'Home must precede collection');
-console.log('PASS: Home route and command ordering.');
+assert.ok(nav.indexOf('new("home"') < nav.indexOf('new("my-collection"'));
 
 export async function checkHomeDashboard({ evaluate, send, sessionId, waitFor }) {
-  await waitFor(`!!document.querySelector('[data-testid="home-dashboard"]')`, 'Home dashboard', 60000);
-  await evaluate(`(() => {
-    window.dashboardRequests = [];
-    window.dashboardOriginalFetch = window.fetch;
-    window.fetch = async (input, init) => {
-      const requestUrl = typeof input === 'string' ? input : input.url;
-      const url = new URL(requestUrl, location.href);
-      if (!url.pathname.includes('/users/')) return window.dashboardOriginalFetch(input, init);
-      dashboardRequests.push({url:url.pathname+url.search, method:init?.method ?? input.method ?? 'GET', authorization:new Headers(init?.headers ?? input.headers).get('Authorization')});
-      const username = url.pathname.split('/users/')[1].split('/')[0];
-      if (username === 'slow') await new Promise(r=>setTimeout(r,700));
-      if (username === 'offline') throw new TypeError('Offline fixture');
-      if (username === 'missing') return new Response(JSON.stringify({message:'User not found'}), {status:404});
-      if (username === 'limited') return new Response(JSON.stringify({message:'API rate limit exceeded'}), {status:429,headers:{'X-RateLimit-Reset':'1800000000'}});
-      const repos = username === 'empty' ? [] : username === 'full' ? Array.from({length:100},(_,i)=>({id:i+1,name:'repo'+i,owner:{login:username}})) : [
-        {id:1,name:'alpha',description:'<script>alert(1)</script>',language:'C#',stargazers_count:10,forks_count:2,open_issues_count:3,updated_at:'2026-01-01T00:00:00Z',html_url:'https://github.com/'+username+'/alpha',owner:{login:username},license:{spdx_id:'MIT'},topics:['tools']},
-        {id:2,name:'beta',description:'Second repository',language:'TypeScript',stargazers_count:2,forks_count:1,owner:{login:username},html_url:'javascript:alert(1)'},
-        {id:3,name:'private',private:true,stargazers_count:9000}];
-      return new Response(JSON.stringify(url.pathname.endsWith('/repos') ? repos : {login:username,name:'Developer '+username,bio:'Public fixture developer'}), {status:200,headers:{'Content-Type':'application/json'}});
+  await waitFor("!!document.querySelector('[data-testid=home-dashboard]')", 'Home dashboard', 60000);
+  await evaluate(`(() => new Promise((resolve,reject) => {
+    const open=indexedDB.open('GistHubDB',4);
+    open.onerror=()=>reject(open.error);
+    open.onsuccess=()=>{
+      const db=open.result, tx=db.transaction('profiles','readwrite');
+      tx.oncomplete=()=>{db.close();resolve(true)};
+      tx.onerror=()=>reject(tx.error);
+      tx.objectStore('profiles').put({id:'fixture',name:'Fixture',accessToken:'fixture-token',githubUsername:'fixture'});
     };
-    window.dashboardDownloads = []; window.dashboardDownloadFails = false;
-    window.dashboardOriginalClick = HTMLAnchorElement.prototype.click;
-    HTMLAnchorElement.prototype.click = function() { if (this.download) { if(window.dashboardDownloadFails) throw Error('Download fixture failure'); dashboardDownloads.push({filename:this.download,href:this.href}); return; } return dashboardOriginalClick.call(this); };
-    window.dashboardCopySuccess = false; window.copyToClipboard = async () => window.dashboardCopySuccess;
-  })()`);
-  const input = async (selector,value) => evaluate(`(() => {const e=document.querySelector(${JSON.stringify(selector)}); e.value=${JSON.stringify(value)};e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
-  const load = async username => { await input('#dashboard-username',username); await evaluate(`document.querySelector('.dashboard-load').requestSubmit()`); };
-  await load('alice');
-  await waitFor(`document.querySelector('.dashboard-status').textContent.includes('Loaded 2 public repositories for alice')`, 'fixture repositories');
-  assert.equal(await evaluate(`document.querySelectorAll('.dashboard-explorer tbody tr').length`),2);
-  assert.equal(await evaluate(`!!document.querySelector('.dashboard-explorer script')`),false);
-  assert.equal(await evaluate(`dashboardRequests.every(r=>r.method==='GET' && !r.authorization)`),true);
-  await input('#dashboard-search','ALPHA');
-  await waitFor(`document.querySelectorAll('.dashboard-explorer tbody tr').length===1`, 'filtered rows');
-  await input('#dashboard-search','not-found');
-  await waitFor(`document.querySelector('.dashboard-explorer').textContent.includes('No repositories match')`, 'no matches');
-  await input('#dashboard-search','');
-  await input('#dashboard-language','C#');
-  await waitFor(`document.querySelectorAll('.dashboard-explorer tbody tr').length===1`, 'language filter');
-  await input('#dashboard-language',''); await input('#dashboard-sort','name');
-  await evaluate(`document.querySelector('#inspect-1').focus();document.querySelector('#inspect-1').click()`);
-  await waitFor(`document.querySelector('#dashboard-inspector').open && document.querySelector('#inspector-title')?.textContent==='alpha'`, 'repository dialog');
-  await evaluate(`Array.from(document.querySelectorAll('#dashboard-inspector button')).find(e=>e.textContent.includes('Copy')).click()`);
-  await waitFor(`document.querySelector('#dashboard-inspector').textContent.includes('Could not copy')`, 'copy denial feedback');
-  await evaluate(`window.dashboardCopySuccess=true;Array.from(document.querySelectorAll('#dashboard-inspector button')).find(e=>e.textContent.includes('Copy')).click()`);
-  await waitFor(`document.querySelector('#dashboard-inspector').textContent.includes('Clone command copied')`, 'copy success feedback');
-  await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27},sessionId);
-  await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27},sessionId);
-  await waitFor(`!document.querySelector('#dashboard-inspector').open && document.activeElement.id==='inspect-1'`, 'dialog Escape/focus restore');
-  await evaluate(`document.querySelector('#dashboard-export').click()`);
-  await waitFor(`dashboardDownloads.length===1`, 'CSV download');
-  assert.equal(await evaluate(`dashboardDownloads[0].filename`),'alice-github-telemetry.csv');
-  await evaluate(`window.dashboardDownloadFails=true;document.querySelector('#dashboard-export').click()`);
-  await waitFor(`document.querySelector('[role="alert"]')?.textContent.includes('Download failed')`, 'download error feedback');
-  await evaluate(`window.dashboardDownloadFails=false`);
-  for (const view of ['Quality','Benchmarks','Cadence','Overview']) {
-    await evaluate(`Array.from(document.querySelectorAll('.dashboard-tabs button')).find(e=>e.textContent.includes(${JSON.stringify(view)})).click()`);
-    await waitFor(`document.querySelector('.dashboard-tabs .selected').textContent.includes(${JSON.stringify(view)})`,view);
-    if (view==='Benchmarks' || view==='Cadence') assert.equal(await evaluate(`document.querySelector('.dashboard').innerText.includes('Demo')`),true);
+  }))()`);
+  await send('Page.addScriptToEvaluateOnNewDocument', {source:`
+    const originalFetch=window.fetch;
+    window.dashboardRequests=[];
+    const rows=Array.from({length:23},(_,i)=>({id:i+1,name:'repo-'+String(i+1).padStart(2,'0'),language:i%2?'C#':'JavaScript',
+      stargazers_count:i,size:i+1,owner:{login:'fixture'},html_url:'https://github.com/fixture/repo-'+(i+1)}));
+    window.fetch=(input,init)=>{
+      const url=new URL(input?.url??input,location.href);
+      if(!url.pathname.includes('/_framework/') && (url.hostname==='api.github.com'||url.pathname.startsWith('/api/github/'))){
+        const resource=url.pathname.replace(/^\\/api\\/github/,'');
+        const authorization=new Headers(init?.headers??input?.headers).get('Authorization');
+        dashboardRequests.push({resource,authorization});
+        let data=[];
+        if(resource==='/user')data={login:'fixture'};
+        if(resource==='/users/fixture/repos')data=rows;
+        if(resource==='/search/commits')data={total_count:1,items:[{author:{login:'fixture'},commit:{author:{date:new Date().toISOString()}}}]};
+        if(resource==='/search/issues')data={total_count:1,items:[{id:1,number:3,title:'Review fixture',state:'open',body:'Fixture details',
+          created_at:new Date().toISOString(),user:{login:'fixture'},html_url:'https://github.com/fixture/repo-01/pull/3',pull_request:{}}]};
+        return Promise.resolve(new Response(JSON.stringify(data),{headers:{'Content-Type':'application/json'}}));
+      }
+      return originalFetch(input,init);
+    };
+  `},sessionId);
+  await send('Page.reload',{},sessionId);
+  await waitFor("document.querySelector('.gp-explorer-footer')?.textContent.includes('1–3 of 23')",'signed-in first page',60000);
+  assert.equal(await evaluate("document.querySelectorAll('.dashboard-explorer tbody tr').length"),3);
+  for (const width of [1074, 390]) {
+    await send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:false},sessionId);
+    const columns = await evaluate("Array.from(document.querySelectorAll('.overview-card-column'), column => column.getBoundingClientRect().x)");
+    assert.equal(columns.length,2);
+    assert.equal(columns[0] === columns[1],width === 390);
   }
-  for (const [username,text] of [['missing','User not found'],['limited','rate limit'],['offline','Could not load'],['empty','No public repositories'],['full','possibly incomplete']]) {
-    await load(username); await waitFor(`document.querySelector('.dashboard').innerText.includes(${JSON.stringify(text)})`,username);
+  await send('Emulation.clearDeviceMetricsOverride',{},sessionId);
+  assert.equal(await evaluate("dashboardRequests.find(r=>r.resource==='/user')?.authorization"),'Bearer fixture-token');
+  const selectButton = (scope, label) => evaluate(`Array.from(document.querySelectorAll(${JSON.stringify(scope+' button')})).find(b=>b.textContent.trim()===${JSON.stringify(label)}).click()`);
+  await selectButton('.dashboard-page-actions','Next');
+  await waitFor("document.querySelector('.gp-explorer-footer').textContent.includes('4–6 of 23')",'middle page');
+  for (let first = 7; first <= 22; first += 3) {
+    await selectButton('.dashboard-page-actions','Next');
+    await waitFor(`document.querySelector('.gp-explorer-footer').textContent.includes('${first}–${Math.min(first+2,23)} of 23')`,'repository page '+first);
   }
-  await load('slow'); await load('bob');
-  await waitFor(`document.querySelector('.dashboard-status').textContent.includes('for bob')`, 'latest load wins');
-  await evaluate(`new Promise(r=>setTimeout(r,900))`);
-  assert.equal(await evaluate(`document.querySelector('.dashboard-profile').innerText.includes('@bob')`),true);
-  const before = await evaluate('dashboardRequests.length'); await load('bad/user');
-  await waitFor(`document.querySelector('[role="alert"]')?.textContent.includes('valid GitHub username')`, 'invalid username');
-  assert.equal(await evaluate('dashboardRequests.length'),before);
-  await load('alice'); await waitFor(`document.querySelector('.dashboard-status').textContent.includes('for alice')`, 'reload fixture');
-  for (const layout of ['excel','admin']) {
-    await evaluate(`(() => { const s=document.querySelector('[aria-label="Workspace layout"]');s.value=${JSON.stringify(layout)};s.dispatchEvent(new Event('change',{bubbles:true})); })()`);
-    await waitFor(`!!document.querySelector(${JSON.stringify('.'+(layout==='excel'?'excel-workspace':'admin-portal'))})`,layout+' layout');
-    await evaluate(`document.querySelector('#workspace-tab-Home').click()`);
-    await waitFor(`!!document.querySelector('[data-command-id="home"] a')`,'Home commands');
-    assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('[data-command-id]')).slice(0,2).map(e=>e.dataset.commandId)`),['home','my-collection']);
-    assert.equal(await evaluate(`document.querySelector('[data-command-id="my-collection"] a').getAttribute('href')`),'my-gists?favorites=true');
+  assert.equal(await evaluate("document.querySelectorAll('.dashboard-explorer tbody tr').length"),2);
+  assert.equal(await evaluate("Array.from(document.querySelectorAll('.dashboard-page-actions button')).find(b=>b.textContent==='Next').disabled"),true);
+  await evaluate("(()=>{const e=document.querySelector('#dashboard-sort');e.value='stars';e.dispatchEvent(new Event('change',{bubbles:true}));})()");
+  await waitFor("document.querySelector('.gp-explorer-footer').textContent.includes('1–3 of 23') && document.querySelector('.dashboard-explorer tbody button').textContent==='repo-23'", 'sort resets paging');
+  await evaluate("document.querySelector('#inspect-23').focus();document.querySelector('#inspect-23').click()");
+  await waitFor("document.querySelector('#dashboard-inspector').open",'repository inspector');
+  await selectButton('#dashboard-inspector','Close');
+  await waitFor("!document.querySelector('#dashboard-inspector').open && document.activeElement.id==='inspect-23'", 'inspector restores focus');
+  await waitFor("document.querySelector('.dashboard-analytics').textContent.includes('Top contributors')",'analytics overview');
+  assert.equal(await evaluate("document.querySelectorAll('.analytics-day').length"),7);
+  assert.equal(await evaluate("document.querySelectorAll('.analytics-stack [data-series]').length"),1);
+  assert.equal(await evaluate("document.querySelector('.analytics-legend').textContent.trim()"),'fixture');
+  await evaluate("(()=>{const period=document.querySelector('.dashboard-analytics select');period.value='30';period.dispatchEvent(new Event('change',{bubbles:true}));})()");
+  await waitFor("document.querySelectorAll('.analytics-day').length===30",'chart period changes');
+  await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]},sessionId);
+  assert.equal(await evaluate("getComputedStyle(document.querySelector('.analytics-stack')).animationName"),'none');
+  await send('Emulation.setEmulatedMedia',{features:[]},sessionId);
+  await selectButton('[aria-label="Dashboard views"]','Repos');
+  await waitFor("!!document.querySelector('#analytics-repo-23')",'Repos view');
+  await selectButton('[aria-label="Dashboard views"]','Overview');
+  await waitFor("document.querySelector('.analytics-overview .analytics-list button')?.textContent.includes('Review fixture')",'recent pull request');
+  await evaluate("document.querySelector('.analytics-overview .analytics-list button').click()");
+  await waitFor("document.querySelector('[aria-label=\"Dashboard views\"] .selected')?.textContent==='Quality & Review'",'recent PR opens Quality & Review');
+  await waitFor("document.querySelector('.analytics-list button')?.textContent.includes('Review fixture')",'Code Review view');
+  await evaluate("document.querySelector('.analytics-list button').click()");
+  await waitFor("document.querySelector('[aria-label=\"Pull request details\"]')?.textContent.includes('Fixture details')",'PR details');
+  for (const label of ['Quality & Review','Benchmarks & CI','Cadence & Goals','Overview']) {
+    await selectButton('[aria-label="Dashboard views"]',label);
+    await waitFor(`document.querySelector('[aria-label="Dashboard views"] .selected')?.textContent===${JSON.stringify(label)}`,label);
+    if (label === 'Benchmarks & CI') {
+      await waitFor("document.querySelector('#repo-city-card button')?.id==='city-23'",'city ranks repositories by size');
+      await evaluate("document.querySelector('#city-23').focus()");
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',text:'\r',unmodifiedText:'\r',windowsVirtualKeyCode:13},sessionId);
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13},sessionId);
+      await waitFor("document.querySelector('#dashboard-inspector').open",'city opens existing inspector');
+      await selectButton('#dashboard-inspector','Close');
+      await waitFor("document.activeElement.id==='city-23'",'city restores building focus');
+    }
   }
-  for (const route of ['/my-gists','/my-gists?favorites=true','/discovery','/']) {
-    await evaluate(`(() => {const a=document.createElement('a');a.href=${JSON.stringify(route)};document.body.append(a);a.click();a.remove();})()`);
-    await waitFor(`location.pathname===${JSON.stringify(route.split('?')[0])}`,route+' navigation');
-    if(route==='/') await waitFor(`!!document.querySelector('[data-testid="home-dashboard"]')`,'Home after collection/Discovery');
-  }
-  await load('alice'); await waitFor(`document.querySelector('.dashboard-status').textContent.includes('for alice')`, 'data after navigation');
   const { checkHomeDashboardAppearance } = await import('./test-home-dashboard-appearance.mjs');
   await checkHomeDashboardAppearance({evaluate,send,sessionId,waitFor});
-  console.log('PASS: dashboard fixtures, filtering, inspection, clipboard, export, four views, failures/races and both navigation layouts.');
+  console.log('PASS: signed-in Home, repository paging, inspector focus, analytics views and top-level navigation.');
 }

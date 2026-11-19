@@ -1,0 +1,224 @@
+@using GistHub.Models
+@using static GistHub.Services.GithubDashboardSummary
+
+<section class="dashboard-analytics gitpulse-view" aria-label="@ViewLabel">
+    @if (View == "Repos")
+    {
+        <div class="analytics-heading"><div><h3>Repositories</h3><p class="analytics-context">@Scope</p></div>
+        <label class="analytics-field">Search repositories
+            <input type="search" @bind="Search" @bind:event="oninput" placeholder="Name or description" />
+        </label></div>
+        var repositories = Explore(Rows, Search, "", "updated").ToArray();
+        <div class="analytics-grid analytics-repositories">
+            @foreach (var repo in repositories)
+            {
+                <article class="bento-card analytics-card analytics-repo" @key="repo.Id">
+                    <h3><button type="button" id="@($"analytics-repo-{repo.Id}")" class="dashboard-repo" @onclick="() => RepositorySelected.InvokeAsync(repo)">@repo.Name</button></h3>
+                    <p>@(repo.Description ?? "No description")</p>
+                    <footer><span class="analytics-language">@Language(repo)</span><span title="Stars">★ @repo.Stars.ToString("N0")</span><span title="Forks">@repo.Forks.ToString("N0") forks</span></footer>
+                </article>
+            }
+        </div>
+        @if (repositories.Length == 0) { <p>No repositories match.</p> }
+    }
+    else if (View == "Code Review")
+    {
+        <h3>Review queue</h3>
+        <p class="analytics-context">Recent pull requests opened in your public repositories in the last 30 days. Up to 100 results.</p>
+        @if (Loading) { <p role="status">Loading pull requests…</p> }
+        else if (Data?.Pulls is not { } queue) { <p>Pull requests are unavailable.</p> }
+        else
+        {
+            @if (queue.IsPartial) { <p class="analytics-context">GitHub returned partial results.</p> }
+            <label class="analytics-field">Pull request status
+                <select @bind="Filter" @bind:after="ClearSelection">
+                    <option>All</option><option>Open</option><option>Merged</option><option>Closed</option>
+                </select>
+            </label>
+            var visible = queue.Items.Where(pull => Filter == "All" || pull.Status == Filter).ToArray();
+            @if (visible.Length == 0) { <p>No pull requests match.</p> }
+            <div class="analytics-review">
+                <ul class="analytics-list">
+                    @foreach (var pull in visible)
+                    {
+                        <li @key="pull.Id">
+                            <button type="button" aria-pressed="@(Selected?.Id == pull.Id)" @onclick="() => Selected = pull">
+                                <span class="analytics-pr-title">@pull.Title</span><span class="analytics-status" data-status="@pull.Status">@pull.Status</span>
+                                <small>#@pull.Number · @(pull.User?.Login ?? "Unknown author")</small>
+                            </button>
+                        </li>
+                    }
+                </ul>
+                @if (Selected is { } detail)
+                {
+                    <article class="bento-card analytics-card analytics-detail" @key="detail.Id" aria-label="Pull request details" tabindex="-1" @ref="ReviewDetails">
+                        <span class="analytics-status" data-status="@detail.Status">@detail.Status</span>
+                        <h3>@detail.Title</h3>
+                        <p class="analytics-context">#@detail.Number · @(detail.User?.Login ?? "Unknown author") · @detail.CreatedAt.ToString("yyyy-MM-dd")</p>
+                        <p class="analytics-description">@(string.IsNullOrWhiteSpace(detail.Body) ? "No description." : detail.Body)</p>
+                        @if (SafeGithubUrl(detail.HtmlUrl) is { } url)
+                        {
+                            <a class="btn btn-outline" href="@url" target="_blank" rel="noopener noreferrer">Open on GitHub ↗</a>
+                        }
+                    </article>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <div class="analytics-heading">
+            <p class="analytics-context">Your public repositories · UTC · Up to 100 commits and 100 pull requests</p>
+            <label class="analytics-field">Period
+                <select @bind="Days"><option value="7">Last 7 days</option><option value="30">Last 30 days</option></select>
+            </label>
+        </div>
+        @if (Loading) { <p role="status">Loading engineering analytics…</p> }
+        else
+        {
+            var since = Today.AddDays(1 - Days);
+            var commits = Data?.Commits?.Items.Where(commit => commit.Commit?.Author?.Date is { } date && DateOnly.FromDateTime(date.UtcDateTime) >= since).ToArray();
+            var pulls = Data?.Pulls?.Items.Where(pull => DateOnly.FromDateTime(pull.CreatedAt.UtcDateTime) >= since).ToArray();
+            var metrics = new (string Name, string Value)[]
+            {
+                ("Commits", Count(commits?.Length, Data?.Commits?.IsPartial)),
+                ("Pull requests opened", Count(pulls?.Length, Data?.Pulls?.IsPartial)),
+                ("Merged pull requests opened", Count(pulls?.Count(pull => pull.Status == "Merged"), Data?.Pulls?.IsPartial)),
+                ("Average review time", "Unavailable")
+            };
+            <div class="analytics-grid analytics-metrics" @key="Days">
+                @foreach (var metric in metrics)
+                {
+                    <div class="bento-card analytics-card analytics-metric"><h3>@metric.Name</h3><strong class="analytics-value">@metric.Value</strong></div>
+                }
+            </div>
+            @if (Data?.Commits?.IsPartial == true || Data?.Pulls?.IsPartial == true)
+            {
+                <p class="analytics-context">GitHub returned partial results. Counts and rankings reflect the returned items.</p>
+            }
+            var contributors = commits?
+                .Where(commit => !string.IsNullOrEmpty(commit.Author?.Login))
+                .GroupBy(commit => commit.Author!.Login, StringComparer.OrdinalIgnoreCase)
+                .OrderByDescending(group => group.Count()).ThenBy(group => group.Key, StringComparer.OrdinalIgnoreCase)
+                .Take(5).ToArray();
+            <div class="analytics-grid analytics-overview">
+                <article class="bento-card analytics-card">
+                    <h3>Commit activity</h3>
+                    @if (commits is null) { <p>Commit activity is unavailable.</p> }
+                    else
+                    {
+                        var daily = commits.ToLookup(commit => DateOnly.FromDateTime(commit.Commit!.Author!.Date!.Value.UtcDateTime));
+                        var peak = Math.Max(1, daily.Select(group => group.Count()).DefaultIfEmpty().Max());
+                        var leaders = contributors!.Take(3).Select(group => group.Key).ToArray();
+                        <ul class="analytics-legend" aria-label="Chart series">
+                            @for (var index = 0; index < leaders.Length; index++)
+                            {
+                                <li data-series="@index">@leaders[index]</li>
+                            }
+                            @if (commits.Any(commit => !leaders.Contains(commit.Author?.Login, StringComparer.OrdinalIgnoreCase)))
+                            {
+                                <li data-series="3">Other commits</li>
+                            }
+                        </ul>
+                        <div class="analytics-chart" @key="Days">
+                            <div class="analytics-chart-axis" aria-hidden="true"><span>@peak</span><span>0</span></div>
+                            <div class="analytics-bars" role="group" aria-label="Daily commit activity by contributor">
+                                @for (var day = since; day <= Today; day = day.AddDays(1))
+                                {
+                                    var dailyCommits = daily[day].ToArray();
+                                    var counts = leaders.Select(login => dailyCommits.Count(commit => string.Equals(commit.Author?.Login, login, StringComparison.OrdinalIgnoreCase))).ToArray();
+                                    var totals = counts.Append(dailyCommits.Length - counts.Sum()).ToArray();
+                                    var description = $"{day:MMM d}: {dailyCommits.Length} commits";
+                                    <div class="analytics-day" title="@description" role="img" aria-label="@description">
+                                        <div class="analytics-stack" style="@FormattableString.Invariant($"--height:{100d * dailyCommits.Length / peak}%")">
+                                            @for (var index = 0; index < totals.Length; index++)
+                                            {
+                                                if (totals[index] == 0) continue;
+                                                var label = index < leaders.Length ? leaders[index] : "Other commits";
+                                                <span data-series="@index" style="@($"flex-grow:{totals[index]}")" title="@($"{label}: {totals[index]}")"></span>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="analytics-chart-dates"><span>@since.ToString("MMM d")</span><span>@Today.ToString("MMM d")</span></div>
+                        </div>
+                    }
+                </article>
+                <article class="bento-card analytics-card">
+                    <h3>Top contributors</h3>
+                    @if (commits is null) { <p>Contributor data is unavailable.</p> }
+                    else
+                    {
+                        if (contributors!.Length == 0) { <p>No identified contributors in this period.</p> }
+                        else
+                        {
+                            <ol class="analytics-contributors">
+                            @foreach (var contributor in contributors)
+                            {
+                                <li>
+                                    <span>@contributor.Key</span><small>@contributor.Count() commits</small>
+                                    <progress value="@contributor.Count()" max="@commits.Length" aria-label="@($"{contributor.Key}: {contributor.Count()} of {commits.Length} commits")"></progress>
+                                </li>
+                            }
+                            </ol>
+                        }
+                    }
+                </article>
+                <article class="bento-card analytics-card">
+                    <h3>Recent pull requests</h3>
+                    @if (pulls is null) { <p>Pull requests are unavailable.</p> }
+                    else if (pulls.Length == 0) { <p>No pull requests in this period.</p> }
+                    else
+                    {
+                        <ul class="analytics-list">
+                        @foreach (var pull in pulls.Take(3))
+                        {
+                            <li><button type="button" @onclick="() => ReviewSelected.InvokeAsync(pull)"><span class="analytics-pr-title">@pull.Title</span><span class="analytics-status" data-status="@pull.Status">@pull.Status</span></button></li>
+                        }
+                        </ul>
+                    }
+                </article>
+            </div>
+        }
+    }
+</section>
+
+@code {
+    [Parameter] public string View { get; set; } = "Overview";
+    [Parameter] public Task<GithubDashboardAnalytics>? DataRequest { get; set; }
+    [Parameter] public GithubAnalyticsPull? InitialReview { get; set; }
+    [Parameter] public EventCallback<GithubAnalyticsPull> ReviewSelected { get; set; }
+    [Parameter] public IReadOnlyList<GithubRepository> Rows { get; set; } = [];
+    [Parameter] public string Scope { get; set; } = "";
+    [Parameter] public EventCallback<GithubRepository> RepositorySelected { get; set; }
+
+    private readonly DateOnly Today = DateOnly.FromDateTime(DateTime.UtcNow);
+    private string Search = "", Filter = "All";
+    private int Days = 7;
+    private bool Loading = true, FocusReview;
+    private GithubDashboardAnalytics? Data;
+    private GithubAnalyticsPull? Selected;
+    private ElementReference ReviewDetails;
+    private string ViewLabel => View == "Overview" ? "Engineering Analytics" : View;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Selected = InitialReview;
+        FocusReview = Selected is not null;
+        try { if (DataRequest is not null) Data = await DataRequest; }
+        finally { Loading = false; }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!FocusReview || Loading || Data?.Pulls is null) return;
+        FocusReview = false;
+        await ReviewDetails.FocusAsync();
+    }
+
+    private void ClearSelection() => Selected = null;
+
+    private static string Count(int? value, bool? partial) =>
+        value is null ? "Unavailable" : value.Value.ToString("N0") + (partial == true ? " sampled" : "");
+}
