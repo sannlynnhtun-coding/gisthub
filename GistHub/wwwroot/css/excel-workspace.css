@@ -93,11 +93,17 @@
 .workspace-ribbon .ribbon-setting .neo-theme-trigger__name { display: none; }
 .workspace-ribbon .ribbon-setting .neo-sound-toggle { width: 32px; height: 32px; min-height: 32px; padding: 5px !important; border: 0 !important; background: transparent !important; box-shadow: none !important; color: hsl(var(--muted-foreground)); }
 @media (max-width: 767px) {
-  .neo-main > .excel-topbar { min-height: 44px; height: auto; padding: 8px 12px !important; flex-wrap: wrap; gap: 8px; }
+  .neo-main > .excel-topbar { min-height: 44px; height: auto; padding: 4px 12px !important; flex-wrap: nowrap; gap: 8px; }
   .excel-workspace-title { display: none; }
-  .excel-topbar .neo-topbar-brand { flex: 0 1 auto !important; }
+  .excel-topbar .neo-topbar-brand { flex: 0 0 auto !important; }
   .excel-topbar .neo-topbar-brand h1 { display: none; }
-  .excel-topbar .neo-topbar-actions { flex: 0 1 auto !important; flex-wrap: wrap; gap: 4px !important; margin-inline-start: auto; }
+  .excel-topbar .neo-topbar-actions {
+    flex: 0 1 auto !important; flex-wrap: nowrap; gap: 4px !important;
+    min-width: 0; margin-inline-start: auto; padding: 4px;
+    overflow-x: auto; scrollbar-width: thin;
+  }
+  .excel-topbar .neo-topbar-actions > .workspace-layout-select { flex-shrink: 0; }
+  .excel-topbar :is(.neo-topbar-actions, .neo-backup-reminder) { position: static; }
   .workspace-tab-row { padding-inline: 8px; gap: 4px; }
   .neo-main .workspace-ribbon .workspace-commands { padding: 6px 8px; }
   .neo-main .workspace-ribbon .tool-list-entry > :is(a, button:not(.tool-help-button)) { max-width: 190px; }

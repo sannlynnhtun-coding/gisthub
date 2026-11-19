@@ -30,19 +30,23 @@ export async function checkHomeDashboardAppearance({evaluate,send,sessionId,wait
       await send('Emulation.setDeviceMetricsOverride',{width,height:850,deviceScaleFactor:1,mobile:true},sessionId);
       const shell = await evaluate(`(() => {
         const header = document.querySelector('.excel-topbar').getBoundingClientRect();
-        const controls = [...document.querySelectorAll('.neo-topbar-actions > :is(a,button,select)')];
+        const logo = document.querySelector('.excel-topbar .neo-brand-mark').getBoundingClientRect();
+        const toolbar = document.querySelector('.neo-topbar-actions');
+        const bounds = toolbar.getBoundingClientRect();
+        const controls = [...toolbar.querySelectorAll(':scope > :is(a,button,select)')];
         const pin = document.querySelector('.excel-workspace .ribbon-command [data-quick-access-toggle]');
         const command = pin?.closest('.ribbon-command').querySelector('.tool-list-entry').getBoundingClientRect();
         const target = pin?.getBoundingClientRect();
         return {
-          headerFits: controls.every(control => {
+          headerFits: logo.right <= bounds.left && bounds.right <= header.right && controls.every(control => {
             const rect = control.getBoundingClientRect();
-            return rect.bottom <= header.bottom && rect.right <= header.right && rect.left >= header.left;
+            return rect.top < logo.bottom && rect.bottom > logo.top &&
+              rect.right - bounds.left <= toolbar.scrollWidth + 1;
           }),
           pinFits: !!target && target.width >= 44 && target.height >= 44 && command.right <= target.left
         };
       })()`);
-      assert.ok(shell.headerFits,`${layout} ${width}: header controls fit`);
+      assert.ok(shell.headerFits,`${layout} ${width}: header controls share the logo row`);
       if (layout === 'excel') assert.ok(shell.pinFits,`${layout} ${width}: pin has its own touch target`);
       for (const view of ['Overview','Repos','Quality & Review','Benchmarks & CI','Cadence & Goals']) {
         await evaluate(`Array.from(document.querySelectorAll('.dashboard-toolbar nav button')).find(e=>e.textContent===${JSON.stringify(view)}).click()`);
