@@ -15,13 +15,13 @@ export function downloadBytes(filename, bytes) {
 export function registerGlobalSearchShortcut() {
     unregisterGlobalSearchShortcut();
     searchShortcutHandler = (event) => {
-        const tab = event.target.closest?.('.workspace-tabs [role="tab"]');
-        if (tab && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+        const tab = event.target.closest?.('.workspace-tabs [data-workspace-category]');
+        if (tab && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) {
             event.preventDefault();
-            const tabs = [...tab.parentElement.querySelectorAll('[role="tab"]')];
+            const tabs = [...tab.parentElement.querySelectorAll('[data-workspace-category]')];
             const index = tabs.indexOf(tab);
             const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 :
-                (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+                (index + (['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1) + tabs.length) % tabs.length;
             tabs[next].click();
             tabs[next].focus();
             return;
@@ -97,4 +97,15 @@ export function focusToolLauncher(name) {
     const label = `Open ${name}`;
     return Array.from(document.querySelectorAll('.tool-workspace button[aria-label]'))
         .some(button => button.getAttribute('aria-label') === label && tryFocus(button));
+}
+
+let dashboardInspectorTrigger;
+export function openDashboardInspector(triggerId) {
+    const dialog = document.getElementById('dashboard-inspector');
+    dashboardInspectorTrigger = document.getElementById(triggerId);
+    if (!dialog.open) dialog.showModal();
+    dialog.onclose = () => dashboardInspectorTrigger?.focus();
+}
+export function closeDashboardInspector() {
+    document.getElementById('dashboard-inspector')?.close();
 }

@@ -10,6 +10,7 @@ namespace GistHub.Services;
 public interface IGithubService
 {
     GithubApiError? LastError { get; }
+    Task<GithubDashboardResult> GetPublicDashboardAsync(string username);
     Task<List<LocalGist>> GetPublicGistsAsync(string? token = null);
     Task<List<LocalGist>> GetUserGistsAsync(string token);
     Task<bool> DeleteGistAsync(string gistId, string token);
@@ -151,6 +152,42 @@ public class GithubService : IGithubService
         }
 
         return null;
+    }
+
+    public async Task<GithubDashboardResult> GetPublicDashboardAsync(string username)
+    {
+        username = username.Trim().TrimStart('@');
+        GithubDashboardResult Failure(GithubApiError error) => new(null, [], DateTimeOffset.UtcNow, false, error);
+        if (!GithubDashboardSummary.ValidUsername(username))
+            return Failure(new(null, "Enter a valid GitHub username (1–39 letters, digits or single hyphens).", null));
+        try
+        {
+            // Dashboard requests keep their errors local; gist callers still own LastError.
+            using var userRequest = CreateGitHubRequest(HttpMethod.Get, $"/users/{Uri.EscapeDataString(username)}");
+            using var userResponse = await _http.SendAsync(userRequest);
+            if (!userResponse.IsSuccessStatusCode) return Failure(await CreateGithubApiErrorAsync(userResponse));
+            var developer = await userResponse.Content.ReadFromJsonAsync<GithubDeveloper>(JsonOptions);
+            if (developer is null || !GithubDashboardSummary.ValidUsername(developer.Login))
+                return Failure(new(null, "GitHub returned an invalid developer profile.", null));
+            // shortcut: one public page (100 rows); add pagination when full-account analytics are requested.
+            using var repoRequest = CreateGitHubRequest(HttpMethod.Get, $"/users/{Uri.EscapeDataString(username)}/repos?per_page=100&sort=updated&direction=desc");
+            using var repoResponse = await _http.SendAsync(repoRequest);
+            if (!repoResponse.IsSuccessStatusCode) return Failure(await CreateGithubApiErrorAsync(repoResponse));
+            var repositories = await repoResponse.Content.ReadFromJsonAsync<List<GithubRepository>>(JsonOptions);
+            if (repositories is null) return Failure(new(null, "GitHub returned an invalid repository list.", null));
+            var publicRows = repositories.Where(r => !r.Private).Take(100).ToArray();
+            foreach (var repo in publicRows)
+            {
+                repo.Stars = Math.Max(0, repo.Stars);
+                repo.Forks = Math.Max(0, repo.Forks);
+                repo.OpenIssues = Math.Max(0, repo.OpenIssues);
+            }
+            return new(developer, publicRows, DateTimeOffset.UtcNow, repositories.Count >= 100, null);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException or NotSupportedException)
+        {
+            return Failure(new(null, "Could not load public GitHub data. " + ex.Message, null));
+        }
     }
 
     public async Task<List<LocalGist>> GetPublicGistsAsync(string? token = null)

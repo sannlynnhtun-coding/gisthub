@@ -3,6 +3,7 @@ using GistHub.Models;
 using GistHub.Services;
 using Microsoft.AspNetCore.Components;
 
+await GithubDashboardTests.RunAsync();
 await DiagramGistTests.RunAsync();
 await EditorAppearanceTests.RunAsync();
 await QuickAccessTests.RunAsync();
@@ -277,6 +278,7 @@ static void Assert(bool condition, string message)
 sealed class ThrowingGithubService : IGithubService
 {
     public GithubApiError? LastError => null;
+    public Task<GithubDashboardResult> GetPublicDashboardAsync(string username) => throw new HttpRequestException("GitHub is unreachable.");
 
     public Task<GithubUser?> GetUserInfoAsync(string token)
         => throw new HttpRequestException("GitHub is unreachable.");
