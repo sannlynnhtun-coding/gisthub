@@ -125,9 +125,9 @@
 :root[data-interface-style="kit-obsidian"] .admin-portal .workspace-ribbon .workspace-tabs > button[aria-expanded="true"] { background: hsl(var(--muted)) !important; box-shadow: inset 0 1px 0 #ffffff1a, inset 0 0 0 1px #ffffff0f, 0 0 0 1px #0006 !important; }
 
 :root[data-interface-style] .neo-main .neo-topbar .workspace-layout-select {
-  appearance: none; max-width: 132px; min-height: 32px; padding: 5px 26px 5px 10px !important;
-  border: 1px solid hsl(var(--border)) !important; border-radius: 8px !important;
-  background-color: hsl(var(--card)) !important; color: hsl(var(--foreground)) !important;
+  appearance: none; width: 136px; max-width: 100%; min-height: 34px; padding: 5px 28px 5px 12px !important;
+  border: 1px solid hsl(var(--border)) !important; border-radius: 999px !important;
+  background-color: hsl(var(--secondary)) !important; color: hsl(var(--foreground)) !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 8px center;
   box-shadow: 0 1px 2px hsl(var(--foreground) / .05) !important;
@@ -136,6 +136,21 @@
 :root[data-interface-style] .neo-main .neo-topbar .workspace-layout-select:hover { border-color: hsl(var(--muted-foreground)) !important; }
 :root[data-interface-style] .neo-main .neo-topbar .workspace-layout-select:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
 .workspace-layout-select option { background: hsl(var(--card)); color: hsl(var(--foreground)); }
+@supports (appearance: base-select) and selector(::picker(select)) {
+  :root[data-interface-style] .neo-main .neo-topbar .workspace-layout-select {
+    appearance: base-select; background-image: none; padding-inline: 12px !important;
+  }
+  .workspace-layout-select::picker(select) {
+    appearance: base-select; margin-block-start: 6px; min-width: 160px; padding: 4px;
+    border: 1px solid hsl(var(--border)); border-radius: 12px;
+    background: hsl(var(--card)); color: hsl(var(--foreground));
+    box-shadow: 0 6px 28px hsl(var(--foreground) / .12);
+  }
+  .workspace-layout-select::picker-icon { color: hsl(var(--muted-foreground)); }
+  .workspace-layout-select option { min-height: 44px; gap: 8px; padding: 8px 10px; border-radius: 8px; }
+  .workspace-layout-select option:is(:hover, :focus-visible, :checked) { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
+  .workspace-layout-select option::checkmark { order: 1; margin-inline-start: auto; }
+}
 @media (prefers-reduced-motion: no-preference) { .portal-parent-chevron { transition: transform 320ms cubic-bezier(.22, 1, .36, 1); } }
 
 /* Workspace categories keep square corners independently of card and command geometry. */
