@@ -161,6 +161,8 @@ public class GithubService : IGithubService
         GithubDashboardResult Failure(GithubApiError error) => new(null, [], DateTimeOffset.UtcNow, false, error);
         if (!GithubDashboardSummary.ValidUsername(username))
             return Failure(new(null, "Enter a valid GitHub username (1–39 letters, digits or single hyphens).", null));
+        if (token is not null && string.IsNullOrWhiteSpace(token))
+            return Failure(new(HttpStatusCode.Unauthorized, "Connect a GitHub token to load this account.", null));
         try
         {
             // Dashboard requests keep their errors local; gist callers still own LastError.
@@ -172,24 +174,38 @@ public class GithubService : IGithubService
                 return Failure(new(null, "GitHub returned an invalid developer profile.", null));
             if (!developer.Login.Equals(username, StringComparison.OrdinalIgnoreCase))
                 return Failure(new(null, "This GitHub token does not match the selected account. Reconnect the profile.", null));
-            // shortcut: one public page (100 rows); add pagination when full-account analytics are requested.
-            using var repoRequest = CreateGitHubRequest(HttpMethod.Get, $"/users/{Uri.EscapeDataString(username)}/repos?per_page=100&sort=updated&direction=desc", token);
-            using var repoResponse = await _http.SendAsync(repoRequest);
-            if (!repoResponse.IsSuccessStatusCode) return Failure(await CreateGithubApiErrorAsync(repoResponse));
-            var repositories = await repoResponse.Content.ReadFromJsonAsync<List<GithubRepository>>(JsonOptions);
-            if (repositories is null) return Failure(new(null, "GitHub returned an invalid repository list.", null));
-            var publicRows = repositories.Where(r => !r.Private).Take(100).ToArray();
-            foreach (var repo in publicRows)
+            var repositories = new List<GithubRepository>();
+            var repositoryPath = token is null
+                ? $"/users/{Uri.EscapeDataString(username)}/repos?per_page=100&sort=updated&direction=desc"
+                : "/user/repos?visibility=all&affiliation=owner&per_page=100&sort=updated&direction=desc";
+            for (var page = 1; ; page++)
+            {
+                var path = token is null ? repositoryPath : $"{repositoryPath}&page={page}";
+                using var repoRequest = CreateGitHubRequest(HttpMethod.Get, path, token);
+                using var repoResponse = await _http.SendAsync(repoRequest);
+                if (!repoResponse.IsSuccessStatusCode) return Failure(await CreateGithubApiErrorAsync(repoResponse));
+                var batch = await repoResponse.Content.ReadFromJsonAsync<List<GithubRepository>>(JsonOptions);
+                if (batch is null) return Failure(new(null, "GitHub returned an invalid repository list.", null));
+                if (page > 1 && batch.Count == 100 && batch.All(repo => repositories.Any(previous => previous.Id == repo.Id)))
+                    return Failure(new(null, "GitHub returned a repeated repository page. Try again.", null));
+                repositories.AddRange(batch);
+                if (token is null || batch.Count < 100) break;
+            }
+            var rows = (token is null
+                ? repositories.Where(repo => !repo.Private)
+                : repositories.Where(repo => string.Equals(repo.Owner?.Login, developer.Login, StringComparison.OrdinalIgnoreCase)))
+                .DistinctBy(repo => repo.Id).ToArray();
+            foreach (var repo in rows)
             {
                 repo.Stars = Math.Max(0, repo.Stars);
                 repo.Forks = Math.Max(0, repo.Forks);
                 repo.OpenIssues = Math.Max(0, repo.OpenIssues);
             }
-            return new(developer, publicRows, DateTimeOffset.UtcNow, repositories.Count >= 100, null);
+            return new(developer, rows, DateTimeOffset.UtcNow, token is null && repositories.Count >= 100, null) { Authenticated = token is not null };
         }
         catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException or NotSupportedException)
         {
-            return Failure(new(null, "Could not load public GitHub data. " + ex.Message, null));
+            return Failure(new(null, "Could not load GitHub data. " + ex.Message, null));
         }
     }
 
@@ -198,8 +214,8 @@ public class GithubService : IGithubService
         if (!GithubDashboardSummary.ValidUsername(login) || string.IsNullOrWhiteSpace(token))
             return new(null, null);
 
-        var commits = SearchDashboardAsync<GithubAnalyticsCommit>("commits", $"user:{login} is:public author-date:>={since:yyyy-MM-dd}", "author-date", token);
-        var pulls = SearchDashboardAsync<GithubAnalyticsPull>("issues", $"user:{login} is:public is:pr created:>={since:yyyy-MM-dd}", "created", token);
+        var commits = SearchDashboardAsync<GithubAnalyticsCommit>("commits", $"user:{login} author-date:>={since:yyyy-MM-dd}", "author-date", token);
+        var pulls = SearchDashboardAsync<GithubAnalyticsPull>("issues", $"user:{login} is:pr created:>={since:yyyy-MM-dd}", "created", token);
         await Task.WhenAll(commits, pulls);
         return new(await commits, await pulls);
     }

@@ -15,7 +15,7 @@
                 <article class="bento-card analytics-card analytics-repo" @key="repo.Id">
                     <h3><button type="button" id="@($"analytics-repo-{repo.Id}")" class="dashboard-repo" @onclick="() => RepositorySelected.InvokeAsync(repo)">@repo.Name</button></h3>
                     <p>@(repo.Description ?? "No description")</p>
-                    <footer><span class="analytics-language">@Language(repo)</span><span title="Stars">★ @repo.Stars.ToString("N0")</span><span title="Forks">@repo.Forks.ToString("N0") forks</span></footer>
+                    <footer><span class="analytics-language">@Language(repo)</span>@if (repo.Private) { <span>Private</span> }<span title="Stars">★ @repo.Stars.ToString("N0")</span><span title="Forks">@repo.Forks.ToString("N0") forks</span></footer>
                 </article>
             }
         </div>
@@ -24,7 +24,7 @@
     else if (View == "Code Review")
     {
         <h3>Review queue</h3>
-        <p class="analytics-context">Recent pull requests opened in your public repositories in the last 30 days. Up to 100 results.</p>
+        <p class="analytics-context">Recent pull requests opened in repositories accessible to your GitHub token in the last 30 days. Up to 100 results.</p>
         @if (Loading) { <p role="status">Loading pull requests…</p> }
         else if (Data?.Pulls is not { } queue) { <p>Pull requests are unavailable.</p> }
         else
@@ -68,7 +68,7 @@
     else
     {
         <div class="analytics-heading">
-            <p class="analytics-context">Your public repositories · UTC · Up to 100 commits and 100 pull requests</p>
+            <p class="analytics-context">Signed-in GitHub data · UTC · Up to 100 commits and 100 pull requests</p>
             <label class="analytics-field">Period
                 <select @bind="Days"><option value="7">Last 7 days</option><option value="30">Last 30 days</option></select>
             </label>

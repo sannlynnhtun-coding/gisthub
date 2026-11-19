@@ -77,3 +77,7 @@ Show three repository rows per page. Keep filters, sort, inspection and export b
 ### Compact dashboard toolbar
 
 Replace the standalone title banner with a responsive dashboard toolbar containing the page heading, existing view tabs, and CSV export. Keep the export disabled state and data scope. Verify tab navigation and export accessibility in both workspace layouts.
+
+### Token-scoped Home data and metric icons
+
+Show the active account’s repositories that its GitHub token can read, including private repositories. Home validates the token identity, uses authenticated requests, keeps live data in the account session and never falls back to anonymous reads. Use the same repository set for the explorer, repository cards, quality summaries, city, and local CSV export. Commit and pull-request search remains bounded and reports partial coverage. Label private repositories and keep simulations explicitly labeled. Add decorative icons to the four summary cards. Verify private fixture visibility, paging, account switching, and the absence of an anonymous fallback.

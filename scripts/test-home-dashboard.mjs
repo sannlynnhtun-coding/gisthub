@@ -22,7 +22,7 @@ export async function checkHomeDashboard({ evaluate, send, sessionId, waitFor })
     const originalFetch=window.fetch;
     window.dashboardRequests=[];
     const rows=Array.from({length:23},(_,i)=>({id:i+1,name:'repo-'+String(i+1).padStart(2,'0'),language:i%2?'C#':'JavaScript',
-      stargazers_count:i,size:i+1,owner:{login:'fixture'},html_url:'https://github.com/fixture/repo-'+(i+1)}));
+      stargazers_count:i,size:i+1,private:i===0,owner:{login:'fixture'},html_url:'https://github.com/fixture/repo-'+(i+1)}));
     window.fetch=(input,init)=>{
       const url=new URL(input?.url??input,location.href);
       if(!url.pathname.includes('/_framework/') && (url.hostname==='api.github.com'||url.pathname.startsWith('/api/github/'))){
@@ -31,7 +31,7 @@ export async function checkHomeDashboard({ evaluate, send, sessionId, waitFor })
         dashboardRequests.push({resource,authorization});
         let data=[];
         if(resource==='/user')data={login:'fixture'};
-        if(resource==='/users/fixture/repos')data=rows;
+        if(resource==='/user/repos')data=rows;
         if(resource==='/search/commits')data={total_count:1,items:[{author:{login:'fixture'},commit:{author:{date:new Date().toISOString()}}}]};
         if(resource==='/search/issues')data={total_count:1,items:[{id:1,number:3,title:'Review fixture',state:'open',body:'Fixture details',
           created_at:new Date().toISOString(),user:{login:'fixture'},html_url:'https://github.com/fixture/repo-01/pull/3',pull_request:{}}]};
@@ -51,6 +51,8 @@ export async function checkHomeDashboard({ evaluate, send, sessionId, waitFor })
   }
   await send('Emulation.clearDeviceMetricsOverride',{},sessionId);
   assert.equal(await evaluate("dashboardRequests.find(r=>r.resource==='/user')?.authorization"),'Bearer fixture-token');
+  assert.equal(await evaluate("dashboardRequests.find(r=>r.resource==='/user/repos')?.authorization"),'Bearer fixture-token');
+  assert.equal(await evaluate("document.querySelector('.dashboard-explorer tbody tr').textContent.includes('Private')"),true);
   const selectButton = (scope, label) => evaluate(`Array.from(document.querySelectorAll(${JSON.stringify(scope+' button')})).find(b=>b.textContent.trim()===${JSON.stringify(label)}).click()`);
   await selectButton('.dashboard-page-actions','Next');
   await waitFor("document.querySelector('.gp-explorer-footer').textContent.includes('4–6 of 23')",'middle page');

@@ -49,6 +49,15 @@ static class GithubDashboardTests
         Check((await service.GetPublicDashboardAsync("alice")).Error is not null, "Malformed responses must fail safely.");
         handler.Malformed = false; handler.Throw = true;
         Check((await service.GetPublicDashboardAsync("alice")).Error is not null, "Network failure must return an error.");
+        var authenticated = new AuthenticatedHandler();
+        var signedIn = new GithubService(new HttpClient(authenticated), "https://example.test");
+        var account = await signedIn.GetPublicDashboardAsync("alice", "fixture-token");
+        Check(account.Error is null && account.Authenticated && account.Repositories.Count == 101 && account.Repositories.Any(repo => repo.Private), "Authenticated repository reads must include private rows and continue beyond 100.");
+        Check(authenticated.Paths.Count == 3 && authenticated.Paths[1].StartsWith("/user/repos?") && authenticated.Paths[2].EndsWith("&page=2"), "Home must use authenticated repository pagination.");
+        var analytics = await signedIn.GetDashboardAnalyticsAsync("alice", "fixture-token", new DateOnly(2026, 11, 1));
+        Check(analytics.Commits is not null && analytics.Pulls is not null && authenticated.Paths.Skip(3).All(path => !Uri.UnescapeDataString(path).Contains("is:public")), "Analytics search must use the token without excluding private repositories.");
+        var beforeMismatch = authenticated.Paths.Count;
+        Check((await signedIn.GetPublicDashboardAsync("other", "fixture-token")).Error is not null && authenticated.Paths.Count == beforeMismatch + 1, "A mismatched token must stop before fetching repository data.");
         var delayed = new DelayedHandler();
         var page = new GistHub.Pages.Start();
         var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
@@ -100,9 +109,27 @@ static class GithubDashboardTests
             {
                 "/user" => JsonSerializer.Serialize(new { login = username }),
                 "/search/issues" or "/search/commits" => """{"total_count":0,"items":[]}""",
-                _ => JsonSerializer.Serialize(new[] { new { id = 1, name = username + "-repo" } })
+                _ => JsonSerializer.Serialize(new[] { new { id = 1, name = username + "-repo", owner = new { login = username } } })
             };
             return new(HttpStatusCode.OK) { Content = new StringContent(json) };
+        }
+    }
+    sealed class AuthenticatedHandler : HttpMessageHandler
+    {
+        public List<string> Paths = [];
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            Check(request.Method == HttpMethod.Get && request.Headers.Authorization?.Parameter == "fixture-token", "Dashboard account reads must use the active token.");
+            var uri = request.RequestUri!;
+            Paths.Add(uri.PathAndQuery);
+            var json = uri.AbsolutePath switch
+            {
+                "/user" => """{"login":"alice"}""",
+                "/user/repos" => JsonSerializer.Serialize(Enumerable.Range(uri.Query.EndsWith("&page=2") ? 101 : 1, uri.Query.EndsWith("&page=2") ? 1 : 100)
+                    .Select(id => new { id, name = "repo-" + id, @private = id == 101, owner = new { login = "alice" } })),
+                _ => """{"total_count":0,"items":[]}"""
+            };
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(json) });
         }
     }
     sealed class Handler : HttpMessageHandler

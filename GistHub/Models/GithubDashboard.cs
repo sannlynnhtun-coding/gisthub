@@ -5,7 +5,8 @@ namespace GistHub.Models;
 
 public sealed record GithubDashboardResult(GithubDeveloper? Developer, IReadOnlyList<GithubRepository> Repositories, DateTimeOffset LoadedAt, bool PossiblyTruncated, GithubApiError? Error)
 {
-    public string Scope => $"{Repositories.Count} latest updated public repositories (up to 100)" + (PossiblyTruncated ? "; possibly incomplete" : "");
+    public bool Authenticated { get; init; }
+    public string Scope => Authenticated ? $"{Repositories.Count} repositories owned by your account and visible to this token" : $"{Repositories.Count} latest updated public repositories (up to 100)" + (PossiblyTruncated ? "; possibly incomplete" : "");
 }
 
 public sealed class GithubDeveloper
