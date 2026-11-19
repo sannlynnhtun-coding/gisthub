@@ -148,12 +148,16 @@ export async function checkQuickAccess({ evaluate, send, sessionId, waitFor }) {
     const oldBackup = JSON.parse(backup); delete oldBackup.preferences[key];
     await evaluate(`(async()=>await (await import('/js/localSettings.js')).restoreBackup(${JSON.stringify(JSON.stringify(oldBackup))}))()`);
     assert.deepEqual(await order(), backedUp);
+    const legacyBackup = JSON.parse(backup);
+    legacyBackup.preferences[key] = JSON.stringify([...backedUp, 'youtube-downloader']);
+    await evaluate(`(async()=>await (await import('/js/localSettings.js')).restoreBackup(${JSON.stringify(JSON.stringify(legacyBackup))}))()`);
+    assert.deepEqual(await order(), backedUp);
     for (const invalid of ['{}','["unknown"]','["sound","sound"]']) {
       const bad = JSON.parse(backup); bad.preferences[key]=invalid;
       assert.equal(await evaluate(`(async()=>{try{await (await import('/js/localSettings.js')).restoreBackup(${JSON.stringify(JSON.stringify(bad))});return false}catch{return true}})()`),true);
       assert.deepEqual(await order(), backedUp);
     }
-    await evaluate(`localStorage.setItem('${key}','["sound","unknown","sound"]')`);
+    await evaluate(`localStorage.setItem('${key}','["sound","youtube-downloader","unknown","sound"]')`);
     await reload(); await tab('QuickAccess');
     assert.deepEqual(await visible(), ['sound']);
     await evaluate(`localStorage.setItem('${key}','{')`);

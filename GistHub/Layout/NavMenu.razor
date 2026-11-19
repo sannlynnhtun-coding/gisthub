@@ -112,7 +112,6 @@
         "diagram-editor" => "Create",
         "mermaid-to-image" or "formula-to-image" => "Render & export",
         "html-to-image" or "code-image" => "Create images",
-        "youtube-downloader" => "Download",
         _ => "Workspace preferences"
     };
 
@@ -144,7 +143,6 @@
         new("formula-to-image", "Formula to Image", "Diagrams"),
         new("html-to-image", "HTML to Image", "Media"),
         new("code-image", "Markdown + Code Converter", "Media"),
-        new("youtube-downloader", "YouTube Downloader", "Media"),
         new("local-settings", "Local settings", "View"),
         new("appearance", "Appearance", "View"),
         new("sound", "Sound", "View"),
@@ -173,12 +171,10 @@
     private bool Loaded, Saving;
     private string Status = "";
     private string? DraggedId, DropTarget, FocusAfterRemove;
-    private bool Available(RibbonCommand command) => command.Id != "youtube-downloader" || !IsVercelApp;
-    private List<RibbonCommand> VisibleQuickCommands => QuickIds.Select(id => Commands.First(c => c.Id == id)).Where(Available).ToList();
+    private List<RibbonCommand> VisibleQuickCommands => QuickIds.Select(id => Commands.First(c => c.Id == id)).ToList();
     private IEnumerable<RibbonCommand> DisplayedCommands => SelectedTab == "Quick Access"
-        ? VisibleQuickCommands : Commands.Where(c => c.Tab == SelectedTab && Available(c));
+        ? VisibleQuickCommands : Commands.Where(c => c.Tab == SelectedTab);
     [Parameter] public EventCallback<(string Name, ElementReference Trigger)> OnOpenWorkbenchTool { get; set; }
-    [Parameter] public bool IsVercelApp { get; set; }
     [Parameter] public EventCallback OnToggleSidebar { get; set; }
     [Parameter] public bool IsSidebarCollapsed { get; set; }
     public ValueTask FocusToolsAsync() => TabButtons["Tools"].FocusAsync();
@@ -426,12 +422,6 @@
                             <svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#code"/></svg>
                             <span>Markdown + Code Converter</span>
                         </button><ToolHelp Name="Markdown + Code Converter" />
-                break;
-            case "youtube-downloader":
-                <button type="button" @ref='ToolTriggers["YouTube Downloader"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("YouTube Downloader", ToolTriggers["YouTube Downloader"]))' class="ribbon-tool" title="YouTube Downloader" data-testid='@(SelectedTab == "Quick Access" ? "quick-youtube-downloader-menu-item" : "youtube-downloader-menu-item")'>
-                                <svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#image"/></svg>
-                                <span>YouTube Downloader</span>
-                            </button><ToolHelp Name="YouTube Downloader" />
                 break;
             case "local-settings":
                 <button type="button" @ref='ToolTriggers["Local settings"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Local settings", ToolTriggers["Local settings"]))'><svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#settings"/></svg><span>Local settings</span></button><ToolHelp Name="Local settings" />

@@ -8,7 +8,7 @@ Choose **Excel** or **Admin portal** from **Workspace layout** in the header. Th
 
 The Flutter Web and Android client is included in [GistHub.Flutter](GistHub.Flutter/README.md).
 It shares this repository and has its own [build/release workflow](.github/workflows/flutter.yml).
-The Flutter client excludes Diagram Editor and YouTube Downloader. Android APKs
+The Flutter client excludes Diagram Editor. Android APKs
 are published under [GitHub Releases](https://github.com/sannlynnhtun-coding/gisthub/releases).
 
 The app supports two complementary workflows:
@@ -82,35 +82,6 @@ Run storage and bridge regressions against a running local app:
 ```powershell
 node scripts/run-diagram-tests.mjs http://localhost:5180
 ```
-
-## Local YouTube downloader (Windows)
-
-Double-click **Start-LocalDownloader.cmd** in the repository root. The launcher installs portable yt-dlp and FFmpeg tools into the ignored `.local-tools` folder, verifies their published SHA-256 checksums, publishes GistHub and its local ASP.NET Core service, and opens **http://localhost:5188/tools/youtube-downloader**. The first launch downloads the tools and takes longer. It requires the .NET 10 SDK, Node.js 22 or later, npm, and an internet connection.
-
-You can also open **Tools → YouTube Downloader** in that local GistHub window. Paste a YouTube watch, Shorts, or youtu.be link, choose **Find downloads**, switch between Video and Audio, then download a listed format. Video-only streams are merged with compatible audio. Audio supports native M4A/WebM and MP3 conversion. The UI shows actual available formats; `≈` marks estimated sizes and unknown sizes remain unknown. Downloads can be cancelled. A completed file downloads automatically, with a **Save file again** fallback.
-
-Keep the launcher running while using the tool. Closing it stops the service. The service listens only on IPv4 loopback port 5188 and accepts browser API writes only from its own origin. It does not connect the hosted website to your local machine. The local URL has its own browser storage: connect GitHub there to use your gist library, and transfer bookmarks with JSON backup/restore if needed.
-
-Temporary files are stored under `%LOCALAPPDATA%\GistHub\Downloader`. Completed files and previews expire after one hour and are cleaned up on subsequent inspect/download requests. Live/upcoming videos and playlists are not supported. Jobs time out after 30 minutes, and individual source downloads are limited to 2 GB. YouTube restrictions, unavailable media, or extractor changes can cause errors; they appear in the tool. Update the portable dependencies when needed:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-downloader-tools.ps1 -Update
-```
-
-For subsequent launches without rebuilding:
-
-```powershell
-.\Start-LocalDownloader.cmd -NoBuild
-```
-
-Downloader tests use deterministic child processes and do not require YouTube access:
-
-```powershell
-dotnet run --project GistHub.LocalDownloader.Tests
-dotnet run --project GistHub.RegressionTests
-```
-
-Dependency references: [yt-dlp usage and dependencies](https://github.com/yt-dlp/yt-dlp#usage-and-options), [FFmpeg Windows builds](https://www.gyan.dev/ffmpeg/builds/). Portable third-party binaries are downloaded locally rather than committed or redistributed.
 
 ## Tech stack
 

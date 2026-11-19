@@ -1,6 +1,4 @@
 <Solution>
-  <Project Path="GistHub.LocalDownloader.Tests/GistHub.LocalDownloader.Tests.csproj" />
-  <Project Path="GistHub.LocalDownloader/GistHub.LocalDownloader.csproj" />
   <Project Path="GistHub.RegressionTests/GistHub.RegressionTests.csproj" />
   <Project Path="GistHub/GistHub.csproj" />
 </Solution>

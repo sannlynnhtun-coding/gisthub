@@ -70,7 +70,7 @@
             </div>
         </header>
         <SectionOutlet SectionName="backup-reminder-error" />
-        <NavMenu @ref="WorkspaceNavigation" OnOpenWorkbenchTool="OpenWorkbenchTool" OnToggleSidebar="ToggleSidebar" IsAdminPortal="IsAdminPortal" IsSidebarCollapsed="@(IsAdminPortal && IsSidebarCollapsed)" IsVercelApp="IsVercelApp" />
+        <NavMenu @ref="WorkspaceNavigation" OnOpenWorkbenchTool="OpenWorkbenchTool" OnToggleSidebar="ToggleSidebar" IsAdminPortal="IsAdminPortal" IsSidebarCollapsed="@(IsAdminPortal && IsSidebarCollapsed)" />
         @if (WorkspaceLayoutError is not null) { <p role="status" class="workspace-layout-error">@WorkspaceLayoutError</p> }
 
         <div class="neo-canvas flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar @(IsToolWorkspaceVisible ? "neo-canvas--tool" : "")">
@@ -160,8 +160,6 @@
     }
     private bool ProfileLoadFailed;
     private bool AreFilesBlurred { get; set; }
-    private bool IsVercelApp => new Uri(Navigation.BaseUri).Host is var host &&
-        (host.Equals("vercel.app", StringComparison.OrdinalIgnoreCase) || host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase));
     private bool IsGlobalSearchOpen { get; set; }
     private bool IsSearchShortcutReady { get; set; }
     private bool IsJsonParserOpen { get; set; }

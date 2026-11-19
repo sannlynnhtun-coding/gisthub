@@ -44,7 +44,7 @@ function parseBackup(json) {
         if (key === 'gisthub:workspace-layout') {
             if (!['excel', 'admin'].includes(value)) throw new Error('Invalid workspace layout.');
         } else if (key === 'gisthub:quick-access') {
-            validateQuickAccess(value);
+            backup.preferences[key] = JSON.stringify(validateQuickAccess(value));
         } else if (key === 'gisthub:markdown-cards-draft') {
             if (new TextEncoder().encode(value).length > 128 * 1024) throw new Error('The Markdown Cards draft is too large.');
         } else if (['theme', 'gisthub:theme-choice', 'gisthub:interface-style', 'gisthub:font'].includes(key)) {

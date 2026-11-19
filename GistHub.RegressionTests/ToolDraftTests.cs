@@ -23,7 +23,6 @@ internal static class ToolDraftTests
             (typeof(GistHub.Pages.FormulaToImage), "Source", "x^2"),
             (typeof(GistHub.Pages.HtmlToImage), "Source", "<h1>Draft</h1>"),
             (typeof(GistHub.Pages.AgentSkills), "Search", "markdown"),
-            (typeof(GistHub.Pages.YouTubeDownloader), "Url", "https://www.youtube.com/watch?v=draft")
         };
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
         foreach (var (type, field, value) in cases)

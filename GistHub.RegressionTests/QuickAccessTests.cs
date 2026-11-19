@@ -17,23 +17,21 @@ static class QuickAccessTests
         Set(menu, "Module", storage);
         Set(menu, "Loaded", true);
         Set(menu, "SelectedTab", "Quick Access");
-        typeof(NavMenu).GetProperty("IsVercelApp")!.SetValue(menu, true);
-        Set(menu, "QuickIds", new List<string> { "sound", "youtube-downloader", "json-parser", "appearance" });
+        Set(menu, "QuickIds", new List<string> { "sound", "json-parser", "appearance" });
         var visible = (System.Collections.IEnumerable)typeof(NavMenu).GetProperty("VisibleQuickCommands", Private)!.GetValue(menu)!;
         var ids = visible.Cast<object>().Select(c => (string)c.GetType().GetProperty("Id")!.GetValue(c)!).ToArray();
-        Check(ids.SequenceEqual(new[] { "sound", "json-parser", "appearance" }), "Unavailable downloader must stay hidden when pinned.");
+        Check(ids.SequenceEqual(new[] { "sound", "json-parser", "appearance" }), "Quick Access must show commands in saved order.");
         await Invoke(menu, "MoveAsync", "appearance", -1);
-        Check(Order(menu).SequenceEqual(new[] { "sound", "youtube-downloader", "appearance", "json-parser" }), "Visible reorder must preserve dormant membership.");
+        Check(Order(menu).SequenceEqual(new[] { "sound", "appearance", "json-parser" }), "Reorder must update the saved order.");
         Check(storage.Writes == 1, "Reorder must save once.");
-        await Invoke(menu, "ReorderAsync", "youtube-downloader", "sound", false);
         await Invoke(menu, "ReorderAsync", "sound", "sound", false);
         await Invoke(menu, "ReorderAsync", "unknown", "sound", false);
-        Check(storage.Writes == 1, "Hidden, invalid and self drops must not write.");
+        Check(storage.Writes == 1, "Invalid and self drops must not write.");
         storage.Fail = true;
         await Invoke(menu, "MoveAsync", "json-parser", -1);
-        Check(Order(menu).SequenceEqual(new[] { "sound", "youtube-downloader", "appearance", "json-parser" }), "Failed saves must retain the previous order.");
+        Check(Order(menu).SequenceEqual(new[] { "sound", "appearance", "json-parser" }), "Failed saves must retain the previous order.");
         Check(((string)typeof(NavMenu).GetField("Status", Private)!.GetValue(menu)!).Contains("could not be saved"), "Failed saves must be visible.");
-        Console.WriteLine("PASS: Quick Access hides unavailable commands, preserves dormant membership, ignores invalid drops and retains order on failed saves.");
+        Console.WriteLine("PASS: Quick Access preserves saved order, ignores invalid drops and retains order on failed saves.");
     }
 
     private sealed class PreferenceModule : IJSObjectReference

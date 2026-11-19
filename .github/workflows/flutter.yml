@@ -99,7 +99,7 @@ jobs:
             const tag = context.ref.replace('refs/tags/', '');
             const release = await github.rest.repos.createRelease({
               ...context.repo, tag_name: tag, name: `GistHub Flutter ${tag}`,
-              body: 'Flutter Web + Android build verified in GitHub Actions. YouTube Downloader is excluded. This APK uses development signing and is intended for testing, not Google Play publishing.'
+              body: 'Flutter Web + Android build verified in GitHub Actions. This APK uses development signing and is intended for testing, not Google Play publishing.'
             });
             const data = fs.readFileSync('release/app-release.apk');
             await github.rest.repos.uploadReleaseAsset({

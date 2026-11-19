@@ -43,8 +43,7 @@ Flutter Web and Android client for the GistHub app. This client lives in `GistHu
   previously visited offline assets. GitHub operations still require internet.
 - Trending retains the original Coming Soon state.
 
-Diagram Editor and YouTube Downloader are deliberately excluded. The existing Blazor Diagram Editor
-and its local drafts are unchanged.
+Diagram Editor is available in the Blazor app, which stores its drafts locally.
 
 ## Develop and verify
 

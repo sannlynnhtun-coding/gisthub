@@ -176,7 +176,6 @@ export async function checkToolWorkspaces({evaluate,send,sessionId,waitFor}) {
   await waitFor(`!!document.querySelector('.diagram-frame') && Array.from(document.querySelectorAll('.tool-workspace button')).some(button => button.textContent.trim() === 'New' && !button.disabled)`, 'reopened diagram library ready');
   assert.equal(await evaluate(`window.popupDiagramHost === document.querySelector('.diagram-frame')`),false,'diagram host is recreated');
   await close();
-  await open('Media','youtube-downloader-menu-item','YouTube Downloader'); await close();
   await evaluate(`document.querySelector('#workspace-tab-View').click()`);
   await evaluate(`document.querySelector('.workspace-command-group button').click()`);
   await opened('Local settings'); await close();
