@@ -109,7 +109,7 @@
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-ui);
-    font-weight: 700 !important;
+    font-weight: 700;
     letter-spacing: -0.025em;
     line-height: 1.35;
   }
@@ -118,6 +118,7 @@
     color: var(--neo-on-accent);
     background: var(--neo-pink);
   }
+  :root:not([data-interface-style="gitpulse"]) :is(h1,h2,h3,h4,h5,h6) { font-weight:700!important; }
 }
 
 @layer components {
@@ -1662,18 +1663,18 @@
 .neo-content [class~="bg-accent"] { color: hsl(var(--accent-foreground)) !important; }
 .neo-content [class~="bg-destructive"] { color: hsl(var(--destructive-foreground)) !important; }
 
-.nav-item:hover svg,
-.nav-item.active svg {
+:root:not([data-interface-style="gitpulse"]) .nav-item:hover svg,
+:root:not([data-interface-style="gitpulse"]) .nav-item.active svg {
   color: var(--neo-on-accent) !important;
 }
 
-.neo-profile-card {
+:root:not([data-interface-style="gitpulse"]) .neo-profile-card {
   color: var(--neo-on-accent) !important;
   background: var(--neo-cyan) !important;
 }
 
-.neo-profile-card span,
-.neo-profile-card svg {
+:root:not([data-interface-style="gitpulse"]) .neo-profile-card span,
+:root:not([data-interface-style="gitpulse"]) .neo-profile-card svg {
   color: var(--neo-on-accent) !important;
 }
 
@@ -1701,30 +1702,30 @@
 .neo-gist-card button { color: hsl(var(--foreground)); }
 
 /* Shared surfaces used by every route. */
-.neo-content [class~="rounded-xl"][class~="border"],
-.neo-content [class~="rounded-2xl"][class~="border"],
-[class~="fixed"][class~="inset-0"] [class~="rounded-xl"][class~="border"] {
+:root:not([data-interface-style="gitpulse"]) .neo-content [class~="rounded-xl"][class~="border"],
+:root:not([data-interface-style="gitpulse"]) .neo-content [class~="rounded-2xl"][class~="border"],
+:root:not([data-interface-style="gitpulse"]) [class~="fixed"][class~="inset-0"] [class~="rounded-xl"][class~="border"] {
   border-width: 2px !important;
   border-color: hsl(var(--border)) !important;
   box-shadow: 5px 5px 0 var(--neo-shadow);
 }
 
-[class~="backdrop-blur-sm"] {
+:root:not([data-interface-style="gitpulse"]) [class~="backdrop-blur-sm"] {
   backdrop-filter: none !important;
 }
 
-.neo-content [class~="border-dashed"] {
+:root:not([data-interface-style="gitpulse"]) .neo-content [class~="border-dashed"] {
   border-style: solid !important;
   background: hsl(var(--card)) !important;
 }
 
-.neo-content [class~="bg-card"][class~="border"] {
+:root:not([data-interface-style="gitpulse"]) .neo-content [class~="bg-card"][class~="border"] {
   border-color: hsl(var(--border)) !important;
 }
 
-input:not([type="checkbox"]):not([type="radio"]):not([class~="border-none"]):not([class~="bg-transparent"]),
-textarea:not([class~="bg-transparent"]),
-select {
+:root:not([data-interface-style="gitpulse"]) input:not([type="checkbox"]):not([type="radio"]):not([class~="border-none"]):not([class~="bg-transparent"]),
+:root:not([data-interface-style="gitpulse"]) textarea:not([class~="bg-transparent"]),
+:root:not([data-interface-style="gitpulse"]) select {
   color: hsl(var(--foreground));
   background: hsl(var(--card)) !important;
   border: 2px solid hsl(var(--border)) !important;
@@ -1732,30 +1733,30 @@ select {
   box-shadow: 3px 3px 0 var(--neo-shadow);
 }
 
-input::placeholder,
-textarea::placeholder {
+:root:not([data-interface-style="gitpulse"]) input::placeholder,
+:root:not([data-interface-style="gitpulse"]) textarea::placeholder {
   color: hsl(var(--muted-foreground)) !important;
   opacity: 1 !important;
 }
 
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
-button:focus-visible,
-a:focus-visible {
+:root:not([data-interface-style="gitpulse"]) input:focus-visible,
+:root:not([data-interface-style="gitpulse"]) textarea:focus-visible,
+:root:not([data-interface-style="gitpulse"]) select:focus-visible,
+:root:not([data-interface-style="gitpulse"]) button:focus-visible,
+:root:not([data-interface-style="gitpulse"]) a:focus-visible {
   outline: 3px solid var(--neo-purple) !important;
   outline-offset: 3px !important;
   --tw-ring-shadow: none !important;
 }
 
-input[type="checkbox"] {
+:root:not([data-interface-style="gitpulse"]) input[type="checkbox"] {
   color: var(--neo-purple);
   border: 2px solid hsl(var(--border));
   border-radius: 0.15rem;
 }
 
-span[class~="rounded-full"][class~="border"],
-span[class~="rounded-md"][class~="border"] {
+:root:not([data-interface-style="gitpulse"]) span[class~="rounded-full"][class~="border"],
+:root:not([data-interface-style="gitpulse"]) span[class~="rounded-md"][class~="border"] {
   color: var(--neo-on-accent) !important;
   background: var(--neo-cyan) !important;
   border-width: 2px !important;
@@ -1763,21 +1764,21 @@ span[class~="rounded-md"][class~="border"] {
   border-radius: 0.25rem !important;
 }
 
-[class~="bg-[#FBF3DB]"] { background-color: var(--neo-yellow) !important; }
-[class~="bg-[#FDEBEC]"] { background-color: var(--neo-red) !important; }
-[class~="bg-[#EDF3EC]"] { background-color: var(--neo-green) !important; }
-[class~="bg-[#E1F3FE]"] { background-color: var(--neo-cyan) !important; }
-[class*="text-[#956400]"],
-[class*="text-[#9F2F2D]"],
-[class*="text-[#346538]"],
-[class*="text-[#1F6C9F]"] { color: var(--neo-on-accent) !important; }
+:root:not([data-interface-style="gitpulse"]) [class~="bg-[#FBF3DB]"] { background-color: var(--neo-yellow) !important; }
+:root:not([data-interface-style="gitpulse"]) [class~="bg-[#FDEBEC]"] { background-color: var(--neo-red) !important; }
+:root:not([data-interface-style="gitpulse"]) [class~="bg-[#EDF3EC]"] { background-color: var(--neo-green) !important; }
+:root:not([data-interface-style="gitpulse"]) [class~="bg-[#E1F3FE]"] { background-color: var(--neo-cyan) !important; }
+:root:not([data-interface-style="gitpulse"]) [class*="text-[#956400]"],
+:root:not([data-interface-style="gitpulse"]) [class*="text-[#9F2F2D]"],
+:root:not([data-interface-style="gitpulse"]) [class*="text-[#346538]"],
+:root:not([data-interface-style="gitpulse"]) [class*="text-[#1F6C9F]"] { color: var(--neo-on-accent) !important; }
 
-.neo-content [class~="bg-[#111111]"] {
+:root:not([data-interface-style="gitpulse"]) .neo-content [class~="bg-[#111111]"] {
   border-color: hsl(var(--border)) !important;
   box-shadow: 6px 6px 0 var(--neo-purple) !important;
 }
 
-.neo-content [class~="animate-pulse"][class~="bg-muted"] {
+:root:not([data-interface-style="gitpulse"]) .neo-content [class~="animate-pulse"][class~="bg-muted"] {
   background: var(--neo-yellow) !important;
 }
 
@@ -1902,17 +1903,17 @@ span[class~="rounded-md"][class~="border"] {
 .neo-coming-card:nth-child(4n + 3) { background: var(--neo-pink) !important; }
 .neo-coming-card:nth-child(4n + 4) { background: var(--neo-green) !important; }
 
-.neo-login-screen,
-.neo-not-found {
+:root:not([data-interface-style="gitpulse"]) .neo-login-screen,
+:root:not([data-interface-style="gitpulse"]) .neo-not-found {
   background-color: hsl(var(--background));
   background-image: radial-gradient(hsl(var(--foreground) / var(--neo-grid-opacity)) 1px, transparent 1px);
   background-size: 18px 18px;
 }
 
-.neo-login-screen::before,
-.neo-login-screen::after,
-.neo-not-found::before,
-.neo-not-found::after {
+:root:not([data-interface-style="gitpulse"]) .neo-login-screen::before,
+:root:not([data-interface-style="gitpulse"]) .neo-login-screen::after,
+:root:not([data-interface-style="gitpulse"]) .neo-not-found::before,
+:root:not([data-interface-style="gitpulse"]) .neo-not-found::after {
   content: "";
   position: absolute;
   width: 11rem;
@@ -1921,35 +1922,35 @@ span[class~="rounded-md"][class~="border"] {
   z-index: 0;
 }
 
-.neo-login-screen::before,
-.neo-not-found::before {
+:root:not([data-interface-style="gitpulse"]) .neo-login-screen::before,
+:root:not([data-interface-style="gitpulse"]) .neo-not-found::before {
   top: 7%;
   left: 6%;
   background: var(--neo-pink);
   border-radius: 50%;
 }
 
-.neo-login-screen::after,
-.neo-not-found::after {
+:root:not([data-interface-style="gitpulse"]) .neo-login-screen::after,
+:root:not([data-interface-style="gitpulse"]) .neo-not-found::after {
   right: 5%;
   bottom: 8%;
   background: var(--neo-purple);
   transform: rotate(12deg);
 }
 
-.neo-login-screen > :not(.fixed),
-.neo-not-found > :not(.fixed) {
+:root:not([data-interface-style="gitpulse"]) .neo-login-screen > :not(.fixed),
+:root:not([data-interface-style="gitpulse"]) .neo-not-found > :not(.fixed) {
   position: relative;
   z-index: 1;
 }
 
-.neo-login-screen [class~="max-w-md"] > [class~="bg-card"] {
+:root:not([data-interface-style="gitpulse"]) .neo-login-screen [class~="max-w-md"] > [class~="bg-card"] {
   border-width: 3px !important;
   border-color: hsl(var(--border)) !important;
   box-shadow: 8px 8px 0 var(--neo-shadow);
 }
 
-.neo-404 {
+:root:not([data-interface-style="gitpulse"]) .neo-404 {
   color: var(--neo-yellow) !important;
   opacity: 1 !important;
   -webkit-text-stroke: 4px hsl(var(--border));
@@ -1957,13 +1958,13 @@ span[class~="rounded-md"][class~="border"] {
 }
 
 @media (max-width: 767px) {
-  .neo-topbar {
+  :root:not([data-interface-style="gitpulse"]) .neo-topbar {
     min-height: 4rem;
     padding-left: 1rem !important;
     padding-right: 1rem !important;
   }
 
-  .neo-canvas {
+  :root:not([data-interface-style="gitpulse"]) .neo-canvas {
     padding: 1.25rem 1rem 7rem !important;
   }
 

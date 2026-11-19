@@ -39,3 +39,8 @@ Run existing .NET/Node and separate Home/profile/settings/Quick Access suites. E
 ## Boundaries
 
 Only square tabs, truthful labels and preserved additional controls are approved differences. The default shell itself is not exempt. Accessibility corrections are individually recorded. No new packages, data collection or remote calls. Planning ends here.
+
+## Site-wide follow-up — 2026-11-19
+
+User requests the HTML appearance throughout the website. Correct shared cascade conflicts at their source: legacy input/badge/profile/ornament rules and generic interface geometry must not apply to GitPulse. Define shared reference forms, surfaces, headings, menus and dialogs under GitPulse; preserve page layouts/actions, independent saved appearances and accessible targets. Verify representative routes in dark/light and mobile, including shared tool surfaces. No data/behavior changes.
+

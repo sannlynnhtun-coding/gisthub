@@ -198,6 +198,10 @@ try {
   await delay(waitMs);
 
   const verificationFailures = [];
+  if (process.env.BROWSER_CHECK_GITPULSE_GLOBAL === "1") {
+    const { checkGitPulseGlobal } = await import('./test-gitpulse-global.mjs');
+    await checkGitPulseGlobal({ evaluate, send, sessionId, waitFor });
+  }
   if (process.env.BROWSER_CHECK_GITPULSE === "1") {
     const { checkGitPulseAppearance } = await import('./test-gitpulse-appearance.mjs');
     await checkGitPulseAppearance({ evaluate, send, sessionId, waitFor });

@@ -134,3 +134,40 @@
 :root[data-interface-style="gitpulse"] .excel-topbar .neo-topbar-brand .neo-brand-mark { width:40px!important; height:40px!important; border-radius:0!important; }
 @media(max-width:767px) { :root[data-interface-style="gitpulse"] .excel-workspace .workspace-tab-row { padding-inline:12px; } }
 @media(max-width:639px) { :root[data-interface-style="gitpulse"] .gitpulse-view .gp-explorer-header .dashboard-filters label:first-child { max-width:none; } }
+
+/* Shared reference components on every route. Legacy ornamental rules exclude GitPulse. */
+:root[data-interface-style="gitpulse"] { --neo-grid-opacity:0; --neo-canvas-grid-opacity:0; }
+:root[data-interface-style="gitpulse"] body { font-size:14px; line-height:1.5; }
+:root[data-interface-style="gitpulse"] :is(h1,h2,h3,h4,h5,h6) { letter-spacing:normal; line-height:1.5; }
+:root[data-interface-style="gitpulse"] :is(.neo-decor,.neo-login-screen::before,.neo-login-screen::after,.neo-not-found::before,.neo-not-found::after) { display:none!important; }
+:root[data-interface-style="gitpulse"] :is(.neo-login-screen,.neo-not-found) { background:hsl(var(--background)); background-image:none; }
+:root[data-interface-style="gitpulse"] .neo-brand-mark { background:transparent; }
+:root[data-interface-style="gitpulse"] .neo-content { width:100%; max-width:1440px; }
+:root[data-interface-style="gitpulse"] :is(.neo-page-heading h1,.compact-tool-page>.tool-heading-inline h2,.compact-tool-page>div>.tool-heading-inline h2) { font-size:24px; font-weight:700!important; line-height:1.25; }
+:root[data-interface-style="gitpulse"] .neo-page-heading { border-bottom:0!important; }
+:root[data-interface-style="gitpulse"] :is(.neo-profile-card,.neo-gist-card,.neo-code-window,.bg-card.border,.neo-coming-card) { background:hsl(var(--card))!important; color:hsl(var(--foreground))!important; border:1px solid hsl(var(--border))!important; border-radius:24px!important; box-shadow:none!important; }
+:root[data-interface-style="gitpulse"] .neo-profile-card :is(span,svg) { color:inherit; }
+:root[data-interface-style="gitpulse"] .neo-gist-card::before { display:none; }
+:root[data-interface-style="gitpulse"] .neo-gist-card:hover { transform:none; border-color:rgba(99,102,241,.28)!important; box-shadow:none!important; }
+:root[data-interface-style="gitpulse"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),select,textarea) { border:1px solid hsl(var(--border)); box-shadow:none; }
+:root[data-interface-style="gitpulse"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),select) { border-radius:9999px; }
+:root[data-interface-style="gitpulse"] textarea { border-radius:18px; padding:12px 16px; }
+:root[data-interface-style="gitpulse"] :is(input[type="checkbox"],input[type="radio"]) { accent-color:#6366f1; color:#6366f1; border:1px solid hsl(var(--border)); }
+:root[data-interface-style="gitpulse"] .btn { border:1px solid hsl(var(--border)); font-size:12px; line-height:1.5; font-weight:600; }
+:root[data-interface-style="gitpulse"] .btn-primary { color:#0e0f12; background:#fff; font-weight:700; }
+:root[data-interface-style="gitpulse"] :is(.btn-secondary,.btn-outline) { background:hsl(var(--secondary)); color:hsl(var(--foreground)); }
+:root[data-interface-style="gitpulse"] .btn-ghost { background:transparent; }
+:root[data-interface-style="gitpulse"] .btn:hover:not(:disabled) { filter:brightness(1.08); }
+:root[data-interface-style="gitpulse"] :is(.neo-toolbar-menu__panel,.neo-theme-panel,.global-search-dialog,.tool-workspace,.neo-editor-shell,dialog) { background:hsl(var(--card)); color:hsl(var(--foreground)); border:1px solid hsl(var(--border)); box-shadow:0 20px 60px #0003; border-radius:18px; }
+:root[data-interface-style="gitpulse"] :is(.neo-toolbar-menu-item,.neo-theme-panel button,.global-search-result,.tool-workspace__header,.neo-code-window-bar) { text-transform:none; letter-spacing:normal; box-shadow:none; }
+:root[data-interface-style="gitpulse"] :is(.neo-toolbar-menu-item,.global-search-result):hover { background:hsl(var(--secondary)); transform:none; }
+:root[data-interface-style="gitpulse"] :is(.neo-code-preview,.neo-editor-input) { background:hsl(var(--background))!important; color:hsl(var(--foreground)); border:1px solid hsl(var(--border))!important; box-shadow:none!important; }
+:root[data-interface-style="gitpulse"] :is(.neo-code-window-bar,.neo-code-window-footer) { background:hsl(var(--secondary)); border-color:hsl(var(--border)); }
+:root[data-interface-style="gitpulse"] :is(button,a,input,textarea,select):focus-visible { outline:2px solid #818cf8!important; outline-offset:3px!important; }
+:root[data-interface-style="gitpulse"] ::selection { background:#6366f1; color:white; }
+:root[data-interface-style="gitpulse"] :is(input,textarea)::placeholder { color:hsl(var(--muted-foreground)); opacity:1; }
+:root[data-interface-style="gitpulse"] .neo-content.space-y-10>:not([hidden])~:not([hidden]) { margin-top:24px; }
+:root[data-interface-style="gitpulse"] .neo-404 { color:hsl(var(--foreground))!important; -webkit-text-stroke:0; text-shadow:none; }
+@media(pointer:coarse) { :root[data-interface-style="gitpulse"] :is(.btn,input:not([type="checkbox"]):not([type="radio"]),select) { min-height:44px; } }
+
+:where(:root[data-interface-style="gitpulse"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),:root[data-interface-style="gitpulse"] select) { padding:8px 12px; }

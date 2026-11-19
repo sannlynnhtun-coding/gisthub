@@ -4,19 +4,19 @@
   --style-border: 1px;
   --style-shadow: 0 5px 18px hsl(var(--foreground) / .12);
 }
-:root[data-interface-style]:not([data-interface-style="default"]) :is(body, .neo-canvas) { background-image: var(--style-canvas, none); background-size: var(--style-canvas-size, auto); background-position: var(--style-canvas-position, 0 0); }
-:root[data-interface-style]:not([data-interface-style="default"]) :is(.neo-sidebar, .neo-topbar, .neo-gist-card, .neo-profile-card, .neo-code-window, .neo-theme-panel, .neo-toolbar-menu__panel, [role="dialog"], .bg-card.border, .glass) {
+:root[data-interface-style]:not([data-interface-style="default"]):not([data-interface-style="gitpulse"]) :is(body, .neo-canvas) { background-image: var(--style-canvas, none); background-size: var(--style-canvas-size, auto); background-position: var(--style-canvas-position, 0 0); }
+:root[data-interface-style]:not([data-interface-style="default"]):not([data-interface-style="gitpulse"]) :is(.neo-sidebar, .neo-topbar, .neo-gist-card, .neo-profile-card, .neo-code-window, .neo-theme-panel, .neo-toolbar-menu__panel, [role="dialog"], .bg-card.border, .glass) {
   border-width: var(--style-border);
   border-radius: var(--style-radius) !important;
   box-shadow: var(--style-shadow) !important;
 }
-:root[data-interface-style]:not([data-interface-style="default"]) :is(button, .btn, input, select, textarea, .neo-nav-link, pre) {
+:root[data-interface-style]:not([data-interface-style="default"]):not([data-interface-style="gitpulse"]) :is(button, .btn, input, select, textarea, .neo-nav-link, pre) {
   border-radius: var(--style-radius) !important;
 }
-:root[data-interface-style]:not([data-interface-style="default"]) :is(button, .btn, input, select, textarea) { box-shadow: none; }
-:root[data-interface-style]:not([data-interface-style="default"]) .neo-gist-card::before { display: none; }
-:root[data-interface-style]:not([data-interface-style="default"]) :is(.neo-kicker, .neo-theme-panel__badge) { transform: none; }
-:root[data-interface-style]:not([data-interface-style="default"]) .neo-gist-card:hover { transform: none; }
+:root[data-interface-style]:not([data-interface-style="default"]):not([data-interface-style="gitpulse"]) :is(button, .btn, input, select, textarea) { box-shadow: none; }
+:root[data-interface-style]:not([data-interface-style="default"]):not([data-interface-style="gitpulse"]) .neo-gist-card::before { display: none; }
+:root[data-interface-style]:not([data-interface-style="default"]):not([data-interface-style="gitpulse"]) :is(.neo-kicker, .neo-theme-panel__badge) { transform: none; }
+:root[data-interface-style]:not([data-interface-style="default"]):not([data-interface-style="gitpulse"]) .neo-gist-card:hover { transform: none; }
 
 :root[data-interface-style="neobrutalism"] { --style-radius: .15rem; --style-border: 3px; --style-shadow: 8px 8px 0 var(--neo-shadow); }
 :root[data-interface-style="neobrutalism"] :is(.btn, .neo-theme-trigger, .neo-toolbar-menu__trigger) { border-width: 3px; box-shadow: 4px 4px 0 var(--neo-shadow); font-weight: 900; }
@@ -61,7 +61,7 @@
 :root[data-interface-style="flat"] :is(.neo-sidebar, .neo-topbar) { border-radius: 0 !important; }
 
 
-:root[data-interface-style]:not([data-interface-style="default"]) .neo-canvas { background-color: transparent; }
-:root[data-interface-style]:not([data-interface-style="default"]) .neo-decor { display: none; }
+:root[data-interface-style]:not([data-interface-style="default"]):not([data-interface-style="gitpulse"]) .neo-canvas { background-color: transparent; }
+:root[data-interface-style]:not([data-interface-style="default"]):not([data-interface-style="gitpulse"]) .neo-decor { display: none; }
 
 :root[data-interface-style="neobrutalism"] :is(h1, h2, h3) { font-weight: 900 !important; }
