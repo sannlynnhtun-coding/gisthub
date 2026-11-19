@@ -6,6 +6,10 @@ export async function checkHomeDashboardAppearance({evaluate,send,sessionId,wait
     await waitFor(`!!document.querySelector(${JSON.stringify('.'+(layout==='excel'?'excel-workspace':'admin-portal'))})`,layout);
     for (const width of [375,1440]) {
       await send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width<600},sessionId);
+      if (width === 1440) {
+        assert.equal(await evaluate(`document.querySelector('.workspace-layout-select').offsetWidth > 0 &&
+          document.querySelector('.workspace-more-trigger').offsetWidth === 0`), true, 'desktop toolbar is visible');
+      }
       const result=await evaluate(`(() => {
         const failures=[];let count=0;
         for(const preset of window.getGistHubStylePresets()) {
@@ -38,7 +42,8 @@ export async function checkHomeDashboardAppearance({evaluate,send,sessionId,wait
         const command = pin?.closest('.ribbon-command').querySelector('.tool-list-entry').getBoundingClientRect();
         const target = pin?.getBoundingClientRect();
         return {
-          headerFits: logo.right <= bounds.left && bounds.right <= header.right && controls.every(control => {
+          headerFits: logo.right <= bounds.left && bounds.right <= header.right &&
+            toolbar.scrollWidth <= toolbar.clientWidth + 1 && controls.every(control => {
             const rect = control.getBoundingClientRect();
             return rect.top < logo.bottom && rect.bottom > logo.top &&
               rect.right - bounds.left <= toolbar.scrollWidth + 1;
@@ -48,6 +53,15 @@ export async function checkHomeDashboardAppearance({evaluate,send,sessionId,wait
       })()`);
       assert.ok(shell.headerFits,`${layout} ${width}: header controls share the logo row`);
       if (layout === 'excel') assert.ok(shell.pinFits,`${layout} ${width}: pin has its own touch target`);
+      assert.equal(await evaluate(`document.querySelector('.workspace-layout-select').offsetWidth`), 0);
+      await evaluate(`(() => {const more = document.querySelector('.workspace-more-trigger'); more.focus(); more.click()})()`);
+      assert.equal(await evaluate(`document.querySelector('#workspace-more').matches(':popover-open') &&
+        document.querySelector('.workspace-layout-select').offsetWidth > 0 &&
+        document.querySelector('[data-testid="blur-files-trigger"]').offsetHeight >= 44`), true);
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27},sessionId);
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27},sessionId);
+      await waitFor(`!document.querySelector('#workspace-more').matches(':popover-open') &&
+        document.activeElement.matches('.workspace-more-trigger')`, 'More closes and returns focus');
       for (const view of ['Overview','Repos','Quality & Review','Benchmarks & CI','Cadence & Goals']) {
         await evaluate(`Array.from(document.querySelectorAll('.dashboard-toolbar nav button')).find(e=>e.textContent===${JSON.stringify(view)}).click()`);
         await waitFor(`document.querySelector('.dashboard-toolbar .selected')?.textContent===${JSON.stringify(view)}`,view);
