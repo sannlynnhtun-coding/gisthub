@@ -120,3 +120,8 @@ As an existing user, I want my saved choices and working data preserved when the
 ## User correction — 2026-11-19
 
 The menu-preview file is now authoritative (frozen as references/menu-preview.html). Require an exact rebuild and use its icons. Withdraw the broad shell exception; retain only explicit square tabs, honest data labels and necessary extra controls. Embedded logo bytes are authoritative over the black-backed attachment. This amendment supersedes older source/path statements; all behavior requirements remain.
+
+## November 18 preview revision
+Match the November 18 preview motion and repository city without changing current workflows.
+
+The repository city uses the reference neon site plan and simulated five-stage deployment timeline. The preview connector adds no new workflow to GistHub.

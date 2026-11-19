@@ -35,3 +35,6 @@ Check every row in this map; acceptance requires no unexplained visual mismatch.
 ## Rebuild inventory
 
 Add brand/logo, topbar actions, category row, command tray, help/favorites, view navigation and inspector as separate capture regions. Existing table entries cover interiors, not just outer cards. For each region compare computed properties plus a crop. Capture names use layout-width-theme-view-region. The original baseline paragraph is historical and the latest menu source governs.
+
+## November 18 preview revision
+The city represents up to six repositories ranked by known size. Each building uses the existing inspector and keyboard focus behavior.

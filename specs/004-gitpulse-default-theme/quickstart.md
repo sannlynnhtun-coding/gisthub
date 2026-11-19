@@ -102,3 +102,8 @@ Site-wide cascade validation: source legacy input/badge/profile/login ornament r
 Final site-wide checks PASS: 24-state global inheritance (including weight 900), settings backup/restore workflow, Home fixture/actions/races and 856 appearance/layout/width combinations with reduced motion. Remaining exact-reference Benchmarks/interior comparison is outside the passed global-cascade assertions and remains open. No commit/push/deployment performed in this follow-up.
 
 V2 follow-up results: file hash equals existing baseline; no source function removals. Reference group/command audit PASS (all 29 IDs, 8 categories, 3 widths), initial expansion/collapse/reopen and square corners verified. Login PASS at 375/1074/1440: label associations, >=8px icon/text clearance, mono token, no overflow, empty-form validation and toast dismissal. Quick Access PASS after intentional initial-state assertion update; all order/drag/focus/storage checks retained. Profile browser suite, .NET and asset/shell tests PASS. Visual inspection confirmed login overlap fixed and brand updated. No real credentials used; no login token request sent. Full dashboard pixel parity remains a separate open gate. No commit/push performed.
+
+## November 18 preview revision
+Load public repositories with known sizes, open Benchmarks & CI, select a building, and verify inspector close restores focus. Repeat with reduced motion.
+
+Chrome comparison: use a 1440×1080 viewport, reduced motion, and the same six repository names, sizes, and star counts in both pages. Compare the city card and the Benchmarks viewport separately. The reference token footer and workspace chrome are intentional differences. See artifacts/gitpulse/index-v2-comparison in the local workspace.

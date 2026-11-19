@@ -2,6 +2,7 @@
 @using GistHub.Services
 @using System.Globalization
 <section id="view-benchmarks" data-gitpulse-view="benchmarks" class="gitpulse-view tab-panel space-y-5"><p class="gp-demo-note">Demo illustrations · No remote actions or measurements. Repository hygiene alone uses loaded metadata.</p>
+      <GitPulseRepositoryCity Rows="Rows" RepositorySelected="RepositorySelected" />
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
         <div class="lg:col-span-5 bento-card p-6 flex flex-col justify-between">
           <div>
@@ -146,6 +147,8 @@
       </div>
     <p class="sr-only" role="status" aria-live="polite">@Feedback</p></section>
 @code {
+    [Parameter] public IReadOnlyList<GithubRepository> Rows { get; set; } = [];
+    [Parameter] public EventCallback<GithubRepository> RepositorySelected { get; set; }
     private string Feedback = "";
 
     private int Step, BenchmarkRun;

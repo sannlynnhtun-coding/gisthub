@@ -51,3 +51,6 @@
 **Decision**: require interior geometry and image evidence. Rationale: the current harness passes widths while heights differ by up to tens of pixels. Alternative rejected: calling its 48-state pass visual acceptance. No unknowns remain; measurement work belongs to implementation.
 
 **Asset audit**: decoded PNG hash 3b2833576889b407e26ee5293627433101ec807d911fa5b0fb5bbfe3f59216e0, 1254x1254 RGBA. Its black composite matches the attachment. The 19 symbols are home/plus/undo/search/sun/chevron/star/folder/code/grid/compass/chart/doc/diagram/image/settings/key/clock/sound. Fourteen distinct Lucide names require frozen rendered paths because the CDN is unpinned. This inventory is sufficient to avoid a new icon library.
+
+## November 18 preview revision
+Reuse native buttons, SVG and CSS. The reference scripts and connector are unnecessary.

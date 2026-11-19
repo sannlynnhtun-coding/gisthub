@@ -30,6 +30,7 @@ public sealed class GithubRepository
     public string? Language { get; set; }
     public GithubLicense? License { get; set; }
     public string[]? Topics { get; set; }
+    [JsonPropertyName("size")] public long? SizeKb { get; set; }
     [JsonPropertyName("stargazers_count")] public long Stars { get; set; }
     [JsonPropertyName("forks_count")] public long Forks { get; set; }
     [JsonPropertyName("open_issues_count")] public long OpenIssues { get; set; }

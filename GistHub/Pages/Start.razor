@@ -52,7 +52,7 @@
         </GitPulseOverview>
     }
     else if (ActiveView == "quality") { <GitPulseQuality Rows="Rows" /> }
-    else if (ActiveView == "benchmarks") { <GitPulseBenchmarks /> }
+    else if (ActiveView == "benchmarks") { <GitPulseBenchmarks Rows="Rows" RepositorySelected="InspectCityRepositoryAsync" /> }
     else { <GitPulseCadence /> }
     <dialog id="dashboard-inspector" class="dashboard-inspector" aria-labelledby="inspector-title">
         @if (Inspected is { } inspected)
@@ -98,7 +98,8 @@
         finally { if (!Disposed && revision == Revision) Loading = false; }
     }
     private async Task<IJSObjectReference> GetModuleAsync() => Module ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/appShell.js");
-    private async Task InspectAsync(GithubRepository repo) { Inspected = repo; InspectorStatus = ""; await InvokeAsync(StateHasChanged); var module = await GetModuleAsync(); await module.InvokeVoidAsync("openDashboardInspector", $"inspect-{repo.Id}"); }
+    private Task InspectCityRepositoryAsync(GithubRepository repo) => InspectAsync(repo, $"city-{repo.Id}");
+    private async Task InspectAsync(GithubRepository repo, string? triggerId = null) { Inspected = repo; InspectorStatus = ""; await InvokeAsync(StateHasChanged); var module = await GetModuleAsync(); await module.InvokeVoidAsync("openDashboardInspector", triggerId ?? $"inspect-{repo.Id}"); }
     private async Task CloseInspectorAsync() { if (Module is not null) await Module.InvokeVoidAsync("closeDashboardInspector"); }
     private async Task CopyAsync()
     {

@@ -47,3 +47,8 @@ User requests the HTML appearance throughout the website. Correct shared cascade
 ## v2 menu/login follow-up
 
 Supplied index-v2.html has the same SHA-256 as frozen menu-preview.html: no removed actions can be inferred from this file. Reproduce its labeled ribbon groups with existing 29-command catalog, existing Quick Access order, keyboard/collapse behavior and Admin alternative. Preserve all actual actions rather than transplant mock dialogs. Fix login overlap at shared input padding precedence, retain monospace controls, associate labels and use exact brand. Add browser gap/label checks at 375/1074/1440 and verify every menu group/command.
+
+## November 18 preview revision
+Extend existing Blazor views with scoped CSS motion and a city that opens the existing inspector. Validate the build and dashboard checks.
+
+Port the reference city grid, rack geometry, connections, deployment scan, and pipeline animation into the existing Benchmarks card. Compare matched repository fixtures in Chrome and check inspector focus and reduced motion.

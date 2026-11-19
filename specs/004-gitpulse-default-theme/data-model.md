@@ -32,3 +32,6 @@ Reference hash/path, viewport width/height (375/1074/1440 width), DPR/zoom, ligh
 ReferenceAsset has source selector, media type, byte hash, destination and callers. The PNG and SVG symbols are immutable source assets. Compare decoded PNG hash, not base64 text. A command-to-symbol table records every visible action. No stored entity is added.
 
 ComparisonRecord adds region bounds (including x/y), typography, gaps/padding, image hashes and per-state screenshot names. Every region has a review result; an absent result cannot be PASS. State transitions include tab selected -> hover -> focus, picker preview -> Escape, and demo control -> local feedback.
+
+## November 18 preview revision
+Repository size is nullable and comes from the existing GitHub response. There is no persisted city state.
