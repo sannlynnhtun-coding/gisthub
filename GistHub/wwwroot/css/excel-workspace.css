@@ -96,6 +96,7 @@
   .neo-main > .excel-topbar { min-height: 44px; height: auto; padding: 8px 12px !important; flex-wrap: wrap; gap: 8px; }
   .excel-workspace-title { display: none; }
   .excel-topbar .neo-topbar-brand { flex: 0 1 auto !important; }
+  .excel-topbar .neo-topbar-brand h1 { display: none; }
   .excel-topbar .neo-topbar-actions { flex: 0 1 auto !important; flex-wrap: wrap; gap: 4px !important; margin-inline-start: auto; }
   .workspace-tab-row { padding-inline: 8px; gap: 4px; }
   .neo-main .workspace-ribbon .workspace-commands { padding: 6px 8px; }
