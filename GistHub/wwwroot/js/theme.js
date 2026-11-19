@@ -1,8 +1,14 @@
 // Apply before Blazor starts so reloads keep the selected page palette.
 (() => {
     const catalog = [
+        { id: 'gitpulse-dark', name: 'GitPulse Dark (Default)', dark: true, chrome: '#0e0f12', primary: '#6366f1', secondary: '#1e2025', source: 'GitPulse · Reference' },
+        { id: 'gitpulse-light', name: 'GitPulse Light', dark: false, chrome: '#f3f4f8', primary: '#6366f1', secondary: '#f8fafc', source: 'GitPulse · Reference' },
         { id: 'light', name: 'Light', dark: false, chrome: '#FFD524', primary: '#ffd524', secondary: '#78dce8', source: 'GistHub · Default' },
         { id: 'dark', name: 'Dark', dark: true, chrome: '#24242F', primary: '#c6a344', secondary: '#609ba3', source: 'GistHub · Default' },
+        { id: 'kit-bencho-light', name: 'Bencho Light', dark: false, chrome: '#fafafa', primary: '#171717', secondary: '#f0f0f0', source: 'Bencho · bencho.dev' },
+        { id: 'kit-bencho-dark', name: 'Bencho Dark', dark: true, chrome: '#0a0a0a', primary: '#ffffff', secondary: '#171717', source: 'Bencho · bencho.dev' },
+        { id: 'kit-obsidian-light', name: 'ObsidianUI Light', dark: false, chrome: '#fafafa', primary: '#171717', secondary: '#eeeeee', source: 'ObsidianUI · obsidianui.dev' },
+        { id: 'kit-obsidian-dark', name: 'ObsidianUI Dark', dark: true, chrome: '#161616', primary: '#2563eb', secondary: '#2a2a2a', source: 'ObsidianUI · obsidianui.dev' },
         { id: 'boardui-light', name: 'BoardUI Light', dark: false, chrome: '#ffffff', primary: '#2563eb', secondary: '#f7f7f7', source: 'BoardUI-inspired · boardui.com' },
         { id: 'boardui-dark', name: 'BoardUI Dark', dark: true, chrome: '#121212', primary: '#60a5fa', secondary: '#262626', source: 'BoardUI-inspired · boardui.com' },
         {"id": "kit-sketchbook-light", "name": "Sketchbook UI Light", "dark": false, "chrome": "#faf7ef", "primary": "#315d98", "secondary": "#f1eee8", "source": "Sketchbook UI-inspired \u00b7 sarthakrawat-1.github.io"},
@@ -28,8 +34,8 @@
     ];
     const themes = Object.fromEntries(catalog.map(entry => [entry.id, entry]));
     const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const defaultTheme = systemDark ? 'dark' : 'light';
-    window.getGistHubDefaultTheme = () => window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const defaultTheme = 'gitpulse-dark';
+    window.getGistHubDefaultTheme = () => defaultTheme;
     window.getGistHubThemes = () => catalog;
     window.getGistHubTheme = () => document.documentElement.dataset.theme;
     window.isDarkThemeActive = () => document.documentElement.classList.contains('dark');
@@ -82,7 +88,8 @@ window.initializeGistHubThemePicker = async (root) => {
         (category === 'themes' ? option.dataset.themeOption === root.dataset.savedTheme :
          category === 'styles' ? option.dataset.styleOption === root.dataset.savedStyle :
          category === 'fonts' ? option.dataset.fontOption === root.dataset.savedFont :
-         option.dataset.styleOption === root.dataset.savedStyle && option.dataset.themeOption === root.dataset.savedTheme));
+         option.dataset.styleOption === root.dataset.savedStyle && option.dataset.themeOption === root.dataset.savedTheme &&
+         (!option.dataset.fontOption || option.dataset.fontOption === root.dataset.savedFont)));
     let category = 'themes';
     const options = () => allOptions.filter(option => !option.hidden);
     const restore = () => {
@@ -147,7 +154,7 @@ window.initializeGistHubThemePicker = async (root) => {
     const preview = event => {
         const option = event.target.closest('[data-appearance-kind]');
         if (!option || option.hidden) return;
-        window.applyGistHubFont(option.dataset.fontOption ?? root.dataset.savedFont, false);
+        window.applyGistHubFont(option.dataset.fontOption || root.dataset.savedFont, false);
         window.applyGistHubStyle(option.dataset.styleOption ?? root.dataset.savedStyle, false);
         window.applyGistHubTheme(option.dataset.themeOption ?? root.dataset.savedTheme, false);
     };

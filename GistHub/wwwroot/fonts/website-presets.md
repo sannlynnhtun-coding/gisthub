@@ -7,6 +7,9 @@ replaced. Light/dark colors use the existing paired palettes.
 | Reference | Typography used | Component treatment |
 |---|---|---|
 | [BoardUI](https://www.boardui.com/) | Local Inter / JetBrains Mono | Existing inset surfaces and segmented controls |
+| [Bencho](https://bencho.dev/) | Local Inter body / Plus Jakarta Sans headings | Charcoal wells, capsule actions and soft press feedback |
+| [ObsidianUI](https://www.obsidianui.dev/) | Local Inter body / Geist actions | Graphite frames, metallic controls and gradient headings |
+| [ObsidianUI Dashboard Shell](https://www.obsidianui.dev/docs/dashboard-shell) | Local Geist throughout the coordinated preset | Measured graphite shell, 200px sidebar, 58px header, inset selections and blue primary controls |
 | [Sketchbook UI](https://sarthakrawat-1.github.io/sketchbook-ui/) | Caveat controls/headings, Inter body | Ink borders, irregular corners, offset button shadow |
 | [Productive Schedule](https://theproductiveschedule.design/) | Instrument Sans / Schibsted Grotesk | Drafting outlines, pill actions, dotted selection |
 | [Libraries.dev](https://libraries.dev/) | Inter / Roboto Mono | Luminous edges, CSS metallic button layers |
@@ -17,6 +20,10 @@ replaced. Light/dark colors use the existing paired palettes.
 | [beUI](https://beui.dev/) | Geist / Geist Mono | Compact command surfaces, capsule navigation |
 
 Typography and public stylesheet/component references inspected 2026-11-10.
+BoardUI, Bencho, beUI Pro, and ObsidianUI rendered homepages and computed fonts
+were reviewed again on 2026-11-17. Their coordinated presets save the selected
+body font; individual font choices remain customizable. These preserve GistHub's
+layout/workflows and are not pixel-identical copies of the reference websites.
 Libraries' Saans and HeroUI's custom Britti/heroSans display faces are not bundled;
 their Inter body family is used for headings too. Sketchbook's system body is
 represented by local Inter. These substitutions avoid distributing unlicensed

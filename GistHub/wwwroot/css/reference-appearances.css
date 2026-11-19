@@ -1,0 +1,68 @@
+/* Reference measurements and workflow boundaries: specs/001-add-appearance-presets/plan.md. */
+:root[data-interface-style="kit-bencho"] { --style-radius: 24px; --style-border: 1px; --style-shadow: none; }
+:root[data-interface-style="kit-obsidian"] { --style-radius: 16px; --style-border: 1px; --style-shadow: inset 0 1px 0 hsl(var(--foreground) / .08), 0 8px 24px rgb(0 0 0 / .12); }
+
+/* Match the shared controls without moving, hiding or replacing any workflow. */
+:root:is([data-interface-style="boardui"], [data-interface-style="kit-bencho"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) {
+  --style-heading-font: var(--font-ui);
+  --neo-grid-opacity: 0; --neo-canvas-grid-opacity: 0;
+}
+:root:is([data-interface-style="boardui"], [data-interface-style="kit-bencho"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) :is(.neo-sidebar, .neo-topbar, .workspace-ribbon, .workspace-commands, .workspace-tabs) {
+  background: hsl(var(--background)); color: hsl(var(--foreground)); border-color: hsl(var(--border)); box-shadow: none !important;
+}
+:root:is([data-interface-style="boardui"], [data-interface-style="kit-bencho"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card, .neo-profile-card, .neo-theme-panel, .neo-toolbar-menu__panel, .global-search-panel, .neo-code-window, [role="dialog"], .bg-card.border, .glass) {
+  background: hsl(var(--card)); color: hsl(var(--card-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--style-radius) !important; box-shadow: var(--style-shadow) !important;
+}
+:root:is([data-interface-style="boardui"], [data-interface-style="kit-bencho"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) :is(.neo-nav-link, .neo-theme-option, .global-search-result) {
+  font-weight: 500; text-transform: none; letter-spacing: normal; color: hsl(var(--foreground)); box-shadow: none;
+}
+:root:is([data-interface-style="boardui"], [data-interface-style="kit-bencho"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) :is(.neo-nav-link.active, .neo-theme-option[aria-selected="true"], .global-search-result.is-selected) {
+  background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); border-color: hsl(var(--border));
+}
+:root:is([data-interface-style="boardui"], [data-interface-style="kit-bencho"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) :is(.neo-page-heading h1, .neo-gist-card h3, .neo-theme-panel__header h2) {
+  font-family: var(--style-heading-font); font-weight: 600; letter-spacing: -.035em; text-transform: none;
+}
+:root:is([data-interface-style="boardui"], [data-interface-style="kit-bencho"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) :is(button, a, input, textarea, select):focus-visible {
+  outline: 2px solid hsl(var(--ring)); outline-offset: 3px;
+}
+:root:is([data-interface-style="boardui"], [data-interface-style="kit-bencho"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) :is(th, td, .neo-theme-panel__header, .neo-theme-panel__footer) { border-color: hsl(var(--border)); }
+
+/* BoardUI: white inset cards, quiet gray panel wells and precise blue actions. */
+:root[data-interface-style="boardui"][data-theme]:not([data-interface-style="default"]) { --style-radius: 20px; --style-shadow: inset 0 1px 0 hsl(var(--foreground) / .03), 0 1px 3px rgb(0 0 0 / .04); }
+:root[data-interface-style="boardui"][data-theme]:not([data-interface-style="default"]) .neo-gist-card { background: hsl(var(--muted)); }
+:root[data-interface-style="boardui"][data-theme]:not([data-interface-style="default"]) :is(.neo-code-preview, input:not([type="checkbox"]):not([type="radio"]), textarea, select) { background: hsl(var(--card)) !important; border-color: hsl(var(--border)); box-shadow: inset 0 1px 2px rgb(0 0 0 / .03); }
+:root[data-interface-style="boardui"][data-theme]:not([data-interface-style="default"]) :is(.btn, .neo-theme-trigger, .neo-toolbar-menu__trigger) { border-radius: 12px !important; font-weight: 500; }
+
+/* Bencho: low-contrast charcoal wells, large soft corners and white pill actions. */
+:root[data-interface-style="kit-bencho"][data-theme]:not([data-interface-style="default"]) :is(.btn, .neo-theme-trigger, .neo-toolbar-menu__trigger, .workspace-tabs button) { border-radius: 999px !important; background: hsl(var(--secondary)); border-color: transparent; box-shadow: none !important; }
+:root[data-interface-style="kit-bencho"][data-theme]:not([data-interface-style="default"]) .btn.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+:root[data-interface-style="kit-bencho"][data-theme]:not([data-interface-style="default"]) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { background: hsl(var(--muted)); border-color: hsl(var(--border)); border-radius: 18px !important; }
+:root[data-interface-style="kit-bencho"][data-theme]:not([data-interface-style="default"])[data-font="default"] { --style-heading-font: 'Plus Jakarta Sans Variable', 'Noto Sans Myanmar Variable', sans-serif; }
+
+/* beUI Pro: warm ambient light and translucent brown panels, with Geist typography. */
+:root[data-interface-style="kit-beui-pro"][data-theme]:not([data-interface-style="default"]) { --style-radius: 24px; --style-shadow: inset 0 1px 0 hsl(var(--foreground) / .1), 0 6px 24px rgb(0 0 0 / .1); }
+:root[data-interface-style="kit-beui-pro"][data-theme]:not([data-interface-style="default"]) :is(.neo-canvas, .tool-workspace) { background-image: radial-gradient(ellipse at 100% 90%, #ffdc9a99, transparent 65%), radial-gradient(ellipse at 80% 30%, #ed7c5c99, transparent 70%), linear-gradient(125deg, #28140d, #b44f38 65%, #d78d68) !important; }
+:root[data-interface-style="kit-beui-pro"][data-theme]:not([data-interface-style="default"]) :is(.neo-gist-card, .neo-profile-card) { background: hsl(var(--card) / .94); }
+:root[data-interface-style="kit-beui-pro"][data-theme]:not([data-interface-style="default"]) :is(.btn, .neo-theme-trigger, .neo-toolbar-menu__trigger, .workspace-tabs button) { border-radius: 999px !important; }
+:root[data-interface-style="kit-beui-pro"][data-theme="kit-beui-pro-dark"] .btn.btn-primary { background: #fff; color: #151515; border-color: #fff; }
+
+/* ObsidianUI: graphite frames, metallic top light and strongly weighted headings. */
+:root[data-interface-style="kit-obsidian"][data-theme]:not([data-interface-style="default"]) :is(.btn, .neo-theme-trigger, .neo-toolbar-menu__trigger) { background: linear-gradient(hsl(var(--secondary)), hsl(var(--card))); border: 1px solid hsl(var(--border)); border-top-color: hsl(var(--foreground) / .3); box-shadow: inset 0 1px 0 hsl(var(--foreground) / .12), 0 2px 3px rgb(0 0 0 / .2) !important; border-radius: 14px !important; }
+:root[data-interface-style="kit-obsidian"][data-theme]:not([data-interface-style="default"])[data-font="default"] :is(button, .btn) { font-family: 'Geist Variable', 'Noto Sans Myanmar Variable', sans-serif; }
+:root[data-interface-style="kit-obsidian"][data-theme]:not([data-interface-style="default"]) .neo-page-heading h1 { font-weight: 700; background: linear-gradient(hsl(var(--foreground)), hsl(var(--muted-foreground))); background-clip: text; color: transparent; }
+:root[data-interface-style="kit-obsidian"][data-theme]:not([data-interface-style="default"]) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { background: hsl(var(--background)); border: 1px solid hsl(var(--border)); box-shadow: 0 0 0 5px hsl(var(--muted)); border-radius: 14px !important; }
+@media (prefers-reduced-motion: no-preference) {
+  :root:is([data-interface-style="boardui"], [data-interface-style="kit-bencho"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) :is(.btn, .neo-nav-link, .neo-theme-option) { transition: background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
+  :root:is([data-interface-style="kit-bencho"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) .btn:active:not(:disabled) { transform: scale(.97); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:is([data-interface-style="boardui"], [data-interface-style="kit-bencho"], [data-interface-style="kit-beui-pro"], [data-interface-style="kit-obsidian"])[data-theme]:not([data-interface-style="default"]) :is(.btn, .neo-nav-link, .neo-theme-option) { transition: none !important; transform: none !important; }
+}
+
+:root[data-theme="kit-bencho-light"]{--background:0.00 0.00% 98.04%;--foreground:0.00 0.00% 9.02%;--card:0.00 0.00% 100.00%;--card-foreground:0.00 0.00% 9.02%;--popover:0.00 0.00% 100.00%;--popover-foreground:0.00 0.00% 9.02%;--primary:0.00 0.00% 9.02%;--primary-foreground:0.00 0.00% 98.04%;--secondary:0.00 0.00% 93.33%;--secondary-foreground:0.00 0.00% 9.02%;--muted:0.00 0.00% 93.33%;--muted-foreground:0.00 0.00% 40.00%;--accent:0.00 0.00% 93.33%;--accent-foreground:0.00 0.00% 9.02%;--border:0.00 0.00% 87.06%;--input:0 0% 50%;--ring:0.00 0.00% 9.02%;--destructive:0.00 73.71% 41.76%;--destructive-foreground:0.00 0.00% 100.00%;--neo-paper:#ffffff;--neo-code-text:#171717;--neo-interactive:#171717;--neo-on-accent:#171717;--neo-shadow:#dedede;--neo-grid-opacity:0;--neo-canvas-grid-opacity:0;--neo-yellow:#eeeeee;--neo-pink:#eeeeee;--neo-purple:#eeeeee;--neo-green:#eeeeee;--neo-cyan:#eeeeee;--neo-red:#eeeeee;}
+
+:root[data-theme="kit-bencho-dark"]{--background:0.00 0.00% 3.92%;--foreground:0.00 0.00% 98.04%;--card:0.00 0.00% 9.02%;--card-foreground:0.00 0.00% 98.04%;--popover:0.00 0.00% 9.02%;--popover-foreground:0.00 0.00% 98.04%;--primary:0.00 0.00% 100.00%;--primary-foreground:0.00 0.00% 3.92%;--secondary:0.00 0.00% 14.90%;--secondary-foreground:0.00 0.00% 98.04%;--muted:0.00 0.00% 14.90%;--muted-foreground:0.00 0.00% 63.92%;--accent:0.00 0.00% 14.90%;--accent-foreground:0.00 0.00% 98.04%;--border:0.00 0.00% 18.82%;--input:0 0% 50%;--ring:0.00 0.00% 98.04%;--destructive:0.00 90.60% 70.78%;--destructive-foreground:0.00 0.00% 9.02%;--neo-paper:#171717;--neo-code-text:#fafafa;--neo-interactive:#fafafa;--neo-on-accent:#fafafa;--neo-shadow:#303030;--neo-grid-opacity:0;--neo-canvas-grid-opacity:0;--neo-yellow:#262626;--neo-pink:#262626;--neo-purple:#262626;--neo-green:#262626;--neo-cyan:#262626;--neo-red:#262626;}
+
+:root[data-theme="kit-obsidian-light"]{--background:0.00 0.00% 98.04%;--foreground:0.00 0.00% 9.02%;--card:0.00 0.00% 100.00%;--card-foreground:0.00 0.00% 9.02%;--popover:0.00 0.00% 100.00%;--popover-foreground:0.00 0.00% 9.02%;--primary:0.00 0.00% 9.02%;--primary-foreground:0.00 0.00% 98.04%;--secondary:0.00 0.00% 93.33%;--secondary-foreground:0.00 0.00% 9.02%;--muted:0.00 0.00% 93.33%;--muted-foreground:0.00 0.00% 40.00%;--accent:0.00 0.00% 93.33%;--accent-foreground:0.00 0.00% 9.02%;--border:0.00 0.00% 87.06%;--input:0 0% 50%;--ring:0.00 0.00% 9.02%;--destructive:0.00 73.71% 41.76%;--destructive-foreground:0.00 0.00% 100.00%;--neo-paper:#ffffff;--neo-code-text:#171717;--neo-interactive:#171717;--neo-on-accent:#171717;--neo-shadow:#dedede;--neo-grid-opacity:0;--neo-canvas-grid-opacity:0;--neo-yellow:#eeeeee;--neo-pink:#eeeeee;--neo-purple:#eeeeee;--neo-green:#eeeeee;--neo-cyan:#eeeeee;--neo-red:#eeeeee;}
+
+:root[data-theme="kit-obsidian-dark"]{--background:0.000 0.000% 8.627%;--foreground:220.000 100.000% 98.824%;--card:0.000 0.000% 8.627%;--card-foreground:220.000 100.000% 98.824%;--popover:0.000 0.000% 11.765%;--popover-foreground:220.000 100.000% 98.824%;--primary:221.212 83.193% 53.333%;--primary-foreground:220.000 100.000% 98.824%;--secondary:0.000 0.000% 16.471%;--secondary-foreground:220.000 100.000% 98.824%;--muted:0.000 0.000% 16.471%;--muted-foreground:0 0% 60.392%;--accent:0.000 0.000% 16.471%;--accent-foreground:220.000 100.000% 98.824%;--border:0.000 0.000% 13.725%;--input:0.000 0.000% 40.392%;--ring:0.000 0.000% 40.392%;--destructive:0.000 91.781% 71.373%;--destructive-foreground:0.000 0.000% 8.627%;--neo-paper:#161616;--neo-code-text:#f9fbff;--neo-interactive:#2563eb;--neo-on-accent:#f9fbff;--neo-shadow:#232323;--neo-grid-opacity:0;--neo-canvas-grid-opacity:0;--neo-yellow:#2a2a2a;--neo-pink:#2a2a2a;--neo-purple:#2a2a2a;--neo-green:#2a2a2a;--neo-cyan:#2a2a2a;--neo-red:#2a2a2a;}

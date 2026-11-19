@@ -21,16 +21,16 @@ function boot(saved, dark = true, blocked = false, explicitChoice = null) {
     return { window, root, saved: () => storage.theme, explicit: () => storage['gisthub:theme-choice'] };
 }
 const catalog = boot(null).window.getGistHubThemes();
-assert.equal(catalog.length, 175);
-assert.equal(new Set(catalog.map(theme => theme.id)).size, 175);
+assert.equal(catalog.length, 181);
+assert.equal(new Set(catalog.map(theme => theme.id)).size, 181);
 assert.equal(catalog.filter(theme => theme.id.startsWith('vscode-')).length, 100);
 assert.equal(catalog.filter(theme => theme.id.startsWith('figma-') && theme.name.startsWith('Figma-')).length, 53);
-assert.equal(boot(null, false).window.getGistHubTheme(), 'light');
-assert.equal(boot(null, true).window.getGistHubTheme(), 'dark');
+assert.equal(boot(null, false).window.getGistHubTheme(), 'gitpulse-dark');
+assert.equal(boot(null, true).window.getGistHubTheme(), 'gitpulse-dark');
 const halloween = catalog.find(theme => theme.id === 'vscode-kobber-spooky-halloween-theme-halloween').id;
 for (const systemDark of [false, true]) {
     const migrated = boot(halloween, systemDark);
-    assert.equal(migrated.saved(), systemDark ? 'dark' : 'light', 'Old automatic Halloween defaults must be reset');
+    assert.equal(migrated.saved(), 'gitpulse-dark', 'Old automatic Halloween defaults must be reset');
     assert.equal(migrated.explicit(), null, 'Startup must not pretend the user selected a theme');
     migrated.window.applyGistHubTheme(halloween);
     assert.equal(boot(migrated.saved(), systemDark, false, migrated.explicit()).window.getGistHubTheme(), halloween, 'An explicit Halloween selection must persist');
@@ -38,7 +38,7 @@ for (const systemDark of [false, true]) {
 for (const systemDark of [false, true]) {
     const app = boot(catalog.find(theme => theme.id.startsWith('vscode-')).id, systemDark);
     app.window.applyGistHubTheme(app.window.getGistHubDefaultTheme());
-    assert.equal(app.saved(), systemDark ? 'dark' : 'light');
+    assert.equal(app.saved(), 'gitpulse-dark');
     assert.equal(boot(app.saved(), systemDark).window.getGistHubTheme(), app.saved());
 }
 for (const sort of ['trendingWeekly', 'installs']) {
@@ -63,16 +63,16 @@ for (const obsolete of ['ocean', 'forest', 'rose', 'hljs-github', 'invalid']) {
     const app = boot(obsolete);
     assert.ok(catalog.some(theme => theme.id === app.saved()), 'Removed choices must migrate to a valid theme');
 }
-assert.equal(boot(null, false).window.isDarkThemeActive(), false);
+assert.equal(boot(null, false).window.isDarkThemeActive(), true);
 const blocked = boot(null, true, true);
 blocked.window.applyGistHubTheme(catalog[1].id);
 assert.equal(blocked.window.getGistHubTheme(), catalog[1].id);
 assert.ok(css.includes('.neo-code-window'));
 assert.ok(css.includes('.json-token-string'));
 assert.ok(!css.includes('hljs-github'));
-console.log('PASS: original Light/Dark defaults, 100 VS Code and 53 Figma palettes, preview rollback, saved selections, removed-theme migration, and blocked storage.');
+console.log('PASS: GitPulse dark defaults and preserved original Light/Dark choices, 100 VS Code and 53 Figma palettes, preview rollback, saved selections, removed-theme migration, and blocked storage.');
 
-const libraryCss = readFileSync(new URL('../GistHub/wwwroot/css/design-styles.css', import.meta.url), 'utf8');
+const libraryCss = readFileSync(new URL('../GistHub/wwwroot/css/design-styles.css', import.meta.url), 'utf8') + readFileSync(new URL('../GistHub/wwwroot/css/reference-appearances.css', import.meta.url), 'utf8');
 function hslHex(value) {
     const [h, s, l] = value.match(/[\d.]+/g).map(Number);
     const a = s / 100 * Math.min(l / 100, 1 - l / 100);
@@ -82,7 +82,7 @@ function hslHex(value) {
     }));
 }
 const libraryThemes = catalog.filter(theme => theme.id.startsWith('kit-'));
-assert.equal(libraryThemes.length, 18);
+assert.equal(libraryThemes.length, 22);
 for (const theme of libraryThemes) {
     const declaration = libraryCss.split(`:root[data-theme="${theme.id}"]{`)[1]?.split('}')[0];
     assert.ok(declaration, `Missing palette for ${theme.id}`);
@@ -96,4 +96,4 @@ for (const theme of libraryThemes) {
     assert.ok(catalog.some(other => other.id === theme.id.replace(/-(light|dark)$/, theme.dark ? '-light' : '-dark')));
 }
 assert.ok(libraryCss.includes('@media (prefers-reduced-motion: reduce)'));
-console.log('PASS: all nine library presets have light/dark pairs, readable text, visible inputs/focus, and reduced-motion rules.');
+console.log('PASS: all eleven library presets have light/dark pairs, readable text, visible inputs/focus, and reduced-motion rules.');

@@ -27,7 +27,7 @@ assert.equal(trending.length, 50);
 assert.equal(new Set(trending.map(f => f.id)).size, 50);
 assert.deepEqual(trending.map(f => f.rank), Array.from({ length: 50 }, (_, i) => i + 1));
 assert.ok(trending.every(f => fonts.some(option => option.id === f.id)));
-assert.equal(app.window.getGistHubFont(), 'default');
+assert.equal(app.window.getGistHubFont(), 'plus-jakarta-sans');
 for (const font of fonts) {
     assert.ok(css.includes(`font-family: '${font.family}'`), font.family);
     app.window.applyGistHubFont(font.id);
@@ -55,7 +55,7 @@ assert.equal(app.storage['gisthub:font'], 'roboto');
 assert.equal(app.window.getGistHubFont(), 'lora');
 app.window.applyGistHubFont('default');
 assert.ok(!app.properties.has('--style-heading-font'), 'Default restores style heading typography');
-assert.equal(boot('invalid').window.getGistHubFont(), 'default');
+assert.equal(boot('invalid').window.getGistHubFont(), 'plus-jakarta-sans');
 assert.doesNotThrow(() => boot('roboto', true).window.applyGistHubFont('lora'));
 for (const [, url] of css.matchAll(/url\(([^)]+)\)/g)) {
     const path = new URL(url, new URL('../GistHub/wwwroot/css/fonts.css', import.meta.url));

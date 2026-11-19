@@ -1,7 +1,8 @@
 // Restore independently of the palette, before the first page render.
 (() => {
     const styles = [
-        { id: 'default', name: 'Current style (Default)', description: 'Original GistHub appearance' },
+        { id: 'gitpulse', name: 'GitPulse (Default)', description: 'Reference engineering dashboard appearance' },
+        { id: 'default', name: 'Original GistHub', description: 'Original GistHub appearance' },
         { id: 'neobrutalism', name: 'Neobrutalism', description: 'Heavy outlines and bold offset shadows' },
         { id: 'bauhaus', name: 'Bauhaus', description: 'Geometric accents and structured surfaces' },
         { id: 'neumorphism', name: 'Neumorphism', description: 'Soft raised surfaces and inset controls' },
@@ -58,6 +59,8 @@
         {"id": "modular-typography", "name": "Modular Typography", "description": "Grid-aligned heading blocks and segmented rules"},
         { id: 'cruip', name: 'Cruip', description: 'Artifact-inspired dashboard with quiet borders and rounded surfaces' },
         { id: 'boardui', name: 'BoardUI', description: 'BoardUI-inspired inset cards, layered buttons, segmented tabs and quiet dashboard surfaces' },
+        { id: 'kit-bencho', name: 'Bencho', description: 'Black studio canvas, soft rounded panels and white capsule actions' },
+        { id: 'kit-obsidian', name: 'ObsidianUI', description: 'Graphite panels, metallic controls and monochrome typography' },
         { id: 'kit-sketchbook', name: 'Sketchbook UI', description: 'Hand-drawn frames, irregular corners and inked controls' },
         { id: 'kit-looseleaf', name: 'Looseleaf', description: 'Lined paper cards, notebook margins and a sage desktop' },
         { id: 'kit-productive', name: 'Productive Schedule', description: 'Blueprint dots, fine selection outlines and editorial section rules' },
@@ -67,8 +70,10 @@
         { id: 'kit-rare', name: 'Rare UI', description: 'Folder-like card edges, tactile controls and gentle lift feedback' },
         { id: 'kit-goop', name: 'Goop UI', description: 'Organic rounded surfaces and elastic button feedback' },
         { id: 'kit-beui', name: 'beUI', description: 'Compact command panels, capsule tabs and crisp motion feedback' }
-    ].map((style, index) => ({ ...style, group: index < 8 ? 'Original styles' : 'More design styles' }));
+    ].map((style, index) => ({ ...style, group: index < 9 ? 'Original styles' : 'More design styles' }));
     const presets = [
+        { id: 'gitpulse-dark', name: 'GitPulse · Dark (Default)', style: 'gitpulse', theme: 'gitpulse-dark', font: 'plus-jakarta-sans' },
+        { id: 'gitpulse-light', name: 'GitPulse · Light', style: 'gitpulse', theme: 'gitpulse-light', font: 'plus-jakarta-sans' },
         { id: 'bold-light', name: 'Neobrutalism + Light', style: 'neobrutalism', theme: 'light' },
         { id: 'geometric-light', name: 'Bauhaus + Atom One Light', style: 'bauhaus', theme: 'vscode-akamud-vscode-theme-onelight-atom-one-light' },
         { id: 'soft-nord', name: 'Neumorphism + Nord', style: 'neumorphism', theme: 'vscode-arcticicestudio-nord-visual-studio-code-nord' },
@@ -76,15 +81,16 @@
         { id: 'cyber-tokyo', name: 'Cyberpunk + Tokyo Night', style: 'cyberpunk', theme: 'vscode-enkia-tokyo-night-tokyo-night' },
         { id: 'glass-dark', name: 'Glassmorphism + Dark', style: 'glassmorphism', theme: 'dark' },
         { id: 'flat-light', name: 'Flat + Light', style: 'flat', theme: 'light' },
-        { id: 'boardui-light', name: 'BoardUI · Light', style: 'boardui', theme: 'boardui-light' },
-        { id: 'boardui-dark', name: 'BoardUI · Dark', style: 'boardui', theme: 'boardui-dark' },
+        { id: 'boardui-light', name: 'BoardUI · Light', style: 'boardui', theme: 'boardui-light', font: 'default' },
+        { id: 'boardui-dark', name: 'BoardUI · Dark', style: 'boardui', theme: 'boardui-dark', font: 'default' },
         ...styles.filter(style => style.id.startsWith('kit-')).flatMap(style =>
-            ['light', 'dark'].map(mode => ({ id: `${style.id}-${mode}`, name: `${style.name} · ${mode === 'light' ? 'Light' : 'Dark'}`, style: style.id, theme: `${style.id}-${mode}` })))
+            ['light', 'dark'].map(mode => ({ id: `${style.id}-${mode}`, name: `${style.name} · ${mode === 'light' ? 'Light' : 'Dark'}`, style: style.id, theme: `${style.id}-${mode}`, ...(['kit-bencho', 'kit-obsidian', 'kit-beui-pro'].includes(style.id) ? { font: style.id === 'kit-bencho' ? 'default' : 'geist' } : {}) })))
     ];
     window.getGistHubStylePresets = () => presets;
     window.applyGistHubStylePreset = (root, id) => {
         const preset = presets.find(entry => entry.id === id);
         if (!preset) return;
+        if (preset.font) root.dataset.savedFont = window.applyGistHubFont(preset.font);
         root.dataset.savedStyle = preset.style;
         window.applyGistHubStyle(preset.style);
         window.commitGistHubThemePicker(root, preset.theme);
@@ -93,7 +99,7 @@
     window.getGistHubStyles = () => styles;
     window.getGistHubStyle = () => document.documentElement.dataset.interfaceStyle;
     window.applyGistHubStyle = (id, persist = true) => {
-        if (!styles.some(style => style.id === id)) id = 'default';
+        if (!styles.some(style => style.id === id)) id = 'gitpulse';
         document.documentElement.dataset.interfaceStyle = id;
         if (persist) {
             try { window.gistHubBackup.setPreference('gisthub:interface-style', id); } catch { /* Storage may be disabled. */ }
@@ -101,6 +107,6 @@
         return id;
     };
     let saved;
-    try { saved = localStorage.getItem('gisthub:interface-style'); } catch { /* Keep the original appearance. */ }
+    try { saved = localStorage.getItem('gisthub:interface-style'); } catch { /* Use the reference style when storage is unavailable. */ }
     window.applyGistHubStyle(saved, false);
 })();

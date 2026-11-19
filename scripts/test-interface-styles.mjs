@@ -12,10 +12,10 @@ function boot(saved, blocked = false) {
     runInNewContext(backupStateScript + '\n' + source, { ...context, crypto: globalThis.crypto });
     return { ...context.window, store };
 }
-assert.equal(boot().getGistHubStyle(), 'default');
-assert.equal(boot('obsolete').getGistHubStyle(), 'default');
+assert.equal(boot().getGistHubStyle(), 'gitpulse');
+assert.equal(boot('obsolete').getGistHubStyle(), 'gitpulse');
 const app = boot();
-assert.equal(app.getGistHubStyles().length, 66);
+assert.equal(app.getGistHubStyles().length, 69);
 for (const { id } of app.getGistHubStyles()) {
     app.applyGistHubStyle(id);
     assert.equal(app.getGistHubStyle(), id);
@@ -27,13 +27,13 @@ app.applyGistHubStyle('glassmorphism', false);
 assert.equal(app.getGistHubStyle(), 'glassmorphism');
 assert.equal(app.store['gisthub:interface-style'], 'flat');
 app.applyGistHubStyle('invalid');
-assert.equal(app.getGistHubStyle(), 'default');
+assert.equal(app.getGistHubStyle(), 'gitpulse');
 assert.equal(boot('glassmorphism', true).applyGistHubStyle('flat'), 'flat');
-console.log('PASS: 65 styles plus original default, live changes, persistence, palette independence, invalid values and blocked storage.');
+console.log('PASS: GitPulse and 67 styles plus original default, live changes, persistence, palette independence, invalid values and blocked storage.');
 
 const catalogContext = { window: {} };
 runInNewContext(readFileSync('GistHub/wwwroot/js/vscode-theme-catalog.js', 'utf8'), catalogContext);
-const themeIds = new Set(['light', 'dark', 'boardui-light', 'boardui-dark', ...catalogContext.window.gistHubThemes.map(theme => theme.id)]);
+const themeIds = new Set(['gitpulse-dark', 'gitpulse-light', 'light', 'dark', 'boardui-light', 'boardui-dark', ...catalogContext.window.gistHubThemes.map(theme => theme.id)]);
 for (const style of app.getGistHubStyles().filter(style => style.id.startsWith('kit-'))) {
     themeIds.add(`${style.id}-light`);
     themeIds.add(`${style.id}-dark`);
@@ -42,6 +42,7 @@ const styleIds = new Set(app.getGistHubStyles().map(style => style.id));
 const pair = boot();
 // The picker commit must update its saved palette before closing and rolling back previews.
 const presetContext = { window: {
+    applyGistHubFont(font) { pair.store.font = font; return font; },
     commitGistHubThemePicker(root, theme) { root.savedTheme = theme; pair.store.theme = theme; }
 }, document: { documentElement: { dataset: {} } }, localStorage: {
     getItem(key) { return pair.store[key]; },
@@ -49,7 +50,7 @@ const presetContext = { window: {
 }};
 runInNewContext(backupStateScript + '\n' + source, { ...presetContext, crypto: globalThis.crypto });
 const picker = { dataset: {} };
-assert.equal(presetContext.window.getGistHubStylePresets().length, 27);
+assert.equal(presetContext.window.getGistHubStylePresets().length, 33);
 for (const preset of presetContext.window.getGistHubStylePresets()) {
     assert.ok(themeIds.has(preset.theme));
     assert.ok(styleIds.has(preset.style));
@@ -57,21 +58,25 @@ for (const preset of presetContext.window.getGistHubStylePresets()) {
     assert.equal(pair.store.theme, preset.theme);
     assert.equal(picker.dataset.savedStyle, preset.style);
     assert.equal(picker.savedTheme, preset.theme);
+    if (preset.font) {
+        assert.equal(picker.dataset.savedFont, preset.font);
+        assert.equal(pair.store.font, preset.font);
+    }
     assert.equal(boot(pair.store['gisthub:interface-style']).getGistHubStyle(), preset.style);
 }
 const lastTheme = pair.store.theme;
 presetContext.window.applyGistHubStylePreset(picker, 'invalid');
 assert.equal(pair.store.theme, lastTheme);
-console.log('PASS: 27 valid style/theme presets save both choices and update the picker rollback target.');
+console.log('PASS: 33 valid style/theme presets save both choices and update the picker rollback target.');
 
-const styleCss = readFileSync('GistHub/wwwroot/css/interface-styles.css', 'utf8') + readFileSync('GistHub/wwwroot/css/design-styles.css', 'utf8');
-assert.equal(new Set(app.getGistHubStyles().map(s => s.id)).size, 66);
-assert.equal(app.getGistHubStyles().filter(s => s.group === 'More design styles').length, 58);
+const styleCss = readFileSync('GistHub/wwwroot/css/interface-styles.css', 'utf8') + readFileSync('GistHub/wwwroot/css/design-styles.css', 'utf8') + readFileSync('GistHub/wwwroot/css/reference-appearances.css', 'utf8') + readFileSync('GistHub/wwwroot/css/gitpulse.css', 'utf8');
+assert.equal(new Set(app.getGistHubStyles().map(s => s.id)).size, 69);
+assert.equal(app.getGistHubStyles().filter(s => s.group === 'More design styles').length, 60);
 for (const style of app.getGistHubStyles().filter(s => s.id !== 'default')) {
     assert.ok(styleCss.includes(`[data-interface-style="${style.id}"]`), `Missing visual rules for ${style.id}`);
     assert.ok(style.description.length > 10);
 }
-console.log('PASS: all catalog entries have visual rules; 58 additions have unique IDs and retain the existing styles.');
+console.log('PASS: all catalog entries have visual rules; 60 additions have unique IDs and retain the existing styles.');
 
 const looseleafCss = readFileSync('GistHub/wwwroot/css/looseleaf.css', 'utf8');
 assert.doesNotMatch(looseleafCss, /:is\([^{}]*::/, 'Pseudo-elements cannot be placed inside :is(); notebook decorations would disappear.');

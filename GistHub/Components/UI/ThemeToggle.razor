@@ -73,9 +73,9 @@
                 {
                     var palette = Palettes.FirstOrDefault(p => p.Id == preset.Theme);
                     <button @key="preset.Id" type="button" role="option" tabindex="-1" aria-selected="@(SelectedPreset == preset.Id ? "true" : "false")" class="neo-theme-option"
-                            data-preset-option="@preset.Id" data-style-option="@preset.Style" data-theme-option="@preset.Theme" data-appearance-kind="presets" data-search-text="@preset.Name" @onclick="() => SelectPreset(preset.Id)">
+                            data-preset-option="@preset.Id" data-style-option="@preset.Style" data-theme-option="@preset.Theme" data-font-option="@preset.Font" data-appearance-kind="presets" data-search-text="@preset.Name" @onclick="() => SelectPreset(preset.Id)">
                         <span class="neo-theme-option__colors" aria-hidden="true"><i style="background:@palette?.Chrome"></i><i style="background:@palette?.Primary"></i><i style="background:@palette?.Secondary"></i></span>
-                        <span class="neo-theme-option__name">@preset.Name<span class="neo-theme-option__source">Style + color theme</span></span>
+                        <span class="neo-theme-option__name">@preset.Name<span class="neo-theme-option__source">@(preset.Font is null ? "Style + color theme" : "Style + color theme + font")</span></span>
                         <span class="neo-theme-option__check" aria-hidden="true">✓</span>
                     </button>
                 }
@@ -143,7 +143,7 @@
     }
     private sealed record AppearanceSelection(string Theme, string Style, string Font);
 
-    private string Font = "default";
+    private string Font = "plus-jakarta-sans";
     private List<FontOption> Fonts = [];
     private sealed record FontOption(string Id, string Name, string Family, string Group);
 
@@ -154,8 +154,8 @@
     }
     private string ListId => $"{PanelId}-options";
     private List<StylePreset> Presets = [];
-    private sealed record StylePreset(string Id, string Name, string Style, string Theme);
-    private string SelectedPreset => Presets.FirstOrDefault(p => p.Style == Style && p.Theme == Theme)?.Id ?? "";
+    private sealed record StylePreset(string Id, string Name, string Style, string Theme, string? Font);
+    private string SelectedPreset => Presets.FirstOrDefault(p => p.Style == Style && p.Theme == Theme && (p.Font is null || p.Font == Font))?.Id ?? "";
 
     private async Task SelectPreset(string id)
     {
@@ -163,9 +163,10 @@
         if (preset is null) return;
         Style = preset.Style;
         Theme = preset.Theme;
+        Font = preset.Font ?? Font;
     }
 
-    private string Style = "default";
+    private string Style = "gitpulse";
     private List<StyleOption> Styles = [];
     private sealed record StyleOption(string Id, string Name, string Description, string Group);
 
@@ -175,11 +176,11 @@
         await JS.InvokeVoidAsync("commitGistHubAppearancePicker", Picker, style, Theme);
     }
 
-    private Task RestoreStyle() => SelectStyle("default");
+    private Task RestoreStyle() => SelectStyle("gitpulse");
     private readonly string PanelId = $"theme-picker-{Guid.NewGuid():N}";
     private string HintId => $"{PanelId}-hint";
     private bool IsInitialized;
-    private string Theme = "";
+    private string Theme = "gitpulse-dark";
     private List<ThemeOption> Palettes = [];
     private string SelectedName => Palettes.FirstOrDefault(p => p.Id == Theme)?.Name ?? "Themes";
     private sealed record ThemeOption(string Id, string Name, string Chrome, string Primary, string Secondary, string Source);
@@ -217,9 +218,9 @@
 
     private async Task RestoreDefault()
     {
-        await SelectFont("default");
+        await SelectFont("plus-jakarta-sans");
         Theme = await JS.InvokeAsync<string>("getGistHubDefaultTheme");
-        await SelectStyle("default");
+        await SelectStyle("gitpulse");
     }
 
     public async ValueTask DisposeAsync()

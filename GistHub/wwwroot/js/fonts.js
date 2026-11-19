@@ -454,7 +454,7 @@
     window.getGistHubFonts = () => fonts;
     window.getGistHubFont = () => document.documentElement.dataset.font;
     window.applyGistHubFont = (id, persist = true) => {
-        const font = fonts.find(font => font.id === id) ?? fonts[0];
+        const font = fonts.find(font => font.id === id) ?? fonts.find(font => font.id === 'plus-jakarta-sans');
         const root = document.documentElement;
         const developer = font.group === 'Developer';
         const stack = `"${font.family}", "Noto Sans Myanmar Variable", "Myanmar Text", ${developer ? 'monospace' : 'system-ui, sans-serif'}`;
@@ -470,6 +470,6 @@
         return font.id;
     };
     let saved;
-    try { saved = localStorage.getItem('gisthub:font'); } catch { /* Keep Inter. */ }
+    try { saved = localStorage.getItem('gisthub:font'); } catch { /* Use the reference UI font when storage is unavailable. */ }
     window.applyGistHubFont(saved, false);
 })();
