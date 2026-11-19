@@ -84,9 +84,11 @@ export async function checkHomeDashboardAppearance({evaluate,send,sessionId,wait
           })};
         })()`);
         assert.ok(fits.left>=-1 && fits.right<=fits.width+1 && fits.buttons.every(button=>button.height>=44 && button.left>=fits.left-1 && button.right<=fits.right+1),`${layout} ${width} ${view}: ${JSON.stringify(fits)}`);
-        if (view==='Overview' || view==='Cadence & Goals') {
-          const table = view==='Overview' ? '.dashboard-table-scroll' : '.cadence-table-scroll';
-          assert.equal(await evaluate(`(() => {const table=document.querySelector(${JSON.stringify(table)});return table.tabIndex===0 && table.scrollWidth>table.clientWidth})()`),true);
+        if (view==='Overview') {
+          assert.equal(await evaluate(`(() => {const table=document.querySelector('.dashboard-table-scroll');return table.tabIndex===0 && table.scrollWidth>table.clientWidth})()`),true);
+        }
+        if (view==='Cadence & Goals') {
+          assert.equal(await evaluate(`(() => {const picker=document.querySelector('#view-cadence select');return picker.labels[0].textContent.includes('Repository') && picker.getBoundingClientRect().right<=innerWidth})()`),true);
         }
         if (view==='Benchmarks & CI') {
           assert.equal(await evaluate(`(() => {const button=document.querySelector('.city-building-hit');const name=button.querySelector('.city-building-name');return button.offsetHeight>=44 && name.offsetWidth>0})()`),true);

@@ -56,6 +56,14 @@ static class GithubDashboardTests
         Check(authenticated.Paths.Count == 3 && authenticated.Paths[1].StartsWith("/user/repos?") && authenticated.Paths[2].EndsWith("&page=2"), "Home must use authenticated repository pagination.");
         var analytics = await signedIn.GetDashboardAnalyticsAsync("alice", "fixture-token", new DateOnly(2026, 11, 1));
         Check(analytics.Commits is not null && analytics.Pulls is not null && authenticated.Paths.Skip(3).All(path => !Uri.UnescapeDataString(path).Contains("is:public")), "Analytics search must use the token without excluding private repositories.");
+        Check(analytics.Commits?.Items.Length == 101 && !analytics.Commits.IsPartial && authenticated.Paths.Any(path => path.StartsWith("/search/commits?") && path.EndsWith("&page=2")), "Commit search must continue beyond its first page.");
+        var privateRepo = account.Repositories.Single(repo => repo.Private);
+        var runs = await signedIn.GetRepositoryActivityAsync(privateRepo, "actions/runs", "fixture-token");
+        Check(runs?.Single() is { Name: "CI", Status: "success", Date: not null }, "Workflow status and timestamp must come from GitHub.");
+        var releases = await signedIn.GetRepositoryActivityAsync(privateRepo, "releases", "fixture-token");
+        Check(releases?.Single() is { Name: "v1", Status: "Published" }, "Unnamed releases must use their real Git tag.");
+        var milestones = await signedIn.GetRepositoryActivityAsync(privateRepo, "milestones", "fixture-token");
+        Check(milestones?.Single() is { Name: "Next release", Status: "3 of 5 issues closed" }, "Goal progress must use GitHub issue totals.");
         var beforeMismatch = authenticated.Paths.Count;
         Check((await signedIn.GetPublicDashboardAsync("other", "fixture-token")).Error is not null && authenticated.Paths.Count == beforeMismatch + 1, "A mismatched token must stop before fetching repository data.");
         var delayed = new DelayedHandler();
@@ -127,6 +135,10 @@ static class GithubDashboardTests
                 "/user" => """{"login":"alice"}""",
                 "/user/repos" => JsonSerializer.Serialize(Enumerable.Range(uri.Query.EndsWith("&page=2") ? 101 : 1, uri.Query.EndsWith("&page=2") ? 1 : 100)
                     .Select(id => new { id, name = "repo-" + id, @private = id == 101, owner = new { login = "alice" } })),
+                "/search/commits" => JsonSerializer.Serialize(new { total_count = 101, items = Enumerable.Range(uri.Query.EndsWith("&page=2") ? 101 : 1, uri.Query.EndsWith("&page=2") ? 1 : 100).Select(id => new { sha = id.ToString() }) }),
+                "/repos/alice/repo-101/actions/runs" => """{"workflow_runs":[{"name":"CI","conclusion":"success","status":"completed","created_at":"2026-11-19T00:00:00Z"}]}""",
+                "/repos/alice/repo-101/releases" => """[{"tag_name":"v1","published_at":"2026-11-19T00:00:00Z"}]""",
+                "/repos/alice/repo-101/milestones" => """[{"title":"Next release","open_issues":2,"closed_issues":3}]""",
                 _ => """{"total_count":0,"items":[]}"""
             };
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(json) });

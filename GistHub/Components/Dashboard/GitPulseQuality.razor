@@ -1,94 +1,14 @@
 @using GistHub.Models
 @using GistHub.Services
 @using System.Globalization
-<section id="view-quality" data-gitpulse-view="quality" class="gitpulse-view tab-panel space-y-5"><p class="gp-demo-note">Demo illustrations · No remote actions or measurements. Repository hygiene alone uses loaded metadata.</p>
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <div class="lg:col-span-7 bento-card p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between gap-2 mb-5">
-              <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-full bg-[#1E2025] border border-white/[0.08] flex items-center justify-center text-indigo-400">
-                  <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" x2="6" y1="9" y2="21"/></svg>
-                </div>
-                <div>
-                  <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Pull request &amp; release approvals</h2>
-                  <p class="text-xs text-[#8E939E]">Demo · Multi-stage CI checks, codeowners &amp; merge gates</p>
-                </div>
-              </div>
-              <div class="inline-flex bg-slate-100 dark:bg-[#0E0F12] p-1 rounded-full border border-black/5 dark:border-white/[0.07] text-xs">
-                <button data-pr-filter="review" @onclick="() => All = false" aria-pressed="@(!All ? "true" : "false")" class="pr-filter-btn active px-3 py-1 rounded-full bg-[#1E2025] text-white font-semibold cursor-pointer">To review</button>
-                <button data-pr-filter="all" @onclick="() => All = true" aria-pressed="@(All ? "true" : "false")" class="pr-filter-btn px-3 py-1 rounded-full text-[#8E939E] font-medium cursor-pointer">All</button>
-              </div>
-            </div>
-            <div id="featured-pr-card" class="bento-subcard p-5 mb-4">
-              <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center font-mono font-bold text-xs text-indigo-300">
-                    PR
-                  </div>
-                  <div>
-                    <h3 id="feat-pr-title" class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">feat(gateway): adaptive rate-limiter &amp; telemetry</h3>
-                    <p id="feat-pr-meta" class="text-xs text-[#8E939E]">#418 • Opened 2h ago • +342 / −48 lines</p>
-                  </div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span id="feat-pr-diff" class="font-mono font-bold text-sm tabular-nums text-slate-900 dark:text-[#F5F6F8]">+390 LOC</span>
-                  <span class="w-6 h-6 rounded-full bg-indigo-500/25 text-indigo-300 font-mono text-[10px] font-bold flex items-center justify-center">CI</span>
-                  <span class="w-6 h-6 rounded-full bg-violet-500/25 text-violet-300 font-mono text-[10px] font-bold flex items-center justify-center">QA</span>
-                  <span class="w-6 h-6 rounded-full border border-dashed border-white/25 text-[#8E939E] font-mono text-[10px] flex items-center justify-center">You</span>
-                </div>
-              </div>
-              <div class="relative mb-5">
-                <div class="flex items-center justify-between">
-                  <div class="flex flex-col items-start z-10">
-                    <span class="w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[10px] font-bold">✓</span>
-                    <span class="text-xs font-semibold mt-2 text-slate-900 dark:text-[#F5F6F8]">Opened</span>
-                    <span class="text-[11px] font-mono text-[#8E939E]">Checks 09:12</span>
-                  </div>
-                  <div class="flex-1 h-0.5 bg-indigo-500 -mt-8 mx-1"></div>
-                  <div class="flex flex-col items-center z-10">
-                    <span class="w-5 h-5 rounded-full bg-violet-500 text-white flex items-center justify-center text-[10px] font-bold">✓</span>
-                    <span class="text-xs font-semibold mt-2 text-slate-900 dark:text-[#F5F6F8]">CI Matrix</span>
-                    <span class="text-[11px] font-mono text-[#8E939E]">Passed 10:40</span>
-                  </div>
-                  <div class="flex-1 h-0.5 bg-white/15 -mt-8 mx-1"></div>
-                  <div class="flex flex-col items-center z-10">
-                    <span id="feat-step3-dot" class="w-5 h-5 rounded-full border-2 border-dashed border-amber-400 flex items-center justify-center text-[10px] text-amber-400">•</span>
-                    <span class="text-xs font-semibold mt-2 text-slate-900 dark:text-[#F5F6F8]">You</span>
-                    <span id="feat-step3-status" class="text-[11px] font-mono text-amber-400">@DemoStatus</span>
-                  </div>
-                  <div class="flex-1 h-0.5 bg-white/15 -mt-8 mx-1"></div>
-                  <div class="flex flex-col items-end z-10">
-                    <span id="feat-step4-dot" class="w-5 h-5 rounded-full border border-white/25 flex items-center justify-center text-[10px] text-[#8E939E]"></span>
-                    <span class="text-xs font-semibold mt-2 text-slate-900 dark:text-[#F5F6F8]">Merge</span>
-                    <span class="text-[11px] font-mono text-[#8E939E]">main • Auto</span>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-black/5 dark:border-white/[0.07]">
-                <span class="text-xs text-[#8E939E]">Needs 3 of 3 checks &amp; codeowner sign-off</span>
-                <div class="flex items-center gap-2">
-                  <button id="feat-pr-reject-btn" class="px-4 py-2 rounded-full text-xs font-semibold bg-[#17181C] hover:bg-rose-500/20 text-slate-200 hover:text-rose-300 border border-white/10 transition cursor-pointer" @onclick='() => DemoStatus = "Demo changes requested"'>
-                    Request changes
-                  </button>
-                  <button id="feat-pr-approve-btn" class="px-4 py-2 rounded-full text-xs font-bold bg-white text-[#0E0F12] hover:bg-indigo-100 transition shadow-sm cursor-pointer" @onclick='() => DemoStatus = "Demo approved"'>
-                    ✓ Approve
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div id="pr-queue-list" class="space-y-2.5">@foreach (var item in (All ? new[] { "Async connection pool", "Rotate signing keys", "Zero-allocation serializer" } : new[] { "Rotate signing keys" })) { <div class="bento-subcard p-3.5 flex justify-between gap-3 text-xs"><span class="text-amber-400">AB</span><span class="flex-1">@item<small class="block text-[#8E939E]">Demo request · Needs codeowner approval</small></span><strong class="font-mono">+412 LOC</strong></div> }</div>
-          </div>
-        </div>
-        <div class="lg:col-span-5 space-y-5">
+<section id="view-quality" data-gitpulse-view="quality" class="gitpulse-view tab-panel">
           <div class="bento-card p-6">
             <div class="flex items-center justify-between mb-1">
-              <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Repository hygiene quota</h2>
-              <span class="text-xs font-mono text-rose-400">Alert below 70%</span>
+              <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Repository metadata coverage</h2>
             </div>
             <p class="text-xs text-[#8E939E] mb-4">@string.Join(" · ", GithubDashboardSummary.Coverage(Rows).Select(x => $"{x.Name} {x.Count}/{Rows.Count}"))</p>
             <div class="relative flex flex-col items-center justify-center my-2">
-              <svg role="img" aria-label="Demo engineering visualization" viewBox="0 0 260 150" class="w-64 h-36 overflow-visible">
+              <svg role="img" aria-label="Repository metadata coverage" viewBox="0 0 260 150" class="w-64 h-36 overflow-visible">
                 <path d="M 25 130 A 105 105 0 0 1 235 130" fill="none" stroke="rgba(142,147,158,0.18)" stroke-width="18" stroke-linecap="round" />
                 <defs>
                   <linearGradient id="indigoVioletArc" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -98,7 +18,6 @@
                   </linearGradient>
                 </defs>
                 <path id="hygiene-arc-path" d="M 25 130 A 105 105 0 0 1 235 130" fill="none" stroke="url(#indigoVioletArc)" stroke-width="18" stroke-linecap="round" stroke-dasharray="330" stroke-dashoffset="@((330 * (100 - Score) / 100).ToString(CultureInfo.InvariantCulture))" />
-                <line x1="196" y1="52" x2="208" y2="40" stroke="#F43F5E" stroke-width="2.5" stroke-linecap="round" />
                 <text id="hygiene-arc-pct" x="130" y="106" text-anchor="middle" fill="#F5F6F8" font-size="34" font-weight="800" font-family="JetBrains Mono Variable">@(Rows.Count == 0 ? "—" : $"{Score:0}%")</text>
                 <text id="hygiene-arc-sub" x="130" y="126" text-anchor="middle" fill="#8E939E" font-size="11" font-family="Plus Jakarta Sans Variable">@Rows.Count loaded repositories</text>
               </svg>
@@ -108,26 +27,8 @@
               </div>
             </div>
           </div>
-          <div class="bento-card p-6">
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Security &amp; branch guardrails</h2>
-                <p class="text-xs text-[#8E939E]">Demo controls · Actual policies unavailable</p>
-              </div>
-              <span id="guardrails-count-pill" class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-violet-500/15 text-violet-300 border border-violet-500/30">Demo · @Rules.Count(x => x) / 5</span>
-            </div>
-            <div id="guardrails-list" class="space-y-3.5">@for (var i = 0; i < RuleNames.Length; i++) { var index = i; <div class="flex items-center justify-between gap-3"><div><p class="text-xs font-bold">@RuleNames[i]</p><p class="text-[11px] text-[#8E939E]">Demo only · Not audited</p></div><button role="switch" aria-label="@($"Demo {RuleNames[i]}")" aria-checked="@(Rules[i] ? "true" : "false")" class="guardrail-switch w-10 h-5 rounded-full relative shrink-0 @(Rules[i] ? "bg-indigo-600" : "bg-white/10")" @onclick="() => Rules[index] = !Rules[index]"><span class="block w-3.5 h-3.5 rounded-full bg-white" style="@(Rules[i] ? "transform:translateX(22px)" : "transform:translateX(4px)")"></span></button></div> }</div>
-          </div>
-        </div>
-      </div>
-    <p class="sr-only" role="status" aria-live="polite">@Feedback</p></section>
+</section>
 @code {
-    private string Feedback = "";
-
     [Parameter] public IReadOnlyList<GithubRepository> Rows { get; set; } = [];
-    private static readonly string[] RuleNames = ["Dependabot Security Alerts", "Secret Scanning & Push Guard", "Codeowner Mandatory Review", "Signed Commit Enforcement", "Strict Linear History"];
-    private bool[] Rules = [true,true,true,true,false];
-    private bool All;
-    private string DemoStatus = "Waiting (Demo)";
-    private double Score => Rows.Count == 0 ? 0 : 100d * GithubDashboardSummary.Coverage(Rows).Sum(x => x.Count) / (3 * Rows.Count);
+    private double Score => Rows.Count == 0 ? 0 : 100d * GithubDashboardSummary.Coverage(Rows).Sum(item => item.Count) / (3d * Rows.Count);
 }

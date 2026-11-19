@@ -24,7 +24,7 @@
     else if (View == "Code Review")
     {
         <h3>Review queue</h3>
-        <p class="analytics-context">Recent pull requests opened in repositories accessible to your GitHub token in the last 30 days. Up to 100 results.</p>
+        <p class="analytics-context">Recent pull requests opened in your token-visible repositories in the last 30 UTC dates.</p>
         @if (Loading) { <p role="status">Loading pull requests…</p> }
         else if (Data?.Pulls is not { } queue) { <p>Pull requests are unavailable.</p> }
         else
@@ -68,7 +68,7 @@
     else
     {
         <div class="analytics-heading">
-            <p class="analytics-context">Signed-in GitHub data · UTC · Up to 100 commits and 100 pull requests</p>
+            <p class="analytics-context">Your token-visible repositories · UTC · Default-branch commits</p>
             <label class="analytics-field">Period
                 <select @bind="Days"><option value="7">Last 7 days</option><option value="30">Last 30 days</option></select>
             </label>
@@ -84,7 +84,7 @@
                 ("Commits", Count(commits?.Length, Data?.Commits?.IsPartial), "M3 12h5m8 0h5M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0"),
                 ("Pull requests opened", Count(pulls?.Length, Data?.Pulls?.IsPartial), "M6 7v10m12 0v-5a4 4 0 0 0-4-4h-2m0 0 3-3m-3 3 3 3M6 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM6 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm12 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"),
                 ("Merged pull requests opened", Count(pulls?.Count(pull => pull.Status == "Merged"), Data?.Pulls?.IsPartial), "M6 7v10m0-5a6 6 0 0 0 6 6h4M6 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm12-1 4-4m-4 0 2 2"),
-                ("Average review time", "Unavailable", "M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z")
+                ("Average time to merge", MergeTime(pulls, Data?.Pulls?.IsPartial == true), "M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z")
             };
             <div class="analytics-grid analytics-metrics" @key="Days">
                 @foreach (var metric in metrics)
@@ -94,7 +94,7 @@
             </div>
             @if (Data?.Commits?.IsPartial == true || Data?.Pulls?.IsPartial == true)
             {
-                <p class="analytics-context">GitHub returned partial results. Counts and rankings reflect the returned items.</p>
+                <p class="analytics-context">GitHub returned partial results. Activity, rankings and metrics use the loaded entries.</p>
             }
             var contributors = commits?
                 .Where(commit => !string.IsNullOrEmpty(commit.Author?.Login))
@@ -220,5 +220,14 @@
     private void ClearSelection() => Selected = null;
 
     private static string Count(int? value, bool? partial) =>
-        value is null ? "Unavailable" : value.Value.ToString("N0") + (partial == true ? " sampled" : "");
+        value is null ? "Unavailable" : value.Value.ToString("N0") + (partial == true ? " loaded" : "");
+
+    private static string MergeTime(GithubAnalyticsPull[]? pulls, bool partial)
+    {
+        if (pulls is null) return "Unavailable";
+        var hours = pulls.Where(pull => pull.PullRequest?.MergedAt is { } merged && merged >= pull.CreatedAt)
+            .Select(pull => (pull.PullRequest!.MergedAt!.Value - pull.CreatedAt).TotalHours)
+            .ToArray();
+        return hours.Length == 0 ? "—" : $"{hours.Average():0.0} h{(partial ? " (partial)" : "")}";
+    }
 }

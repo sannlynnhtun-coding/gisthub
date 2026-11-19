@@ -16,7 +16,7 @@
         <nav class="dashboard-tabs" aria-label="Dashboard views">
             @foreach (var view in Views) { <button type="button" class="@(ActiveView == view.Id ? "selected" : "")" aria-pressed="@(ActiveView == view.Id ? "true" : "false")" @onclick="() => SelectView(view.Id)">@view.Name</button> }
         </nav>
-        <button id="dashboard-export" aria-label="Export loaded repositories" class="btn btn-secondary btn-md" disabled="@(Result is null || Rows.Count == 0 || Loading)" @onclick="ExportAsync"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export CSV</button>
+        <button id="dashboard-export" aria-label="Export loaded repositories" title="Export loaded repositories" class="btn btn-secondary btn-md" disabled="@(Result is null || Rows.Count == 0 || Loading)" @onclick="ExportAsync"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export CSV</button>
     </header>
     @if (AppState.CurrentProfile is null || NeedsSignIn)
     {
@@ -75,8 +75,8 @@
             <GitPulseAnalytics @key="Revision" View="Code Review" DataRequest="GetAnalytics(developer.Login, profile.AccessToken)" InitialReview="RequestedReview" />
         }
     }
-    else if (ActiveView == "benchmarks") { <GitPulseBenchmarks Rows="Rows" RepositorySelected="InspectCityRepositoryAsync" /> }
-    else { <GitPulseCadence /> }
+    else if (ActiveView == "benchmarks") { <GitPulseBenchmarks @key="(Revision, ActiveView)" Rows="Rows" Token="@(AppState.CurrentProfile?.AccessToken ?? "")" RepositorySelected="InspectCityRepositoryAsync" /> }
+    else { <GitPulseBenchmarks @key="(Revision, ActiveView)" Rows="Rows" Token="@(AppState.CurrentProfile?.AccessToken ?? "")" Cadence="true" /> }
     <dialog id="dashboard-inspector" class="dashboard-inspector" aria-labelledby="inspector-title">
         @if (Inspected is { } inspected)
         {

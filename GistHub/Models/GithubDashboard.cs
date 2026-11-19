@@ -57,7 +57,7 @@ public sealed record GithubAnalyticsSearch<T>(
     public bool IsPartial => Incomplete || TotalCount > Items.Length;
 }
 
-public sealed record GithubAnalyticsCommit(GithubDeveloper? Author, GithubCommitMetadata? Commit);
+public sealed record GithubAnalyticsCommit(GithubDeveloper? Author, GithubCommitMetadata? Commit, [property: JsonPropertyName("html_url")] string? HtmlUrl = null);
 public sealed record GithubCommitMetadata(GithubCommitAuthor? Author);
 public sealed record GithubCommitAuthor(DateTimeOffset? Date);
 
@@ -71,3 +71,21 @@ public sealed record GithubAnalyticsPull(
 }
 
 public sealed record GithubPullMetadata([property: JsonPropertyName("merged_at")] DateTimeOffset? MergedAt);
+
+public sealed record GithubRepositoryActivity(string Name, string Status, DateTimeOffset? Date, string? Url);
+
+internal sealed record GithubWorkflowRuns([property: JsonPropertyName("workflow_runs")] GithubWorkflowRun[]? WorkflowRuns);
+internal sealed record GithubWorkflowRun(string Name, string Status, string? Conclusion,
+    [property: JsonPropertyName("created_at")] DateTimeOffset CreatedAt,
+    [property: JsonPropertyName("html_url")] string? HtmlUrl);
+
+internal sealed record GithubRelease(string? Name, bool Draft, bool Prerelease,
+    [property: JsonPropertyName("tag_name")] string TagName,
+    [property: JsonPropertyName("published_at")] DateTimeOffset? PublishedAt,
+    [property: JsonPropertyName("html_url")] string? HtmlUrl);
+
+internal sealed record GithubMilestone(string Title,
+    [property: JsonPropertyName("open_issues")] int OpenIssues,
+    [property: JsonPropertyName("closed_issues")] int ClosedIssues,
+    [property: JsonPropertyName("due_on")] DateTimeOffset? DueOn,
+    [property: JsonPropertyName("html_url")] string? HtmlUrl);

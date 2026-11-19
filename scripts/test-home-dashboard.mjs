@@ -35,6 +35,9 @@ export async function checkHomeDashboard({ evaluate, send, sessionId, waitFor })
         if(resource==='/search/commits')data={total_count:1,items:[{author:{login:'fixture'},commit:{author:{date:new Date().toISOString()}}}]};
         if(resource==='/search/issues')data={total_count:1,items:[{id:1,number:3,title:'Review fixture',state:'open',body:'Fixture details',
           created_at:new Date().toISOString(),user:{login:'fixture'},html_url:'https://github.com/fixture/repo-01/pull/3',pull_request:{}}]};
+        if(resource.endsWith('/actions/runs'))data={workflow_runs:[{name:'CI fixture',status:'completed',conclusion:'success',created_at:'2026-11-19T00:00:00Z'}]};
+        if(resource.endsWith('/releases'))data=[{tag_name:'v1.0-fixture',published_at:'2026-11-19T00:00:00Z'}];
+        if(resource.endsWith('/milestones'))data=[{title:'Release fixture milestone',open_issues:2,closed_issues:3,due_on:'2026-12-01T00:00:00Z'}];
         return Promise.resolve(new Response(JSON.stringify(data),{headers:{'Content-Type':'application/json'}}));
       }
       return originalFetch(input,init);
@@ -90,7 +93,13 @@ export async function checkHomeDashboard({ evaluate, send, sessionId, waitFor })
   for (const label of ['Quality & Review','Benchmarks & CI','Cadence & Goals','Overview']) {
     await selectButton('[aria-label="Dashboard views"]',label);
     await waitFor(`document.querySelector('[aria-label="Dashboard views"] .selected')?.textContent===${JSON.stringify(label)}`,label);
+    if (label === 'Cadence & Goals') {
+      await waitFor("document.querySelector('#view-cadence')?.textContent.includes('v1.0-fixture') && document.querySelector('#view-cadence')?.textContent.includes('3 of 5 issues closed')",'GitHub releases and milestones');
+    }
     if (label === 'Benchmarks & CI') {
+      await waitFor("document.querySelector('#view-benchmarks .analytics-list')?.textContent.replace(/\\s+/g,' ').includes('CI fixture · success')",'GitHub Actions run and result');
+      await evaluate("(()=>{const repo=document.querySelector('#view-benchmarks select');repo.value='2';repo.dispatchEvent(new Event('change',{bubbles:true}));})()");
+      await waitFor("dashboardRequests.some(r=>r.resource==='/repos/fixture/repo-02/actions/runs' && r.authorization==='Bearer fixture-token')",'repository selection uses the current token');
       await waitFor("document.querySelector('#repo-city-card button')?.id==='city-23'",'city ranks repositories by size');
       const cityColors = await evaluate(`(() => {
         const previous = document.documentElement.dataset.theme;
@@ -111,6 +120,7 @@ export async function checkHomeDashboard({ evaluate, send, sessionId, waitFor })
       await waitFor("document.activeElement.id==='city-23'",'city restores building focus');
     }
   }
+  assert.equal(await evaluate("document.querySelector('.dashboard')?.textContent.includes('Demo')"),false);
   const { checkHomeDashboardAppearance } = await import('./test-home-dashboard-appearance.mjs');
   await checkHomeDashboardAppearance({evaluate,send,sessionId,waitFor});
   console.log('PASS: signed-in Home, repository paging, inspector focus, analytics views and top-level navigation.');

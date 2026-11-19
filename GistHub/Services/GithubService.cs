@@ -12,6 +12,7 @@ public interface IGithubService
     GithubApiError? LastError { get; }
     Task<GithubDashboardResult> GetPublicDashboardAsync(string username, string? token = null);
     Task<GithubDashboardAnalytics> GetDashboardAnalyticsAsync(string login, string token, DateOnly since);
+    Task<IReadOnlyList<GithubRepositoryActivity>?> GetRepositoryActivityAsync(GithubRepository repository, string feed, string token);
     Task<List<LocalGist>> GetPublicGistsAsync(string? token = null);
     Task<List<LocalGist>> GetUserGistsAsync(string token);
     Task<bool> DeleteGistAsync(string gistId, string token);
@@ -214,25 +215,68 @@ public class GithubService : IGithubService
         if (!GithubDashboardSummary.ValidUsername(login) || string.IsNullOrWhiteSpace(token))
             return new(null, null);
 
-        var commits = SearchDashboardAsync<GithubAnalyticsCommit>("commits", $"user:{login} author-date:>={since:yyyy-MM-dd}", "author-date", token);
-        var pulls = SearchDashboardAsync<GithubAnalyticsPull>("issues", $"user:{login} is:pr created:>={since:yyyy-MM-dd}", "created", token);
+        var commits = SearchDashboardAsync<GithubAnalyticsCommit>("commits", $"user:{login} author-date:>={since:yyyy-MM-dd}", "author-date", token, commit => commit.HtmlUrl);
+        var pulls = SearchDashboardAsync<GithubAnalyticsPull>("issues", $"user:{login} is:pr created:>={since:yyyy-MM-dd}", "created", token, pull => pull.Id.ToString(System.Globalization.CultureInfo.InvariantCulture));
         await Task.WhenAll(commits, pulls);
         return new(await commits, await pulls);
     }
 
-    private async Task<GithubAnalyticsSearch<T>?> SearchDashboardAsync<T>(string resource, string query, string sort, string token)
+    private async Task<GithubAnalyticsSearch<T>?> SearchDashboardAsync<T>(string resource, string query, string sort, string token, Func<T, string?> key)
+    {
+        var path = $"/search/{resource}?q={Uri.EscapeDataString(query)}&sort={sort}&order=desc&per_page=100";
+        var items = new List<T>();
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var total = 0;
+        var incomplete = false;
+        // shortcut: GitHub exposes at most 1,000 search matches, use repository-level collection if complete high-volume history is required.
+        for (var page = 1; page <= 10; page++)
+        {
+            var batch = await GetDashboardJsonAsync<GithubAnalyticsSearch<T>>($"{path}&page={page}", token);
+            if (batch?.Items is null)
+                return page == 1 ? null : new(total, true, items.ToArray());
+
+            if (page == 1) total = batch.TotalCount;
+            incomplete |= batch.Incomplete || total != batch.TotalCount;
+            foreach (var item in batch.Items)
+            {
+                var id = key(item);
+                if (id is null || seen.Add(id)) items.Add(item);
+                else incomplete = true;
+            }
+            if (batch.Items.Length < 100 || items.Count >= total) break;
+        }
+        return new(total, incomplete, items.ToArray());
+    }
+
+    public async Task<IReadOnlyList<GithubRepositoryActivity>?> GetRepositoryActivityAsync(GithubRepository repository, string feed, string token)
+    {
+        if (GithubDashboardSummary.CloneCommand(repository) is null || string.IsNullOrWhiteSpace(token)) return null;
+
+        var path = $"/repos/{repository.Owner!.Login}/{repository.Name}";
+        return feed switch
+        {
+            "actions/runs" => (await GetDashboardJsonAsync<GithubWorkflowRuns>($"{path}/actions/runs?per_page=20", token))?.WorkflowRuns
+                ?.Select(run => new GithubRepositoryActivity(run.Name, run.Conclusion ?? run.Status, run.CreatedAt, run.HtmlUrl)).ToArray(),
+            "releases" => (await GetDashboardJsonAsync<GithubRelease[]>($"{path}/releases?per_page=20", token))
+                ?.Select(release => new GithubRepositoryActivity(string.IsNullOrWhiteSpace(release.Name) ? release.TagName : release.Name,
+                    release.Draft ? "Draft" : release.Prerelease ? "Prerelease" : "Published", release.PublishedAt, release.HtmlUrl)).ToArray(),
+            "milestones" => (await GetDashboardJsonAsync<GithubMilestone[]>($"{path}/milestones?state=open&sort=due_on&direction=asc&per_page=20", token))
+                ?.Select(milestone => new GithubRepositoryActivity(milestone.Title, $"{milestone.ClosedIssues} of {milestone.ClosedIssues + milestone.OpenIssues} issues closed", milestone.DueOn, milestone.HtmlUrl)).ToArray(),
+            _ => null
+        };
+    }
+
+    private async Task<T?> GetDashboardJsonAsync<T>(string path, string token)
     {
         try
         {
-            using var request = CreateGitHubRequest(HttpMethod.Get, $"/search/{resource}?q={Uri.EscapeDataString(query)}&sort={sort}&order=desc&per_page=100", token);
+            using var request = CreateGitHubRequest(HttpMethod.Get, path, token);
             using var response = await _http.SendAsync(request);
-            return response.IsSuccessStatusCode
-                ? await response.Content.ReadFromJsonAsync<GithubAnalyticsSearch<T>>(JsonOptions)
-                : null;
+            return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<T>(JsonOptions) : default;
         }
         catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException or NotSupportedException)
         {
-            return null;
+            return default;
         }
     }
 

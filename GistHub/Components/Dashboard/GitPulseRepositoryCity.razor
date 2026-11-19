@@ -11,9 +11,8 @@
         <span class="px-2.5 py-1 rounded-full text-[11px] font-mono city-size border shrink-0">@((Rows.Sum(repo => (double)(repo.SizeKb ?? 0)) / 1024).ToString("F1")) MB · GitHub</span>
     </header>
     <div class="city-toolbar">
-        <strong>GITHUB × VERCEL · REPOSITORY CITY</strong>
+        <strong>GitHub repository footprint</strong>
         <span>@top.Length PROJECTS</span>
-        <span>DEMO DEPLOYMENTS</span>
         @if (top.Length > 0) { <span>SELECT A BUILDING TO INSPECT</span> }
     </div>
     <div id="repo-city-scene">
@@ -26,17 +25,6 @@
             <rect width="1080" height="560" fill="url(#city-light)" />
             <rect width="1080" height="560" fill="url(#city-grid)" />
             <path d="M0 590 1080 50M0 350 700 0M250 620 1080 205" stroke="var(--city-grid)" stroke-opacity=".4" fill="none" />
-            @foreach (var (from, to) in Routes.Where(route => route.To < top.Length))
-            {
-                var (x, y) = Places[from];
-                var (endX, endY) = Places[to];
-                var midpoint = (y + endY) / 2d;
-                var route = FormattableString.Invariant($"M{x} {y + 25}L{x} {midpoint}L{endX} {midpoint + 35}L{endX} {endY + 25}");
-                <g aria-hidden="true">
-                    <path d="@route" class="city-link-track" />
-                    <path d="@route" class="city-link-flow" style="@FormattableString.Invariant($"--flow-color:{Colors[to]};animation-delay:-{to * .65}s")" />
-                </g>
-            }
             @for (var index = 0; index < top.Length; index++)
             {
                 var repo = top[index];
@@ -61,18 +49,13 @@
                             }
                         </g>
                     }
-                    @if (index == top.Length - 1)
-                    {
-                        <g class="city-deploy-scan" aria-hidden="true"><path d="M-70 8 5-30 82 10 6 49Z" fill="var(--city-halo)" stroke="var(--city-accent)" stroke-width="2" /><path d="M6 49V-95" stroke="var(--city-accent)" stroke-width="3" opacity=".65" /></g>
-                        <g transform="translate(-80 -105)"><rect width="182" height="24" rx="3" fill="var(--city-panel)" stroke="var(--city-accent)" stroke-opacity=".7" /><text x="91" y="16" text-anchor="middle" fill="var(--city-text)" font-size="10">◉ DEPLOYING · DEMO LOOP</text></g>
-                    }
                     <ellipse cx="69" cy="23" rx="9" ry="5" fill="var(--city-ground)" stroke="@color" />
                     <path d="M60 5v18m18-18v18" stroke="@color" />
                     <ellipse cx="69" cy="5" rx="9" ry="5" fill="var(--city-rack)" stroke="@color" />
                     <g transform="translate(-85 73)">
                         <rect width="190" height="45" rx="4" fill="var(--city-panel)" fill-opacity=".92" stroke="@color" stroke-opacity=".6" />
                         <text x="95" y="17" text-anchor="middle" fill="var(--city-text)" font-size="11" font-weight="700">@shortName</text>
-                        <text x="95" y="33" text-anchor="middle" fill="var(--city-muted)" font-size="9">@((repo.SizeKb.Value / 1024d).ToString("F1")) MB · @repo.Stars ★ · GitHub · Vercel unverified</text>
+                        <text x="95" y="33" text-anchor="middle" fill="var(--city-muted)" font-size="9">@((repo.SizeKb.Value / 1024d).ToString("F1")) MB · @repo.Stars ★ · GitHub</text>
                     </g>
                 </g>
             }
@@ -93,20 +76,6 @@
             }
         </div>
         </div>
-        @if (top.Length > 0)
-        {
-            <div class="city-pipeline" aria-label="Simulated deployment pipeline">
-                <div class="city-pipeline-heading"><strong>▲ DEPLOY PIPELINE</strong><span>DEMO · NOT LIVE</span></div>
-                <div class="city-pipeline-repo">@top[^1].Name</div>
-                <div class="city-pipeline-steps">
-                    @for (var stage = 0; stage < Stages.Length; stage++)
-                    {
-                        <span style="@($"--stage:{stage}")"><i></i>@Stages[stage]</span>
-                    }
-                </div>
-                <div class="city-pipeline-log">Preview animation · deployment status unavailable</div>
-            </div>
-        }
     </div>
 </section>
 
@@ -115,8 +84,6 @@
     [Parameter] public EventCallback<GithubRepository> RepositorySelected { get; set; }
 
     private static readonly (int X, int Y)[] Places = [(420,120), (240,225), (650,220), (450,325), (690,420), (855,325)];
-    private static readonly (int From, int To)[] Routes = [(0,1), (0,2), (1,3), (2,3), (2,5), (3,4), (4,5)];
     private static readonly string[] Colors = ["var(--city-accent)", "var(--city-cyan)", "var(--city-gold)", "var(--city-green)", "var(--city-cap)", "var(--city-pink)"];
     private static readonly string[] RackPalettes = ["cyan", "amber", "violet", "orange", "indigo", "pink"];
-    private static readonly string[] Stages = ["CLONE", "BUILD", "PUSH", "START", "HEALTH"];
 }
