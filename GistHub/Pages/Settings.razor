@@ -90,7 +90,13 @@
     {
         if (Busy || Module is null || Json is null) return;
         Busy = true; Error = null;
-        try { await Module.InvokeVoidAsync("restoreBackup", Json); Navigation.NavigateTo("settings", forceLoad: true); }
+        try
+        {
+            await Module.InvokeVoidAsync("restoreBackup", Json);
+            Json = null; Preview = null;
+            Drafts.Save(GetType(), CaptureDraft());
+            Navigation.NavigateTo("settings", forceLoad: true);
+        }
         catch (JSException ex) { Error = ex.Message.Split('\n')[0]; }
         finally { Busy = false; }
     }
