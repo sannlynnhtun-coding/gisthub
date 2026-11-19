@@ -9,3 +9,5 @@ Keep the layout picker, profile menu, navigation, pinning, dashboard views, and 
 Close More when a button or link is activated or a workspace layout is selected. Keep backup errors visible below the header after the menu closes.
 
 Style the workspace picker after the profile menu, using its rounded surface and theme colors. Highlight the current layout in browsers that support styling the native picker. Keep the existing select, saved preference, keyboard controls, and mobile dismissal behavior.
+
+Offer Install app in the desktop toolbar and mobile More menu when the browser provides an install prompt. Supply 192px and 512px icons from the existing brand asset, and keep the manifest identity and service worker update flow. Safari users can install from the browser's Add to Home Screen action.

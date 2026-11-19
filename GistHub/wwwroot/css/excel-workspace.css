@@ -44,6 +44,7 @@
   .excel-topbar .workspace-more-panel { display: contents; }
 }
 /* Compact command strip: categories scroll independently of the fixed collapse control. */
+:root:not([data-pwa-install-available]) .workspace-install-action { display: none !important; }
 .neo-main > .workspace-ribbon { position: relative; z-index: 20; padding: 0; border: 0 !important; border-bottom: 1px solid hsl(var(--border)) !important; }
 .workspace-tab-row { display: flex; align-items: center; padding: 0 12px; gap: 8px; }
 .workspace-ribbon .workspace-tabs { flex: 1; min-width: 0; gap: 2px; height: 44px; min-height: 44px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding: 0; border: 0; align-items: stretch; scrollbar-width: thin; }
@@ -133,6 +134,7 @@
   .workspace-ribbon .quick-access-actions button,
   .workspace-ribbon .tool-list-entry > .tool-help-button { min-width: 44px; width: 44px; min-height: 44px; height: 44px; }
   .neo-main .workspace-ribbon .tool-list-entry > :is(a, button:not(.tool-help-button)) { min-height: 44px; }
+  .workspace-more-panel .workspace-install-action { min-height: 44px; justify-content: flex-start; }
 }
 
 .excel-topbar .profile-avatar { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; gap: 8px; min-width: 32px; height: 32px; padding: 0 !important; border: 0 !important; background: transparent !important; color: hsl(var(--foreground)) !important; box-shadow: none !important; }
