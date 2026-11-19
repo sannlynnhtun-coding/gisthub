@@ -312,8 +312,29 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
-            window.gistHubServiceWorkerReady = navigator.serviceWorker.register('service-worker.js', { updateViaCache: 'none' });
+            const workers = navigator.serviceWorker;
+            let hadController = !!workers.controller;
+            let reloading = false;
+            workers.addEventListener('controllerchange', () => {
+                if (!workers.controller || reloading) return;
+                if (hadController) {
+                    reloading = true;
+                    window.location.reload();
+                }
+                hadController = true;
+            });
+
+            window.gistHubServiceWorkerReady = workers.register('service-worker.js', { updateViaCache: 'none' });
             window.gistHubServiceWorkerReady.catch(error => console.warn('Service worker registration failed:', error));
+            document.addEventListener('visibilitychange', async () => {
+                if (document.visibilityState !== 'visible') return;
+                try {
+                    const registration = await window.gistHubServiceWorkerReady;
+                    await registration.update();
+                } catch (error) {
+                    console.debug('Service worker update check failed:', error);
+                }
+            });
         }
     </script>
 </body>

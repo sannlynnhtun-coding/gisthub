@@ -30,6 +30,7 @@ async function onInstall(event) {
     // asset manifest. Cache it without SRI so that a rolling deployment does not
     // make the entire service-worker installation fail.
     await cache.add(new Request('index.html', { cache: 'no-cache' }));
+    await self.skipWaiting();
 }
 
 async function onActivate(event) {
