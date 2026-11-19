@@ -123,7 +123,6 @@
   }
   .workspace-more-panel :is(.neo-icon-button, .neo-new-snippet)::after { content: attr(aria-label) / ""; }
   .workspace-more-panel [data-testid="blur-files-trigger"]::after { content: attr(title) / ""; }
-  .workspace-more-panel .neo-backup-reminder__error { position: static; display: block; width: auto; }
   .workspace-more-panel .workspace-layout-select { min-height: 44px !important; }
   .workspace-tab-row { padding-inline: 8px; gap: 4px; }
   .neo-main .workspace-ribbon .workspace-commands { padding: 6px 8px; }

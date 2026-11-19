@@ -5,3 +5,5 @@ Let the header grow with its controls below 768px in both workspace layouts. Kee
 Hide the top-bar wordmark below 768px. Keep Home, search, and profile on the same row. Put the layout picker, snippet and backup actions, collection controls, and file previews toggle in More. Use a native popover so touch, keyboard dismissal, and focus return work without a horizontally scrolling header. Check the shared controls on desktop and the collection actions on mobile.
 
 Keep the layout picker, profile menu, navigation, pinning, dashboard views, and CSV export available through their existing controls. Check header and ribbon bounds, pin targets, and all dashboard views at 320px and 390px. Check desktop layout at 1440px.
+
+Close More when a button or link is activated or a workspace layout is selected. Keep backup errors visible below the header after the menu closes.

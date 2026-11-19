@@ -7,8 +7,11 @@
         <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg>
         <span class="neo-backup-reminder__dot" aria-hidden="true"></span>
     </button>
-    @if (Error is not null) { <span class="neo-backup-reminder__error" role="alert">@Error</span> }
 </div>
+
+<SectionContent SectionName="backup-reminder-error">
+    @if (Error is not null) { <p class="workspace-layout-error" role="alert">@Error</p> }
+</SectionContent>
 
 @code {
     private ElementReference Reminder;

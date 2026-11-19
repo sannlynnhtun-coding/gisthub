@@ -62,6 +62,16 @@ export async function checkHomeDashboardAppearance({evaluate,send,sessionId,wait
       await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27},sessionId);
       await waitFor(`!document.querySelector('#workspace-more').matches(':popover-open') &&
         document.activeElement.matches('.workspace-more-trigger')`, 'More closes and returns focus');
+      const blurWasOn = await evaluate(`(() => {
+        document.querySelector('.workspace-more-trigger').click();
+        const blur = document.querySelector('[data-testid="blur-files-trigger"]');
+        const wasOn = blur.getAttribute('aria-pressed');
+        blur.click();
+        return wasOn;
+      })()`);
+      await waitFor(`!document.querySelector('#workspace-more').matches(':popover-open') &&
+        document.querySelector('[data-testid="blur-files-trigger"]').getAttribute('aria-pressed') !== ${JSON.stringify(blurWasOn)}`,
+        'File previews toggle and More closes');
       for (const view of ['Overview','Repos','Quality & Review','Benchmarks & CI','Cadence & Goals']) {
         await evaluate(`Array.from(document.querySelectorAll('.dashboard-toolbar nav button')).find(e=>e.textContent===${JSON.stringify(view)}).click()`);
         await waitFor(`document.querySelector('.dashboard-toolbar .selected')?.textContent===${JSON.stringify(view)}`,view);

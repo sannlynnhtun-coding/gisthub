@@ -27,12 +27,14 @@
                 <span>@WorkspaceTitle</span><span class="portal-local-status">Local</span>
             </div>
             <div class="neo-topbar-actions flex items-center gap-3">
-                <div id="workspace-more" class="workspace-more-panel" popover="auto" role="group" aria-label="More workspace actions">
+                <div id="workspace-more" class="workspace-more-panel" popover="auto" role="group" aria-label="More workspace actions"
+                     onclick="if (event.target.closest('button:not(:disabled), a[href]')) this.hidePopover()"
+                     onchange="if (event.target.matches('.workspace-layout-select')) this.hidePopover()">
                     <select class="workspace-layout-select" aria-label="Workspace layout" @bind:get="WorkspaceLayout" @bind:set="ChangeWorkspaceLayout">
                         <option value="excel">Excel</option>
                         <option value="admin">Admin portal</option>
                     </select>
-                    <NavLink href="editor" class="neo-new-snippet btn btn-primary btn-md" title="Create a new snippet" aria-label="New snippet" onclick="this.closest('#workspace-more:popover-open')?.hidePopover()">
+                    <NavLink href="editor" class="neo-new-snippet btn btn-primary btn-md" title="Create a new snippet" aria-label="New snippet">
                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
                         <span class="neo-new-snippet__label" aria-hidden="true">New Snippet</span>
                     </NavLink>
@@ -66,6 +68,7 @@
                 <button type="button" class="workspace-more-trigger neo-icon-button" popovertarget="workspace-more">More</button>
             </div>
         </header>
+        <SectionOutlet SectionName="backup-reminder-error" />
         <NavMenu @ref="WorkspaceNavigation" OnOpenWorkbenchTool="OpenWorkbenchTool" OnToggleSidebar="ToggleSidebar" IsAdminPortal="IsAdminPortal" IsSidebarCollapsed="@(IsAdminPortal && IsSidebarCollapsed)" IsVercelApp="IsVercelApp" />
         @if (WorkspaceLayoutError is not null) { <p role="status" class="workspace-layout-error">@WorkspaceLayoutError</p> }
 

@@ -6,7 +6,6 @@
 .neo-backup-reminder[hidden] { display: none; }
 .neo-backup-reminder > button { position: relative; width: 2.75rem; height: 2.75rem; }
 .neo-backup-reminder__dot { position: absolute; top: .2rem; right: .2rem; width: .5rem; height: .5rem; border-radius: 50%; background: hsl(var(--destructive)); }
-.neo-backup-reminder__error { position: absolute; right: 0; top: 100%; width: 16rem; padding: .75rem; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); color: hsl(var(--foreground)); font-size: .75rem; }
 .neo-theme-trigger {
   display: inline-flex; align-items: center; gap: 0.55rem; min-height: 2.5rem;
   max-width: 11rem; padding: 0.45rem 0.65rem; border: 2px solid hsl(var(--border));
