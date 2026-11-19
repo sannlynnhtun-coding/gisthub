@@ -41,8 +41,12 @@
             {
                 <p>Add commands from the other tabs using their ☆ buttons.</p>
             }
-            @foreach (var command in DisplayedCommands)
+            @foreach (var group in DisplayedCommands.GroupBy(CommandGroup))
             {
+                <div class="ribbon-group" role="group" aria-label="@group.Key">
+                <div class="ribbon-group-items">
+                @foreach (var command in group)
+                {
                 <div @key="command.Id" @ref="CommandElements[command.Id]" tabindex="-1" data-command-id="@command.Id"
                      class="ribbon-command @(DropTarget == command.Id ? "is-drop-target" : "")"
                      @ondragenter="() => SetDropTarget(command.Id)" @ondragover:preventDefault="true"
@@ -68,6 +72,10 @@
                                 @onclick="() => ToggleAsync(command.Id)">@(QuickIds.Contains(command.Id) ? "★" : "☆")</button>
                     </div>
                 </div>
+                }
+                </div>
+                <span class="ribbon-group-label" aria-hidden="true">@group.Key</span>
+                </div>
             }
         </div>
         </div>
@@ -89,6 +97,24 @@
         AnimateCategoryOpen = IsAdminPortal && !IsCollapsed;
         EndDrag();
     }
+
+    private string CommandGroup(RibbonCommand command) => SelectedTab == "Quick Access" ? "Pinned commands" : command.Id switch
+    {
+        "home" or "my-collection" or "new-snippet" => "Workspace",
+        "playlists" or "slh-collection" => "Collections",
+        "discovery" or "trending" => "Explore",
+        "agent-skills" or "tools-guide" or "visual-studio-shortcuts" => "Resources",
+        "password-generator" or "cron-expression" => "Utilities",
+        "json-parser" or "json-to-table" => "JSON",
+        "base64" => "Encoding",
+        "markdown-live-preview" => "Write & preview",
+        "markdown-to-docx" or "markdown-to-cards" or "markdown-converters" or "markdown-to-text" => "Export & convert",
+        "diagram-editor" => "Create",
+        "mermaid-to-image" or "formula-to-image" => "Render & export",
+        "html-to-image" or "code-image" => "Create images",
+        "youtube-downloader" => "Download",
+        _ => "Workspace preferences"
+    };
 
     private sealed record RibbonCommand(string Id, string Name, string Tab);
     private static readonly RibbonCommand[] Commands =
@@ -137,7 +163,7 @@
         _ => "M3 5h18 M3 12h18 M3 19h18 M7 3v4 M16 10v4 M10 17v4"
     };
     private string SelectedTab = "Home";
-    private bool IsCollapsed = true;
+    private bool IsCollapsed;
     private readonly Dictionary<string, ElementReference> TabButtons = new();
     private readonly Dictionary<string, ElementReference> ToolTriggers = new();
     private readonly Dictionary<string, ElementReference> CommandElements = new();
@@ -273,13 +299,13 @@
                 <NavLink href="./" Match="NavLinkMatch.All"><svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#home"/></svg><span>Home</span></NavLink>
                 break;
             case "my-collection":
-                <NavLink href="my-gists?favorites=true"><svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#grid"/></svg><span>My Collection</span></NavLink>
+                <NavLink href="my-gists?favorites=true"><svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#folder"/></svg><span>My Collection</span></NavLink>
                 break;
             case "new-snippet":
                 <NavLink href="editor"><svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#plus"/></svg><span>New Snippet</span></NavLink>
                 break;
             case "playlists":
-                <NavLink href="collections"><svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#folder"/></svg><span>Playlists</span></NavLink>
+                <NavLink href="collections"><svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#grid"/></svg><span>Playlists</span></NavLink>
                 break;
             case "slh-collection":
                 <NavLink href="slh-collection"><svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#folder"/></svg><span>SLH Collection</span></NavLink>
@@ -331,7 +357,7 @@
                 break;
             case "json-to-table":
                 <button type="button" @ref='ToolTriggers["JSON to Table"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("JSON to Table", ToolTriggers["JSON to Table"]))' class="ribbon-tool" title="JSON to Table" data-testid='@(SelectedTab == "Quick Access" ? "quick-json-to-table-menu-item" : "json-to-table-menu-item")'>
-                            <svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#code"/></svg>
+                            <svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#grid"/></svg>
                             <span>JSON to Table</span>
                         </button><ToolHelp Name="JSON to Table" />
                 break;
@@ -360,7 +386,7 @@
                         </button><ToolHelp Name="Markdown to Cards" />
                 break;
             case "markdown-converters":
-                <button type="button" @ref='ToolTriggers["Markdown converters"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown converters", ToolTriggers["Markdown converters"]))' class="ribbon-tool" title="Markdown converters"><svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#doc"/></svg><span>Markdown converters</span></button><ToolHelp Name="Markdown converters" />
+                <button type="button" @ref='ToolTriggers["Markdown converters"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown converters", ToolTriggers["Markdown converters"]))' class="ribbon-tool" title="Markdown converters"><svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#code"/></svg><span>Markdown converters</span></button><ToolHelp Name="Markdown converters" />
                 break;
             case "markdown-to-text":
                 <button type="button" @ref='ToolTriggers["Markdown to Text"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Markdown to Text", ToolTriggers["Markdown to Text"]))' class="ribbon-tool" title="Markdown to Text" data-testid='@(SelectedTab == "Quick Access" ? "quick-markdown-text-menu-item" : "markdown-text-menu-item")'>
@@ -382,13 +408,13 @@
                 break;
             case "formula-to-image":
                 <button type="button" @ref='ToolTriggers["Formula to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("Formula to Image", ToolTriggers["Formula to Image"]))' class="ribbon-tool" title="Formula to Image" data-testid='@(SelectedTab == "Quick Access" ? "quick-formula-image-menu-item" : "formula-image-menu-item")'>
-                            <svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#image"/></svg>
+                            <svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#code"/></svg>
                             <span>Formula to Image</span>
                         </button><ToolHelp Name="Formula to Image" />
                 break;
             case "html-to-image":
                 <button type="button" @ref='ToolTriggers["HTML to Image"]' @onclick='() => OnOpenWorkbenchTool.InvokeAsync(("HTML to Image", ToolTriggers["HTML to Image"]))' class="ribbon-tool" title="HTML to Image" data-testid='@(SelectedTab == "Quick Access" ? "quick-html-image-menu-item" : "html-image-menu-item")'>
-                            <svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#code"/></svg>
+                            <svg class="ribbon-command-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="icons/gitpulse.svg#image"/></svg>
                             <span>HTML to Image</span>
                         </button><ToolHelp Name="HTML to Image" />
                 break;

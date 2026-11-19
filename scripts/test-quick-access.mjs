@@ -44,7 +44,7 @@ export async function checkQuickAccess({ evaluate, send, sessionId, waitFor }) {
     await evaluate(`localStorage.removeItem('${key}')`);
     await reload();
     assert.equal(await evaluate(`document.querySelector('#workspace-tab-Home').getAttribute('aria-selected')`), 'true');
-    assert.equal(await evaluate(`document.querySelector('#workspace-commands').hidden`), true);
+    assert.equal(await evaluate(`document.querySelector('#workspace-commands').hidden`), false, 'reference ribbon starts expanded');
     await tab('QuickAccess');
     assert.match(await evaluate(`document.querySelector('#workspace-commands').textContent`), /Add commands/);
     await tab('Home'); await toggle('my-collection');

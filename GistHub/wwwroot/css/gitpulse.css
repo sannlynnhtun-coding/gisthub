@@ -171,3 +171,10 @@
 @media(pointer:coarse) { :root[data-interface-style="gitpulse"] :is(.btn,input:not([type="checkbox"]):not([type="radio"]),select) { min-height:44px; } }
 
 :where(:root[data-interface-style="gitpulse"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),:root[data-interface-style="gitpulse"] select) { padding:8px 12px; }
+:root[data-interface-style="gitpulse"] .excel-workspace .workspace-commands { overflow-x:auto; }
+:root[data-interface-style="gitpulse"] .excel-workspace .workspace-command-area>.workspace-command-group { flex-wrap:nowrap; align-items:stretch; }
+:root[data-interface-style="gitpulse"] .excel-workspace .ribbon-group { display:flex; flex-direction:column; flex:0 0 auto; border-right:1px solid hsl(var(--border)); padding:0 6px; }
+:root[data-interface-style="gitpulse"] .excel-workspace .ribbon-group:first-child { padding-left:0; }
+:root[data-interface-style="gitpulse"] .excel-workspace .ribbon-group:last-child { border:0; padding-right:0; }
+:root[data-interface-style="gitpulse"] .excel-workspace .ribbon-group-items { display:flex; align-items:stretch; gap:4px; }
+:root[data-interface-style="gitpulse"] .excel-workspace .ribbon-group-label { display:block; text-align:center; color:hsl(var(--muted-foreground)); font-size:10px; line-height:12px; margin-top:2px; letter-spacing:.025em; }

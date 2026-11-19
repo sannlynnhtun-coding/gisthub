@@ -198,6 +198,10 @@ try {
   await delay(waitMs);
 
   const verificationFailures = [];
+  if (process.env.BROWSER_CHECK_V2_MENU === "1") {
+    const { checkV2Menu } = await import('./test-v2-menu.mjs');
+    await checkV2Menu({ evaluate, send, sessionId, waitFor });
+  }
   if (process.env.BROWSER_CHECK_GITPULSE_GLOBAL === "1") {
     const { checkGitPulseGlobal } = await import('./test-gitpulse-global.mjs');
     await checkGitPulseGlobal({ evaluate, send, sessionId, waitFor });

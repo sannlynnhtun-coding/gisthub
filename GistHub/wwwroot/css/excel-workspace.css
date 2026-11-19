@@ -177,3 +177,7 @@
 
 .tool-heading-inline { display: flex; align-items: center; gap: 8px; }
 .tool-heading-inline > :is(h1, h2) { min-width: 0; }
+
+/* Reference grouping has no effect on the alternate sidebar or older appearances. */
+.ribbon-group,.ribbon-group-items { display:contents; }
+.ribbon-group-label { display:none; }
