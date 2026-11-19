@@ -1,0 +1,193 @@
+@using GistHub.Models
+@using GistHub.Services
+@using System.Globalization
+<section id="view-overview" data-gitpulse-view="overview" class="gitpulse-view tab-panel space-y-5">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-4 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full bg-[#1E2025] border border-white/[0.08] flex items-center justify-center text-indigo-400">
+                  <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Active dev hours</h2>
+                  <p class="text-xs text-[#8E939E]">Demo · When commits &amp; PRs ship</p>
+                </div>
+              </div>
+              <span id="kpi-repos-badge" class="px-2.5 py-1 rounded-full text-[11px] font-mono tabular-nums bg-indigo-500/15 text-indigo-400 border border-indigo-500/25">@Rows.Count repos</span>
+            </div>
+            <div class="flex items-baseline gap-2.5 mb-4">
+              <span id="active-dev-hours" class="text-3xl font-extrabold font-mono tabular-nums tracking-tight text-slate-900 dark:text-[#F5F6F8]">18.4 h</span>
+              <span class="text-xs font-mono text-indigo-400">+3.2 h <span class="text-[#8E939E]">vs last month</span></span>
+            </div>
+            <div class="relative flex items-center justify-center my-2">
+              <svg role="img" aria-label="Demo engineering visualization" id="radial-clock-svg" viewBox="0 0 240 240" class="w-52 h-52">
+                <text x="120" y="16" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono Variable">00</text>
+                <text x="224" y="124" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono Variable">06</text>
+                <text x="120" y="232" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono Variable">12</text>
+                <text x="16" y="124" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono Variable">18</text>
+                <circle cx="120" cy="120" r="84" fill="none" stroke="rgba(142,147,158,0.14)" stroke-width="1" stroke-dasharray="2 4" />
+                <g id="radial-clock-rays"><line x1="120.0" y1="65.0" x2="120.0" y2="60.0" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="127.2" y1="65.5" x2="128.0" y2="59.5" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="134.2" y1="66.9" x2="136.0" y2="60.1" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="141.0" y1="69.2" x2="144.1" y2="61.8" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="147.5" y1="72.4" x2="152.0" y2="64.6" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="153.5" y1="76.4" x2="156.5" y2="72.4" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="158.9" y1="81.1" x2="163.1" y2="76.9" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="163.6" y1="86.5" x2="169.2" y2="82.3" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="167.6" y1="92.5" x2="174.6" y2="88.5" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="170.8" y1="99.0" x2="179.1" y2="95.5" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="173.1" y1="105.8" x2="178.0" y2="104.5" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="174.5" y1="112.8" x2="180.5" y2="112.0" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="175.0" y1="120.0" x2="182.0" y2="120.0" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="174.5" y1="127.2" x2="182.5" y2="128.2" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="173.1" y1="134.2" x2="181.8" y2="136.6" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="170.8" y1="141.0" x2="175.4" y2="143.0" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="167.6" y1="147.5" x2="172.8" y2="150.5" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="163.6" y1="153.5" x2="169.2" y2="157.7" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="158.9" y1="158.9" x2="177.3" y2="177.3" stroke="#FBBF24" stroke-width="2.4" stroke-linecap="round" /><line x1="153.5" y1="163.6" x2="163.8" y2="177.1" stroke="#22D3EE" stroke-width="2.4" stroke-linecap="round" /><line x1="147.5" y1="167.6" x2="159.5" y2="188.4" stroke="#6366F1" stroke-width="2.4" stroke-linecap="round" /><line x1="141.0" y1="170.8" x2="146.8" y2="184.7" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round" /><line x1="134.2" y1="173.1" x2="139.9" y2="194.4" stroke="#FBBF24" stroke-width="2.4" stroke-linecap="round" /><line x1="127.2" y1="174.5" x2="128.9" y2="187.4" stroke="#22D3EE" stroke-width="2.4" stroke-linecap="round" /><line x1="120.0" y1="175.0" x2="120.0" y2="195.0" stroke="#6366F1" stroke-width="2.4" stroke-linecap="round" /><line x1="112.8" y1="174.5" x2="109.3" y2="201.3" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round" /><line x1="105.8" y1="173.1" x2="101.1" y2="190.5" stroke="#FBBF24" stroke-width="2.4" stroke-linecap="round" /><line x1="99.0" y1="170.8" x2="89.4" y2="193.9" stroke="#22D3EE" stroke-width="2.4" stroke-linecap="round" /><line x1="92.5" y1="167.6" x2="84.5" y2="181.5" stroke="#6366F1" stroke-width="2.4" stroke-linecap="round" /><line x1="86.5" y1="163.6" x2="72.5" y2="181.9" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round" /><line x1="81.1" y1="158.9" x2="71.2" y2="168.8" stroke="#FBBF24" stroke-width="2.4" stroke-linecap="round" /><line x1="76.4" y1="153.5" x2="59.7" y2="166.3" stroke="#22D3EE" stroke-width="2.4" stroke-linecap="round" /><line x1="72.4" y1="147.5" x2="62.0" y2="153.5" stroke="#6366F1" stroke-width="2.4" stroke-linecap="round" /><line x1="69.2" y1="141.0" x2="51.6" y2="148.3" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round" /><line x1="66.9" y1="134.2" x2="41.8" y2="141.0" stroke="#FBBF24" stroke-width="2.4" stroke-linecap="round" /><line x1="65.5" y1="127.2" x2="60.5" y2="127.8" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="65.0" y1="120.0" x2="59.0" y2="120.0" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="65.5" y1="112.8" x2="58.5" y2="111.9" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="66.9" y1="105.8" x2="59.1" y2="103.7" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="69.2" y1="99.0" x2="60.9" y2="95.5" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="72.4" y1="92.5" x2="55.0" y2="82.5" stroke="#6366F1" stroke-width="2.4" stroke-linecap="round" /><line x1="76.4" y1="86.5" x2="54.9" y2="70.1" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round" /><line x1="81.1" y1="81.1" x2="68.4" y2="68.4" stroke="#FBBF24" stroke-width="2.4" stroke-linecap="round" /><line x1="86.5" y1="76.4" x2="71.3" y2="56.5" stroke="#22D3EE" stroke-width="2.4" stroke-linecap="round" /><line x1="92.5" y1="72.4" x2="84.5" y2="58.5" stroke="#6366F1" stroke-width="2.4" stroke-linecap="round" /><line x1="99.0" y1="69.2" x2="90.2" y2="47.9" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round" /><line x1="105.8" y1="66.9" x2="104.2" y2="61.1" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /><line x1="112.8" y1="65.5" x2="111.9" y2="58.5" stroke="rgba(142,147,158,0.28)" stroke-width="2.4" stroke-linecap="round" /></g>
+                <circle cx="120" cy="120" r="46" fill="#1E2025" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+                <text x="120" y="116" text-anchor="middle" fill="#F5F6F8" font-size="15" font-weight="700" font-family="JetBrains Mono Variable">42 m</text>
+                <text x="120" y="132" text-anchor="middle" fill="#8E939E" font-size="10" font-family="Plus Jakarta Sans Variable">avg session</text>
+              </svg>
+            </div>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs mt-2">
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-2 text-[#8E939E]"><span class="w-2 h-2 rounded-full bg-indigo-500"></span>Features</span>
+                <span class="font-mono font-semibold tabular-nums">7.8 h</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-2 text-[#8E939E]"><span class="w-2 h-2 rounded-full bg-violet-500"></span>Refactors</span>
+                <span class="font-mono font-semibold tabular-nums">4.9 h</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-2 text-[#8E939E]"><span class="w-2 h-2 rounded-full bg-amber-400"></span>Docs</span>
+                <span class="font-mono font-semibold tabular-nums">3.1 h</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-2 text-[#8E939E]"><span class="w-2 h-2 rounded-full bg-cyan-400"></span>Reviews</span>
+                <span class="font-mono font-semibold tabular-nums">2.6 h</span>
+              </div>
+            </div>
+          </div>
+          <div class="bento-subcard p-3.5 mt-5">
+            <div class="flex items-center justify-between mb-2.5">
+              <div>
+                <p class="text-xs font-bold text-slate-900 dark:text-[#F5F6F8]">Weekly commit goal</p>
+                <p id="weekly-goal-sub" class="text-[11px] font-mono text-[#8E939E]">@Goal of 7 days • @(7 - Goal) days left</p>
+              </div>
+              <div class="inline-flex items-center gap-1.5 bg-black/5 dark:bg-[#17181C] border border-black/10 dark:border-white/[0.08] rounded-full px-2 py-0.5 text-xs font-mono">
+                <button id="goal-dec-btn" class="text-[#8E939E] hover:text-white px-1 cursor-pointer" @onclick="() => Goal = Math.Max(1, Goal - 1)" aria-label="Decrease demo goal">−</button>
+                <span id="weekly-goal-target" class="font-bold">@Goal d</span>
+                <button id="goal-inc-btn" class="text-[#8E939E] hover:text-white px-1 cursor-pointer" @onclick="() => Goal = Math.Min(7, Goal + 1)" aria-label="Increase demo goal">+</button>
+              </div>
+            </div>
+            <div id="weekly-goal-segments" class="grid grid-cols-7 gap-1.5">@for (var i = 0; i < 7; i++) { <div class="@(i < Goal ? "bg-gradient-to-r from-indigo-500 to-violet-500" : "bg-black/10 dark:bg-white/10") h-2 rounded-full"></div> }</div>
+            <div class="grid grid-cols-7 gap-1.5 text-center text-[10px] font-mono text-[#8E939E] mt-1.5">
+              <span>M</span><span>T</span><span>W</span><span>T</span><span class="text-indigo-400 font-bold">F</span><span>S</span><span>S</span>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-span-8 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full bg-[#1E2025] border border-white/[0.08] flex items-center justify-center text-violet-400">
+                  <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 8h.01M12 12h.01M14 8h.01M16 12h.01M18 8h.01M6 8h.01M7 16h10M8 12h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/></svg>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Developer workflow &amp; command pulse</h2>
+                  <p class="text-xs text-[#8E939E]">Demo · Click a key to explore example command activity</p>
+                </div>
+              </div>
+              <div class="inline-flex bg-slate-100 dark:bg-[#0E0F12] p-1 rounded-full border border-black/5 dark:border-white/[0.07] text-xs">
+                <button data-kb-range="week" @onclick="() => Week = true" aria-pressed="@(Week ? "true" : "false")" class="kb-range-btn px-3 py-1 rounded-full text-[#8E939E] font-medium cursor-pointer">Week</button>
+                <button data-kb-range="month" @onclick="() => Week = false" aria-pressed="@(!Week ? "true" : "false")" class="kb-range-btn active px-3 py-1 rounded-full bg-[#1E2025] text-white font-semibold cursor-pointer">Month</button>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-baseline gap-3 mb-4">
+              <span id="kb-total-runs" class="text-3xl font-extrabold font-mono tabular-nums tracking-tight text-slate-900 dark:text-[#F5F6F8]">@(Week ? "342" : "1,284")</span>
+              <span class="text-xs font-mono text-violet-400">+18% <span class="text-[#8E939E]">commits &amp; CLI runs this period</span></span>
+            </div>
+            <div class="relative bg-slate-50 dark:bg-[#121317] rounded-2xl p-3.5 border border-black/5 dark:border-white/[0.06] mb-4">
+              <div id="kb-activity-bars" class="flex items-end justify-between gap-1 h-16">@{ var bars = Week ? WeekBars : MonthBars; }@for (var i = 0; i < bars.Length; i++) { <div class="flex-1 rounded-t-sm @(Week || (i >= 4 && i <= 15) ? "bg-gradient-to-t from-indigo-600 to-violet-400" : "bg-black/15 dark:bg-white/15")" style="@($"height:{bars[i]}%")"></div> }</div>
+              <div class="flex items-center justify-between text-[11px] font-mono text-[#8E939E] mt-2">
+                <span>Oct 1</span>
+                <span id="kb-window-label" class="text-indigo-400 font-semibold">@(Week ? "Mon – Sun • 342 runs" : "Oct 7 – 20 • 642 runs")</span>
+                <span>Oct 31</span>
+              </div>
+            </div>
+            <div id="qwerty-keyboard-container" class="space-y-1.5 select-none">@foreach (var row in Keyboard) { <div class="flex items-center justify-center gap-1.5">@foreach (var key in row) { <button type="button" class="keycap h-9 flex-1 max-w-[44px] rounded-xl border font-mono text-xs font-semibold @KeyClass(key)" aria-pressed="@(ActiveKey == key ? "true" : "false")" @onclick="() => ActiveKey = key">@key</button> }</div> }<div class="flex items-center justify-center gap-1.5 pt-0.5"><span class="keycap h-8 w-10 font-mono text-[11px] text-[#8E939E] bg-[#1E2025] border border-white/[0.06]">⌃</span><span class="keycap h-8 w-12 font-mono text-[11px] text-[#8E939E] bg-[#1E2025] border border-white/[0.06]">⌘</span><button class="keycap h-8 flex-1 max-w-[230px] font-mono text-[11px] text-[#8E939E] bg-[#1E2025] border border-white/[0.06]" @onclick='() => ActiveKey = "C"'>space • demo palette</button><span class="keycap h-8 w-12 font-mono text-[11px] text-[#8E939E] bg-[#1E2025] border border-white/[0.06]">⌘</span><span class="keycap h-8 w-10 font-mono text-[11px] text-[#8E939E] bg-[#1E2025] border border-white/[0.06]">⌥</span></div></div>
+          </div>
+          <div class="mt-4 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#8E939E]">
+              <div class="flex items-center gap-1.5">
+                <span>Fewer</span>
+                <span class="w-3 h-3 rounded-xs bg-[#1E2025] border border-white/10"></span>
+                <span class="w-3 h-3 rounded-xs bg-indigo-950"></span>
+                <span class="w-3 h-3 rounded-xs bg-indigo-700"></span>
+                <span class="w-3 h-3 rounded-xs bg-indigo-500"></span>
+                <span class="w-3 h-3 rounded-xs bg-violet-500"></span>
+                <span>More</span>
+              </div>
+              <span id="kb-selected-desc" class="font-mono text-indigo-300">Demo: @KeyCommand(ActiveKey)</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="bento-subcard p-3">
+                <span class="text-[11px] text-[#8E939E] block">Avg cycle</span>
+                <span id="kb-stat-cycle" class="text-sm sm:text-base font-bold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">1.4 s</span>
+              </div>
+              <div class="bento-subcard p-3">
+                <span class="text-[11px] text-[#8E939E] block">Top hotkey</span>
+                <span id="kb-stat-key" class="text-sm sm:text-base font-bold font-mono text-indigo-400">⌘ @ActiveKey</span>
+              </div>
+              <div class="bento-subcard p-3">
+                <span class="text-[11px] text-[#8E939E] block">Commit streak</span>
+                <span id="kb-stat-streak" class="text-sm sm:text-base font-bold font-mono tabular-nums text-amber-400">14 days</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-5 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full bg-[#1E2025] border border-white/[0.08] flex items-center justify-center text-cyan-400">
+                  <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Ecosystem &amp; stars by stack</h2>
+                  <p class="text-xs text-[#8E939E]">Click any legend item to filter repos</p>
+                </div>
+              </div>
+              <button class="text-xs text-indigo-400" @onclick='() => LanguageSelected.InvokeAsync("")'>Reset ×</button>
+            </div>
+            <div class="flex items-baseline gap-2.5 mb-2">
+              <span id="polar-total-stars" class="text-3xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">@Rows.Sum(r => r.Stars).ToString("N0") ★</span>
+              <span id="polar-total-forks" class="text-xs font-mono text-cyan-400">@Rows.Sum(r => r.Forks).ToString("N0") forks</span>
+            </div>
+            <div class="relative h-56 w-full flex items-center justify-center">
+              @{ var polarGroups = GithubDashboardSummary.LanguageStars(Rows).Take(6).ToArray(); }
+              <div class="bento-subcard absolute bottom-2 left-2 z-10 px-3 py-2 text-[11px]"><strong class="block font-mono text-cyan-400">@(polarGroups.FirstOrDefault().Name ?? "No data")</strong><span class="block text-[#8E939E]">@polarGroups.FirstOrDefault().Stars.ToString("N0") ★ · Measured</span></div>
+              <svg viewBox="0 0 320 224" class="w-full h-full" role="img" aria-label="Stars by primary repository language"><circle cx="160" cy="112" r="22" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="44" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="66" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="88" fill="none" stroke="#8e939e" opacity=".14"/><circle cx="160" cy="112" r="110" fill="none" stroke="#8e939e" opacity=".14"/>@{ var groups = polarGroups; }@for (var i = 0; i < groups.Length; i++) { var item = groups[i]; <path d="@Sector(i, groups.Length, item.Stars, groups.Max(g => g.Stars))" fill="@Colors[i % Colors.Length]" fill-opacity=".8" stroke="var(--gp-card)" stroke-width="2"><title>@item.Name: @item.Stars stars</title></path> }</svg>
+            </div>
+          </div>
+          <div id="polar-legend-grid" class="grid grid-cols-2 gap-x-5 gap-y-2 text-xs pt-3 border-t border-black/5 dark:border-white/[0.07]">@{ var colorIndex = 0; }@foreach (var item in polarGroups) { var color = Colors[colorIndex++ % Colors.Length]; <button class="flex justify-between gap-2 text-left" @onclick="() => LanguageSelected.InvokeAsync(item.Name)"><span class="inline-flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-xs" style="@($"background:{color}")"></span>@item.Name</span><strong class="font-mono text-[#8E939E]">@item.Stars.ToString("N0") ★</strong></button> }</div>
+        </div>
+        <div class="lg:col-span-7 bento-card p-6">@Explorer</div>
+      </div>
+    <p class="sr-only" role="status" aria-live="polite">@Feedback</p></section>
+@code {
+    private string Feedback = "";
+
+    [Parameter] public IReadOnlyList<GithubRepository> Rows { get; set; } = [];
+    [Parameter] public RenderFragment? Explorer { get; set; }
+    [Parameter] public EventCallback<string> LanguageSelected { get; set; }
+    private string KeyClass(string key) => key == ActiveKey ? "bg-gradient-to-br from-indigo-500 to-violet-500 text-white border-indigo-300" : key switch {
+        "P" or "S" or "↵" => "bg-indigo-600/85 text-white border-indigo-400/40",
+        "R" or "G" or "B" => "bg-indigo-950/90 text-indigo-200 border-indigo-500/30",
+        "T" or "D" or "F" or "M" => "bg-violet-950/60 text-violet-200 border-violet-500/20",
+        _ => "bg-slate-200/80 dark:bg-[#1E2025] text-slate-700 dark:text-[#8E939E] border-black/5 dark:border-white/[0.06]" };
+    private static string KeyCommand(string key) => key switch {
+        "C" => "git commit -m \"feat: telemetry\"", "P" => "git push origin main", "G" => "gh pr checkout --web",
+        "R" => "git rebase -i HEAD~3", "B" => "git checkout -b feat/bento", "S" => "git status -sb && git diff",
+        "T" => "dotnet test / npm run test", "D" => "docker compose up -d", "F" => "git fetch --all --prune",
+        "M" => "git merge --no-ff origin/dev", "↵" => "gh pr merge --squash --delete-branch", _ => "Example command for " + key };
+    private int Goal = 6;
+    private bool Week;
+    private string ActiveKey = "C";
+    private static readonly int[] MonthBars = [28,36,22,44,52,48,34,40,62,58,74,86,42,68,78,92,64,54,82,70,58,76], WeekBars = [48,64,82,74,94,42,56];
+    private static readonly string[][] Keyboard = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M","↵"]];
+    private static readonly string[] Colors = ["#6366f1","#a855f7","#06b6d4","#f59e0b","#ec4899","#38bdf8"];
+    private static string Sector(int index, int count, long stars, long max) {
+        var radius = 110d * stars / Math.Max(1,max);
+        var start = index * 2 * Math.PI / count - Math.PI / 2; var end = (index + 1) * 2 * Math.PI / count - Math.PI / 2;
+        if (count == 1) end -= .001;
+        return FormattableString.Invariant($"M160 112 L{160+radius*Math.Cos(start)} {112+radius*Math.Sin(start)} A{radius} {radius} 0 {(count==1 ? 1 : 0)} 1 {160+radius*Math.Cos(end)} {112+radius*Math.Sin(end)} Z");
+    }
+}

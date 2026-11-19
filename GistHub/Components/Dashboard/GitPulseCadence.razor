@@ -1,0 +1,133 @@
+@using GistHub.Models
+@using GistHub.Services
+@using System.Globalization
+<section id="view-cadence" data-gitpulse-view="cadence" class="gitpulse-view tab-panel space-y-5"><p class="gp-demo-note">Demo illustrations · No remote actions or measurements. Repository hygiene alone uses loaded metadata.</p>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-6 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Sprint &amp; release goals</h2>
+            <p class="text-xs text-[#8E939E] mb-5">Current engineering cycle targets</p>
+            <div class="flex flex-col sm:flex-row items-center gap-6 my-2">
+              <svg role="img" aria-label="Demo engineering visualization" viewBox="0 0 180 180" class="w-44 h-44 shrink-0">
+                <circle cx="90" cy="90" r="74" fill="none" stroke="rgba(99,102,241,0.16)" stroke-width="11" />
+                <circle cx="90" cy="90" r="74" fill="none" stroke="#818CF8" stroke-width="11" stroke-linecap="round" stroke-dasharray="465" stroke-dashoffset="84" transform="rotate(-90 90 90)" />
+                <circle cx="90" cy="90" r="56" fill="none" stroke="rgba(168,85,247,0.16)" stroke-width="11" />
+                <circle cx="90" cy="90" r="56" fill="none" stroke="#C084FC" stroke-width="11" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="126" transform="rotate(-90 90 90)" />
+                <circle cx="90" cy="90" r="38" fill="none" stroke="rgba(245,158,11,0.16)" stroke-width="11" />
+                <circle cx="90" cy="90" r="38" fill="none" stroke="#FBBF24" stroke-width="11" stroke-linecap="round" stroke-dasharray="239" stroke-dashoffset="22" transform="rotate(-90 90 90)" />
+              </svg>
+              <div class="flex-1 w-full space-y-4">
+                <div class="pl-3.5 border-l-2 border-indigo-400">
+                  <span class="text-xs text-[#8E939E] block">Commits shipped</span>
+                  <span class="text-base font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">82% <span class="text-xs font-normal text-[#8E939E]">410 of 500</span></span>
+                </div>
+                <div class="pl-3.5 border-l-2 border-purple-400">
+                  <span class="text-xs text-[#8E939E] block">Releases delivered</span>
+                  <span class="text-base font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">64% <span class="text-xs font-normal text-[#8E939E]">32 of 50</span></span>
+                </div>
+                <div class="pl-3.5 border-l-2 border-amber-400">
+                  <span class="text-xs text-[#8E939E] block">PR review SLA</span>
+                  <span class="text-base font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">91% <span class="text-xs font-normal text-[#8E939E]">target 90%</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-span-6 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-baseline justify-between mb-1">
+              <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Contributions this week</h2>
+              <span class="text-xs font-mono text-indigo-400">+6.2% vs last week</span>
+            </div>
+            <div class="text-3xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8] mb-4">1,328</div>
+            <div class="h-44 w-full">
+              <svg viewBox="0 0 600 240" class="w-full h-full" role="img" aria-label="Demo weekly contributions: this week 210,245,232,260,198,92,128; last week 185,220,238,205,180,84,124"><g font-family="JetBrains Mono Variable" font-size="10" fill="#8e939e"><path d="M34 210.0H592" stroke="rgba(142,147,158,.1)"/><text x="26" y="213.0" text-anchor="end">0</text><path d="M34 179.0H592" stroke="rgba(142,147,158,.1)"/><text x="26" y="182.0" text-anchor="end">50</text><path d="M34 148.0H592" stroke="rgba(142,147,158,.1)"/><text x="26" y="151.0" text-anchor="end">100</text><path d="M34 117.0H592" stroke="rgba(142,147,158,.1)"/><text x="26" y="120.0" text-anchor="end">150</text><path d="M34 86.0H592" stroke="rgba(142,147,158,.1)"/><text x="26" y="89.0" text-anchor="end">200</text><path d="M34 55.0H592" stroke="rgba(142,147,158,.1)"/><text x="26" y="58.0" text-anchor="end">250</text><path d="M34 24.0H592" stroke="rgba(142,147,158,.1)"/><text x="26" y="27.0" text-anchor="end">300</text><rect x="54" y="79.80000000000001" width="17" height="130.2" rx="6" fill="#818cf8"/><rect x="74" y="95.3" width="17" height="114.7" rx="6" fill="#3f3f46"/><text x="72" y="232" text-anchor="middle">Mon</text><rect x="132" y="58.099999999999994" width="17" height="151.9" rx="6" fill="#818cf8"/><rect x="152" y="73.6" width="17" height="136.4" rx="6" fill="#3f3f46"/><text x="150" y="232" text-anchor="middle">Tue</text><rect x="210" y="66.16" width="17" height="143.84" rx="6" fill="#818cf8"/><rect x="230" y="62.44" width="17" height="147.56" rx="6" fill="#3f3f46"/><text x="228" y="232" text-anchor="middle">Wed</text><rect x="288" y="48.80000000000001" width="17" height="161.2" rx="6" fill="#818cf8"/><rect x="308" y="82.9" width="17" height="127.1" rx="6" fill="#3f3f46"/><text x="306" y="232" text-anchor="middle">Thu</text><rect x="366" y="87.24" width="17" height="122.76" rx="6" fill="#818cf8"/><rect x="386" y="98.4" width="17" height="111.6" rx="6" fill="#3f3f46"/><text x="384" y="232" text-anchor="middle">Fri</text><rect x="444" y="152.96" width="17" height="57.04" rx="6" fill="#818cf8"/><rect x="464" y="157.92000000000002" width="17" height="52.08" rx="6" fill="#3f3f46"/><text x="462" y="232" text-anchor="middle">Sat</text><rect x="522" y="130.64" width="17" height="79.36" rx="6" fill="#818cf8"/><rect x="542" y="133.12" width="17" height="76.88" rx="6" fill="#3f3f46"/><text x="540" y="232" text-anchor="middle">Sun</text></g></svg>
+            </div>
+          </div>
+          <div class="flex items-center gap-5 text-xs text-[#8E939E] mt-3 pt-3 border-t border-black/5 dark:border-white/[0.07]">
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-xs bg-indigo-400"></span>This week</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-xs bg-zinc-600"></span>Last week</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-4 space-y-5">
+          <div class="bento-card p-6 space-y-5">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="text-[#8E939E]">Commits this month</span>
+                <span class="font-mono font-bold tabular-nums">1,248 <span class="text-[#8E939E] font-normal">of 2,000</span></span>
+              </div>
+              <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-white rounded-full" style="width: 62%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="text-[#8E939E]">Active maintainers</span>
+                <span class="font-mono font-bold tabular-nums">9 <span class="text-[#8E939E] font-normal">of 10</span></span>
+              </div>
+              <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-amber-400 rounded-full" style="width: 90%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="text-[#8E939E]">Actions runner minutes</span>
+                <span class="font-mono font-bold tabular-nums">410 <span class="text-[#8E939E] font-normal">of 1,000</span></span>
+              </div>
+              <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-cyan-400 rounded-full" style="width: 41%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="bento-card p-6 grid grid-cols-2 gap-4">
+            <div>
+              <span class="text-xs text-[#8E939E] block mb-1">Issues resolved</span>
+              <span class="text-2xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">1,248</span>
+              <span class="text-xs font-mono text-indigo-400 ml-1">+18.2%</span>
+            </div>
+            <div>
+              <span class="text-xs text-[#8E939E] block mb-1">Median PR merge</span>
+              <span class="text-2xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">41m</span>
+              <span class="text-xs font-mono text-cyan-400 ml-1">-12.4%</span>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-span-8 bento-card p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Release &amp; contributor retention matrix</h2>
+              <p class="text-xs text-[#8E939E]">Cohort sustainability across release versions</p>
+            </div>
+            <div class="inline-flex bg-slate-100 dark:bg-[#0E0F12] p-1 rounded-full border border-black/5 dark:border-white/[0.07] text-xs">
+              <button data-matrix-mode="contributors" @onclick="() => Issues = false" aria-pressed="@(!Issues ? "true" : "false")" class="matrix-mode-btn active px-3 py-1 rounded-full bg-[#1E2025] text-white font-semibold cursor-pointer">Contributors %</button>
+              <button  data-matrix-mode="releases" @onclick="() => Issues = true" aria-pressed="@(Issues ? "true" : "false")" class="matrix-mode-btn px-3 py-1 rounded-full text-[#8E939E] font-medium cursor-pointer">Release SLA %</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-center border-separate border-spacing-1.5 text-xs">
+              <thead>
+                <tr class="text-[11px] font-mono text-[#8E939E]">
+                  <th class="text-left pb-1">Release Cohort</th>
+                  <th class="pb-1">PRs</th>
+                  <th class="pb-1">S0</th>
+                  <th class="pb-1">S1</th>
+                  <th class="pb-1">S2</th>
+                  <th class="pb-1">S3</th>
+                  <th class="pb-1">S4</th>
+                  <th class="pb-1">S5</th>
+                </tr>
+              </thead>
+              <tbody id="cadence-matrix-tbody">@foreach (var cohort in (Issues ? Releases : Contributors)) { <tr><th scope="row" class="text-left py-2 pr-2 text-xs font-semibold whitespace-nowrap">@cohort.Name</th><td class="text-xs font-mono">@cohort.Prs</td>@foreach (var value in cohort.Values) { <td class="py-2.5 px-2 rounded-xl font-mono text-xs @Heat(value)">@(value is null ? "—" : value.Value.ToString(value == 100 ? "0" : "0.0", CultureInfo.InvariantCulture) + "%")</td> }</tr> }</tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <p class="sr-only" role="status" aria-live="polite">@Feedback</p></section>
+@code {
+    private string Feedback = "";
+    private bool Issues;
+    private static string Heat(double? value) => value switch { null => "bg-white/[0.03] text-[#8E939E]/40", >= 95 => "bg-indigo-600 text-white font-bold", >= 90 => "bg-violet-600/85 text-white font-semibold", >= 85 => "bg-indigo-500/55 text-white", >= 80 => "bg-indigo-500/35 text-indigo-200", _ => "bg-indigo-500/20 text-indigo-300" };
+    private static readonly (string Name, int Prs, double?[] Values)[] Contributors = [("v1.0 • Core GA", 142, new double?[] { 100, 91.5, 84.2, 79.8, 76.4, 74.0 }),("v1.1 • Plugin SDK", 118, new double?[] { 100, 93.0, 86.5, 82.1, 79.0, 77.2 }),("v1.2 • Perf Engine", 164, new double?[] { 100, 94.8, 89.2, 85.6, 83.1, 81.5 }),("v1.3 • Cloud Sync", 190, new double?[] { 100, 96.2, 91.4, 88.9, 86.5, null }),("v1.4 • Edge Runtime", 215, new double?[] { 100, 97.4, 93.1, null, null, null })], Releases = [("v1.0 • Core GA", 142, new double?[] { 100, 94.2, 91.0, 89.5, 88.2, 87.6 }),("v1.1 • Plugin SDK", 118, new double?[] { 100, 95.5, 93.1, 91.4, 90.0, 89.4 }),("v1.2 • Perf Engine", 164, new double?[] { 100, 96.9, 94.8, 93.5, 92.4, 91.9 }),("v1.3 • Cloud Sync", 190, new double?[] { 100, 97.8, 96.0, 94.9, 94.2, null }),("v1.4 • Edge Runtime", 215, new double?[] { 100, 98.4, 96.8, null, null, null })];
+}

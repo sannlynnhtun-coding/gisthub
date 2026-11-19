@@ -1,0 +1,154 @@
+@using GistHub.Models
+@using GistHub.Services
+@using System.Globalization
+<section id="view-benchmarks" data-gitpulse-view="benchmarks" class="gitpulse-view tab-panel space-y-5"><p class="gp-demo-note">Demo illustrations · No remote actions or measurements. Repository hygiene alone uses loaded metadata.</p>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-5 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Module &amp; service allocation</h2>
+                <p class="text-xs text-[#8E939E]">Architecture cluster • 8 active services</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">2 warm</span>
+            </div>
+            <div class="flex items-baseline justify-between mb-2">
+              <div class="flex items-baseline gap-2">
+                <span class="text-3xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">2</span>
+                <span class="text-xs text-[#8E939E]">modules to scale</span>
+              </div>
+              <span class="text-xs font-mono text-[#8E939E]">next deploy in 6 min</span>
+            </div>
+            <div class="relative flex items-center justify-center my-2">
+              <div class="absolute top-2 right-2 bento-subcard px-3 py-1.5 text-[11px] shadow-md">
+                <span class="font-mono font-bold text-amber-400 block">Worker-04 • 78% CPU</span>
+                <span class="text-[#8E939E]">auto-scaling in ~4 min</span>
+              </div>
+              <svg role="img" aria-label="Demo engineering visualization" viewBox="0 0 300 200" class="w-full max-w-[300px] h-48">
+                <polygon points="150,175 45,120 150,65 255,120" fill="#1E2025" stroke="rgba(255,255,255,0.12)" stroke-width="1.2" />
+                <g transform="translate(88, 72)">
+                  <polygon points="24,0 48,12 24,24 0,12" fill="#67E8F9" />
+                  <polygon points="0,12 24,24 24,52 0,40" fill="#06B6D4" />
+                  <polygon points="48,12 24,24 24,52 48,40" fill="#0891B2" />
+                </g>
+                <g transform="translate(132, 50)">
+                  <polygon points="24,0 48,12 24,24 0,12" fill="#FDE68A" />
+                  <polygon points="0,12 24,24 24,52 0,40" fill="#F59E0B" />
+                  <polygon points="48,12 24,24 24,52 48,40" fill="#D97706" />
+                </g>
+                <g transform="translate(174, 72)">
+                  <polygon points="24,0 48,12 24,24 0,12" fill="#D8B4FE" />
+                  <polygon points="0,12 24,24 24,52 0,40" fill="#A855F7" />
+                  <polygon points="48,12 24,24 24,52 48,40" fill="#7E22CE" />
+                </g>
+                <g transform="translate(132, 95)">
+                  <polygon points="24,8 48,20 24,32 0,20" fill="#FDBA74" />
+                  <polygon points="0,20 24,32 24,46 0,34" fill="#FB923C" />
+                  <polygon points="48,20 24,32 24,46 48,34" fill="#EA580C" />
+                </g>
+                <g transform="translate(92, 112)">
+                  <polygon points="24,0 48,12 24,24 0,12" fill="#A5B4FC" />
+                  <polygon points="0,12 24,24 24,46 0,34" fill="#6366F1" />
+                  <polygon points="48,12 24,24 24,46 48,34" fill="#4338CA" />
+                </g>
+                <g transform="translate(168, 112)">
+                  <polygon points="24,0 48,12 24,24 0,12" fill="#F9A8D4" />
+                  <polygon points="0,12 24,24 24,46 0,34" fill="#EC4899" />
+                  <polygon points="48,12 24,24 24,46 48,34" fill="#BE185D" />
+                </g>
+              </svg>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-[#8E939E] mb-4">
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-xs bg-cyan-400"></span>Core API</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-xs bg-amber-400"></span>Gateway</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-xs bg-violet-500"></span>Workers</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-xs bg-indigo-500"></span>Edge Cache</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-xs bg-orange-400"></span>Warm Load</span>
+            </div>
+          </div>
+          <div class="bento-subcard p-3.5 flex items-center justify-between gap-3">
+            <div>
+              <p class="text-xs font-bold text-slate-900 dark:text-[#F5F6F8]">Auto-trigger preview runners</p>
+              <p class="text-[11px] text-[#8E939E]">Spin up ephemeral containers on PR open</p>
+            </div>
+            <button id="autoscale-toggle-btn" @onclick="() => AutoScale = !AutoScale" aria-pressed="@(AutoScale ? "true" : "false")" class="w-11 h-6 rounded-full bg-indigo-600 transition relative shrink-0 cursor-pointer">
+              <span class="block w-4 h-4 rounded-full bg-white transition-transform transform translate-x-6"></span>
+            </button>
+          </div>
+        </div>
+        <div class="lg:col-span-7 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">CI/CD release loop</h2>
+                <p class="text-xs text-[#8E939E]">Runner-02 • 18 min deployment cycle</p>
+              </div>
+              <span id="pipeline-status-pill" class="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">Demo · @Stages[Step % Stages.Length].Name</span>
+            </div>
+            <div class="relative flex items-center justify-center my-2">
+              <svg role="img" aria-label="Demo engineering visualization" viewBox="0 0 360 175" class="w-full max-w-md h-44">
+                <rect x="35" y="22" width="290" height="130" rx="34" fill="none" stroke="rgba(142,147,158,0.18)" stroke-width="7" />
+                <path id="pipeline-active-arc" d="M 90 22 L 291 22 A 34 34 0 0 1 325 56 L 325 102" fill="none" stroke="#6366F1" stroke-width="7" stroke-linecap="round" class="pipeline-animated-stroke" />
+                <circle cx="90" cy="22" r="5" fill="#F5F6F8" />
+                <text x="90" y="42" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono Variable">Clone</text>
+                <circle cx="195" cy="22" r="6" fill="#38BDF8" />
+                <text x="195" y="42" text-anchor="middle" fill="#F5F6F8" font-size="10" font-family="JetBrains Mono Variable">Build</text>
+                <circle cx="315" cy="34" r="6" fill="#6366F1" />
+                <text x="282" y="44" text-anchor="middle" fill="#F5F6F8" font-size="10" font-family="JetBrains Mono Variable">Test</text>
+                <circle cx="275" cy="152" r="6" fill="#17181C" stroke="#818CF8" stroke-width="3" />
+                <text x="150" y="140" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono Variable">Deploy</text>
+                <circle cx="35" cy="88" r="5" fill="#17181C" stroke="#8E939E" stroke-width="2" />
+                <text x="64" y="92" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono Variable">Verify</text>
+                <text id="pipeline-loop-counter" x="180" y="72" text-anchor="middle" fill="#8E939E" font-size="11" font-family="Plus Jakarta Sans Variable">@(Step + 23)</text>
+                <text id="pipeline-jobs-center" x="180" y="92" text-anchor="middle" fill="#F5F6F8" font-size="15" font-weight="700" font-family="Plus Jakarta Sans Variable">Demo</text>
+                <rect x="135" y="102" width="90" height="22" rx="11" fill="#4F46E5" />
+                <text id="pipeline-eta-pill" x="180" y="116" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="700" font-family="JetBrains Mono Variable">Audit • 3 min</text>
+              </svg>
+            </div>
+            <div id="pipeline-stages-list" class="space-y-2.5 mt-2">@foreach (var stage in Stages) { var current = stage.Name == Stages[Step % Stages.Length].Name; <div class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl @(current ? "bg-[#1E2025] border border-indigo-500/35" : "border border-transparent")"><div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full @(current ? "bg-indigo-400 ring-4 ring-indigo-500/20" : "border border-[#8E939E]")"></span><span class="text-xs font-bold @(current ? "text-white" : "text-[#8E939E]")">@stage.Name</span><span class="text-[11px] font-mono text-[#8E939E]">@stage.Jobs</span></div><span class="font-mono text-xs font-semibold text-indigo-400">@stage.Eta</span></div> }</div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-black/5 dark:border-white/[0.07]">
+            <button id="skip-stage-btn" class="py-2.5 px-4 rounded-full text-xs font-semibold bg-[#1E2025] hover:bg-white/10 text-[#F5F6F8] border border-white/[0.08] transition cursor-pointer" @onclick="() => Step++">
+              Skip stage
+            </button>
+            <button id="rush-build-btn" class="py-2.5 px-4 rounded-full text-xs font-bold bg-white text-[#0E0F12] hover:bg-indigo-100 transition shadow-sm cursor-pointer" @onclick="() => Step++">
+              Rush deployment
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="bento-card p-6">
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">CI workflow runs &amp; edge latency</h2>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-mono text-indigo-400 bg-indigo-500/10">+12.4% throughput</span>
+            </div>
+            <div class="flex items-baseline gap-2.5">
+              <span id="bench-total-queries" class="text-2xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">@((158.6 + BenchmarkRun * 1.7).ToString("0.0", CultureInfo.InvariantCulture))k</span>
+              <span class="text-xs text-[#8E939E]">requests &amp; workflow checks over 30 days</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="hidden sm:flex items-center gap-4 text-xs">
+              <span class="inline-flex items-center gap-1.5 text-[#8E939E]"><span class="w-2.5 h-2.5 rounded-xs bg-indigo-500"></span>API Gateway</span>
+              <span class="inline-flex items-center gap-1.5 text-[#8E939E]"><span class="w-2.5 h-2.5 rounded-xs bg-amber-400"></span>CI Runners</span>
+            </div>
+            <button id="run-benchmark-btn" class="inline-flex items-center gap-1.5 bg-white text-[#0E0F12] hover:bg-indigo-100 font-bold text-xs px-4 py-2 rounded-full transition cursor-pointer" @onclick="() => BenchmarkRun++">
+              <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"/></svg>
+              Run Demo Benchmark
+            </button>
+          </div>
+        </div>
+        <div class="h-60 w-full">
+          <svg viewBox="0 0 600 240" class="w-full h-full" role="img" aria-label="Demo API Gateway and CI Runners, Oct 4 through Nov 2"><defs><linearGradient id="gp-indigo-area" x2="0" y2="1"><stop stop-color="#6366f1" stop-opacity=".35"/><stop offset="1" stop-color="#6366f1" stop-opacity="0"/></linearGradient><linearGradient id="gp-amber-area" x2="0" y2="1"><stop stop-color="#f59e0b" stop-opacity=".25"/><stop offset="1" stop-color="#f59e0b" stop-opacity="0"/></linearGradient></defs><g fill="#8e939e" font-size="10" font-family="JetBrains Mono Variable"><path d="M40 210.0H590" stroke="rgba(142,147,158,.1)"/><text x="32" y="213.0" text-anchor="end">0</text><path d="M40 183.0H590" stroke="rgba(142,147,158,.1)"/><text x="32" y="186.0" text-anchor="end">1,000</text><path d="M40 156.0H590" stroke="rgba(142,147,158,.1)"/><text x="32" y="159.0" text-anchor="end">2,000</text><path d="M40 129.0H590" stroke="rgba(142,147,158,.1)"/><text x="32" y="132.0" text-anchor="end">3,000</text><path d="M40 102.0H590" stroke="rgba(142,147,158,.1)"/><text x="32" y="105.0" text-anchor="end">4,000</text><path d="M40 75.0H590" stroke="rgba(142,147,158,.1)"/><text x="32" y="78.0" text-anchor="end">5,000</text><path d="M40 48.0H590" stroke="rgba(142,147,158,.1)"/><text x="32" y="51.0" text-anchor="end">6,000</text><path d="M40 21.0H590" stroke="rgba(142,147,158,.1)"/><text x="32" y="24.0" text-anchor="end">7,000</text><text x="40" y="232" text-anchor="middle">Oct 4</text><text x="118" y="232" text-anchor="middle">Oct 8</text><text x="196" y="232" text-anchor="middle">Oct 12</text><text x="274" y="232" text-anchor="middle">Oct 16</text><text x="352" y="232" text-anchor="middle">Oct 20</text><text x="430" y="232" text-anchor="middle">Oct 25</text><text x="508" y="232" text-anchor="middle">Oct 29</text><text x="586" y="232" text-anchor="middle">Nov 2</text></g><g transform="@($"translate(0,{-3 * (BenchmarkRun % 3)})")"><path d="M40 96.6 C67 96.6 91 79.05000000000001 118 79.05000000000001 C145 79.05000000000001 169 85.8 196 85.8 C223 85.8 247 72.30000000000001 274 72.30000000000001 C301 72.30000000000001 325 76.35 352 76.35 C379 76.35 403 41.52000000000001 430 41.52000000000001 C457 41.52000000000001 481 50.97 508 50.97 C535 50.97 559 36.93000000000001 586 36.93000000000001 L586 210H40Z" fill="url(#gp-indigo-area)"/><path d="M40 96.6 C67 96.6 91 79.05000000000001 118 79.05000000000001 C145 79.05000000000001 169 85.8 196 85.8 C223 85.8 247 72.30000000000001 274 72.30000000000001 C301 72.30000000000001 325 76.35 352 76.35 C379 76.35 403 41.52000000000001 430 41.52000000000001 C457 41.52000000000001 481 50.97 508 50.97 C535 50.97 559 36.93000000000001 586 36.93000000000001" fill="none" stroke="#6366f1" stroke-width="2.5"/><circle cx="40" cy="96.6" r="3" fill="#6366f1"/><circle cx="118" cy="79.05000000000001" r="3" fill="#6366f1"/><circle cx="196" cy="85.8" r="3" fill="#6366f1"/><circle cx="274" cy="72.30000000000001" r="3" fill="#6366f1"/><circle cx="352" cy="76.35" r="3" fill="#6366f1"/><circle cx="430" cy="41.52000000000001" r="3" fill="#6366f1"/><circle cx="508" cy="50.97" r="3" fill="#6366f1"/><circle cx="586" cy="36.93000000000001" r="3" fill="#6366f1"/><path d="M40 131.7 C67 131.7 91 123.6 118 123.6 C145 123.6 169 126.3 196 126.3 C223 126.3 247 116.85 274 116.85 C301 116.85 325 120.9 352 120.9 C379 120.9 403 102.54 430 102.54 C457 102.54 481 109.56 508 109.56 C535 109.56 559 98.76 586 98.76 L586 210H40Z" fill="url(#gp-amber-area)"/><path d="M40 131.7 C67 131.7 91 123.6 118 123.6 C145 123.6 169 126.3 196 126.3 C223 126.3 247 116.85 274 116.85 C301 116.85 325 120.9 352 120.9 C379 120.9 403 102.54 430 102.54 C457 102.54 481 109.56 508 109.56 C535 109.56 559 98.76 586 98.76" fill="none" stroke="#f59e0b" stroke-width="2.5"/><circle cx="40" cy="131.7" r="3" fill="#f59e0b"/><circle cx="118" cy="123.6" r="3" fill="#f59e0b"/><circle cx="196" cy="126.3" r="3" fill="#f59e0b"/><circle cx="274" cy="116.85" r="3" fill="#f59e0b"/><circle cx="352" cy="120.9" r="3" fill="#f59e0b"/><circle cx="430" cy="102.54" r="3" fill="#f59e0b"/><circle cx="508" cy="109.56" r="3" fill="#f59e0b"/><circle cx="586" cy="98.76" r="3" fill="#f59e0b"/></g></svg>
+        </div>
+      </div>
+    <p class="sr-only" role="status" aria-live="polite">@Feedback</p></section>
+@code {
+    private string Feedback = "";
+
+    private int Step, BenchmarkRun;
+    private bool AutoScale = true;
+    private static readonly (string Name, string Jobs, string Eta)[] Stages = [("Unit & Integration Tests", "4 suites", "3 min"), ("Container Image & SBOM", "2 images", "7 min"), ("Canary Edge Rollout", "4 regions", "11 min")];
+}

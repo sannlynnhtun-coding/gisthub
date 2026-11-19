@@ -4,25 +4,9 @@
   "id": "./",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#111111",
-  "theme_color": "#111111",
+  "background_color": "#0E0F12",
+  "theme_color": "#0E0F12",
   "description": "Premium snippet manager for GitHub Gists.",
   "prefer_related_applications": false,
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    },
-    {
-      "src": "logo.svg",
-      "type": "image/svg+xml",
-      "sizes": "any"
-    }
-  ]
+  "icons": [{"src":"icons/gitpulse-brand.png","type":"image/png","sizes":"1254x1254"}]
 }

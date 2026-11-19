@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+const source=readFileSync('specs/004-gitpulse-default-theme/references/menu-preview.html','utf8');
+const png=readFileSync('GistHub/wwwroot/icons/gitpulse-brand.png');
+assert.equal(createHash('sha256').update(png).digest('hex'),'3b2833576889b407e26ee5293627433101ec807d911fa5b0fb5bbfe3f59216e0');
+const sprite=readFileSync('GistHub/wwwroot/icons/gitpulse.svg','utf8');
+assert.equal([...sprite.matchAll(/<symbol/g)].length,19);
+for(const symbol of source.matchAll(/<symbol.*?<\/symbol>/gs))assert.ok(sprite.includes(symbol[0]));
+const menu=readFileSync('GistHub/Layout/NavMenu.razor','utf8');
+for(const match of menu.matchAll(/gitpulse.svg#([^" ]+)/g))assert.ok(sprite.includes('id="'+match[1]+'"'));
+console.log('PASS: exact PNG and 19 symbol paths, all command references valid.');

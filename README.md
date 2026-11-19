@@ -4,6 +4,8 @@ GistHub is a Blazor WebAssembly progressive web app for discovering, creating, a
 
 ## Overview
 
+Choose **Excel** or **Admin portal** from **Workspace layout** in the header. The choice is saved locally and included in Local settings backups; the original Excel ribbon is the default. Admin portal uses parent categories with related child commands directly underneath: click a parent to open or close its dropdown. On narrow screens, use **Toggle workspace navigation** to open the sidebar panel. Appearance presets apply independently to either layout. Quick Access and existing tool workflows remain available.
+
 The Flutter Web and Android client is included in [GistHub.Flutter](GistHub.Flutter/README.md).
 It shares this repository and has its own [build/release workflow](.github/workflows/flutter.yml).
 The Flutter client excludes Diagram Editor and YouTube Downloader. Android APKs
@@ -211,3 +213,16 @@ Deployment requires these repository secrets:
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
+
+## Home dashboard
+
+Home is the default landing page and the first destination in the Home command group; My Collection follows it with its existing favorites view and direct collection links. Both Excel and Admin portal use the same navigation and saved Quick Access preferences.
+
+Load a public GitHub username to explore its latest 100 updated public repositories, inspect repository details, copy clone commands and export the loaded report. Summaries disclose their loaded scope; a full page may be incomplete. The dashboard follows the existing appearance picker. Benchmark and contributor-cadence views contain explicitly labeled demonstrations, and unmeasured security checks are shown as unavailable. Viewing a developer does not switch your profile or change your collection.
+
+
+### GitPulse default appearance
+
+Fresh web sessions use GitPulse Dark with Plus Jakarta Sans and the reference bento dashboard. GitPulse Light is available in the existing appearance picker. Restore default selects the complete GitPulse Dark preset; Reset style changes only the style. Valid saved themes, styles and fonts remain independent and are not replaced on startup. The original GistHub light/dark palettes and Original GistHub style remain selectable with their existing IDs.
+
+Workspace category tabs have square corners in both Excel and Admin portal for every style; cards, inner panels and pill controls keep their individual shapes. The four dashboard views retain public repository exploration/export and label example hours, keyboard activity, approvals, CI and cadence as demonstrations. Demo controls do not collect keyboard activity or change GitHub repositories.

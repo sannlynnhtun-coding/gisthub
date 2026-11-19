@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitPulse — Universal GitHub Engineering &amp; Developer Telemetry</title>
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- jQuery 3.7+ CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            obsidian: '#0E0F12',
+            bento: '#17181C',
+            bentoElevated: '#1E2025',
+            steel: '#8E939E',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --canvas-bg: #F3F4F8;
+      --card-bg: #FFFFFF;
+      --card-elevated: #F8FAFC;
+      --hairline: rgba(15, 23, 42, 0.08);
+      --text-primary: #0F172A;
+      --text-secondary: #64748B;
+    }
+    html.dark {
+      --canvas-bg: #0E0F12;
+      --card-bg: #17181C;
+      --card-elevated: #1E2025;
+      --hairline: rgba(255, 255, 255, 0.07);
+      --text-primary: #F5F6F8;
+      --text-secondary: #8E939E;
+    }
+    body {
+      background-color: var(--canvas-bg);
+      color: var(--text-primary);
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    .bento-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--hairline);
+      border-radius: 24px;
+      transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.25s ease;
+    }
+    .bento-card:hover {
+      border-color: rgba(99, 102, 241, 0.28);
+    }
+    .bento-subcard {
+      background-color: var(--card-elevated);
+      border: 1px solid var(--hairline);
+      border-radius: 18px;
+    }
+    .tab-panel {
+      animation: panelFade 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes panelFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Custom subtle scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(142, 147, 158, 0.25); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.5); }
+
+    /* Tactile QWERTY Keycaps */
+    .keycap {
+      transition: all 0.14s ease;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+    }
+    .keycap:active {
+      transform: translateY(1px);
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0.45);
+    }
+    /* Animated Pipeline Dash */
+    @keyframes pipelineFlow {
+      to { stroke-dashoffset: -24; }
+    }
+    .pipeline-animated-stroke {
+      stroke-dasharray: 6 6;
+      animation: pipelineFlow 1.1s linear infinite;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- Toast Notification Stack -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+  <!-- ========================================================= -->
+  <!-- COMMAND PALETTE MODAL (Ctrl+K / Cmd+K)                    -->
+  <!-- ========================================================= -->
+  <div id="cmd-palette-modal" class="fixed inset-0 z-50 hidden items-start justify-center pt-16 sm:pt-24 bg-black/70 backdrop-blur-sm p-4">
+    <div class="bento-card max-w-xl w-full shadow-2xl overflow-hidden !rounded-2xl">
+      <div class="flex items-center gap-3 px-4 py-3.5 border-b border-black/5 dark:border-white/[0.07]">
+        <i data-lucide="terminal" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+        <input id="cmd-search-input" type="text" placeholder="Jump to tab, switch @username, inspect repo, or export..." class="w-full bg-transparent text-sm text-slate-900 dark:text-[#F5F6F8] placeholder-[#8E939E] focus:outline-none" />
+        <kbd class="px-2 py-0.5 text-[10px] font-mono bg-black/5 dark:bg-[#1E2025] text-[#8E939E] rounded border border-black/10 dark:border-white/10">ESC</kbd>
+      </div>
+      <div id="cmd-results-list" class="max-h-80 overflow-y-auto p-2 space-y-1 text-xs"></div>
+      <div class="px-4 py-2.5 bg-black/[0.02] dark:bg-[#0E0F12]/80 border-t border-black/5 dark:border-white/[0.07] flex items-center justify-between text-[11px] text-[#8E939E]">
+        <span>GitPulse Command Palette</span>
+        <span class="font-mono">↵ to execute</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- REPOSITORY INSPECTOR SLIDE-OVER DRAWER                    -->
+  <!-- ========================================================= -->
+  <div id="repo-drawer-backdrop" class="fixed inset-0 z-40 hidden bg-black/65 backdrop-blur-xs transition-opacity"></div>
+  <aside id="repo-drawer" class="fixed top-0 right-0 z-50 h-full w-full max-w-md bg-white dark:bg-[#17181C] border-l border-black/10 dark:border-white/[0.08] shadow-2xl transform translate-x-full transition-transform duration-200 ease-out flex flex-col">
+    <div class="p-6 border-b border-black/5 dark:border-white/[0.07] flex items-start justify-between gap-3">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span id="drawer-repo-lang" class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">TypeScript</span>
+          <span id="drawer-repo-license" class="px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-amber-500/15 text-amber-400 border border-amber-500/30">MIT</span>
+        </div>
+        <h3 id="drawer-repo-name" class="text-lg font-bold font-mono text-slate-900 dark:text-[#F5F6F8] break-all">repository-name</h3>
+      </div>
+      <button id="close-drawer-btn" class="p-2 rounded-full text-[#8E939E] hover:bg-black/5 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition cursor-pointer">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-6 space-y-5">
+      <div>
+        <h4 class="text-[11px] font-semibold uppercase tracking-wider text-[#8E939E] mb-1.5">Repository Summary</h4>
+        <p id="drawer-repo-desc" class="text-sm text-slate-600 dark:text-[#D1D5DB] leading-relaxed">Repository description</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bento-subcard p-3.5">
+          <span class="text-[11px] text-[#8E939E] block">Stargazers</span>
+          <span id="drawer-repo-stars" class="text-base font-bold font-mono tabular-nums text-indigo-400">0 ★</span>
+        </div>
+        <div class="bento-subcard p-3.5">
+          <span class="text-[11px] text-[#8E939E] block">Forks</span>
+          <span id="drawer-repo-forks" class="text-base font-bold font-mono tabular-nums text-violet-400">0 ⑂</span>
+        </div>
+        <div class="bento-subcard p-3.5">
+          <span class="text-[11px] text-[#8E939E] block">Open Issues</span>
+          <span id="drawer-repo-issues" class="text-base font-bold font-mono tabular-nums text-amber-400">0</span>
+        </div>
+        <div class="bento-subcard p-3.5">
+          <span class="text-[11px] text-[#8E939E] block">Last Activity</span>
+          <span id="drawer-repo-updated" class="text-sm font-semibold font-mono text-cyan-400">Recently</span>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="text-[11px] font-semibold uppercase tracking-wider text-[#8E939E] mb-2">Topics &amp; Ecosystem Tags</h4>
+        <div id="drawer-repo-topics" class="flex flex-wrap gap-1.5"></div>
+      </div>
+
+      <div>
+        <h4 class="text-[11px] font-semibold uppercase tracking-wider text-[#8E939E] mb-1.5">Clone via HTTPS</h4>
+        <div class="flex items-center justify-between gap-2 bg-[#0E0F12] text-indigo-300 font-mono text-xs px-3.5 py-3 rounded-2xl border border-white/[0.08]">
+          <code id="drawer-clone-cmd" class="truncate">git clone https://github.com/user/repo.git</code>
+          <button id="copy-clone-btn" class="px-3 py-1 rounded-full bg-white text-[#0E0F12] hover:bg-indigo-100 text-[11px] font-sans font-bold shrink-0 transition cursor-pointer">
+            Copy
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-5 border-t border-black/5 dark:border-white/[0.07] flex items-center justify-between gap-3 bg-black/[0.02] dark:bg-[#0E0F12]/50">
+      <button id="drawer-close-footer" class="px-4 py-2 rounded-full text-xs font-medium text-[#8E939E] hover:text-slate-900 dark:hover:text-white transition cursor-pointer">
+        Dismiss
+      </button>
+      <a id="drawer-repo-link" href="https://github.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-bold bg-white text-[#0E0F12] hover:bg-indigo-100 transition shadow-sm">
+        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        Open on GitHub
+      </a>
+    </div>
+  </aside>
+
+  <!-- ========================================================= -->
+  <!-- STICKY TOP NAVIGATION HEADER                              -->
+  <!-- ========================================================= -->
+  <header class="sticky top-0 z-30 bg-white/85 dark:bg-[#0E0F12]/85 backdrop-blur-md border-b border-black/5 dark:border-white/[0.07]">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      <!-- Brand + Universal @username Switcher -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-mono font-extrabold text-xs shadow-md shadow-indigo-500/20 shrink-0">
+          GP
+        </div>
+        <span class="hidden sm:inline font-extrabold text-base tracking-tight text-slate-900 dark:text-[#F5F6F8] shrink-0">
+          GitPulse
+        </span>
+
+        <!-- Universal GitHub Username Input -->
+        <form id="username-form" class="flex items-center bg-slate-100 dark:bg-[#17181C] border border-black/10 dark:border-white/[0.09] rounded-full pl-3.5 pr-1 py-1 focus-within:border-indigo-500/60 transition">
+          <span class="text-xs font-mono text-indigo-400 mr-1">@</span>
+          <input id="github-username-input" type="text" value="sannlynnhtun-coding" placeholder="github handle..." aria-label="GitHub Username" class="bg-transparent text-xs font-mono font-semibold text-slate-900 dark:text-[#F5F6F8] w-28 sm:w-40 focus:outline-none" />
+          <button type="submit" class="px-3 py-1 rounded-full bg-white text-[#0E0F12] hover:bg-indigo-100 text-[11px] font-bold transition cursor-pointer shadow-2xs">
+            Sync
+          </button>
+        </form>
+
+        <!-- Live API Status Pill -->
+        <span id="api-status-badge" class="hidden xl:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-medium bg-indigo-500/10 text-indigo-500 dark:text-indigo-300 border border-indigo-500/25 shrink-0">
+          <span id="api-status-dot" class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+          <span id="api-status-text">Syncing...</span>
+        </span>
+      </div>
+
+      <!-- Center: 4 Matte Bento Views -->
+      <nav id="main-nav" class="hidden lg:flex items-center gap-1 bg-slate-100 dark:bg-[#17181C] p-1 rounded-full border border-black/5 dark:border-white/[0.07]">
+        <button data-view="overview" class="nav-tab active px-3.5 py-1.5 rounded-full text-xs font-semibold transition bg-[#1E2025] text-white shadow-xs cursor-pointer">
+          Overview
+        </button>
+        <button data-view="quality" class="nav-tab px-3.5 py-1.5 rounded-full text-xs font-medium transition text-[#8E939E] hover:text-slate-900 dark:hover:text-white cursor-pointer">
+          Quality &amp; Review
+        </button>
+        <button data-view="benchmarks" class="nav-tab px-3.5 py-1.5 rounded-full text-xs font-medium transition text-[#8E939E] hover:text-slate-900 dark:hover:text-white cursor-pointer">
+          Benchmarks &amp; CI
+        </button>
+        <button data-view="cadence" class="nav-tab px-3.5 py-1.5 rounded-full text-xs font-medium transition text-[#8E939E] hover:text-slate-900 dark:hover:text-white cursor-pointer">
+          Cadence &amp; Goals
+        </button>
+      </nav>
+
+      <!-- Right: Command Palette, Theme Toggle, Profile Pill -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="open-cmd-btn" title="Command Palette (Ctrl+K)" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-[#17181C] hover:bg-slate-200 dark:hover:bg-[#1E2025] text-slate-700 dark:text-[#D1D5DB] border border-black/5 dark:border-white/[0.08] transition cursor-pointer">
+          <i data-lucide="search" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span class="hidden md:inline">Command</span>
+          <kbd class="hidden sm:inline font-mono text-[10px] px-1.5 py-0.2 bg-white dark:bg-[#0E0F12] text-[#8E939E] rounded border border-black/10 dark:border-white/10">⌘K</kbd>
+        </button>
+
+        <button id="theme-toggle-btn" title="Toggle Matte Dark / Light Mode" class="p-2 rounded-full bg-slate-100 dark:bg-[#17181C] hover:bg-slate-200 dark:hover:bg-[#1E2025] text-slate-700 dark:text-[#F5F6F8] border border-black/5 dark:border-white/[0.08] transition cursor-pointer">
+          <i id="theme-icon" data-lucide="sun" class="w-4 h-4 text-amber-400"></i>
+        </button>
+
+        <a id="gh-profile-link" href="https://github.com/sannlynnhtun-coding" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-slate-100 dark:bg-[#17181C] hover:bg-slate-200 dark:hover:bg-[#1E2025] border border-black/5 dark:border-white/[0.08] rounded-full pl-1.5 pr-3 py-1 transition">
+          <img id="gh-avatar" src="https://placehold.co/64x64/6366F1/ffffff?text=GH" onerror="this.src='https://placehold.co/64x64/6366F1/ffffff?text=GH'" alt="Developer Avatar" class="w-6 h-6 rounded-full object-cover ring-1 ring-indigo-500/40" />
+          <span id="gh-handle-badge" class="hidden md:inline text-xs font-mono font-semibold text-slate-800 dark:text-[#F5F6F8]">@sannlynnhtun-coding</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Mobile Horizontal Tab Strip -->
+    <div class="lg:hidden border-t border-black/5 dark:border-white/[0.07] px-4 py-2 flex items-center gap-1.5 overflow-x-auto">
+      <button data-view="overview" class="nav-tab active px-3 py-1 rounded-full text-xs font-semibold bg-[#1E2025] text-white whitespace-nowrap cursor-pointer">Overview</button>
+      <button data-view="quality" class="nav-tab px-3 py-1 rounded-full text-xs font-medium text-[#8E939E] whitespace-nowrap cursor-pointer">Quality &amp; Review</button>
+      <button data-view="benchmarks" class="nav-tab px-3 py-1 rounded-full text-xs font-medium text-[#8E939E] whitespace-nowrap cursor-pointer">Benchmarks &amp; CI</button>
+      <button data-view="cadence" class="nav-tab px-3 py-1 rounded-full text-xs font-medium text-[#8E939E] whitespace-nowrap cursor-pointer">Cadence &amp; Goals</button>
+    </div>
+  </header>
+
+  <!-- ========================================================= -->
+  <!-- MAIN WORKSPACE CONTAINER                                  -->
+  <!-- ========================================================= -->
+  <main class="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- Developer Hero Header & Quick-Switch Presets -->
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
+      <div class="space-y-1.5">
+        <div class="flex flex-wrap items-center gap-2 text-xs text-[#8E939E]">
+          <span id="breadcrumb-text" class="font-mono font-semibold text-indigo-400">github.com/sannlynnhtun-coding • Overview</span>
+          <span>•</span>
+          <span id="gh-meta-info" class="inline-flex items-center gap-1">
+            <i data-lucide="map-pin" class="w-3 h-3 text-violet-400"></i> Open-Source Engineer
+          </span>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <h1 id="page-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-[#F5F6F8]">
+            Developer Telemetry
+          </h1>
+          <span id="gh-followers-pill" class="px-3 py-0.5 rounded-full text-xs font-mono tabular-nums bg-slate-100 dark:bg-[#17181C] border border-black/5 dark:border-white/[0.08] text-slate-700 dark:text-[#D1D5DB]">
+            0 followers • 0 following
+          </span>
+        </div>
+        <p id="gh-bio-text" class="text-xs sm:text-sm text-[#8E939E] max-w-3xl">
+          Syncing public GitHub profile, repository velocity, and engineering metrics...
+        </p>
+      </div>
+
+      <!-- Quick-Switch Sample Accounts + Crisp White Export CTA -->
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex items-center gap-1 bg-slate-100 dark:bg-[#17181C] border border-black/5 dark:border-white/[0.08] rounded-full p-1 overflow-x-auto">
+          <span class="text-[11px] font-medium text-[#8E939E] pl-2.5 pr-1">Profiles:</span>
+          <button data-preset-user="sannlynnhtun-coding" class="preset-user-btn px-2.5 py-1 rounded-full text-xs font-mono font-medium transition cursor-pointer">@sannlynnhtun-coding</button>
+          <button data-preset-user="tiangolo" class="preset-user-btn px-2.5 py-1 rounded-full text-xs font-mono font-medium transition cursor-pointer">@tiangolo</button>
+          <button data-preset-user="shadcn" class="preset-user-btn px-2.5 py-1 rounded-full text-xs font-mono font-medium transition cursor-pointer">@shadcn</button>
+          <button data-preset-user="sindresorhus" class="preset-user-btn px-2.5 py-1 rounded-full text-xs font-mono font-medium transition cursor-pointer">@sindresorhus</button>
+          <button data-preset-user="gaearon" class="preset-user-btn px-2.5 py-1 rounded-full text-xs font-mono font-medium transition cursor-pointer">@gaearon</button>
+        </div>
+
+        <button id="export-csv-btn" class="inline-flex items-center gap-1.5 bg-white text-[#0E0F12] hover:bg-indigo-100 font-bold text-xs px-4 py-2.5 rounded-full shadow-sm transition cursor-pointer">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          Export CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: OVERVIEW (Radial Clock, Hotkey Keyboard, Polar)    -->
+    <!-- ========================================================= -->
+    <section id="view-overview" class="tab-panel space-y-5">
+
+      <!-- Top 3 Reference Bento Widgets Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+        <!-- WIDGET A (Image 1 Left): Radial 24h Activity Clock & Weekly Goal -->
+        <div class="lg:col-span-4 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full bg-[#1E2025] border border-white/[0.08] flex items-center justify-center text-indigo-400">
+                  <i data-lucide="clock" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Active dev hours</h2>
+                  <p class="text-xs text-[#8E939E]">When commits &amp; PRs ship</p>
+                </div>
+              </div>
+              <span id="kpi-repos-badge" class="px-2.5 py-1 rounded-full text-[11px] font-mono tabular-nums bg-indigo-500/15 text-indigo-400 border border-indigo-500/25">0 repos</span>
+            </div>
+
+            <div class="flex items-baseline gap-2.5 mb-4">
+              <span id="active-dev-hours" class="text-3xl font-extrabold font-mono tabular-nums tracking-tight text-slate-900 dark:text-[#F5F6F8]">18.4 h</span>
+              <span class="text-xs font-mono text-indigo-400">+3.2 h <span class="text-[#8E939E]">vs last month</span></span>
+            </div>
+
+            <!-- 24-Hour Radial Burst SVG -->
+            <div class="relative flex items-center justify-center my-2">
+              <svg id="radial-clock-svg" viewBox="0 0 240 240" class="w-52 h-52">
+                <!-- Outer subtle clock ticks & labels -->
+                <text x="120" y="16" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono">00</text>
+                <text x="224" y="124" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono">06</text>
+                <text x="120" y="232" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono">12</text>
+                <text x="16" y="124" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono">18</text>
+                <circle cx="120" cy="120" r="84" fill="none" stroke="rgba(142,147,158,0.14)" stroke-width="1" stroke-dasharray="2 4" />
+                <g id="radial-clock-rays"></g>
+                <circle cx="120" cy="120" r="46" fill="#1E2025" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+                <text x="120" y="116" text-anchor="middle" fill="#F5F6F8" font-size="15" font-weight="700" font-family="JetBrains Mono">42 m</text>
+                <text x="120" y="132" text-anchor="middle" fill="#8E939E" font-size="10" font-family="Plus Jakarta Sans">avg session</text>
+              </svg>
+            </div>
+
+            <!-- 4 Multi-Color Breakdown Dots -->
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs mt-2">
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-2 text-[#8E939E]"><span class="w-2 h-2 rounded-full bg-indigo-500"></span>Features</span>
+                <span class="font-mono font-semibold tabular-nums">7.8 h</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-2 text-[#8E939E]"><span class="w-2 h-2 rounded-full bg-violet-500"></span>Refactors</span>
+                <span class="font-mono font-semibold tabular-nums">4.9 h</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-2 text-[#8E939E]"><span class="w-2 h-2 rounded-full bg-amber-400"></span>Docs</span>
+                <span class="font-mono font-semibold tabular-nums">3.1 h</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-2 text-[#8E939E]"><span class="w-2 h-2 rounded-full bg-cyan-400"></span>Reviews</span>
+                <span class="font-mono font-semibold tabular-nums">2.6 h</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weekly Goal Pill Box (Bottom of Image 1 Left) -->
+          <div class="bento-subcard p-3.5 mt-5">
+            <div class="flex items-center justify-between mb-2.5">
+              <div>
+                <p class="text-xs font-bold text-slate-900 dark:text-[#F5F6F8]">Weekly commit goal</p>
+                <p id="weekly-goal-sub" class="text-[11px] font-mono text-[#8E939E]">5 of 7 days • 2 days left</p>
+              </div>
+              <div class="inline-flex items-center gap-1.5 bg-black/5 dark:bg-[#17181C] border border-black/10 dark:border-white/[0.08] rounded-full px-2 py-0.5 text-xs font-mono">
+                <button id="goal-dec-btn" class="text-[#8E939E] hover:text-white px-1 cursor-pointer">−</button>
+                <span id="weekly-goal-target" class="font-bold">6 d</span>
+                <button id="goal-inc-btn" class="text-[#8E939E] hover:text-white px-1 cursor-pointer">+</button>
+              </div>
+            </div>
+            <div id="weekly-goal-segments" class="grid grid-cols-7 gap-1.5"></div>
+            <div class="grid grid-cols-7 gap-1.5 text-center text-[10px] font-mono text-[#8E939E] mt-1.5">
+              <span>M</span><span>T</span><span>W</span><span>T</span><span class="text-indigo-400 font-bold">F</span><span>S</span><span>S</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- WIDGET B (Image 1 Right): Interactive Developer Shortcut & Commit Heatmap Keyboard -->
+        <div class="lg:col-span-8 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full bg-[#1E2025] border border-white/[0.08] flex items-center justify-center text-violet-400">
+                  <i data-lucide="keyboard" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Developer workflow &amp; command pulse</h2>
+                  <p class="text-xs text-[#8E939E]">Click any highlighted hotkey below to inspect CLI &amp; Git frequency</p>
+                </div>
+              </div>
+
+              <!-- Week | Month Segmented Toggle -->
+              <div class="inline-flex bg-slate-100 dark:bg-[#0E0F12] p-1 rounded-full border border-black/5 dark:border-white/[0.07] text-xs">
+                <button data-kb-range="week" class="kb-range-btn px-3 py-1 rounded-full text-[#8E939E] font-medium cursor-pointer">Week</button>
+                <button data-kb-range="month" class="kb-range-btn active px-3 py-1 rounded-full bg-[#1E2025] text-white font-semibold cursor-pointer">Month</button>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-baseline gap-3 mb-4">
+              <span id="kb-total-runs" class="text-3xl font-extrabold font-mono tabular-nums tracking-tight text-slate-900 dark:text-[#F5F6F8]">1,284</span>
+              <span class="text-xs font-mono text-violet-400">+18% <span class="text-[#8E939E]">commits &amp; CLI runs this period</span></span>
+            </div>
+
+            <!-- Interactive Highlighted Range Bar Strip -->
+            <div class="relative bg-slate-50 dark:bg-[#121317] rounded-2xl p-3.5 border border-black/5 dark:border-white/[0.06] mb-4">
+              <div id="kb-activity-bars" class="flex items-end justify-between gap-1 h-16"></div>
+              <div class="flex items-center justify-between text-[11px] font-mono text-[#8E939E] mt-2">
+                <span>Oct 1</span>
+                <span id="kb-window-label" class="text-indigo-400 font-semibold">Oct 7 – 20 • 642 runs</span>
+                <span>Oct 31</span>
+              </div>
+            </div>
+
+            <!-- Tactile QWERTY Hotkey Keyboard -->
+            <div id="qwerty-keyboard-container" class="space-y-1.5 select-none">
+              <!-- Rendered via jQuery with interactive command bindings -->
+            </div>
+          </div>
+
+          <!-- Bottom Legend & 3 Metric Sub-cards -->
+          <div class="mt-4 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#8E939E]">
+              <div class="flex items-center gap-1.5">
+                <span>Fewer</span>
+                <span class="w-3 h-3 rounded-xs bg-[#1E2025] border border-white/10"></span>
+                <span class="w-3 h-3 rounded-xs bg-indigo-950"></span>
+                <span class="w-3 h-3 rounded-xs bg-indigo-700"></span>
+                <span class="w-3 h-3 rounded-xs bg-indigo-500"></span>
+                <span class="w-3 h-3 rounded-xs bg-violet-500"></span>
+                <span>More</span>
+              </div>
+              <span id="kb-selected-desc" class="font-mono text-indigo-300">Active: git commit -m "feat: ..."</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <div class="bento-subcard p-3">
+                <span class="text-[11px] text-[#8E939E] block">Avg cycle</span>
+                <span id="kb-stat-cycle" class="text-sm sm:text-base font-bold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">1.4 s</span>
+              </div>
+              <div class="bento-subcard p-3">
+                <span class="text-[11px] text-[#8E939E] block">Top hotkey</span>
+                <span id="kb-stat-key" class="text-sm sm:text-base font-bold font-mono text-indigo-400">⌘ C</span>
+              </div>
+              <div class="bento-subcard p-3">
+                <span class="text-[11px] text-[#8E939E] block">Commit streak</span>
+                <span id="kb-stat-streak" class="text-sm sm:text-base font-bold font-mono tabular-nums text-amber-400">14 days</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Middle Row: Polar Area Ecosystem Chart (Image 2 Right) + Live GitHub Telemetry KPIs -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- WIDGET C (Image 2 Right): Multi-Color Polar / Radial Ecosystem Breakdown -->
+        <div class="lg:col-span-5 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full bg-[#1E2025] border border-white/[0.08] flex items-center justify-center text-cyan-400">
+                  <i data-lucide="pie-chart" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Ecosystem &amp; stars by stack</h2>
+                  <p class="text-xs text-[#8E939E]">Click any legend item to filter repos</p>
+                </div>
+              </div>
+              <button id="clear-lang-filter-btn" class="hidden px-2.5 py-1 rounded-full text-[11px] font-mono bg-amber-500/15 text-amber-400 border border-amber-500/30 cursor-pointer">
+                Reset ×
+              </button>
+            </div>
+
+            <div class="flex items-baseline gap-2.5 mb-2">
+              <span id="polar-total-stars" class="text-3xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">0 ★</span>
+              <span id="polar-total-forks" class="text-xs font-mono text-cyan-400">0 forks</span>
+            </div>
+
+            <!-- Floating Callout Badge + Polar Chart -->
+            <div class="relative h-56 w-full flex items-center justify-center">
+              <div id="polar-callout-box" class="absolute top-2 left-0 z-10 bento-subcard px-3 py-2 pointer-events-none shadow-lg">
+                <span id="polar-callout-title" class="text-[11px] text-[#8E939E] block">Top Stack</span>
+                <span id="polar-callout-val" class="text-xs font-mono font-bold text-indigo-400">Loading...</span>
+              </div>
+              <canvas id="ecosystemPolarChart"></canvas>
+            </div>
+          </div>
+
+          <!-- 2-Column Color Legend (Matching Image 2 Right Bottom) -->
+          <div id="polar-legend-grid" class="grid grid-cols-2 gap-x-5 gap-y-2 text-xs pt-3 border-t border-black/5 dark:border-white/[0.07]"></div>
+        </div>
+
+        <!-- WIDGET D: Repository Explorer Table with Slide-Over Drawer Trigger -->
+        <div class="lg:col-span-7 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Live Repository Explorer</h2>
+                <p class="text-xs text-[#8E939E]">Select any repository to open its slide-over inspector &amp; clone snippet</p>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="flex items-center bg-slate-100 dark:bg-[#0E0F12] border border-black/5 dark:border-white/[0.08] rounded-full px-3 py-1.5 text-xs">
+                  <i data-lucide="search" class="w-3.5 h-3.5 text-[#8E939E] mr-1.5"></i>
+                  <input id="repo-table-search" type="text" placeholder="Filter repos..." class="bg-transparent text-slate-900 dark:text-[#F5F6F8] placeholder-[#8E939E] w-28 sm:w-36 focus:outline-none" />
+                </div>
+
+                <div class="inline-flex bg-slate-100 dark:bg-[#0E0F12] p-0.5 rounded-full border border-black/5 dark:border-white/[0.07] text-xs">
+                  <button data-repo-sort="stars" class="repo-sort-btn active px-2.5 py-1 rounded-full bg-[#1E2025] text-white font-semibold cursor-pointer">Stars</button>
+                  <button data-repo-sort="updated" class="repo-sort-btn px-2.5 py-1 rounded-full text-[#8E939E] font-medium cursor-pointer">Recent</button>
+                  <button data-repo-sort="forks" class="repo-sort-btn px-2.5 py-1 rounded-full text-[#8E939E] font-medium cursor-pointer">Forks</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-black/5 dark:border-white/[0.07] text-[11px] font-mono text-[#8E939E] uppercase">
+                    <th class="pb-3">Repository</th>
+                    <th class="pb-3">Stack</th>
+                    <th class="pb-3 text-right">Stars</th>
+                    <th class="pb-3 text-right">Forks</th>
+                    <th class="pb-3 text-right">Updated</th>
+                  </tr>
+                </thead>
+                <tbody id="repos-explorer-tbody" class="divide-y divide-black/5 dark:divide-white/[0.05] text-xs"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/[0.07] flex items-center justify-between text-[11px] font-mono text-[#8E939E]">
+            <span id="repo-filter-status">Showing top repositories</span>
+            <span class="text-indigo-400">Click row for details →</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: QUALITY & REVIEW (Image 2 Left Stepper + Image 3 Arc) -->
+    <!-- ========================================================= -->
+    <section id="view-quality" class="tab-panel hidden space-y-5">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+        <!-- WIDGET E (Image 2 Left): Multi-Stage Pull Request & Release Approval Pipeline -->
+        <div class="lg:col-span-7 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-5">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full bg-[#1E2025] border border-white/[0.08] flex items-center justify-center text-indigo-400">
+                  <i data-lucide="git-pull-request" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Pull request &amp; release approvals</h2>
+                  <p class="text-xs text-[#8E939E]">Multi-stage CI checks, codeowners &amp; merge gates</p>
+                </div>
+              </div>
+
+              <!-- To review | All Toggle -->
+              <div class="inline-flex bg-slate-100 dark:bg-[#0E0F12] p-1 rounded-full border border-black/5 dark:border-white/[0.07] text-xs">
+                <button data-pr-filter="review" class="pr-filter-btn active px-3 py-1 rounded-full bg-[#1E2025] text-white font-semibold cursor-pointer">To review</button>
+                <button data-pr-filter="all" class="pr-filter-btn px-3 py-1 rounded-full text-[#8E939E] font-medium cursor-pointer">All</button>
+              </div>
+            </div>
+
+            <!-- Active Featured PR Card with 4-Step Node Stepper (Image 2 Left Top Box) -->
+            <div id="featured-pr-card" class="bento-subcard p-5 mb-4">
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center font-mono font-bold text-xs text-indigo-300">
+                    PR
+                  </div>
+                  <div>
+                    <h3 id="feat-pr-title" class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">feat(gateway): adaptive rate-limiter &amp; telemetry</h3>
+                    <p id="feat-pr-meta" class="text-xs text-[#8E939E]">#418 • Opened 2h ago • +342 / −48 lines</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="feat-pr-diff" class="font-mono font-bold text-sm tabular-nums text-slate-900 dark:text-[#F5F6F8]">+390 LOC</span>
+                  <span class="w-6 h-6 rounded-full bg-indigo-500/25 text-indigo-300 font-mono text-[10px] font-bold flex items-center justify-center">CI</span>
+                  <span class="w-6 h-6 rounded-full bg-violet-500/25 text-violet-300 font-mono text-[10px] font-bold flex items-center justify-center">QA</span>
+                  <span class="w-6 h-6 rounded-full border border-dashed border-white/25 text-[#8E939E] font-mono text-[10px] flex items-center justify-center">You</span>
+                </div>
+              </div>
+
+              <!-- 4-Step Horizontal Node Stepper -->
+              <div class="relative mb-5">
+                <div class="flex items-center justify-between">
+                  <!-- Step 1 -->
+                  <div class="flex flex-col items-start z-10">
+                    <span class="w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[10px] font-bold">✓</span>
+                    <span class="text-xs font-semibold mt-2 text-slate-900 dark:text-[#F5F6F8]">Opened</span>
+                    <span class="text-[11px] font-mono text-[#8E939E]">Checks 09:12</span>
+                  </div>
+                  <div class="flex-1 h-0.5 bg-indigo-500 -mt-8 mx-1"></div>
+                  <!-- Step 2 -->
+                  <div class="flex flex-col items-center z-10">
+                    <span class="w-5 h-5 rounded-full bg-violet-500 text-white flex items-center justify-center text-[10px] font-bold">✓</span>
+                    <span class="text-xs font-semibold mt-2 text-slate-900 dark:text-[#F5F6F8]">CI Matrix</span>
+                    <span class="text-[11px] font-mono text-[#8E939E]">Passed 10:40</span>
+                  </div>
+                  <div class="flex-1 h-0.5 bg-white/15 -mt-8 mx-1"></div>
+                  <!-- Step 3 -->
+                  <div class="flex flex-col items-center z-10">
+                    <span id="feat-step3-dot" class="w-5 h-5 rounded-full border-2 border-dashed border-amber-400 flex items-center justify-center text-[10px] text-amber-400">•</span>
+                    <span class="text-xs font-semibold mt-2 text-slate-900 dark:text-[#F5F6F8]">You</span>
+                    <span id="feat-step3-status" class="text-[11px] font-mono text-amber-400">Waiting</span>
+                  </div>
+                  <div class="flex-1 h-0.5 bg-white/15 -mt-8 mx-1"></div>
+                  <!-- Step 4 -->
+                  <div class="flex flex-col items-end z-10">
+                    <span id="feat-step4-dot" class="w-5 h-5 rounded-full border border-white/25 flex items-center justify-center text-[10px] text-[#8E939E]"></span>
+                    <span class="text-xs font-semibold mt-2 text-slate-900 dark:text-[#F5F6F8]">Merge</span>
+                    <span class="text-[11px] font-mono text-[#8E939E]">main • Auto</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Footer: Needs 3 of 3 + Reject / Crisp White Approve Pill -->
+              <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-black/5 dark:border-white/[0.07]">
+                <span class="text-xs text-[#8E939E]">Needs 3 of 3 checks &amp; codeowner sign-off</span>
+                <div class="flex items-center gap-2">
+                  <button id="feat-pr-reject-btn" class="px-4 py-2 rounded-full text-xs font-semibold bg-[#17181C] hover:bg-rose-500/20 text-slate-200 hover:text-rose-300 border border-white/10 transition cursor-pointer">
+                    Request changes
+                  </button>
+                  <button id="feat-pr-approve-btn" class="px-4 py-2 rounded-full text-xs font-bold bg-white text-[#0E0F12] hover:bg-indigo-100 transition shadow-sm cursor-pointer">
+                    ✓ Approve
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Compact PR Queue Rows (Matching Image 2 Left Bottom Rows with Dashed Highlight) -->
+            <div id="pr-queue-list" class="space-y-2.5"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Semi-Circular Arc Gauge (Image 3 Middle-Right) + Guardrail Toggles -->
+        <div class="lg:col-span-5 space-y-5">
+          <!-- WIDGET F (Image 3 Middle-Right): Semi-Circular Repository Compliance Gauge -->
+          <div class="bento-card p-6">
+            <div class="flex items-center justify-between mb-1">
+              <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Repository hygiene quota</h2>
+              <span class="text-xs font-mono text-rose-400">Alert below 70%</span>
+            </div>
+            <p class="text-xs text-[#8E939E] mb-4">SPDX license, README &amp; branch protection coverage</p>
+
+            <div class="relative flex flex-col items-center justify-center my-2">
+              <svg viewBox="0 0 260 150" class="w-64 h-36 overflow-visible">
+                <!-- Background Track Arc -->
+                <path d="M 25 130 A 105 105 0 0 1 235 130" fill="none" stroke="rgba(142,147,158,0.18)" stroke-width="18" stroke-linecap="round" />
+                <!-- Active Gradient Progress Arc -->
+                <defs>
+                  <linearGradient id="indigoVioletArc" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#6366F1" />
+                    <stop offset="60%" stop-color="#A855F7" />
+                    <stop offset="100%" stop-color="#EC4899" />
+                  </linearGradient>
+                </defs>
+                <path id="hygiene-arc-path" d="M 25 130 A 105 105 0 0 1 235 130" fill="none" stroke="url(#indigoVioletArc)" stroke-width="18" stroke-linecap="round" stroke-dasharray="330" stroke-dashoffset="52" />
+                <!-- Threshold Marker Tick -->
+                <line x1="196" y1="52" x2="208" y2="40" stroke="#F43F5E" stroke-width="2.5" stroke-linecap="round" />
+                <text id="hygiene-arc-pct" x="130" y="106" text-anchor="middle" fill="#F5F6F8" font-size="34" font-weight="800" font-family="JetBrains Mono">84%</text>
+                <text id="hygiene-arc-sub" x="130" y="126" text-anchor="middle" fill="#8E939E" font-size="11" font-family="Plus Jakarta Sans">84 of 100 health points</text>
+              </svg>
+              <div class="w-56 flex justify-between text-[11px] font-mono text-[#8E939E] -mt-1">
+                <span>0</span>
+                <span>100</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Branch & Security Guardrail Toggles -->
+          <div class="bento-card p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Security &amp; branch guardrails</h2>
+                <p class="text-xs text-[#8E939E]">Toggle rules to live-recalculate compliance</p>
+              </div>
+              <span id="guardrails-count-pill" class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-violet-500/15 text-violet-300 border border-violet-500/30">4 / 5</span>
+            </div>
+            <div id="guardrails-list" class="space-y-3.5"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: BENCHMARKS & CI (Image 4 Isometric + Loop + Area)  -->
+    <!-- ========================================================= -->
+    <section id="view-benchmarks" class="tab-panel hidden space-y-5">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+        <!-- WIDGET G (Image 4 Left): 3D Isometric Module & Service Allocation -->
+        <div class="lg:col-span-5 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Module &amp; service allocation</h2>
+                <p class="text-xs text-[#8E939E]">Architecture cluster • 8 active services</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">2 warm</span>
+            </div>
+
+            <div class="flex items-baseline justify-between mb-2">
+              <div class="flex items-baseline gap-2">
+                <span class="text-3xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">2</span>
+                <span class="text-xs text-[#8E939E]">modules to scale</span>
+              </div>
+              <span class="text-xs font-mono text-[#8E939E]">next deploy in 6 min</span>
+            </div>
+
+            <!-- Clean 3D Isometric Block Cluster SVG (Inspired by Image 4 Left) -->
+            <div class="relative flex items-center justify-center my-2">
+              <div class="absolute top-2 right-2 bento-subcard px-3 py-1.5 text-[11px] shadow-md">
+                <span class="font-mono font-bold text-amber-400 block">Worker-04 • 78% CPU</span>
+                <span class="text-[#8E939E]">auto-scaling in ~4 min</span>
+              </div>
+
+              <svg viewBox="0 0 300 200" class="w-full max-w-[300px] h-48">
+                <!-- Isometric Base Tray -->
+                <polygon points="150,175 45,120 150,65 255,120" fill="#1E2025" stroke="rgba(255,255,255,0.12)" stroke-width="1.2" />
+                <!-- Block 1: Cyan (Core API) -->
+                <g transform="translate(88, 72)">
+                  <polygon points="24,0 48,12 24,24 0,12" fill="#67E8F9" />
+                  <polygon points="0,12 24,24 24,52 0,40" fill="#06B6D4" />
+                  <polygon points="48,12 24,24 24,52 48,40" fill="#0891B2" />
+                </g>
+                <!-- Block 2: Amber (Auth & Gateway) -->
+                <g transform="translate(132, 50)">
+                  <polygon points="24,0 48,12 24,24 0,12" fill="#FDE68A" />
+                  <polygon points="0,12 24,24 24,52 0,40" fill="#F59E0B" />
+                  <polygon points="48,12 24,24 24,52 48,40" fill="#D97706" />
+                </g>
+                <!-- Block 3: Violet (Event Queue) -->
+                <g transform="translate(174, 72)">
+                  <polygon points="24,0 48,12 24,24 0,12" fill="#D8B4FE" />
+                  <polygon points="0,12 24,24 24,52 0,40" fill="#A855F7" />
+                  <polygon points="48,12 24,24 24,52 48,40" fill="#7E22CE" />
+                </g>
+                <!-- Block 4: Coral/Orange Low Alert -->
+                <g transform="translate(132, 95)">
+                  <polygon points="24,8 48,20 24,32 0,20" fill="#FDBA74" />
+                  <polygon points="0,20 24,32 24,46 0,34" fill="#FB923C" />
+                  <polygon points="48,20 24,32 24,46 48,34" fill="#EA580C" />
+                </g>
+                <!-- Block 5: Indigo (Edge Cache) -->
+                <g transform="translate(92, 112)">
+                  <polygon points="24,0 48,12 24,24 0,12" fill="#A5B4FC" />
+                  <polygon points="0,12 24,24 24,46 0,34" fill="#6366F1" />
+                  <polygon points="48,12 24,24 24,46 48,34" fill="#4338CA" />
+                </g>
+                <!-- Block 6: Pink/Magenta (Analytics) -->
+                <g transform="translate(168, 112)">
+                  <polygon points="24,0 48,12 24,24 0,12" fill="#F9A8D4" />
+                  <polygon points="0,12 24,24 24,46 0,34" fill="#EC4899" />
+                  <polygon points="48,12 24,24 24,46 48,34" fill="#BE185D" />
+                </g>
+              </svg>
+            </div>
+
+            <!-- Legend Dots -->
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-[#8E939E] mb-4">
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-xs bg-cyan-400"></span>Core API</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-xs bg-amber-400"></span>Gateway</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-xs bg-violet-500"></span>Workers</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-xs bg-indigo-500"></span>Edge Cache</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-xs bg-orange-400"></span>Warm Load</span>
+            </div>
+          </div>
+
+          <!-- Bottom Auto-Scale Toggle Box -->
+          <div class="bento-subcard p-3.5 flex items-center justify-between gap-3">
+            <div>
+              <p class="text-xs font-bold text-slate-900 dark:text-[#F5F6F8]">Auto-trigger preview runners</p>
+              <p class="text-[11px] text-[#8E939E]">Spin up ephemeral containers on PR open</p>
+            </div>
+            <button id="autoscale-toggle-btn" class="w-11 h-6 rounded-full bg-indigo-600 transition relative shrink-0 cursor-pointer">
+              <span class="block w-4 h-4 rounded-full bg-white transition-transform transform translate-x-6"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- WIDGET H (Image 4 Right): Interactive CI/CD Pipeline Loop Visualizer -->
+        <div class="lg:col-span-7 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">CI/CD release loop</h2>
+                <p class="text-xs text-[#8E939E]">Runner-02 • 18 min deployment cycle</p>
+              </div>
+              <span id="pipeline-status-pill" class="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                On route
+              </span>
+            </div>
+
+            <!-- Rounded-Rectangle Track Loop SVG (Inspired by Image 4 Right) -->
+            <div class="relative flex items-center justify-center my-2">
+              <svg viewBox="0 0 360 175" class="w-full max-w-md h-44">
+                <!-- Base Rounded Track -->
+                <rect x="35" y="22" width="290" height="130" rx="34" fill="none" stroke="rgba(142,147,158,0.18)" stroke-width="7" />
+                <!-- Active Glowing Indigo/Cyan Progress Segment -->
+                <path id="pipeline-active-arc" d="M 90 22 L 291 22 A 34 34 0 0 1 325 56 L 325 102" fill="none" stroke="#6366F1" stroke-width="7" stroke-linecap="round" class="pipeline-animated-stroke" />
+
+                <!-- Stage Nodes -->
+                <circle cx="90" cy="22" r="5" fill="#F5F6F8" />
+                <text x="90" y="42" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono">Clone</text>
+
+                <circle cx="195" cy="22" r="6" fill="#38BDF8" />
+                <text x="195" y="42" text-anchor="middle" fill="#F5F6F8" font-size="10" font-family="JetBrains Mono">Build</text>
+
+                <circle cx="315" cy="34" r="6" fill="#6366F1" />
+                <text x="282" y="44" text-anchor="middle" fill="#F5F6F8" font-size="10" font-family="JetBrains Mono">Test</text>
+
+                <circle cx="275" cy="152" r="6" fill="#17181C" stroke="#818CF8" stroke-width="3" />
+                <text x="150" y="140" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono">Deploy</text>
+
+                <circle cx="35" cy="88" r="5" fill="#17181C" stroke="#8E939E" stroke-width="2" />
+                <text x="64" y="92" text-anchor="middle" fill="#8E939E" font-size="10" font-family="JetBrains Mono">Verify</text>
+
+                <!-- Center Telemetry Readout -->
+                <text id="pipeline-loop-counter" x="180" y="72" text-anchor="middle" fill="#8E939E" font-size="11" font-family="Plus Jakarta Sans">Stage 3 of 5</text>
+                <text id="pipeline-jobs-center" x="180" y="92" text-anchor="middle" fill="#F5F6F8" font-size="15" font-weight="700" font-family="Plus Jakarta Sans">7 test suites queued</text>
+                <!-- Glowing Pill Badge Inside Loop -->
+                <rect x="135" y="102" width="90" height="22" rx="11" fill="#4F46E5" />
+                <text id="pipeline-eta-pill" x="180" y="116" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="700" font-family="JetBrains Mono">Audit • 3 min</text>
+              </svg>
+            </div>
+
+            <!-- Upcoming Stage Rows -->
+            <div id="pipeline-stages-list" class="space-y-2.5 mt-2"></div>
+          </div>
+
+          <!-- Bottom Action Buttons (Dark Skip + Crisp White Rush Build) -->
+          <div class="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-black/5 dark:border-white/[0.07]">
+            <button id="skip-stage-btn" class="py-2.5 px-4 rounded-full text-xs font-semibold bg-[#1E2025] hover:bg-white/10 text-[#F5F6F8] border border-white/[0.08] transition cursor-pointer">
+              Skip stage
+            </button>
+            <button id="rush-build-btn" class="py-2.5 px-4 rounded-full text-xs font-bold bg-white text-[#0E0F12] hover:bg-indigo-100 transition shadow-sm cursor-pointer">
+              Rush deployment
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Dual-Series Area Line Chart (Image 3 Top-Left) -->
+      <div class="bento-card p-6">
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">CI workflow runs &amp; edge latency</h2>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-mono text-indigo-400 bg-indigo-500/10">+12.4% throughput</span>
+            </div>
+            <div class="flex items-baseline gap-2.5">
+              <span id="bench-total-queries" class="text-2xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">158.6k</span>
+              <span class="text-xs text-[#8E939E]">requests &amp; workflow checks over 30 days</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="hidden sm:flex items-center gap-4 text-xs">
+              <span class="inline-flex items-center gap-1.5 text-[#8E939E]"><span class="w-2.5 h-2.5 rounded-xs bg-indigo-500"></span>API Gateway</span>
+              <span class="inline-flex items-center gap-1.5 text-[#8E939E]"><span class="w-2.5 h-2.5 rounded-xs bg-amber-400"></span>CI Runners</span>
+            </div>
+            <button id="run-benchmark-btn" class="inline-flex items-center gap-1.5 bg-white text-[#0E0F12] hover:bg-indigo-100 font-bold text-xs px-4 py-2 rounded-full transition cursor-pointer">
+              <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+              Run Benchmark
+            </button>
+          </div>
+        </div>
+
+        <div class="h-60 w-full">
+          <canvas id="dualAreaTrendChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 4: CADENCE & GOALS (Image 3 Concentric + Bars + Matrix) -->
+    <!-- ========================================================= -->
+    <section id="view-cadence" class="tab-panel hidden space-y-5">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+        <!-- WIDGET I (Image 3 Top-Right): Concentric Multi-Ring Weekly Goals -->
+        <div class="lg:col-span-6 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Sprint &amp; release goals</h2>
+            <p class="text-xs text-[#8E939E] mb-5">Current engineering cycle targets</p>
+
+            <div class="flex flex-col sm:flex-row items-center gap-6 my-2">
+              <!-- 3 Concentric SVG Rings (Indigo, Violet, Amber) -->
+              <svg viewBox="0 0 180 180" class="w-44 h-44 shrink-0">
+                <!-- Outer Ring: Indigo (82%) -->
+                <circle cx="90" cy="90" r="74" fill="none" stroke="rgba(99,102,241,0.16)" stroke-width="11" />
+                <circle cx="90" cy="90" r="74" fill="none" stroke="#818CF8" stroke-width="11" stroke-linecap="round" stroke-dasharray="465" stroke-dashoffset="84" transform="rotate(-90 90 90)" />
+                <!-- Middle Ring: Violet/Pink (64%) -->
+                <circle cx="90" cy="90" r="56" fill="none" stroke="rgba(168,85,247,0.16)" stroke-width="11" />
+                <circle cx="90" cy="90" r="56" fill="none" stroke="#C084FC" stroke-width="11" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="126" transform="rotate(-90 90 90)" />
+                <!-- Inner Ring: Amber (91%) -->
+                <circle cx="90" cy="90" r="38" fill="none" stroke="rgba(245,158,11,0.16)" stroke-width="11" />
+                <circle cx="90" cy="90" r="38" fill="none" stroke="#FBBF24" stroke-width="11" stroke-linecap="round" stroke-dasharray="239" stroke-dashoffset="22" transform="rotate(-90 90 90)" />
+              </svg>
+
+              <!-- Vertical Colored Accent Bar Legend (Matching Image 3 Top-Right) -->
+              <div class="flex-1 w-full space-y-4">
+                <div class="pl-3.5 border-l-2 border-indigo-400">
+                  <span class="text-xs text-[#8E939E] block">Commits shipped</span>
+                  <span class="text-base font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">82% <span class="text-xs font-normal text-[#8E939E]">410 of 500</span></span>
+                </div>
+                <div class="pl-3.5 border-l-2 border-purple-400">
+                  <span class="text-xs text-[#8E939E] block">Releases delivered</span>
+                  <span class="text-base font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">64% <span class="text-xs font-normal text-[#8E939E]">32 of 50</span></span>
+                </div>
+                <div class="pl-3.5 border-l-2 border-amber-400">
+                  <span class="text-xs text-[#8E939E] block">PR review SLA</span>
+                  <span class="text-base font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">91% <span class="text-xs font-normal text-[#8E939E]">target 90%</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WIDGET J (Image 3 Bottom-Right): Dual-Tone Weekly Activity Bar Chart -->
+        <div class="lg:col-span-6 bento-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-baseline justify-between mb-1">
+              <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Contributions this week</h2>
+              <span class="text-xs font-mono text-indigo-400">+6.2% vs last week</span>
+            </div>
+            <div class="text-3xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8] mb-4">1,328</div>
+
+            <div class="h-44 w-full">
+              <canvas id="weeklyComparisonBarChart"></canvas>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-5 text-xs text-[#8E939E] mt-3 pt-3 border-t border-black/5 dark:border-white/[0.07]">
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-xs bg-indigo-400"></span>This week</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-xs bg-zinc-600"></span>Last week</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Middle Row: Segmented Quotas Card (Image 3 Middle-Left) + Sprint Matrix Heatmap -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- WIDGET K (Image 3 Middle-Left + Bottom-Left): Clean Pill Progress Bars + Median KPIs -->
+        <div class="lg:col-span-4 space-y-5">
+          <div class="bento-card p-6 space-y-5">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="text-[#8E939E]">Commits this month</span>
+                <span class="font-mono font-bold tabular-nums">1,248 <span class="text-[#8E939E] font-normal">of 2,000</span></span>
+              </div>
+              <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-white rounded-full" style="width: 62%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="text-[#8E939E]">Active maintainers</span>
+                <span class="font-mono font-bold tabular-nums">9 <span class="text-[#8E939E] font-normal">of 10</span></span>
+              </div>
+              <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-amber-400 rounded-full" style="width: 90%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="text-[#8E939E]">Actions runner minutes</span>
+                <span class="font-mono font-bold tabular-nums">410 <span class="text-[#8E939E] font-normal">of 1,000</span></span>
+              </div>
+              <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-cyan-400 rounded-full" style="width: 41%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom-Left 2-Column Stat Card (Image 3 Bottom-Left) -->
+          <div class="bento-card p-6 grid grid-cols-2 gap-4">
+            <div>
+              <span class="text-xs text-[#8E939E] block mb-1">Issues resolved</span>
+              <span class="text-2xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">1,248</span>
+              <span class="text-xs font-mono text-indigo-400 ml-1">+18.2%</span>
+            </div>
+            <div>
+              <span class="text-xs text-[#8E939E] block mb-1">Median PR merge</span>
+              <span class="text-2xl font-extrabold font-mono tabular-nums text-slate-900 dark:text-[#F5F6F8]">41m</span>
+              <span class="text-xs font-mono text-cyan-400 ml-1">-12.4%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- WIDGET L: Colorful Indigo-Violet Sprint Retention Matrix -->
+        <div class="lg:col-span-8 bento-card p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <h2 class="text-sm font-bold text-slate-900 dark:text-[#F5F6F8]">Release &amp; contributor retention matrix</h2>
+              <p class="text-xs text-[#8E939E]">Cohort sustainability across release versions</p>
+            </div>
+            <div class="inline-flex bg-slate-100 dark:bg-[#0E0F12] p-1 rounded-full border border-black/5 dark:border-white/[0.07] text-xs">
+              <button data-matrix-mode="contributors" class="matrix-mode-btn active px-3 py-1 rounded-full bg-[#1E2025] text-white font-semibold cursor-pointer">Contributors %</button>
+              <button data-matrix-mode="releases" class="matrix-mode-btn px-3 py-1 rounded-full text-[#8E939E] font-medium cursor-pointer">Release SLA %</button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-center border-separate border-spacing-1.5 text-xs">
+              <thead>
+                <tr class="text-[11px] font-mono text-[#8E939E]">
+                  <th class="text-left pb-1">Release Cohort</th>
+                  <th class="pb-1">PRs</th>
+                  <th class="pb-1">S0</th>
+                  <th class="pb-1">S1</th>
+                  <th class="pb-1">S2</th>
+                  <th class="pb-1">S3</th>
+                  <th class="pb-1">S4</th>
+                  <th class="pb-1">S5</th>
+                </tr>
+              </thead>
+              <tbody id="cadence-matrix-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    $(document).ready(function () {
+      lucide.createIcons();
+
+      // =========================================================
+      // STATE & PERSISTENCE
+      // =========================================================
+      let currentUsername = localStorage.getItem('gitpulse_username') || 'sannlynnhtun-coding';
+      let currentUserProfile = null;
+      let loadedRepos = [];
+      let selectedLanguageFilter = null;
+      let currentSortMode = 'stars';
+      let weeklyGoalTarget = 6;
+      let pipelineStageIdx = 2; // 0..4
+
+      let polarChart = null;
+      let dualAreaChart = null;
+      let weeklyBarChart = null;
+
+      // Default to Matte Dark Charcoal mode; restore if user switched to light
+      if (localStorage.getItem('gitpulse_theme') === 'light') {
+        $('html').removeClass('dark');
+        $('#theme-icon').attr('data-lucide', 'moon');
+        lucide.createIcons();
+      }
+
+      // =========================================================
+      // CURATED SNAPSHOTS (If GitHub API rate limit is reached)
+      // =========================================================
+      const fallbackSnapshots = {
+        'sannlynnhtun-coding': {
+          user: {
+            login: 'sannlynnhtun-coding',
+            name: 'Sann Lynn Htun',
+            avatar_url: 'https://avatars.githubusercontent.com/u/70505132?v=4',
+            bio: 'Senior Software Engineer & Open-Source Mentor • .NET 9/10, YARP API Gateway, Blazor, Next.js & Cloud Architecture.',
+            location: 'Yangon / Singapore',
+            followers: 340,
+            following: 95,
+            public_repos: 118
+          },
+          repos: [
+            { name: 'burma-project-idea-apis-yarp-gateway-sample', description: 'Microservices reverse-proxy gateway sample built with .NET & YARP featuring rate limiting and telemetry.', language: 'C#', stargazers_count: 84, forks_count: 29, open_issues_count: 3, updated_at: '2026-11-17T10:00:00Z', html_url: 'https://github.com/sannlynnhtun-coding/burma-project-idea-apis-yarp-gateway-sample', fork: false, license: { spdx_id: 'MIT' }, topics: ['dotnet', 'yarp', 'api-gateway', 'microservices'] },
+            { name: 'junior-dotnet-developer-roadmap', description: 'Structured learning roadmap, C# exercises, and clean architecture guides for junior .NET engineers.', language: 'Markdown', stargazers_count: 142, forks_count: 48, open_issues_count: 2, updated_at: '2026-11-14T08:30:00Z', html_url: 'https://github.com/sannlynnhtun-coding/junior-dotnet-developer-roadmap', fork: false, license: { spdx_id: 'MIT' }, topics: ['csharp', 'roadmap', 'mentorship', 'dotnet'] },
+            { name: 'one-month-flow-csharp-blazor-and-api', description: 'Full-stack Blazor WebAssembly & ASP.NET Core Web API reference architecture for rapid cohort sprints.', language: 'C#', stargazers_count: 67, forks_count: 21, open_issues_count: 1, updated_at: '2026-11-11T15:20:00Z', html_url: 'https://github.com/sannlynnhtun-coding/one-month-flow-csharp-blazor-and-api', fork: false, license: { spdx_id: 'MIT' }, topics: ['blazor', 'aspnet-core', 'ef-core'] },
+            { name: 'nextjs-firebase-push-notification', description: 'Real-time web push notifications starter integrating Next.js App Router, TypeScript, and Firebase Cloud Messaging.', language: 'TypeScript', stargazers_count: 53, forks_count: 18, open_issues_count: 4, updated_at: '2026-11-08T12:15:00Z', html_url: 'https://github.com/sannlynnhtun-coding/nextjs-firebase-push-notification', fork: false, license: { spdx_id: 'MIT' }, topics: ['nextjs', 'typescript', 'firebase', 'pwa'] },
+            { name: 'ContosoUniversity-DotNet-NewArch', description: 'Modernized Clean Architecture & CQRS implementation of Contoso University on .NET 9.', language: 'C#', stargazers_count: 49, forks_count: 15, open_issues_count: 0, updated_at: '2026-11-02T09:40:00Z', html_url: 'https://github.com/sannlynnhtun-coding/ContosoUniversity-DotNet-NewArch', fork: false, license: { spdx_id: 'MIT' }, topics: ['clean-architecture', 'cqrs', 'dotnet9'] }
+          ]
+        },
+        tiangolo: {
+          user: {
+            login: 'tiangolo',
+            name: 'Sebastián Ramírez',
+            avatar_url: 'https://avatars.githubusercontent.com/u/1326112?v=4',
+            bio: 'Creator of FastAPI, Typer, SQLModel, Asyncer. Building modern Python & TypeScript developer tools.',
+            location: 'Berlin, Germany',
+            followers: 34200,
+            following: 12,
+            public_repos: 64
+          },
+          repos: [
+            { name: 'fastapi', description: 'FastAPI framework, high performance, easy to learn, fast to code, ready for production', language: 'Python', stargazers_count: 82400, forks_count: 7100, open_issues_count: 340, updated_at: '2026-11-18T12:00:00Z', html_url: 'https://github.com/tiangolo/fastapi', fork: false, license: { spdx_id: 'MIT' }, topics: ['python', 'api', 'fastapi', 'openapi'] },
+            { name: 'typer', description: 'Typer, build great CLIs. Easy to code. Based on Python type hints.', language: 'Python', stargazers_count: 16800, forks_count: 720, open_issues_count: 85, updated_at: '2026-11-15T09:30:00Z', html_url: 'https://github.com/tiangolo/typer', fork: false, license: { spdx_id: 'MIT' }, topics: ['cli', 'python', 'type-hints'] },
+            { name: 'full-stack-fastapi-template', description: 'Full stack, modern web application template using FastAPI, React, SQLModel, PostgreSQL & Docker.', language: 'TypeScript', stargazers_count: 29400, forks_count: 5400, open_issues_count: 64, updated_at: '2026-11-17T18:10:00Z', html_url: 'https://github.com/tiangolo/full-stack-fastapi-template', fork: false, license: { spdx_id: 'MIT' }, topics: ['fullstack', 'react', 'typescript', 'fastapi'] },
+            { name: 'sqlmodel', description: 'SQL databases in Python, designed for simplicity, compatibility, and robustness.', language: 'Python', stargazers_count: 15200, forks_count: 680, open_issues_count: 112, updated_at: '2026-11-10T14:20:00Z', html_url: 'https://github.com/tiangolo/sqlmodel', fork: false, license: { spdx_id: 'MIT' }, topics: ['sql', 'orm', 'pydantic'] }
+          ]
+        }
+      };
+
+      // =========================================================
+      // UTILITIES
+      // =========================================================
+      function showToast(msg) {
+        const $t = $(`
+          <div class="pointer-events-auto flex items-center gap-2.5 bg-[#1E2025] text-[#F5F6F8] text-xs font-medium px-4 py-3 rounded-2xl shadow-2xl border border-white/10">
+            <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+            <span>${msg}</span>
+          </div>
+        `);
+        $('#toast-container').append($t);
+        setTimeout(() => $t.fadeOut(220, function () { $(this).remove(); }), 2500);
+      }
+
+      function formatCompact(n) {
+        if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+        if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+        return String(n);
+      }
+
+      function formatAgo(iso) {
+        if (!iso) return 'Recently';
+        const d = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 86400000));
+        if (d === 0) return 'Today';
+        if (d === 1) return '1d ago';
+        if (d < 30) return `${d}d ago`;
+        return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      }
+
+      // =========================================================
+      // LIVE GITHUB API FETCH ENGINE (@ANY-USERNAME)
+      // =========================================================
+      function loadGitHubProfile(username) {
+        const clean = (username || '').trim().replace(/^@/, '');
+        if (!clean) return;
+
+        currentUsername = clean;
+        localStorage.setItem('gitpulse_username', clean);
+        $('#github-username-input').val(clean);
+        selectedLanguageFilter = null;
+        $('#clear-lang-filter-btn').addClass('hidden');
+
+        // Highlight active preset pill
+        $('.preset-user-btn').removeClass('bg-white text-[#0E0F12] font-bold').addClass('text-[#8E939E]');
+        $(`.preset-user-btn[data-preset-user="${clean.toLowerCase()}"]`).addClass('bg-white text-[#0E0F12] font-bold').removeClass('text-[#8E939E]');
+
+        $('#api-status-text').text(`Syncing @${clean}...`);
+        $('#api-status-dot').removeClass('bg-amber-400').addClass('bg-indigo-400 animate-pulse');
+
+        $.when(
+          $.ajax({ url: `https://api.github.com/users/${encodeURIComponent(clean)}`, method: 'GET', timeout: 6500 }),
+          $.ajax({ url: `https://api.github.com/users/${encodeURIComponent(clean)}/repos?per_page=100&sort=updated`, method: 'GET', timeout: 6500 })
+        ).done(function (uRes, rRes) {
+          currentUserProfile = uRes[0];
+          loadedRepos = Array.isArray(rRes[0]) ? rRes[0] : [];
+          renderDashboardData(true);
+          $('#api-status-text').text('Live GitHub API');
+          $('#api-status-dot').removeClass('animate-pulse');
+          showToast(`Synced live GitHub telemetry for @${currentUserProfile.login}`);
+        }).fail(function (xhr) {
+          const snap = fallbackSnapshots[clean.toLowerCase()] || fallbackSnapshots['sannlynnhtun-coding'];
+          currentUserProfile = {
+            ...snap.user,
+            login: clean,
+            name: snap.user.login === clean.toLowerCase() ? snap.user.name : clean
+          };
+          loadedRepos = snap.repos;
+          renderDashboardData(false);
+          $('#api-status-text').text(xhr && xhr.status === 403 ? 'Rate-Limited Snapshot' : 'Cached Snapshot');
+          $('#api-status-dot').removeClass('animate-pulse bg-indigo-400').addClass('bg-amber-400');
+          showToast(`Loaded curated telemetry snapshot for @${clean}`);
+        });
+      }
+
+      // =========================================================
+      // RENDER ALL VIEWS FROM LOADED REPOS & PROFILE
+      // =========================================================
+      function renderDashboardData(isLive) {
+        const u = currentUserProfile;
+        const repos = loadedRepos;
+
+        $('#gh-avatar').attr('src', u.avatar_url || 'https://placehold.co/64x64/6366F1/ffffff?text=GH');
+        $('#gh-handle-badge').text(`@${u.login}`);
+        $('#gh-profile-link').attr('href', `https://github.com/${u.login}`);
+        $('#breadcrumb-text').text(`github.com/${u.login} • Overview`);
+        $('#page-title').text(`${u.name || u.login} — Telemetry`);
+        $('#gh-bio-text').text(u.bio || `Public GitHub engineering activity and repository telemetry for @${u.login}.`);
+        $('#gh-meta-info').html(`<i data-lucide="map-pin" class="w-3 h-3 text-violet-400"></i> ${u.location || u.company || 'GitHub Open Source'}`);
+        $('#gh-followers-pill').text(`${formatCompact(u.followers || 0)} followers • ${formatCompact(u.following || 0)} following`);
+        $('#kpi-repos-badge').text(`${u.public_repos || repos.length} repos`);
+
+        const totalStars = repos.reduce((s, r) => s + (r.stargazers_count || 0), 0);
+        const totalForks = repos.reduce((s, r) => s + (r.forks_count || 0), 0);
+        $('#polar-total-stars').text(`${formatCompact(totalStars)} ★`);
+        $('#polar-total-forks').text(`+${formatCompact(totalForks)} forks`);
+
+        // Polar Chart & 2-Column Legend
+        renderEcosystemPolarChart();
+
+        // Repository Explorer Table
+        renderRepoExplorerTable();
+
+        // Update Hygiene Arc Gauge dynamically from loaded repos
+        const licensed = repos.filter(r => r.license && r.license.spdx_id && r.license.spdx_id !== 'NOASSERTION').length;
+        const described = repos.filter(r => r.description && r.description.trim().length > 0).length;
+        const baseScore = repos.length ? Math.min(98, Math.max(58, Math.round(((licensed + described) / (repos.length * 2)) * 100))) : 84;
+        updateHygieneGauge(baseScore);
+
+        // Update PR Queue with actual repository names
+        renderPrQueue();
+        lucide.createIcons();
+      }
+
+      // =========================================================
+      // WIDGET A: 24-HOUR RADIAL CLOCK & WEEKLY GOAL SEGMENTS
+      // =========================================================
+      function renderRadialClock() {
+        const $rays = $('#radial-clock-rays').empty();
+        const rayColors = ['#6366F1', '#818CF8', '#A855F7', '#EC4899', '#F59E0B', '#38BDF8'];
+        for (let i = 0; i < 48; i++) {
+          const angle = (i * 360) / 48;
+          const isPeak = (i >= 18 && i <= 34) || (i >= 40 && i <= 45);
+          const len = isPeak ? 12 + ((i * 7) % 16) : 5 + (i % 5);
+          const color = isPeak ? rayColors[i % rayColors.length] : 'rgba(142,147,158,0.28)';
+          const r1 = 55;
+          const r2 = r1 + len;
+          const rad = (angle - 90) * (Math.PI / 180);
+          const x1 = (120 + r1 * Math.cos(rad)).toFixed(1);
+          const y1 = (120 + r1 * Math.sin(rad)).toFixed(1);
+          const x2 = (120 + r2 * Math.cos(rad)).toFixed(1);
+          const y2 = (120 + r2 * Math.sin(rad)).toFixed(1);
+          $rays.append(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2.4" stroke-linecap="round" />`);
+        }
+      }
+      renderRadialClock();
+
+      function renderWeeklyGoalSegments() {
+        const $seg = $('#weekly-goal-segments').empty();
+        const completed = Math.min(7, weeklyGoalTarget);
+        for (let i = 0; i < 7; i++) {
+          const active = i < completed;
+          $seg.append(`<div class="h-2 rounded-full transition-all ${active ? 'bg-gradient-to-r from-indigo-500 to-violet-500' : 'bg-black/10 dark:bg-white/10'}"></div>`);
+        }
+        $('#weekly-goal-target').text(`${weeklyGoalTarget} d`);
+        $('#weekly-goal-sub').text(`${completed} of 7 days • ${Math.max(0, 7 - completed)} days left`);
+      }
+      renderWeeklyGoalSegments();
+
+      $('#goal-inc-btn').on('click', function () {
+        if (weeklyGoalTarget < 7) { weeklyGoalTarget++; renderWeeklyGoalSegments(); }
+      });
+      $('#goal-dec-btn').on('click', function () {
+        if (weeklyGoalTarget > 1) { weeklyGoalTarget--; renderWeeklyGoalSegments(); }
+      });
+
+      // =========================================================
+      // WIDGET B: INTERACTIVE QWERTY HOTKEY KEYBOARD & BAR STRIP
+      // =========================================================
+      const keyboardRows = [
+        ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+        ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+        ['Z', 'X', 'C', 'V', 'B', 'N', 'M', '↵']
+      ];
+
+      const hotkeyCommands = {
+        C: { cmd: 'git commit -m "feat: telemetry"', cycle: '1.2 s', key: '⌘ C', streak: '14 days', heat: 4 },
+        P: { cmd: 'git push origin main', cycle: '1.8 s', key: '⌘ P', streak: '14 days', heat: 4 },
+        G: { cmd: 'gh pr checkout --web', cycle: '0.9 s', key: '⌘ G', streak: '11 days', heat: 3 },
+        R: { cmd: 'git rebase -i HEAD~3', cycle: '2.1 s', key: '⌘ R', streak: '9 days', heat: 3 },
+        B: { cmd: 'git checkout -b feat/bento', cycle: '0.7 s', key: '⌘ B', streak: '12 days', heat: 3 },
+        S: { cmd: 'git status -sb && git diff', cycle: '0.4 s', key: '⌘ S', streak: '16 days', heat: 4 },
+        T: { cmd: 'dotnet test / npm run test', cycle: '3.4 s', key: '⌘ T', streak: '10 days', heat: 2 },
+        D: { cmd: 'docker compose up -d', cycle: '4.2 s', key: '⌘ D', streak: '8 days', heat: 2 },
+        F: { cmd: 'git fetch --all --prune', cycle: '1.1 s', key: '⌘ F', streak: '13 days', heat: 2 },
+        M: { cmd: 'git merge --no-ff origin/dev', cycle: '1.5 s', key: '⌘ M', streak: '7 days', heat: 2 },
+        '↵': { cmd: 'gh pr merge --squash --delete-branch', cycle: '1.6 s', key: '⌘ ↵', streak: '14 days', heat: 4 }
+      };
+
+      let activeHotkey = 'C';
+
+      function renderKeyboardBars(range = 'month') {
+        const heights = range === 'month'
+          ? [28, 36, 22, 44, 52, 48, 34, 40, 62, 58, 74, 86, 42, 68, 78, 92, 64, 54, 82, 70, 58, 76]
+          : [48, 64, 82, 74, 94, 42, 56];
+        const $bars = $('#kb-activity-bars').empty();
+        heights.forEach((h, i) => {
+          const inWindow = range === 'week' || (i >= 4 && i <= 15);
+          $bars.append(`
+            <div class="flex-1 rounded-t-sm transition-all duration-300 ${inWindow ? 'bg-gradient-to-t from-indigo-600 to-violet-400' : 'bg-black/15 dark:bg-white/15'}" style="height: ${h}%"></div>
+          `);
+        });
+        $('#kb-total-runs').text(range === 'month' ? '1,284' : '342');
+        $('#kb-window-label').text(range === 'month' ? 'Oct 7 – 20 • 642 runs' : 'Mon – Sun • 342 runs');
+      }
+      renderKeyboardBars('month');
+
+      $('.kb-range-btn').on('click', function () {
+        const r = $(this).data('kb-range');
+        $('.kb-range-btn').removeClass('active bg-[#1E2025] text-white font-semibold').addClass('text-[#8E939E] font-medium');
+        $(this).addClass('active bg-[#1E2025] text-white font-semibold').removeClass('text-[#8E939E] font-medium');
+        renderKeyboardBars(r);
+      });
+
+      function renderQwertyKeyboard() {
+        const $kb = $('#qwerty-keyboard-container').empty();
+        keyboardRows.forEach(row => {
+          const $row = $('<div class="flex items-center justify-center gap-1.5"></div>');
+          row.forEach(k => {
+            const meta = hotkeyCommands[k];
+            const isSelected = activeHotkey === k;
+            let bgClass = 'bg-slate-200/80 dark:bg-[#1E2025] text-slate-700 dark:text-[#8E939E] border-black/5 dark:border-white/[0.06]';
+            if (isSelected) {
+              bgClass = 'bg-gradient-to-br from-indigo-500 to-violet-500 text-white border-indigo-300 ring-2 ring-indigo-400/40';
+            } else if (meta && meta.heat >= 4) {
+              bgClass = 'bg-indigo-600/85 text-white border-indigo-400/40';
+            } else if (meta && meta.heat === 3) {
+              bgClass = 'bg-indigo-950/90 text-indigo-200 border-indigo-500/30';
+            } else if (meta) {
+              bgClass = 'bg-violet-950/60 text-violet-200 border-violet-500/20';
+            }
+
+            $row.append(`
+              <button type="button" data-key="${k}" class="keycap h-9 flex-1 max-w-[44px] rounded-xl border font-mono text-xs font-semibold flex items-center justify-center cursor-pointer ${bgClass}">
+                ${k}
+              </button>
+            `);
+          });
+          $kb.append($row);
+        });
+
+        // Spacebar row
+        $kb.append(`
+          <div class="flex items-center justify-center gap-1.5 pt-0.5">
+            <span class="h-8 w-10 rounded-xl bg-slate-200/70 dark:bg-[#1E2025] border border-black/5 dark:border-white/[0.06] flex items-center justify-center text-[11px] font-mono text-[#8E939E]">⌃</span>
+            <span class="h-8 w-12 rounded-xl bg-indigo-950/80 border border-indigo-500/30 flex items-center justify-center text-[11px] font-mono text-indigo-300">⌘</span>
+            <button type="button" data-key="C" class="keycap h-8 flex-1 max-w-[230px] rounded-xl bg-slate-200/80 dark:bg-[#1E2025] border border-black/5 dark:border-white/[0.06] text-[11px] font-mono text-[#8E939E] cursor-pointer">space • git palette</button>
+            <span class="h-8 w-12 rounded-xl bg-slate-200/70 dark:bg-[#1E2025] border border-black/5 dark:border-white/[0.06] flex items-center justify-center text-[11px] font-mono text-[#8E939E]">⌘</span>
+            <span class="h-8 w-10 rounded-xl bg-slate-200/70 dark:bg-[#1E2025] border border-black/5 dark:border-white/[0.06] flex items-center justify-center text-[11px] font-mono text-[#8E939E]">⌥</span>
+          </div>
+        `);
+      }
+      renderQwertyKeyboard();
+
+      $(document).on('click', '.keycap', function () {
+        const k = String($(this).data('key'));
+        activeHotkey = k;
+        const info = hotkeyCommands[k] || { cmd: `git alias --run-${k.toLowerCase()}`, cycle: '1.3 s', key: `⌘ ${k}`, streak: '10 days' };
+        $('#kb-selected-desc').text(`Active: ${info.cmd}`);
+        $('#kb-stat-cycle').text(info.cycle);
+        $('#kb-stat-key').text(info.key);
+        $('#kb-stat-streak').text(info.streak);
+        renderQwertyKeyboard();
+      });
+
+      // =========================================================
+      // WIDGET C: MULTI-COLOR POLAR ECOSYSTEM CHART (Image 2 Right)
+      // =========================================================
+      const multiColors = ['#6366F1', '#A855F7', '#06B6D4', '#F59E0B', '#EC4899', '#38BDF8'];
+
+      function renderEcosystemPolarChart() {
+        const langCounts = {};
+        loadedRepos.forEach(r => {
+          const l = r.language || 'Docs / Config';
+          langCounts[l] = (langCounts[l] || 0) + Math.max(1, (r.stargazers_count || 1));
+        });
+
+        const sorted = Object.entries(langCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+        const labels = sorted.map(s => s[0]);
+        const values = sorted.map(s => s[1]);
+
+        if (sorted.length > 0) {
+          $('#polar-callout-title').text(sorted[0][0]);
+          $('#polar-callout-val').text(`${formatCompact(sorted[0][1])} ★ • Primary`);
+        }
+
+        const ctx = document.getElementById('ecosystemPolarChart').getContext('2d');
+        if (polarChart) polarChart.destroy();
+
+        polarChart = new Chart(ctx, {
+          type: 'polarArea',
+          data: {
+            labels,
+            datasets: [{
+              data: values,
+              backgroundColor: multiColors.map(c => c + 'CC'),
+              borderColor: '#17181C',
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                ticks: { display: false },
+                grid: { color: 'rgba(142,147,158,0.14)' },
+                angleLines: { color: 'rgba(142,147,158,0.14)' }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: ctx => ` ${ctx.label}: ${formatCompact(ctx.raw)} stars`
+                }
+              }
+            },
+            onClick: (_, elements) => {
+              if (elements && elements.length > 0) {
+                const clickedLang = labels[elements[0].index];
+                toggleLanguageFilter(clickedLang);
+              }
+            }
+          }
+        });
+
+        // Populate 2-Column Color-Coded Legend
+        const $leg = $('#polar-legend-grid').empty();
+        sorted.forEach(([lang, score], idx) => {
+          $leg.append(`
+            <button type="button" data-filter-lang="${lang}" class="polar-leg-btn flex items-center justify-between text-left hover:text-indigo-400 transition cursor-pointer">
+              <span class="inline-flex items-center gap-2 truncate">
+                <span class="w-2.5 h-2.5 rounded-xs shrink-0" style="background:${multiColors[idx % multiColors.length]}"></span>
+                <span class="truncate text-slate-700 dark:text-[#D1D5DB]">${lang}</span>
+              </span>
+              <span class="font-mono font-semibold tabular-nums text-[#8E939E] ml-2">${formatCompact(score)}★</span>
+            </button>
+          `);
+        });
+      }
+
+      function toggleLanguageFilter(lang) {
+        if (selectedLanguageFilter === lang) {
+          selectedLanguageFilter = null;
+          $('#clear-lang-filter-btn').addClass('hidden');
+          $('#repo-filter-status').text('Showing top repositories');
+        } else {
+          selectedLanguageFilter = lang;
+          $('#clear-lang-filter-btn').removeClass('hidden');
+          $('#repo-filter-status').text(`Filtered by ${lang}`);
+          $('#polar-callout-title').text(lang);
+          $('#polar-callout-val').text('Active Filter');
+        }
+        renderRepoExplorerTable();
+      }
+
+      $(document).on('click', '.polar-leg-btn', function () {
+        toggleLanguageFilter($(this).data('filter-lang'));
+      });
+
+      $('#clear-lang-filter-btn').on('click', function () {
+        selectedLanguageFilter = null;
+        $(this).addClass('hidden');
+        $('#repo-filter-status').text('Showing top repositories');
+        renderRepoExplorerTable();
+      });
+
+      // =========================================================
+      // REPOSITORY EXPLORER TABLE & INSPECTOR DRAWER
+      // =========================================================
+      function renderRepoExplorerTable() {
+        const q = ($('#repo-table-search').val() || '').toLowerCase().trim();
+        let list = [...loadedRepos];
+
+        if (selectedLanguageFilter) {
+          list = list.filter(r => (r.language || 'Docs / Config') === selectedLanguageFilter);
+        }
+        if (q) {
+          list = list.filter(r =>
+            r.name.toLowerCase().includes(q) ||
+            (r.description && r.description.toLowerCase().includes(q))
+          );
+        }
+
+        if (currentSortMode === 'stars') list.sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0));
+        else if (currentSortMode === 'updated') list.sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
+        else if (currentSortMode === 'forks') list.sort((a, b) => (b.forks_count || 0) - (a.forks_count || 0));
+
+        const $tbody = $('#repos-explorer-tbody').empty();
+        if (list.length === 0) {
+          $tbody.append(`<tr><td colspan="5" class="py-8 text-center text-[#8E939E]">No matching repositories found.</td></tr>`);
+          return;
+        }
+
+        list.slice(0, 8).forEach(repo => {
+          $tbody.append(`
+            <tr data-repo-name="${repo.name}" class="repo-row hover:bg-indigo-500/[0.06] transition cursor-pointer">
+              <td class="py-3 pr-3">
+                <div class="font-mono font-bold text-slate-900 dark:text-[#F5F6F8] hover:text-indigo-400 truncate max-w-[240px] sm:max-w-xs">${repo.name}</div>
+                <p class="text-[11px] text-[#8E939E] truncate max-w-[240px] sm:max-w-xs">${repo.description || 'Open-source repository'}</p>
+              </td>
+              <td class="py-3 whitespace-nowrap">
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-indigo-500/15 text-indigo-400 border border-indigo-500/25">${repo.language || 'Docs'}</span>
+              </td>
+              <td class="py-3 text-right font-mono font-semibold tabular-nums text-slate-800 dark:text-[#F5F6F8]">${formatCompact(repo.stargazers_count || 0)} ★</td>
+              <td class="py-3 text-right font-mono tabular-nums text-[#8E939E]">${formatCompact(repo.forks_count || 0)} ⑂</td>
+              <td class="py-3 text-right font-mono text-[#8E939E] whitespace-nowrap">${formatAgo(repo.updated_at)}</td>
+            </tr>
+          `);
+        });
+      }
+
+      $('#repo-table-search').on('input', renderRepoExplorerTable);
+
+      $('.repo-sort-btn').on('click', function () {
+        currentSortMode = $(this).data('repo-sort');
+        $('.repo-sort-btn').removeClass('active bg-[#1E2025] text-white font-semibold').addClass('text-[#8E939E] font-medium');
+        $(this).addClass('active bg-[#1E2025] text-white font-semibold').removeClass('text-[#8E939E] font-medium');
+        renderRepoExplorerTable();
+      });
+
+      function openRepoDrawer(name) {
+        const repo = loadedRepos.find(r => r.name === name);
+        if (!repo) return;
+        $('#drawer-repo-name').text(repo.name);
+        $('#drawer-repo-lang').text(repo.language || 'Docs / Config');
+        $('#drawer-repo-license').text((repo.license && repo.license.spdx_id) ? repo.license.spdx_id : 'Open Source');
+        $('#drawer-repo-desc').text(repo.description || 'Public repository telemetry and source code.');
+        $('#drawer-repo-stars').text(`${(repo.stargazers_count || 0).toLocaleString()} ★`);
+        $('#drawer-repo-forks').text(`${(repo.forks_count || 0).toLocaleString()} ⑂`);
+        $('#drawer-repo-issues').text((repo.open_issues_count || 0).toLocaleString());
+        $('#drawer-repo-updated').text(formatAgo(repo.updated_at));
+        $('#drawer-clone-cmd').text(`git clone ${repo.html_url}.git`);
+        $('#drawer-repo-link').attr('href', repo.html_url);
+
+        const $topics = $('#drawer-repo-topics').empty();
+        const topics = Array.isArray(repo.topics) && repo.topics.length ? repo.topics : [repo.language || 'git', 'open-source'];
+        topics.forEach(t => $topics.append(`<span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-violet-500/15 text-violet-300 border border-violet-500/25">#${t}</span>`));
+
+        $('#repo-drawer-backdrop').removeClass('hidden');
+        $('#repo-drawer').removeClass('translate-x-full');
+      }
+
+      function closeRepoDrawer() {
+        $('#repo-drawer').addClass('translate-x-full');
+        $('#repo-drawer-backdrop').addClass('hidden');
+      }
+
+      $(document).on('click', '.repo-row', function () { openRepoDrawer($(this).data('repo-name')); });
+      $('#close-drawer-btn, #drawer-close-footer, #repo-drawer-backdrop').on('click', closeRepoDrawer);
+
+      $('#copy-clone-btn').on('click', function () {
+        const $tmp = $('<input>');
+        $('body').append($tmp);
+        $tmp.val($('#drawer-clone-cmd').text()).select();
+        document.execCommand('copy');
+        $tmp.remove();
+        showToast('Copied git clone command to clipboard');
+      });
+
+      // =========================================================
+      // TAB 2: PR APPROVAL STEPPER, ARC GAUGE & GUARDRAILS
+      // =========================================================
+      let prItems = [];
+      let prFilterMode = 'review';
+
+      function renderPrQueue() {
+        const r0 = loadedRepos[0] ? loadedRepos[0].name : 'core-gateway';
+        const r1 = loadedRepos[1] ? loadedRepos[1].name : 'sdk-client';
+        const r2 = loadedRepos[2] ? loadedRepos[2].name : 'docs-portal';
+        const r3 = loadedRepos[3] ? loadedRepos[3].name : 'worker-engine';
+
+        $('#feat-pr-title').text(`feat(${r0}): adaptive edge routing & telemetry`);
+
+        prItems = [
+          { code: 'HC', color: 'bg-indigo-500/20 text-indigo-300', title: `refactor(${r1}): async connection pool`, sub: 'PR #415 • Ready for merge', status: 'approved', diff: '+184 LOC', dashed: false },
+          { code: 'AB', color: 'bg-amber-500/20 text-amber-300', title: `sec(${r2}): rotate OAuth2 token signing keys`, sub: 'Security • Needs codeowner approval', status: 'waiting', diff: '+412 LOC', dashed: true },
+          { code: 'PR', color: 'bg-violet-500/20 text-violet-300', title: `perf(${r3}): zero-allocation JSON serializer`, sub: 'Benchmarks • +34% throughput', status: 'approved', diff: '+290 LOC', dashed: false }
+        ];
+        paintPrQueueList();
+      }
+
+      function paintPrQueueList() {
+        const $list = $('#pr-queue-list').empty();
+        const filtered = prFilterMode === 'review' ? prItems.filter(p => p.status === 'waiting') : prItems;
+        const listToShow = filtered.length ? filtered : prItems;
+
+        listToShow.forEach((item, idx) => {
+          $list.append(`
+            <div data-pr-idx="${idx}" class="pr-queue-row flex items-center justify-between gap-3 p-3.5 rounded-2xl transition cursor-pointer ${item.dashed ? 'border border-dashed border-amber-400/45 bg-amber-500/[0.04]' : 'bg-black/[0.02] dark:bg-[#1E2025]/60 border border-black/5 dark:border-white/[0.06]'}">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="w-9 h-9 rounded-xl ${item.color} font-mono font-bold text-xs flex items-center justify-center shrink-0">${item.code}</span>
+                <div class="min-w-0">
+                  <p class="text-xs font-bold text-slate-900 dark:text-[#F5F6F8] truncate">${item.title}</p>
+                  <p class="text-[11px] text-[#8E939E] truncate">${item.sub}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 shrink-0">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono ${item.status === 'approved' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-amber-500/20 text-amber-300'}">${item.status === 'approved' ? 'Approved' : 'Needs Review'}</span>
+                <span class="font-mono font-bold text-xs tabular-nums text-slate-800 dark:text-[#F5F6F8]">${item.diff}</span>
+              </div>
+            </div>
+          `);
+        });
+      }
+
+      $('.pr-filter-btn').on('click', function () {
+        prFilterMode = $(this).data('pr-filter');
+        $('.pr-filter-btn').removeClass('active bg-[#1E2025] text-white font-semibold').addClass('text-[#8E939E] font-medium');
+        $(this).addClass('active bg-[#1E2025] text-white font-semibold').removeClass('text-[#8E939E] font-medium');
+        paintPrQueueList();
+      });
+
+      $('#feat-pr-approve-btn').on('click', function () {
+        $('#feat-step3-dot').removeClass('border-dashed border-amber-400 text-amber-400').addClass('bg-indigo-500 text-white border-none').text('✓');
+        $('#feat-step3-status').removeClass('text-amber-400').addClass('text-indigo-400').text('Approved');
+        $('#feat-step4-dot').addClass('bg-violet-500 text-white border-none').text('✓');
+        showToast('Pull request approved and queued for auto-merge');
+      });
+
+      $('#feat-pr-reject-btn').on('click', function () {
+        $('#feat-step3-status').removeClass('text-indigo-400').addClass('text-rose-400').text('Changes req.');
+        showToast('Requested changes on active pull request');
+      });
+
+      function updateHygieneGauge(score) {
+        const totalLen = 330;
+        const offset = Math.round(totalLen - (totalLen * score) / 100);
+        $('#hygiene-arc-path').attr('stroke-dashoffset', offset);
+        $('#hygiene-arc-pct').text(`${score}%`);
+        $('#hygiene-arc-sub').text(`${score} of 100 health points`);
+      }
+
+      const guardrailsData = [
+        { title: 'Dependabot Security Alerts', desc: 'Automated vulnerability PRs', on: true },
+        { title: 'Secret Scanning & Push Guard', desc: 'Block leaked tokens pre-commit', on: true },
+        { title: 'Codeowner Mandatory Review', desc: 'Require 2 reviewers on main', on: true },
+        { title: 'Signed Commit Enforcement', desc: 'Verify GPG/SSH signatures', on: true },
+        { title: 'Strict Linear History', desc: 'Squash or rebase merges only', on: false }
+      ];
+
+      function renderGuardrailsList() {
+        const $g = $('#guardrails-list').empty();
+        let active = 0;
+        guardrailsData.forEach((item, i) => {
+          if (item.on) active++;
+          $g.append(`
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-xs font-bold text-slate-900 dark:text-[#F5F6F8]">${item.title}</p>
+                <p class="text-[11px] text-[#8E939E]">${item.desc}</p>
+              </div>
+              <button data-g-idx="${i}" class="guardrail-switch w-10 h-5 rounded-full transition relative shrink-0 cursor-pointer ${item.on ? 'bg-indigo-600' : 'bg-white/10'}">
+                <span class="block w-3.5 h-3.5 rounded-full bg-white transition-transform transform ${item.on ? 'translate-x-5.5' : 'translate-x-1'}"></span>
+              </button>
+            </div>
+          `);
+        });
+        $('#guardrails-count-pill').text(`${active} / ${guardrailsData.length}`);
+        updateHygieneGauge(Math.round(55 + (active / guardrailsData.length) * 43));
+      }
+      renderGuardrailsList();
+
+      $(document).on('click', '.guardrail-switch', function () {
+        const idx = $(this).data('g-idx');
+        guardrailsData[idx].on = !guardrailsData[idx].on;
+        renderGuardrailsList();
+        showToast(`${guardrailsData[idx].title} ${guardrailsData[idx].on ? 'enabled' : 'disabled'}`);
+      });
+
+      // =========================================================
+      // TAB 3: CI/CD PIPELINE LOOP & DUAL-SERIES AREA CHART
+      // =========================================================
+      const pipelineStages = [
+        { name: 'Unit & Integration Tests', jobs: '4 suites', eta: '3 min', active: true },
+        { name: 'Container Image & SBOM', jobs: '2 images', eta: '7 min', active: false },
+        { name: 'Canary Edge Rollout', jobs: '4 regions', eta: '11 min', active: false }
+      ];
+
+      function renderPipelineStages() {
+        const $list = $('#pipeline-stages-list').empty();
+        pipelineStages.forEach((st, idx) => {
+          const isCurrent = idx === (pipelineStageIdx % pipelineStages.length);
+          $list.append(`
+            <div class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl ${isCurrent ? 'bg-[#1E2025] border border-indigo-500/35' : 'border border-transparent'}">
+              <div class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full ${isCurrent ? 'bg-indigo-400 ring-4 ring-indigo-500/20' : 'border border-[#8E939E]'}"></span>
+                <span class="text-xs font-bold ${isCurrent ? 'text-white' : 'text-[#8E939E]'}">${st.name}</span>
+                <span class="text-[11px] font-mono text-[#8E939E]">${st.jobs}</span>
+              </div>
+              <span class="font-mono text-xs font-semibold ${isCurrent ? 'text-indigo-400' : 'text-[#8E939E]'}">${st.eta}</span>
+            </div>
+          `);
+        });
+        const activeSt = pipelineStages[pipelineStageIdx % pipelineStages.length];
+        $('#pipeline-loop-counter').text(`Stage ${(pipelineStageIdx % 5) + 1} of 5`);
+        $('#pipeline-jobs-center').text(`${activeSt.jobs} active`);
+        $('#pipeline-eta-pill').text(`${activeSt.name.split(' ')[0]} • ${activeSt.eta}`);
+      }
+      renderPipelineStages();
+
+      $('#skip-stage-btn').on('click', function () {
+        pipelineStageIdx = (pipelineStageIdx + 1) % 5;
+        renderPipelineStages();
+        showToast('Skipped current stage — advancing CI/CD loop');
+      });
+
+      $('#rush-build-btn').on('click', function () {
+        pipelineStageIdx = (pipelineStageIdx + 1) % 5;
+        renderPipelineStages();
+        $('#pipeline-status-pill').text('Priority Boost').addClass('bg-amber-500/20 text-amber-300 border-amber-500/40');
+        showToast('Deployment prioritized on high-memory edge runner');
+      });
+
+      $('#autoscale-toggle-btn').on('click', function () {
+        const isOn = $(this).toggleClass('bg-indigo-600 bg-white/10').hasClass('bg-indigo-600');
+        $(this).find('span').toggleClass('translate-x-6 translate-x-1');
+        showToast(`Preview container auto-scaling ${isOn ? 'enabled' : 'paused'}`);
+      });
+
+      // Dual-Series Area Line Chart (Image 3 Top-Left)
+      function initDualAreaChart() {
+        const ctx = document.getElementById('dualAreaTrendChart').getContext('2d');
+        const indigoGrad = ctx.createLinearGradient(0, 0, 0, 220);
+        indigoGrad.addColorStop(0, 'rgba(99, 102, 241, 0.35)');
+        indigoGrad.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+
+        const amberGrad = ctx.createLinearGradient(0, 0, 0, 220);
+        amberGrad.addColorStop(0, 'rgba(245, 158, 11, 0.25)');
+        amberGrad.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
+
+        dualAreaChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['Oct 4', 'Oct 8', 'Oct 12', 'Oct 16', 'Oct 20', 'Oct 25', 'Oct 29', 'Nov 2'],
+            datasets: [
+              {
+                label: 'API Gateway',
+                data: [4200, 4850, 4600, 5100, 4950, 6240, 5890, 6410],
+                borderColor: '#6366F1',
+                backgroundColor: indigoGrad,
+                fill: true,
+                tension: 0.35,
+                borderWidth: 2.5,
+                pointRadius: 3
+              },
+              {
+                label: 'CI Runners',
+                data: [2900, 3200, 3100, 3450, 3300, 3980, 3720, 4120],
+                borderColor: '#F59E0B',
+                backgroundColor: amberGrad,
+                fill: true,
+                tension: 0.35,
+                borderWidth: 2,
+                pointRadius: 3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(142,147,158,0.1)' }, border: { display: false }, ticks: { color: '#8E939E', font: { family: 'JetBrains Mono', size: 10 } } },
+              x: { grid: { display: false }, border: { display: false }, ticks: { color: '#8E939E', font: { family: 'JetBrains Mono', size: 10 } } }
+            }
+          }
+        });
+      }
+      initDualAreaChart();
+
+      $('#run-benchmark-btn').on('click', function () {
+        if (!dualAreaChart) return;
+        dualAreaChart.data.datasets[0].data = Array.from({ length: 8 }, () => Math.floor(Math.random() * 2400) + 4600);
+        dualAreaChart.data.datasets[1].data = Array.from({ length: 8 }, () => Math.floor(Math.random() * 1400) + 2900);
+        dualAreaChart.update();
+        $('#bench-total-queries').text(`${(155 + Math.random() * 18).toFixed(1)}k`);
+        showToast('Simulated 30-day load benchmark across edge nodes');
+      });
+
+      // =========================================================
+      // TAB 4: DUAL-TONE WEEKLY BAR CHART & SPRINT MATRIX
+      // =========================================================
+      weeklyBarChart = new Chart(document.getElementById('weeklyComparisonBarChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [
+            {
+              label: 'This week',
+              data: [210, 245, 232, 260, 198, 92, 128],
+              backgroundColor: '#818CF8',
+              borderRadius: 6,
+              barPercentage: 0.65
+            },
+            {
+              label: 'Last week',
+              data: [185, 220, 238, 205, 180, 84, 124],
+              backgroundColor: '#3F3F46',
+              borderRadius: 6,
+              barPercentage: 0.65
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(142,147,158,0.1)' }, border: { display: false }, ticks: { color: '#8E939E', font: { family: 'JetBrains Mono', size: 10 } } },
+            x: { grid: { display: false }, border: { display: false }, ticks: { color: '#8E939E', font: { family: 'JetBrains Mono', size: 10 } } }
+          }
+        }
+      });
+
+      const matrixCohorts = {
+        contributors: [
+          { name: 'v1.0 • Core GA', prs: 142, vals: [100, 91.5, 84.2, 79.8, 76.4, 74.0] },
+          { name: 'v1.1 • Plugin SDK', prs: 118, vals: [100, 93.0, 86.5, 82.1, 79.0, 77.2] },
+          { name: 'v1.2 • Perf Engine', prs: 164, vals: [100, 94.8, 89.2, 85.6, 83.1, 81.5] },
+          { name: 'v1.3 • Cloud Sync', prs: 190, vals: [100, 96.2, 91.4, 88.9, 86.5, null] },
+          { name: 'v1.4 • Edge Runtime', prs: 215, vals: [100, 97.4, 93.1, null, null, null] }
+        ],
+        releases: [
+          { name: 'v1.0 • Core GA', prs: 142, vals: [100, 94.2, 91.0, 89.5, 88.2, 87.6] },
+          { name: 'v1.1 • Plugin SDK', prs: 118, vals: [100, 95.5, 93.1, 91.4, 90.0, 89.4] },
+          { name: 'v1.2 • Perf Engine', prs: 164, vals: [100, 96.9, 94.8, 93.5, 92.4, 91.9] },
+          { name: 'v1.3 • Cloud Sync', prs: 190, vals: [100, 97.8, 96.0, 94.9, 94.2, null] },
+          { name: 'v1.4 • Edge Runtime', prs: 215, vals: [100, 98.4, 96.8, null, null, null] }
+        ]
+      };
+
+      function getIndigoHeatClass(v) {
+        if (v === null) return 'bg-white/[0.03] text-[#8E939E]/40';
+        if (v >= 95) return 'bg-indigo-600 text-white font-bold';
+        if (v >= 90) return 'bg-violet-600/85 text-white font-semibold';
+        if (v >= 85) return 'bg-indigo-500/55 text-white font-medium';
+        if (v >= 80) return 'bg-indigo-500/35 text-indigo-200 font-medium';
+        return 'bg-indigo-500/20 text-indigo-300';
+      }
+
+      function renderCadenceMatrix(mode = 'contributors') {
+        const $tbody = $('#cadence-matrix-tbody').empty();
+        matrixCohorts[mode].forEach(r => {
+          const cells = r.vals.map(v => `<td class="py-2.5 px-2 rounded-xl font-mono tabular-nums ${getIndigoHeatClass(v)}">${v !== null ? v.toFixed(v === 100 ? 0 : 1) + '%' : '—'}</td>`).join('');
+          $tbody.append(`
+            <tr>
+              <td class="text-left py-2 pr-2 font-semibold text-slate-900 dark:text-[#F5F6F8] whitespace-nowrap">${r.name}</td>
+              <td class="py-2 px-2 font-mono tabular-nums text-[#8E939E]">${r.prs}</td>
+              ${cells}
+            </tr>
+          `);
+        });
+      }
+      renderCadenceMatrix();
+
+      $('.matrix-mode-btn').on('click', function () {
+        const m = $(this).data('matrix-mode');
+        $('.matrix-mode-btn').removeClass('active bg-[#1E2025] text-white font-semibold').addClass('text-[#8E939E] font-medium');
+        $(this).addClass('active bg-[#1E2025] text-white font-semibold').removeClass('text-[#8E939E] font-medium');
+        renderCadenceMatrix(m);
+      });
+
+      // =========================================================
+      // GLOBAL TAB SWITCHING, THEME, CSV & COMMAND PALETTE
+      // =========================================================
+      const tabTitles = {
+        overview: 'Telemetry',
+        quality: 'Quality & Review',
+        benchmarks: 'Benchmarks & CI',
+        cadence: 'Cadence & Goals'
+      };
+
+      function switchTab(view) {
+        $('.nav-tab').removeClass('active bg-[#1E2025] text-white font-semibold shadow-xs').addClass('text-[#8E939E] font-medium');
+        $(`.nav-tab[data-view="${view}"]`).addClass('active bg-[#1E2025] text-white font-semibold shadow-xs').removeClass('text-[#8E939E] font-medium');
+        $('.tab-panel').addClass('hidden');
+        $(`#view-${view}`).removeClass('hidden');
+
+        const ownerName = currentUserProfile ? (currentUserProfile.name || currentUserProfile.login) : currentUsername;
+        $('#page-title').text(`${ownerName} — ${tabTitles[view]}`);
+        $('#breadcrumb-text').text(`github.com/${currentUsername} • ${tabTitles[view]}`);
+      }
+
+      $('.nav-tab').on('click', function () { switchTab($(this).data('view')); });
+
+      $('#username-form').on('submit', function (e) {
+        e.preventDefault();
+        loadGitHubProfile($('#github-username-input').val());
+      });
+
+      $('.preset-user-btn').on('click', function () {
+        loadGitHubProfile($(this).data('preset-user'));
+      });
+
+      $('#theme-toggle-btn').on('click', function () {
+        const isDark = $('html').toggleClass('dark').hasClass('dark');
+        localStorage.setItem('gitpulse_theme', isDark ? 'dark' : 'light');
+        $('#theme-icon').attr('data-lucide', isDark ? 'sun' : 'moon');
+        lucide.createIcons();
+      });
+
+      function exportCsvReport() {
+        const headers = ['Repository', 'Language', 'Stars', 'Forks', 'Open Issues', 'Updated', 'URL'];
+        const rows = loadedRepos.map(r => [
+          `"${r.name}"`,
+          `"${r.language || 'Docs'}"`,
+          r.stargazers_count || 0,
+          r.forks_count || 0,
+          r.open_issues_count || 0,
+          `"${formatAgo(r.updated_at)}"`,
+          `"${r.html_url}"`
+        ]);
+        const csv = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+        const link = document.createElement('a');
+        link.setAttribute('href', encodeURI(csv));
+        link.setAttribute('download', `${currentUsername}-gitpulse-telemetry.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast(`Exported ${currentUsername}-gitpulse-telemetry.csv`);
+      }
+      $('#export-csv-btn').on('click', exportCsvReport);
+
+      // Command Palette (Ctrl+K / Cmd+K)
+      function openCmdPalette() {
+        $('#cmd-palette-modal').removeClass('hidden').addClass('flex');
+        $('#cmd-search-input').val('').focus();
+        renderCmdList('');
+      }
+      function closeCmdPalette() {
+        $('#cmd-palette-modal').addClass('hidden').removeClass('flex');
+      }
+
+      function renderCmdList(q) {
+        const query = q.toLowerCase().trim();
+        const baseCmds = [
+          { tag: 'Profile', label: 'Load @sannlynnhtun-coding', run: () => loadGitHubProfile('sannlynnhtun-coding') },
+          { tag: 'Profile', label: 'Load @tiangolo', run: () => loadGitHubProfile('tiangolo') },
+          { tag: 'Profile', label: 'Load @shadcn', run: () => loadGitHubProfile('shadcn') },
+          { tag: 'Profile', label: 'Load @sindresorhus', run: () => loadGitHubProfile('sindresorhus') },
+          { tag: 'View', label: 'Jump to Overview Bento', run: () => switchTab('overview') },
+          { tag: 'View', label: 'Jump to Quality & Review Stepper', run: () => switchTab('quality') },
+          { tag: 'View', label: 'Jump to Benchmarks & CI Loop', run: () => switchTab('benchmarks') },
+          { tag: 'View', label: 'Jump to Cadence & Concentric Goals', run: () => switchTab('cadence') },
+          { tag: 'Action', label: 'Export Repository Telemetry CSV', run: exportCsvReport }
+        ];
+        const repoCmds = loadedRepos.slice(0, 8).map(r => ({
+          tag: 'Repo',
+          label: `Inspect ${r.name} (${formatCompact(r.stargazers_count || 0)} ★)`,
+          run: () => openRepoDrawer(r.name)
+        }));
+
+        const matches = [...baseCmds, ...repoCmds].filter(item => !query || item.label.toLowerCase().includes(query));
+        const $list = $('#cmd-results-list').empty();
+        if (!matches.length) {
+          $list.append(`<div class="p-4 text-center text-[#8E939E]">No matching commands</div>`);
+          return;
+        }
+        matches.slice(0, 10).forEach((m, i) => {
+          const $btn = $(`
+            <button type="button" class="cmd-opt-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left hover:bg-indigo-500/15 text-slate-900 dark:text-[#F5F6F8] transition cursor-pointer ${i === 0 ? 'bg-indigo-500/10' : ''}">
+              <span class="font-medium truncate">${m.label}</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-indigo-500/15 text-indigo-300 shrink-0">${m.tag}</span>
+            </button>
+          `);
+          $btn.on('click', () => { closeCmdPalette(); m.run(); });
+          $list.append($btn);
+        });
+      }
+
+      $('#open-cmd-btn').on('click', openCmdPalette);
+      $('#cmd-search-input').on('input', function () { renderCmdList($(this).val()); });
+      $('#cmd-search-input').on('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          $('#cmd-results-list .cmd-opt-btn').first().click();
+        }
+      });
+
+      $(document).on('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          openCmdPalette();
+        } else if (e.key === 'Escape') {
+          closeCmdPalette();
+          closeRepoDrawer();
+        }
+      });
+
+      $('#cmd-palette-modal').on('click', function (e) {
+        if (e.target === this) closeCmdPalette();
+      });
+
+      // Boot Load
+      loadGitHubProfile(currentUsername);
+    });
+  </script>
+</body>
+</html>

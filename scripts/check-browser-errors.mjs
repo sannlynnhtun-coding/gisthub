@@ -198,6 +198,15 @@ try {
   await delay(waitMs);
 
   const verificationFailures = [];
+  if (process.env.BROWSER_CHECK_GITPULSE === "1") {
+    const { checkGitPulseAppearance } = await import('./test-gitpulse-appearance.mjs');
+    await checkGitPulseAppearance({ evaluate, send, sessionId, waitFor });
+  }
+  if (process.env.BROWSER_CHECK_HOME === "1") {
+    const { checkHomeDashboard } = await import('./test-home-dashboard.mjs');
+    await checkHomeDashboard({ evaluate, send, sessionId, waitFor });
+  }
+
   if (process.env.BROWSER_CHECK_PROFILE === "1") {
     const { checkProfileMenu } = await import('./test-profile-menu.mjs');
     await checkProfileMenu({ evaluate, send, sessionId, waitFor });
@@ -586,6 +595,33 @@ try {
   if (process.env.BROWSER_CHECK_QUICK_ACCESS === "1") {
     const { checkQuickAccess } = await import('./test-quick-access.mjs');
     await checkQuickAccess({ evaluate, send, sessionId, waitFor });
+  }
+
+  if (process.env.BROWSER_CHECK_SIDEBAR === "1") {
+    await waitFor(`Boolean(document.querySelector('[aria-label="Workspace layout"]'))`, 'layout choice', 60000);
+    await evaluate(`(()=>{const s=document.querySelector('[aria-label="Workspace layout"]');s.value='admin';s.dispatchEvent(new Event('change',{bubbles:true}))})()`);
+    await waitFor(`Boolean(document.querySelector('.admin-portal'))`, 'admin layout');
+    await evaluate(`document.querySelector('#workspace-tab-Home').click()`);
+    await waitFor(`Boolean(document.querySelector('.portal-sidebar-collapse'))`, 'sidebar controls', 60000);
+    await send('Emulation.setDeviceMetricsOverride', {width:1280,height:850,deviceScaleFactor:1,mobile:false}, sessionId);
+    const sidebarTest = await readFile(new URL('./test-sidebar-toggle.js', import.meta.url), 'utf8');
+    try {
+      for (const value of ['no-preference', 'reduce']) {
+        await send('Emulation.setEmulatedMedia', {features:[{name:'prefers-reduced-motion',value}]}, sessionId);
+        console.log(await evaluate(`(async()=>{${sidebarTest};return await testSidebarToggle()})()`));
+      }
+    } finally {
+      await send('Emulation.setEmulatedMedia', {features:[]}, sessionId);
+      await send('Emulation.clearDeviceMetricsOverride', {}, sessionId);
+    }
+  }
+
+  if (process.env.BROWSER_CHECK_WORKSPACE_LAYOUTS === "1") {
+    await waitFor(`Boolean(document.querySelector('[aria-label="Workspace layout"]'))`, 'layout chooser', 60000);
+    const layoutTest = await readFile(new URL('./test-workspace-layouts.js', import.meta.url), 'utf8');
+    console.log(await evaluate(`(async()=>{${layoutTest};return await testWorkspaceLayouts()})()`));
+    await send('Page.reload', {}, sessionId);
+    await waitFor(`Boolean(document.querySelector('.admin-portal'))`, 'saved layout after reload', 60000);
   }
 
   if (process.env.BROWSER_CHECK_LOCAL_SETTINGS === "1") {
