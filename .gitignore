@@ -365,3 +365,16 @@ FodyWeavers.xsd
 
 # Local agent tool state
 /.claude-flow/
+
+# Web build outputs, local editor state and environment files
+dist/
+build/
+.env*
+!.env.example
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Generated browser comparison evidence
+/artifacts/
