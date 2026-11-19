@@ -94,6 +94,11 @@ ThemeData buildGistHubTheme(
   final borderWidth = (style?['border'] as num? ?? 1).toDouble();
   final customStyle = appearance.style != 'default';
   final fontFamily = appearance.fontFamily;
+  final capsuleActions = [
+    'kit-bencho',
+    'kit-beui-pro',
+  ].contains(appearance.style);
+  final actionRadius = capsuleActions ? BorderRadius.circular(999) : radius;
   final base = ThemeData(
     useMaterial3: true,
     brightness: brightness,
@@ -154,6 +159,15 @@ ThemeData buildGistHubTheme(
         side: BorderSide(color: palette.border, width: borderWidth),
       ),
     ),
+    filledButtonTheme: customStyle
+        ? FilledButtonThemeData(
+            style: FilledButton.styleFrom(
+              backgroundColor: primary,
+              foregroundColor: palette.inverseText,
+              shape: RoundedRectangleBorder(borderRadius: actionRadius),
+            ),
+          )
+        : null,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         elevation: 0,
@@ -161,7 +175,7 @@ ThemeData buildGistHubTheme(
         foregroundColor: palette.inverseText,
         disabledBackgroundColor: palette.mutedText.withValues(alpha: 0.2),
         shape: RoundedRectangleBorder(
-          borderRadius: customStyle ? radius : BorderRadius.circular(6),
+          borderRadius: customStyle ? actionRadius : BorderRadius.circular(6),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         textStyle: const TextStyle(fontWeight: FontWeight.w700),
@@ -172,7 +186,7 @@ ThemeData buildGistHubTheme(
         foregroundColor: palette.text,
         side: BorderSide(color: palette.border),
         shape: RoundedRectangleBorder(
-          borderRadius: customStyle ? radius : BorderRadius.circular(6),
+          borderRadius: customStyle ? actionRadius : BorderRadius.circular(6),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         textStyle: const TextStyle(fontWeight: FontWeight.w700),
@@ -195,10 +209,22 @@ ThemeData buildGistHubTheme(
     dialogTheme: DialogThemeData(
       backgroundColor: palette.surface,
       surfaceTintColor: Colors.transparent,
+      shape: customStyle
+          ? RoundedRectangleBorder(
+              borderRadius: radius,
+              side: BorderSide(color: palette.border),
+            )
+          : null,
     ),
     popupMenuTheme: PopupMenuThemeData(
       color: palette.surface,
       surfaceTintColor: Colors.transparent,
+      shape: customStyle
+          ? RoundedRectangleBorder(
+              borderRadius: radius,
+              side: BorderSide(color: palette.border),
+            )
+          : null,
     ),
   );
 }

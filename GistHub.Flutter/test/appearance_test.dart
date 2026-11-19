@@ -19,10 +19,27 @@ void main() {
               )
               as Map<String, dynamic>;
       final appearance = Appearance(catalog: catalog);
-      expect(appearance.options('themes').length, 153);
-      expect(appearance.options('styles').length, 56);
-      expect(appearance.options('presets').length, 7);
+      expect(appearance.options('themes').length, 177);
+      expect(appearance.options('styles').length, 68);
+      expect(appearance.options('presets').length, 31);
       expect(appearance.options('fonts').length, 76);
+      for (final id in [
+        'boardui-dark',
+        'kit-bencho-dark',
+        'kit-beui-pro-dark',
+        'kit-obsidian-dark',
+      ]) {
+        final preset = appearance.option('presets', id)!;
+        expect(
+          appearance.option('themes', preset['theme'] as String),
+          isNotNull,
+        );
+        expect(
+          appearance.option('styles', preset['style'] as String),
+          isNotNull,
+        );
+        expect(appearance.option('fonts', preset['font'] as String), isNotNull);
+      }
       for (final font in appearance.options('fonts')) {
         for (final path in (font['assets'] as List).cast<String>()) {
           expect((await rootBundle.load(path)).lengthInBytes, greaterThan(0));
@@ -42,6 +59,19 @@ void main() {
         appearanceColor(chosen['colors']['background'] as String),
       );
       expect((themed.cardTheme.shape as RoundedRectangleBorder).side.width, 3);
+      final bencho = buildGistHubTheme(
+        Brightness.dark,
+        appearance: Appearance(
+          catalog: catalog,
+          theme: 'kit-bencho-dark',
+          style: 'kit-bencho',
+        ),
+      );
+      expect(bencho.scaffoldBackgroundColor, const Color(0xff0a0a0a));
+      final buttonShape =
+          bencho.filledButtonTheme.style!.shape!.resolve({})
+              as RoundedRectangleBorder;
+      expect(buttonShape.borderRadius, BorderRadius.circular(999));
     },
   );
   test(

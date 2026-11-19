@@ -24,17 +24,21 @@ for (const file of ['vscode-theme-catalog.js','figma-theme-catalog.js'])
 function array(file, name) {
   const source = fs.readFileSync(path.join(root,'js',file),'utf8');
   const expression = source.match(new RegExp('const '+name+'\\s*=\\s*([\\s\\S]*?);'))[1];
-  return vm.runInNewContext('('+expression+')');
+  return vm.runInNewContext('('+expression+')', {styles: name === 'presets' ? array(file, 'styles') : undefined});
 }
-console.log(JSON.stringify({themes:[...context.window.gistHubThemes,...context.window.gistHubFigmaThemes],
+context.window.matchMedia = () => ({matches:false});
+context.document = {documentElement:{dataset:{},classList:{add(){},remove(){},toggle(){}},style:{setProperty(){}}},querySelector(){return null}};
+context.localStorage = {getItem(){return null}};
+vm.runInNewContext(fs.readFileSync(path.join(root,'js','theme.js'),'utf8'), context);
+console.log(JSON.stringify({themes:context.window.getGistHubThemes().filter(t=>!['light','dark'].includes(t.id)),
   fonts:array('fonts.js','fonts'),styles:array('interface-styles.js','styles'),
   presets:array('interface-styles.js','presets')}));
 """
 catalog = json.loads(subprocess.check_output(["node", "-e", extract, str(source)], text=True, encoding="utf-8"))
-css = "\n".join((source / "css" / name).read_text(encoding="utf-8") for name in ["vscode-themes.css", "figma-themes.css"])
+css = "\n".join((source / "css" / name).read_text(encoding="utf-8") for name in ["vscode-themes.css", "figma-themes.css", "design-styles.css", "reference-appearances.css"])
 for theme in catalog["themes"]:
-    block = re.search(r':root\[data-theme="' + re.escape(theme["id"]) + r'"\]\{([^}]+)\}', css)[1]
-    tokens = dict(re.findall(r'--([\w-]+):([^;]+);', block))
+    block = re.search(r':root\[data-theme="' + re.escape(theme["id"]) + r'"\]\s*\{([^}]+)\}', css)[1]
+    tokens = {key: value.strip() for key, value in re.findall(r'--([\w-]+):([^;]+);', block)}
     theme["colors"] = {}
     for key in ["background", "foreground", "card", "secondary", "muted-foreground", "border", "primary", "primary-foreground"]:
         h, s, light = [float(part.rstrip("%")) for part in tokens[key].split()]
@@ -42,9 +46,9 @@ for theme in catalog["themes"]:
         theme["colors"][key] = "#" + "".join(f"{round(c * 255):02x}" for c in rgb)
     theme["colors"]["code"] = tokens.get("neo-code-text", theme["colors"]["foreground"])
 
-styles_css = (source / "css/interface-styles.css").read_text(encoding="utf-8")
+styles_css = "\n".join((source / "css" / name).read_text(encoding="utf-8") for name in ["interface-styles.css", "design-styles.css", "reference-appearances.css"])
 for style in catalog["styles"]:
-    blocks = re.findall(r':root\[data-interface-style="' + re.escape(style["id"]) + r'"\]\s*\{([^}]+)\}', styles_css)
+    blocks = re.findall(r':root\[data-interface-style="' + re.escape(style["id"]) + r'"\](?:\[[^\]]+\]|:not\([^)]*\))*\s*\{([^}]+)\}', styles_css)
     tokens = dict(re.findall(r'--style-([\w-]+):\s*([^;]+);', "\n".join(blocks)))
     radii = []
     for number, unit in re.findall(r'([\d.]+)(rem|px)?', tokens.get("radius", ".65rem")):
@@ -69,7 +73,7 @@ for font in catalog["fonts"]:
         original = source / "fonts" / filename
         target = destination / (original.stem + ".ttf" if original.suffix == ".woff2" else original.name)
         if original.suffix == ".woff2":
-            face = TTFont(original)
+            face = TTFont(original, recalcTimestamp=False)
             face.flavor = None
             face.save(target)
             face.close()

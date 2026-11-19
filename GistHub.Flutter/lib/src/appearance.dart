@@ -220,7 +220,9 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
                   'fonts' => appearance.font == item['id'],
                   _ =>
                     appearance.theme == item['theme'] &&
-                        appearance.style == item['style'],
+                        appearance.style == item['style'] &&
+                        (item['font'] == null ||
+                            appearance.font == item['font']),
                 },
                 leading: category == 'themes'
                     ? CircleAvatar(
@@ -250,7 +252,11 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
                             : category == 'presets'
                             ? item['style'] as String
                             : null,
-                        font: category == 'fonts' ? item['id'] as String : null,
+                        font: category == 'fonts'
+                            ? item['id'] as String
+                            : category == 'presets'
+                            ? item['font'] as String?
+                            : null,
                       ),
               ),
           ],

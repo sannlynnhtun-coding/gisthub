@@ -1,6 +1,486 @@
 {
   "themes": [
     {
+      "id": "kit-bencho-light",
+      "name": "Bencho Light",
+      "dark": false,
+      "chrome": "#fafafa",
+      "primary": "#171717",
+      "secondary": "#f0f0f0",
+      "source": "Bencho · bencho.dev",
+      "colors": {
+        "background": "#fafafa",
+        "foreground": "#171717",
+        "card": "#ffffff",
+        "secondary": "#eeeeee",
+        "muted-foreground": "#666666",
+        "border": "#dedede",
+        "primary": "#171717",
+        "primary-foreground": "#fafafa",
+        "code": "#171717"
+      }
+    },
+    {
+      "id": "kit-bencho-dark",
+      "name": "Bencho Dark",
+      "dark": true,
+      "chrome": "#0a0a0a",
+      "primary": "#ffffff",
+      "secondary": "#171717",
+      "source": "Bencho · bencho.dev",
+      "colors": {
+        "background": "#0a0a0a",
+        "foreground": "#fafafa",
+        "card": "#171717",
+        "secondary": "#262626",
+        "muted-foreground": "#a3a3a3",
+        "border": "#303030",
+        "primary": "#ffffff",
+        "primary-foreground": "#0a0a0a",
+        "code": "#fafafa"
+      }
+    },
+    {
+      "id": "kit-obsidian-light",
+      "name": "ObsidianUI Light",
+      "dark": false,
+      "chrome": "#fafafa",
+      "primary": "#171717",
+      "secondary": "#eeeeee",
+      "source": "ObsidianUI · obsidianui.dev",
+      "colors": {
+        "background": "#fafafa",
+        "foreground": "#171717",
+        "card": "#ffffff",
+        "secondary": "#eeeeee",
+        "muted-foreground": "#666666",
+        "border": "#dedede",
+        "primary": "#171717",
+        "primary-foreground": "#fafafa",
+        "code": "#171717"
+      }
+    },
+    {
+      "id": "kit-obsidian-dark",
+      "name": "ObsidianUI Dark",
+      "dark": true,
+      "chrome": "#161616",
+      "primary": "#2563eb",
+      "secondary": "#2a2a2a",
+      "source": "ObsidianUI · obsidianui.dev",
+      "colors": {
+        "background": "#161616",
+        "foreground": "#f9fbff",
+        "card": "#161616",
+        "secondary": "#2a2a2a",
+        "muted-foreground": "#9a9a9a",
+        "border": "#232323",
+        "primary": "#2563eb",
+        "primary-foreground": "#f9fbff",
+        "code": "#f9fbff"
+      }
+    },
+    {
+      "id": "boardui-light",
+      "name": "BoardUI Light",
+      "dark": false,
+      "chrome": "#ffffff",
+      "primary": "#2563eb",
+      "secondary": "#f7f7f7",
+      "source": "BoardUI-inspired · boardui.com",
+      "colors": {
+        "background": "#f7f7f7",
+        "foreground": "#171717",
+        "card": "#ffffff",
+        "secondary": "#f5f5f5",
+        "muted-foreground": "#666666",
+        "border": "#e0e0e0",
+        "primary": "#2463eb",
+        "primary-foreground": "#ffffff",
+        "code": "#171717"
+      }
+    },
+    {
+      "id": "boardui-dark",
+      "name": "BoardUI Dark",
+      "dark": true,
+      "chrome": "#121212",
+      "primary": "#60a5fa",
+      "secondary": "#262626",
+      "source": "BoardUI-inspired · boardui.com",
+      "colors": {
+        "background": "#121212",
+        "foreground": "#f5f5f5",
+        "card": "#1a1a1a",
+        "secondary": "#262626",
+        "muted-foreground": "#adadad",
+        "border": "#3d3d3d",
+        "primary": "#61a6fa",
+        "primary-foreground": "#0e1b3f",
+        "code": "#f5f5f5"
+      }
+    },
+    {
+      "id": "kit-sketchbook-light",
+      "name": "Sketchbook UI Light",
+      "dark": false,
+      "chrome": "#faf7ef",
+      "primary": "#315d98",
+      "secondary": "#f1eee8",
+      "source": "Sketchbook UI-inspired · sarthakrawat-1.github.io",
+      "colors": {
+        "background": "#faf7ef",
+        "foreground": "#302b25",
+        "card": "#fffdf7",
+        "secondary": "#f1eee8",
+        "muted-foreground": "#59554f",
+        "border": "#d1cfc9",
+        "primary": "#315d98",
+        "primary-foreground": "#ffffff",
+        "code": "#302b25"
+      }
+    },
+    {
+      "id": "kit-sketchbook-dark",
+      "name": "Sketchbook UI Dark",
+      "dark": true,
+      "chrome": "#1d1b18",
+      "primary": "#9dbdee",
+      "secondary": "#37332c",
+      "source": "Sketchbook UI-inspired · sarthakrawat-1.github.io",
+      "colors": {
+        "background": "#1d1b18",
+        "foreground": "#f5ead6",
+        "card": "#29251f",
+        "secondary": "#37332c",
+        "muted-foreground": "#ccc3b1",
+        "border": "#565047",
+        "primary": "#9dbdee",
+        "primary-foreground": "#121212",
+        "code": "#f5ead6"
+      }
+    },
+    {
+      "id": "kit-looseleaf-light",
+      "name": "Looseleaf Light",
+      "dark": false,
+      "chrome": "#dfebe2",
+      "primary": "#23644c",
+      "secondary": "#f0eee4",
+      "source": "Looseleaf-inspired · kevintngo.github.io",
+      "colors": {
+        "background": "#dfebe2",
+        "foreground": "#263a31",
+        "card": "#fffcf1",
+        "secondary": "#f0eee4",
+        "muted-foreground": "#516157",
+        "border": "#cfd1c7",
+        "primary": "#23644c",
+        "primary-foreground": "#ffffff",
+        "code": "#263a31"
+      }
+    },
+    {
+      "id": "kit-looseleaf-dark",
+      "name": "Looseleaf Dark",
+      "dark": true,
+      "chrome": "#152b25",
+      "primary": "#9ad7bd",
+      "secondary": "#2e433c",
+      "source": "Looseleaf-inspired · kevintngo.github.io",
+      "colors": {
+        "background": "#152b25",
+        "foreground": "#f6f1df",
+        "card": "#1f3630",
+        "secondary": "#2e433c",
+        "muted-foreground": "#cbccbc",
+        "border": "#4e5f56",
+        "primary": "#9ad7bd",
+        "primary-foreground": "#121212",
+        "code": "#f6f1df"
+      }
+    },
+    {
+      "id": "kit-productive-light",
+      "name": "Productive Schedule Light",
+      "dark": false,
+      "chrome": "#f4f5fb",
+      "primary": "#176ba1",
+      "secondary": "#eeeff0",
+      "source": "Productive Schedule-inspired · theproductiveschedule.design",
+      "colors": {
+        "background": "#f4f5fb",
+        "foreground": "#101827",
+        "card": "#ffffff",
+        "secondary": "#eeeff0",
+        "muted-foreground": "#404652",
+        "border": "#cacccf",
+        "primary": "#176ba1",
+        "primary-foreground": "#ffffff",
+        "code": "#101827"
+      }
+    },
+    {
+      "id": "kit-productive-dark",
+      "name": "Productive Schedule Dark",
+      "dark": true,
+      "chrome": "#101827",
+      "primary": "#82c8f4",
+      "secondary": "#283447",
+      "source": "Productive Schedule-inspired · theproductiveschedule.design",
+      "colors": {
+        "background": "#101827",
+        "foreground": "#eef5ff",
+        "card": "#192539",
+        "secondary": "#283447",
+        "muted-foreground": "#c3cbd7",
+        "border": "#485365",
+        "primary": "#82c8f4",
+        "primary-foreground": "#121212",
+        "code": "#eef5ff"
+      }
+    },
+    {
+      "id": "kit-libraries-light",
+      "name": "Libraries.dev Light",
+      "dark": false,
+      "chrome": "#f6f8fb",
+      "primary": "#245fbd",
+      "secondary": "#efeff1",
+      "source": "Libraries.dev-inspired · libraries.dev",
+      "colors": {
+        "background": "#f6f8fb",
+        "foreground": "#172031",
+        "card": "#ffffff",
+        "secondary": "#efeff1",
+        "muted-foreground": "#454d5a",
+        "border": "#ccced2",
+        "primary": "#245fbd",
+        "primary-foreground": "#ffffff",
+        "code": "#172031"
+      }
+    },
+    {
+      "id": "kit-libraries-dark",
+      "name": "Libraries.dev Dark",
+      "dark": true,
+      "chrome": "#101114",
+      "primary": "#80b4ff",
+      "secondary": "#2a2d34",
+      "source": "Libraries.dev-inspired · libraries.dev",
+      "colors": {
+        "background": "#101114",
+        "foreground": "#f2f4f8",
+        "card": "#1b1e25",
+        "secondary": "#2a2d34",
+        "muted-foreground": "#c7c9ce",
+        "border": "#4a4d53",
+        "primary": "#80b4ff",
+        "primary-foreground": "#121212",
+        "code": "#f2f4f8"
+      }
+    },
+    {
+      "id": "kit-beui-pro-light",
+      "name": "beUI Pro Light",
+      "dark": false,
+      "chrome": "#f8f5f2",
+      "primary": "#9c431b",
+      "secondary": "#f0f0f0",
+      "source": "beUI Pro-inspired · pro.beui.dev",
+      "colors": {
+        "background": "#f8f5f2",
+        "foreground": "#2b2523",
+        "card": "#ffffff",
+        "secondary": "#f0f0f0",
+        "muted-foreground": "#55514f",
+        "border": "#d0cfcf",
+        "primary": "#9c431b",
+        "primary-foreground": "#ffffff",
+        "code": "#2b2523"
+      }
+    },
+    {
+      "id": "kit-beui-pro-dark",
+      "name": "beUI Pro Dark",
+      "dark": true,
+      "chrome": "#171514",
+      "primary": "#f4b18b",
+      "secondary": "#342f2e",
+      "source": "beUI Pro-inspired · pro.beui.dev",
+      "colors": {
+        "background": "#171514",
+        "foreground": "#faf4ef",
+        "card": "#25201f",
+        "secondary": "#342f2e",
+        "muted-foreground": "#cfcac5",
+        "border": "#544f4d",
+        "primary": "#f4b18b",
+        "primary-foreground": "#121212",
+        "code": "#faf4ef"
+      }
+    },
+    {
+      "id": "kit-heroui-light",
+      "name": "HeroUI Light",
+      "dark": false,
+      "chrome": "#f4f4f5",
+      "primary": "#0064cc",
+      "secondary": "#efefef",
+      "source": "HeroUI-inspired · heroui.com",
+      "colors": {
+        "background": "#f4f4f5",
+        "foreground": "#18181b",
+        "card": "#ffffff",
+        "secondary": "#efefef",
+        "muted-foreground": "#464649",
+        "border": "#cccccd",
+        "primary": "#0064cc",
+        "primary-foreground": "#ffffff",
+        "code": "#18181b"
+      }
+    },
+    {
+      "id": "kit-heroui-dark",
+      "name": "HeroUI Dark",
+      "dark": true,
+      "chrome": "#09090b",
+      "primary": "#7cb5ff",
+      "secondary": "#28282b",
+      "source": "HeroUI-inspired · heroui.com",
+      "colors": {
+        "background": "#09090b",
+        "foreground": "#fafafa",
+        "card": "#18181b",
+        "secondary": "#28282b",
+        "muted-foreground": "#cdcdcd",
+        "border": "#4a4a4c",
+        "primary": "#7cb5ff",
+        "primary-foreground": "#121212",
+        "code": "#fafafa"
+      }
+    },
+    {
+      "id": "kit-rare-light",
+      "name": "Rare UI Light",
+      "dark": false,
+      "chrome": "#eef4fc",
+      "primary": "#365aab",
+      "secondary": "#eff0f1",
+      "source": "Rare UI-inspired · www.rareui.com",
+      "colors": {
+        "background": "#eef4fc",
+        "foreground": "#1a2438",
+        "card": "#ffffff",
+        "secondary": "#eff0f1",
+        "muted-foreground": "#485060",
+        "border": "#cdcfd3",
+        "primary": "#365aab",
+        "primary-foreground": "#ffffff",
+        "code": "#1a2438"
+      }
+    },
+    {
+      "id": "kit-rare-dark",
+      "name": "Rare UI Dark",
+      "dark": true,
+      "chrome": "#101522",
+      "primary": "#adc4ff",
+      "secondary": "#293243",
+      "source": "Rare UI-inspired · www.rareui.com",
+      "colors": {
+        "background": "#101522",
+        "foreground": "#edf3ff",
+        "card": "#1a2335",
+        "secondary": "#293243",
+        "muted-foreground": "#c3c9d7",
+        "border": "#485161",
+        "primary": "#adc4ff",
+        "primary-foreground": "#121212",
+        "code": "#edf3ff"
+      }
+    },
+    {
+      "id": "kit-goop-light",
+      "name": "Goop UI Light",
+      "dark": false,
+      "chrome": "#edf8ef",
+      "primary": "#28643c",
+      "secondary": "#ecf1ed",
+      "source": "Goop UI-inspired · goop.timmcmasters.work",
+      "colors": {
+        "background": "#edf8ef",
+        "foreground": "#183323",
+        "card": "#fcfffc",
+        "secondary": "#ecf1ed",
+        "muted-foreground": "#465c4e",
+        "border": "#cad2cc",
+        "primary": "#28643c",
+        "primary-foreground": "#ffffff",
+        "code": "#183323"
+      }
+    },
+    {
+      "id": "kit-goop-dark",
+      "name": "Goop UI Dark",
+      "dark": true,
+      "chrome": "#122219",
+      "primary": "#a7e5b5",
+      "secondary": "#2b4334",
+      "source": "Goop UI-inspired · goop.timmcmasters.work",
+      "colors": {
+        "background": "#122219",
+        "foreground": "#ecfff1",
+        "card": "#1d3526",
+        "secondary": "#2b4334",
+        "muted-foreground": "#c3d7c8",
+        "border": "#4b6153",
+        "primary": "#a7e5b5",
+        "primary-foreground": "#121212",
+        "code": "#ecfff1"
+      }
+    },
+    {
+      "id": "kit-beui-light",
+      "name": "beUI Light",
+      "dark": false,
+      "chrome": "#f4f7f9",
+      "primary": "#006aab",
+      "secondary": "#eff0f0",
+      "source": "beUI-inspired · beui.dev",
+      "colors": {
+        "background": "#f4f7f9",
+        "foreground": "#19222b",
+        "card": "#ffffff",
+        "secondary": "#eff0f0",
+        "muted-foreground": "#474e55",
+        "border": "#ccced0",
+        "primary": "#006aab",
+        "primary-foreground": "#ffffff",
+        "code": "#19222b"
+      }
+    },
+    {
+      "id": "kit-beui-dark",
+      "name": "beUI Dark",
+      "dark": true,
+      "chrome": "#111316",
+      "primary": "#70c9ff",
+      "secondary": "#2b2f34",
+      "source": "beUI-inspired · beui.dev",
+      "colors": {
+        "background": "#111316",
+        "foreground": "#f4f7fa",
+        "card": "#1c2025",
+        "secondary": "#2b2f34",
+        "muted-foreground": "#c9cccf",
+        "border": "#4c4f54",
+        "primary": "#70c9ff",
+        "primary-foreground": "#121212",
+        "code": "#f4f7fa"
+      }
+    },
+    {
       "id": "vscode-kobber-spooky-halloween-theme-halloween",
       "name": "🎃 Halloween",
       "dark": true,
@@ -4039,7 +4519,7 @@
       "description": "Balanced panels with classical heading rules",
       "group": "More design styles",
       "radius": [
-        10.4
+        4.8
       ],
       "border": 1.0,
       "elevation": 3
@@ -4050,7 +4530,8 @@
       "description": "Layered frames and deep surface shadows",
       "group": "More design styles",
       "radius": [
-        10.4
+        22.4,
+        5.6
       ],
       "border": 1.0,
       "elevation": 3
@@ -4061,7 +4542,7 @@
       "description": "Ambient color fields and floating rounded panels",
       "group": "More design styles",
       "radius": [
-        10.4
+        20.8
       ],
       "border": 1.0,
       "elevation": 3
@@ -4072,7 +4553,7 @@
       "description": "Light surface shadows and open rounded frames",
       "group": "More design styles",
       "radius": [
-        10.4
+        27.2
       ],
       "border": 1.0,
       "elevation": 3
@@ -4083,7 +4564,7 @@
       "description": "Fine dotted trim around polished surfaces",
       "group": "More design styles",
       "radius": [
-        10.4
+        14.4
       ],
       "border": 1.0,
       "elevation": 3
@@ -4094,7 +4575,10 @@
       "description": "Leaf-shaped corners and paired accent rules",
       "group": "More design styles",
       "radius": [
-        10.4
+        25.6,
+        4.8,
+        25.6,
+        4.8
       ],
       "border": 1.0,
       "elevation": 3
@@ -4105,7 +4589,10 @@
       "description": "Friendly capsule controls and expressive corner details",
       "group": "More design styles",
       "radius": [
-        10.4
+        27.2,
+        27.2,
+        9.6,
+        9.6
       ],
       "border": 1.0,
       "elevation": 3
@@ -4116,7 +4603,7 @@
       "description": "Stepped shadows and pixel-grid framing",
       "group": "More design styles",
       "radius": [
-        10.4
+        0.0
       ],
       "border": 1.0,
       "elevation": 3
@@ -4127,7 +4614,10 @@
       "description": "Dashed ink outlines on a ruled canvas",
       "group": "More design styles",
       "radius": [
-        10.4
+        7.2,
+        12.8,
+        5.6,
+        11.2
       ],
       "border": 1.0,
       "elevation": 3
@@ -4138,10 +4628,10 @@
       "description": "Spaced editorial headings and fine framing",
       "group": "More design styles",
       "radius": [
-        10.4
+        2.4
       ],
       "border": 1.0,
-      "elevation": 3
+      "elevation": 0
     },
     {
       "id": "japandi",
@@ -4149,10 +4639,10 @@
       "description": "Quiet surfaces and understated section dividers",
       "group": "More design styles",
       "radius": [
-        10.4
+        9.6
       ],
       "border": 1.0,
-      "elevation": 3
+      "elevation": 0
     },
     {
       "id": "memphis",
@@ -4160,7 +4650,10 @@
       "description": "Geometric canvas marks and offset accent shadows",
       "group": "More design styles",
       "radius": [
-        10.4
+        3.2,
+        22.4,
+        3.2,
+        22.4
       ],
       "border": 1.0,
       "elevation": 3
@@ -4171,7 +4664,8 @@
       "description": "Woven canvas texture and stitched section trim",
       "group": "More design styles",
       "radius": [
-        10.4
+        22.4,
+        9.6
       ],
       "border": 1.0,
       "elevation": 3
@@ -4182,7 +4676,7 @@
       "description": "Dotted vintage frames and soft inset edges",
       "group": "More design styles",
       "radius": [
-        10.4
+        12.8
       ],
       "border": 1.0,
       "elevation": 3
@@ -4204,7 +4698,7 @@
       "description": "Double frames and ornamental heading dividers",
       "group": "More design styles",
       "radius": [
-        10.4
+        4.8
       ],
       "border": 1.0,
       "elevation": 3
@@ -4215,7 +4709,8 @@
       "description": "Stepped double outlines and geometric heading rules",
       "group": "More design styles",
       "radius": [
-        10.4
+        0.0,
+        12.8
       ],
       "border": 1.0,
       "elevation": 3
@@ -4226,7 +4721,8 @@
       "description": "Flowing corners and curved accent dividers",
       "group": "More design styles",
       "radius": [
-        10.4
+        28.8,
+        6.4
       ],
       "border": 1.0,
       "elevation": 3
@@ -4237,7 +4733,7 @@
       "description": "Celestial canvas marks and engraved frame details",
       "group": "More design styles",
       "radius": [
-        10.4
+        8.0
       ],
       "border": 1.0,
       "elevation": 3
@@ -4248,7 +4744,10 @@
       "description": "Glossy controls with playful layered accents",
       "group": "More design styles",
       "radius": [
-        10.4
+        25.6,
+        3.2,
+        14.4,
+        3.2
       ],
       "border": 1.0,
       "elevation": 3
@@ -4259,7 +4758,7 @@
       "description": "Chrome-like inset highlights and capsule controls",
       "group": "More design styles",
       "radius": [
-        10.4
+        19.2
       ],
       "border": 1.0,
       "elevation": 3
@@ -4270,10 +4769,10 @@
       "description": "Square utilitarian frames with stark section rules",
       "group": "More design styles",
       "radius": [
-        10.4
+        0.0
       ],
       "border": 1.0,
-      "elevation": 3
+      "elevation": 0
     },
     {
       "id": "cybercore",
@@ -4281,7 +4780,8 @@
       "description": "Technical grid lines and precise accent frames",
       "group": "More design styles",
       "radius": [
-        10.4
+        0.0,
+        4.8
       ],
       "border": 1.0,
       "elevation": 3
@@ -4292,7 +4792,7 @@
       "description": "Perspective-inspired grid and luminous edges",
       "group": "More design styles",
       "radius": [
-        10.4
+        4.8
       ],
       "border": 1.0,
       "elevation": 3
@@ -4303,7 +4803,8 @@
       "description": "Layered horizon bands and offset translucent frames",
       "group": "More design styles",
       "radius": [
-        10.4
+        12.8,
+        0.0
       ],
       "border": 1.0,
       "elevation": 3
@@ -4314,7 +4815,7 @@
       "description": "Halftone canvas and comic-style heading emphasis",
       "group": "More design styles",
       "radius": [
-        10.4
+        11.2
       ],
       "border": 1.0,
       "elevation": 3
@@ -4325,7 +4826,7 @@
       "description": "Consistent modular panels with inset surface framing",
       "group": "More design styles",
       "radius": [
-        10.4
+        20.0
       ],
       "border": 1.0,
       "elevation": 3
@@ -4336,7 +4837,10 @@
       "description": "Speckled canvas and broad expressive heading strokes",
       "group": "More design styles",
       "radius": [
-        10.4
+        4.0,
+        12.8,
+        3.2,
+        9.6
       ],
       "border": 1.0,
       "elevation": 3
@@ -4347,7 +4851,7 @@
       "description": "Spotlit canvas with deep contrasting panel shadows",
       "group": "More design styles",
       "radius": [
-        10.4
+        4.0
       ],
       "border": 1.0,
       "elevation": 3
@@ -4358,7 +4862,10 @@
       "description": "Arched panels and narrow engraved heading rules",
       "group": "More design styles",
       "radius": [
-        10.4
+        27.2,
+        27.2,
+        1.6,
+        1.6
       ],
       "border": 1.0,
       "elevation": 3
@@ -4369,7 +4876,7 @@
       "description": "Layered dot fields and delicate stippled borders",
       "group": "More design styles",
       "radius": [
-        10.4
+        16.0
       ],
       "border": 1.0,
       "elevation": 3
@@ -4380,7 +4887,10 @@
       "description": "Mixed frame edges with offset paper layers",
       "group": "More design styles",
       "radius": [
-        10.4
+        6.4,
+        16.0,
+        3.2,
+        9.6
       ],
       "border": 1.0,
       "elevation": 3
@@ -4391,7 +4901,7 @@
       "description": "Riveted heading trim and inset mechanical frames",
       "group": "More design styles",
       "radius": [
-        10.4
+        6.4
       ],
       "border": 1.0,
       "elevation": 3
@@ -4402,7 +4912,7 @@
       "description": "Pill controls and soft bubble-patterned surfaces",
       "group": "More design styles",
       "radius": [
-        10.4
+        25.6
       ],
       "border": 1.0,
       "elevation": 3
@@ -4413,7 +4923,7 @@
       "description": "Paired ribbon-like rules and delicate inset trim",
       "group": "More design styles",
       "radius": [
-        10.4
+        17.6
       ],
       "border": 1.0,
       "elevation": 3
@@ -4424,7 +4934,10 @@
       "description": "Unexpected organic corners and abstract orbit fields",
       "group": "More design styles",
       "radius": [
-        10.4
+        32.0,
+        4.8,
+        16.0,
+        9.6
       ],
       "border": 1.0,
       "elevation": 3
@@ -4435,10 +4948,10 @@
       "description": "Plain technical panels and clearly separated controls",
       "group": "More design styles",
       "radius": [
-        10.4
+        0.0
       ],
       "border": 1.0,
-      "elevation": 3
+      "elevation": 0
     },
     {
       "id": "mid-century",
@@ -4446,7 +4959,8 @@
       "description": "Organic geometric canvas with slim offset framing",
       "group": "More design styles",
       "radius": [
-        10.4
+        14.4,
+        2.4
       ],
       "border": 1.0,
       "elevation": 3
@@ -4457,7 +4971,7 @@
       "description": "Paper layers and taped section-heading details",
       "group": "More design styles",
       "radius": [
-        10.4
+        2.4
       ],
       "border": 1.0,
       "elevation": 3
@@ -4468,7 +4982,7 @@
       "description": "Glossy aqua-like surfaces using the current accent",
       "group": "More design styles",
       "radius": [
-        10.4
+        21.6
       ],
       "border": 1.0,
       "elevation": 3
@@ -4479,7 +4993,7 @@
       "description": "Engraved book-like framing and scholarly headings",
       "group": "More design styles",
       "radius": [
-        10.4
+        6.4
       ],
       "border": 1.0,
       "elevation": 3
@@ -4490,7 +5004,7 @@
       "description": "Linen-like texture and restrained editorial rules",
       "group": "More design styles",
       "radius": [
-        10.4
+        8.0
       ],
       "border": 1.0,
       "elevation": 3
@@ -4501,7 +5015,10 @@
       "description": "Uneven organic corners and quiet grain patterns",
       "group": "More design styles",
       "radius": [
-        10.4
+        11.2,
+        17.6,
+        8.0,
+        14.4
       ],
       "border": 1.0,
       "elevation": 3
@@ -4512,7 +5029,7 @@
       "description": "Stitched frames and strong slab-like heading rules",
       "group": "More design styles",
       "radius": [
-        10.4
+        4.0
       ],
       "border": 1.0,
       "elevation": 3
@@ -4523,7 +5040,7 @@
       "description": "Striped canvas and rope-like paired panel trim",
       "group": "More design styles",
       "radius": [
-        10.4
+        7.2
       ],
       "border": 1.0,
       "elevation": 3
@@ -4534,7 +5051,7 @@
       "description": "Geometric symbol accents with clearly labeled controls",
       "group": "More design styles",
       "radius": [
-        10.4
+        11.2
       ],
       "border": 1.0,
       "elevation": 3
@@ -4545,15 +5062,148 @@
       "description": "Grid-aligned heading blocks and segmented rules",
       "group": "More design styles",
       "radius": [
+        0.0,
+        6.4
+      ],
+      "border": 1.0,
+      "elevation": 0
+    },
+    {
+      "id": "cruip",
+      "name": "Cruip",
+      "description": "Artifact-inspired dashboard with quiet borders and rounded surfaces",
+      "group": "More design styles",
+      "radius": [
         10.4
       ],
       "border": 1.0,
       "elevation": 3
     },
     {
-      "id": "cruip",
-      "name": "Cruip",
-      "description": "Artifact-inspired dashboard with quiet borders and rounded surfaces",
+      "id": "boardui",
+      "name": "BoardUI",
+      "description": "BoardUI-inspired inset cards, layered buttons, segmented tabs and quiet dashboard surfaces",
+      "group": "More design styles",
+      "radius": [
+        20
+      ],
+      "border": 1,
+      "elevation": 3
+    },
+    {
+      "id": "kit-bencho",
+      "name": "Bencho",
+      "description": "Black studio canvas, soft rounded panels and white capsule actions",
+      "group": "More design styles",
+      "radius": [
+        24
+      ],
+      "border": 1,
+      "elevation": 0
+    },
+    {
+      "id": "kit-obsidian",
+      "name": "ObsidianUI",
+      "description": "Graphite panels, metallic controls and monochrome typography",
+      "group": "More design styles",
+      "radius": [
+        16
+      ],
+      "border": 1,
+      "elevation": 3
+    },
+    {
+      "id": "kit-sketchbook",
+      "name": "Sketchbook UI",
+      "description": "Hand-drawn frames, irregular corners and inked controls",
+      "group": "More design styles",
+      "radius": [
+        10.4
+      ],
+      "border": 1.0,
+      "elevation": 3
+    },
+    {
+      "id": "kit-looseleaf",
+      "name": "Looseleaf",
+      "description": "Lined paper cards, notebook margins and a sage desktop",
+      "group": "More design styles",
+      "radius": [
+        10.4
+      ],
+      "border": 1.0,
+      "elevation": 3
+    },
+    {
+      "id": "kit-productive",
+      "name": "Productive Schedule",
+      "description": "Blueprint dots, fine selection outlines and editorial section rules",
+      "group": "More design styles",
+      "radius": [
+        10.4
+      ],
+      "border": 1.0,
+      "elevation": 3
+    },
+    {
+      "id": "kit-libraries",
+      "name": "Libraries.dev",
+      "description": "Luminous edge accents, metal-like buttons and dark studio surfaces",
+      "group": "More design styles",
+      "radius": [
+        10.4
+      ],
+      "border": 1.0,
+      "elevation": 3
+    },
+    {
+      "id": "kit-beui-pro",
+      "name": "beUI Pro",
+      "description": "Layered ambient panels, inset highlights and polished call-to-action buttons",
+      "group": "More design styles",
+      "radius": [
+        24
+      ],
+      "border": 1,
+      "elevation": 3
+    },
+    {
+      "id": "kit-heroui",
+      "name": "HeroUI",
+      "description": "Soft rounded cards, filled inputs, pill controls and segmented navigation",
+      "group": "More design styles",
+      "radius": [
+        10.4
+      ],
+      "border": 1.0,
+      "elevation": 3
+    },
+    {
+      "id": "kit-rare",
+      "name": "Rare UI",
+      "description": "Folder-like card edges, tactile controls and gentle lift feedback",
+      "group": "More design styles",
+      "radius": [
+        10.4
+      ],
+      "border": 1.0,
+      "elevation": 3
+    },
+    {
+      "id": "kit-goop",
+      "name": "Goop UI",
+      "description": "Organic rounded surfaces and elastic button feedback",
+      "group": "More design styles",
+      "radius": [
+        10.4
+      ],
+      "border": 1.0,
+      "elevation": 3
+    },
+    {
+      "id": "kit-beui",
+      "name": "beUI",
+      "description": "Compact command panels, capsule tabs and crisp motion feedback",
       "group": "More design styles",
       "radius": [
         10.4
@@ -4604,6 +5254,158 @@
       "name": "Flat + Light",
       "style": "flat",
       "theme": "light"
+    },
+    {
+      "id": "boardui-light",
+      "name": "BoardUI · Light",
+      "style": "boardui",
+      "theme": "boardui-light",
+      "font": "default"
+    },
+    {
+      "id": "boardui-dark",
+      "name": "BoardUI · Dark",
+      "style": "boardui",
+      "theme": "boardui-dark",
+      "font": "default"
+    },
+    {
+      "id": "kit-bencho-light",
+      "name": "Bencho · Light",
+      "style": "kit-bencho",
+      "theme": "kit-bencho-light",
+      "font": "default"
+    },
+    {
+      "id": "kit-bencho-dark",
+      "name": "Bencho · Dark",
+      "style": "kit-bencho",
+      "theme": "kit-bencho-dark",
+      "font": "default"
+    },
+    {
+      "id": "kit-obsidian-light",
+      "name": "ObsidianUI · Light",
+      "style": "kit-obsidian",
+      "theme": "kit-obsidian-light",
+      "font": "geist"
+    },
+    {
+      "id": "kit-obsidian-dark",
+      "name": "ObsidianUI · Dark",
+      "style": "kit-obsidian",
+      "theme": "kit-obsidian-dark",
+      "font": "geist"
+    },
+    {
+      "id": "kit-sketchbook-light",
+      "name": "Sketchbook UI · Light",
+      "style": "kit-sketchbook",
+      "theme": "kit-sketchbook-light"
+    },
+    {
+      "id": "kit-sketchbook-dark",
+      "name": "Sketchbook UI · Dark",
+      "style": "kit-sketchbook",
+      "theme": "kit-sketchbook-dark"
+    },
+    {
+      "id": "kit-looseleaf-light",
+      "name": "Looseleaf · Light",
+      "style": "kit-looseleaf",
+      "theme": "kit-looseleaf-light"
+    },
+    {
+      "id": "kit-looseleaf-dark",
+      "name": "Looseleaf · Dark",
+      "style": "kit-looseleaf",
+      "theme": "kit-looseleaf-dark"
+    },
+    {
+      "id": "kit-productive-light",
+      "name": "Productive Schedule · Light",
+      "style": "kit-productive",
+      "theme": "kit-productive-light"
+    },
+    {
+      "id": "kit-productive-dark",
+      "name": "Productive Schedule · Dark",
+      "style": "kit-productive",
+      "theme": "kit-productive-dark"
+    },
+    {
+      "id": "kit-libraries-light",
+      "name": "Libraries.dev · Light",
+      "style": "kit-libraries",
+      "theme": "kit-libraries-light"
+    },
+    {
+      "id": "kit-libraries-dark",
+      "name": "Libraries.dev · Dark",
+      "style": "kit-libraries",
+      "theme": "kit-libraries-dark"
+    },
+    {
+      "id": "kit-beui-pro-light",
+      "name": "beUI Pro · Light",
+      "style": "kit-beui-pro",
+      "theme": "kit-beui-pro-light",
+      "font": "geist"
+    },
+    {
+      "id": "kit-beui-pro-dark",
+      "name": "beUI Pro · Dark",
+      "style": "kit-beui-pro",
+      "theme": "kit-beui-pro-dark",
+      "font": "geist"
+    },
+    {
+      "id": "kit-heroui-light",
+      "name": "HeroUI · Light",
+      "style": "kit-heroui",
+      "theme": "kit-heroui-light"
+    },
+    {
+      "id": "kit-heroui-dark",
+      "name": "HeroUI · Dark",
+      "style": "kit-heroui",
+      "theme": "kit-heroui-dark"
+    },
+    {
+      "id": "kit-rare-light",
+      "name": "Rare UI · Light",
+      "style": "kit-rare",
+      "theme": "kit-rare-light"
+    },
+    {
+      "id": "kit-rare-dark",
+      "name": "Rare UI · Dark",
+      "style": "kit-rare",
+      "theme": "kit-rare-dark"
+    },
+    {
+      "id": "kit-goop-light",
+      "name": "Goop UI · Light",
+      "style": "kit-goop",
+      "theme": "kit-goop-light"
+    },
+    {
+      "id": "kit-goop-dark",
+      "name": "Goop UI · Dark",
+      "style": "kit-goop",
+      "theme": "kit-goop-dark"
+    },
+    {
+      "id": "kit-beui-light",
+      "name": "beUI · Light",
+      "style": "kit-beui",
+      "theme": "kit-beui-light"
+    },
+    {
+      "id": "kit-beui-dark",
+      "name": "beUI · Dark",
+      "style": "kit-beui",
+      "theme": "kit-beui-dark"
     }
   ]
 }
