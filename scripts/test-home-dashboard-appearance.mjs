@@ -28,6 +28,22 @@ export async function checkHomeDashboardAppearance({evaluate,send,sessionId,wait
     await evaluate(`window.applyGistHubStyle('gitpulse',false);window.applyGistHubTheme('gitpulse-dark',false)`);
     for (const width of [320,390]) {
       await send('Emulation.setDeviceMetricsOverride',{width,height:850,deviceScaleFactor:1,mobile:true},sessionId);
+      const shell = await evaluate(`(() => {
+        const header = document.querySelector('.excel-topbar').getBoundingClientRect();
+        const controls = [...document.querySelectorAll('.neo-topbar-actions > :is(a,button,select)')];
+        const pin = document.querySelector('.excel-workspace .ribbon-command [data-quick-access-toggle]');
+        const command = pin?.closest('.ribbon-command').querySelector('.tool-list-entry').getBoundingClientRect();
+        const target = pin?.getBoundingClientRect();
+        return {
+          headerFits: controls.every(control => {
+            const rect = control.getBoundingClientRect();
+            return rect.bottom <= header.bottom && rect.right <= header.right && rect.left >= header.left;
+          }),
+          pinFits: !!target && target.width >= 44 && target.height >= 44 && command.right <= target.left
+        };
+      })()`);
+      assert.ok(shell.headerFits,`${layout} ${width}: header controls fit`);
+      if (layout === 'excel') assert.ok(shell.pinFits,`${layout} ${width}: pin has its own touch target`);
       for (const view of ['Overview','Repos','Quality & Review','Benchmarks & CI','Cadence & Goals']) {
         await evaluate(`Array.from(document.querySelectorAll('.dashboard-toolbar nav button')).find(e=>e.textContent===${JSON.stringify(view)}).click()`);
         await waitFor(`document.querySelector('.dashboard-toolbar .selected')?.textContent===${JSON.stringify(view)}`,view);
