@@ -79,17 +79,17 @@
             var since = Today.AddDays(1 - Days);
             var commits = Data?.Commits?.Items.Where(commit => commit.Commit?.Author?.Date is { } date && DateOnly.FromDateTime(date.UtcDateTime) >= since).ToArray();
             var pulls = Data?.Pulls?.Items.Where(pull => DateOnly.FromDateTime(pull.CreatedAt.UtcDateTime) >= since).ToArray();
-            var metrics = new (string Name, string Value)[]
+            var metrics = new (string Name, string Value, string Icon)[]
             {
-                ("Commits", Count(commits?.Length, Data?.Commits?.IsPartial)),
-                ("Pull requests opened", Count(pulls?.Length, Data?.Pulls?.IsPartial)),
-                ("Merged pull requests opened", Count(pulls?.Count(pull => pull.Status == "Merged"), Data?.Pulls?.IsPartial)),
-                ("Average review time", "Unavailable")
+                ("Commits", Count(commits?.Length, Data?.Commits?.IsPartial), "M3 12h5m8 0h5M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0"),
+                ("Pull requests opened", Count(pulls?.Length, Data?.Pulls?.IsPartial), "M6 7v10m12 0v-5a4 4 0 0 0-4-4h-2m0 0 3-3m-3 3 3 3M6 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM6 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm12 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"),
+                ("Merged pull requests opened", Count(pulls?.Count(pull => pull.Status == "Merged"), Data?.Pulls?.IsPartial), "M6 7v10m0-5a6 6 0 0 0 6 6h4M6 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm12-1 4-4m-4 0 2 2"),
+                ("Average review time", "Unavailable", "M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z")
             };
             <div class="analytics-grid analytics-metrics" @key="Days">
                 @foreach (var metric in metrics)
                 {
-                    <div class="bento-card analytics-card analytics-metric"><h3>@metric.Name</h3><strong class="analytics-value">@metric.Value</strong></div>
+                    <div class="bento-card analytics-card analytics-metric"><h3><span class="analytics-metric-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="@metric.Icon" /></svg></span>@metric.Name</h3><strong class="analytics-value">@metric.Value</strong></div>
                 }
             </div>
             @if (Data?.Commits?.IsPartial == true || Data?.Pulls?.IsPartial == true)

@@ -70,6 +70,7 @@ export async function checkHomeDashboard({ evaluate, send, sessionId, waitFor })
   await waitFor("!document.querySelector('#dashboard-inspector').open && document.activeElement.id==='inspect-23'", 'inspector restores focus');
   await waitFor("document.querySelector('.dashboard-analytics').textContent.includes('Top contributors')",'analytics overview');
   assert.equal(await evaluate("document.querySelectorAll('.analytics-day').length"),7);
+  assert.equal(await evaluate("document.querySelectorAll('.analytics-metric-icon svg').length"),4);
   assert.equal(await evaluate("document.querySelectorAll('.analytics-stack [data-series]').length"),1);
   assert.equal(await evaluate("document.querySelector('.analytics-legend').textContent.trim()"),'fixture');
   await evaluate("(()=>{const period=document.querySelector('.dashboard-analytics select');period.value='30';period.dispatchEvent(new Event('change',{bubbles:true}));})()");

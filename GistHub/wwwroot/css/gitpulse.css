@@ -417,3 +417,11 @@
  #view-overview .analytics-overview > :last-child { grid-column:2; }
  #view-overview .analytics-overview { grid-template-rows:auto 1fr; }
 }
+
+.analytics-metric h3 { display:flex; align-items:center; gap:8px; }
+.analytics-metric-icon {
+ display:grid; place-items:center; flex:none; width:29px; height:29px; border-radius:9px;
+ color:hsl(var(--foreground));
+ background:color-mix(in srgb,var(--analytics-accent) 18%,hsl(var(--card)));
+}
+.analytics-metric-icon svg { width:17px; height:17px; }
