@@ -453,3 +453,48 @@
 #view-benchmarks .rack-orange { --rack-top:#FDBA74; --rack-front:#FB923C; --rack-side:#EA580C; }
 #view-benchmarks .rack-indigo { --rack-top:#A5B4FC; --rack-front:#6366F1; --rack-side:#4338CA; }
 #view-benchmarks .rack-pink { --rack-top:#F9A8D4; --rack-front:#EC4899; --rack-side:#BE185D; }
+
+.dashboard [tabindex="0"]:focus-visible { outline:2px solid hsl(var(--ring)); outline-offset:-2px; }
+.city-building-name { display:none; }
+@media (max-width:639px) {
+ .dashboard { grid-template-columns:minmax(0,1fr); }
+ .dashboard .dashboard-toolbar {
+   display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px 10px;
+ }
+ .dashboard .dashboard-toolbar .dashboard-tabs { grid-column:1/-1; grid-row:2; gap:4px; }
+ .dashboard .dashboard-toolbar > #dashboard-export { grid-column:2; grid-row:1; min-height:44px; transition-property:background-color,color,border-color,box-shadow; }
+ .dashboard .dashboard-toolbar .dashboard-tabs button { padding-inline:10px; }
+ .dashboard .dashboard-toolbar .dashboard-tabs button,
+ .dashboard .dashboard-page-actions button { min-height:44px; }
+ .dashboard .gitpulse-view > .grid { gap:12px; }
+ .dashboard .gitpulse-view .bento-card { padding:14px; }
+ .dashboard .analytics-heading { align-items:start; }
+ .dashboard .analytics-field :is(input,select),
+ #view-overview .dashboard-filters :is(input,select) { min-height:44px; }
+ .dashboard .dashboard-table-scroll,
+ .dashboard .cadence-table-scroll { max-width:100%; overscroll-behavior-inline:contain; }
+ .dashboard .dashboard-explorer table { min-width:420px; }
+ .dashboard .cadence-table-scroll table { min-width:510px; }
+ .dashboard .dashboard-inspector {
+   max-width:100%; width:100%; min-width:0; padding:16px;
+   overflow-wrap:anywhere; overscroll-behavior:contain;
+ }
+ .dashboard .dashboard-inspector .btn { min-height:44px; }
+ .dashboard .analytics-review:has(.analytics-detail) > .analytics-list { max-height:14rem; overflow:auto; }
+ .dashboard .analytics-list button { min-height:44px; }
+ #view-overview #qwerty-keyboard-container .keycap { min-width:0; padding-inline:2px; }
+ #view-overview #qwerty-keyboard-container > div { gap:3px; }
+ #view-overview #qwerty-keyboard-container > div:last-child > span { width:24px; flex:none; }
+ #view-overview #kb-selected-desc { overflow-wrap:anywhere; }
+ #repo-city-scene svg { min-height:0; }
+ #repo-city-scene .city-hit-map {
+   display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px;
+   position:static; aspect-ratio:auto; transform:none; padding-block:8px; pointer-events:auto;
+ }
+ #repo-city-scene .city-building-hit {
+   position:static; width:100%; height:auto; min-height:44px; padding:5px 8px;
+   background:var(--city-panel); color:var(--city-text); border:1px solid var(--city-line);
+   border-inline-start:3px solid var(--city-color); border-radius:8px !important; text-align:start;
+ }
+ .city-building-name { display:block; overflow-wrap:anywhere; font-size:.75rem; }
+}

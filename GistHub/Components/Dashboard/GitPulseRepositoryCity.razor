@@ -89,7 +89,7 @@
                 <button @key="repo.Id" id="@($"city-{repo.Id}")" type="button" class="city-building-hit"
                         style="@($"--city-x:{x};--city-y:{y};--city-color:{Colors[index]}")"
                         aria-label="@($"Inspect {repo.Name}")" title="@($"{repo.Name} · {repo.SizeKb} KB")"
-                        @onclick="() => RepositorySelected.InvokeAsync(repo)"></button>
+                        @onclick="() => RepositorySelected.InvokeAsync(repo)"><span class="city-building-name">@repo.Name</span></button>
             }
         </div>
         </div>

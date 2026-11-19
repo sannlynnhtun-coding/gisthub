@@ -81,3 +81,7 @@ Replace the standalone title banner with a responsive dashboard toolbar containi
 ### Token-scoped Home data and metric icons
 
 Show the active account’s repositories that its GitHub token can read, including private repositories. Home validates the token identity, uses authenticated requests, keeps live data in the account session and never falls back to anonymous reads. Use the same repository set for the explorer, repository cards, quality summaries, city, and local CSV export. Commit and pull-request search remains bounded and reports partial coverage. Label private repositories and keep simulations explicitly labeled. Add decorative icons to the four summary cards. Verify private fixture visibility, paging, account switching, and the absence of an anonymous fallback.
+
+### Phone layout across Home views
+
+Make the dashboard toolbar, filters, cards and inspector fit narrow screens. Keep dense tables in labeled, keyboard-scrollable regions. On phones show full-size, labeled repository selectors below the animated city map. Keep review details close to the selected queue on phones and preserve desktop interactions. Verify all five views in both workspace layouts at 320 and 390 pixels, including repository inspection and the Cadence matrix.

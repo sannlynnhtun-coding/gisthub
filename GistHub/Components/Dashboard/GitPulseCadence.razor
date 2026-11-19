@@ -108,7 +108,7 @@
               <button  data-matrix-mode="releases" @onclick="() => Issues = true" aria-pressed="@(Issues ? "true" : "false")" class="matrix-mode-btn px-3 py-1 rounded-full text-[#8E939E] font-medium cursor-pointer">Release SLA %</button>
             </div>
           </div>
-          <div class="overflow-x-auto">
+          <div class="overflow-x-auto cadence-table-scroll" role="region" aria-label="Release and retention table" tabindex="0">
             <table class="w-full text-center border-separate border-spacing-1.5 text-xs">
               <thead>
                 <tr class="text-[11px] font-mono text-[#8E939E]">
