@@ -125,3 +125,7 @@ The menu-preview file is now authoritative (frozen as references/menu-preview.ht
 Match the November 18 preview motion and repository city without changing current workflows.
 
 The repository city uses the reference neon site plan and simulated five-stage deployment timeline. The preview connector adds no new workflow to GistHub.
+
+### Repository city palette
+
+The city card, scene, labels, and pipeline follow the selected workspace theme. Preserve distinct building accents, map geometry, animation, and inspector interaction. Verify the scene changes with the palette and shows readable labels in light and dark themes.

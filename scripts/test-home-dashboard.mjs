@@ -92,6 +92,17 @@ export async function checkHomeDashboard({ evaluate, send, sessionId, waitFor })
     await waitFor(`document.querySelector('[aria-label="Dashboard views"] .selected')?.textContent===${JSON.stringify(label)}`,label);
     if (label === 'Benchmarks & CI') {
       await waitFor("document.querySelector('#repo-city-card button')?.id==='city-23'",'city ranks repositories by size');
+      const cityColors = await evaluate(`(() => {
+        const previous = document.documentElement.dataset.theme;
+        const colors = ['gitpulse-dark','gitpulse-light'].map(theme => {
+          window.applyGistHubTheme(theme,false);
+          const card = document.querySelector('#repo-city-card');
+          return [getComputedStyle(card).backgroundColor, getComputedStyle(card.querySelectorAll('.city-roof')[1]).stroke, getComputedStyle(card.querySelector('#city-light stop')).stopColor];
+        });
+        window.applyGistHubTheme(previous,false);
+        return colors;
+      })()`);
+      cityColors[0].forEach((color,index)=>assert.notEqual(color,cityColors[1][index]));
       await evaluate("document.querySelector('#city-23').focus()");
       await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',text:'\r',unmodifiedText:'\r',windowsVirtualKeyCode:13},sessionId);
       await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13},sessionId);
