@@ -44,7 +44,7 @@
                 var (x, y) = Places[index];
                 var height = 26 + (int)Math.Round(42d * repo.SizeKb!.Value / Math.Max(1, top[0].SizeKb!.Value), MidpointRounding.AwayFromZero);
                 var shortName = repo.Name.Length > 23 ? repo.Name[..21] + "…" : repo.Name;
-                <g @key="repo.Id" class="city-building" transform="@($"translate({x} {y}) scale(.82)")" style="@($"--city-color:{color}")">
+                <g @key="repo.Id" class="@($"city-building rack-{RackPalettes[index]}")" transform="@($"translate({x} {y}) scale(.82)")" style="@($"--city-color:{color}")">
                     <title>@repo.Name · @repo.SizeKb KB</title>
                     <path d="M-100 4 0-47 112 10 12 64Z" fill="var(--city-deck)" stroke="@color" stroke-opacity=".45" />
                     <path d="M-99-7 0-58 112 0M-91 20 12 74 111 22" fill="none" stroke="@color" stroke-width="3" class="city-roof" />
@@ -52,12 +52,12 @@
                     @for (var rack = 0; rack < 3; rack++)
                     {
                         <g transform="@($"translate({rack * 25 - 30},{rack * 11 - 14})")">
-                            <path d="@($"M0 {-height}l16 8v{height}l-16-8Z")" fill="var(--city-rack)" stroke="@color" stroke-opacity=".5" />
-                            <path d="@($"M16 {8 - height}l13-8v{height}l-13 8Z")" fill="var(--city-ground)" stroke="var(--city-line)" />
-                            <path d="@($"M0 {-height}l13-8 16 8-13 8Z")" fill="@(rack == 1 ? "var(--city-accent)" : "var(--city-cap)")" />
+                            <path d="@($"M0 {-height}l16 8v{height}l-16-8Z")" fill="var(--rack-front)" />
+                            <path d="@($"M16 {8 - height}l13-8v{height}l-13 8Z")" fill="var(--rack-side)" />
+                            <path d="@($"M0 {-height}l13-8 16 8-13 8Z")" fill="var(--rack-top)" />
                             @for (var light = 0; light < 5; light++)
                             {
-                                <path d="@($"M3 {-height + 12 + light * 8}l10 5")" stroke="var(--city-accent)" stroke-width="2" class="city-server-light" style="@FormattableString.Invariant($"animation-delay:{light * .2}s")" />
+                                <path d="@($"M3 {-height + 12 + light * 8}l10 5")" stroke="var(--rack-top)" stroke-width="2" class="city-server-light" style="@FormattableString.Invariant($"animation-delay:{light * .2}s")" />
                             }
                         </g>
                     }
@@ -117,5 +117,6 @@
     private static readonly (int X, int Y)[] Places = [(420,120), (240,225), (650,220), (450,325), (690,420), (855,325)];
     private static readonly (int From, int To)[] Routes = [(0,1), (0,2), (1,3), (2,3), (2,5), (3,4), (4,5)];
     private static readonly string[] Colors = ["var(--city-accent)", "var(--city-cyan)", "var(--city-gold)", "var(--city-green)", "var(--city-cap)", "var(--city-pink)"];
+    private static readonly string[] RackPalettes = ["cyan", "amber", "violet", "orange", "indigo", "pink"];
     private static readonly string[] Stages = ["CLONE", "BUILD", "PUSH", "START", "HEALTH"];
 }

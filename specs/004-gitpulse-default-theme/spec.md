@@ -129,3 +129,5 @@ The repository city uses the reference neon site plan and simulated five-stage d
 ### Repository city palette
 
 The city card, scene, labels, and pipeline follow the selected workspace theme. Preserve distinct building accents, map geometry, animation, and inspector interaction. Verify the scene changes with the palette and shows readable labels in light and dark themes.
+
+The six city server groups share the three-face cube palette from Module & Service Allocation. City backgrounds, routes, and labels retain their theme colors. Verify the three faces match the source swatches and the server lights still animate.

@@ -445,3 +445,11 @@
  background:color-mix(in srgb,var(--analytics-accent) 18%,hsl(var(--card)));
 }
 .analytics-metric-icon svg { width:17px; height:17px; }
+
+/* Shared isometric server faces for both Benchmarks visualizations. */
+#view-benchmarks .rack-cyan { --rack-top:#67E8F9; --rack-front:#06B6D4; --rack-side:#0891B2; }
+#view-benchmarks .rack-amber { --rack-top:#FDE68A; --rack-front:#F59E0B; --rack-side:#D97706; }
+#view-benchmarks .rack-violet { --rack-top:#D8B4FE; --rack-front:#A855F7; --rack-side:#7E22CE; }
+#view-benchmarks .rack-orange { --rack-top:#FDBA74; --rack-front:#FB923C; --rack-side:#EA580C; }
+#view-benchmarks .rack-indigo { --rack-top:#A5B4FC; --rack-front:#6366F1; --rack-side:#4338CA; }
+#view-benchmarks .rack-pink { --rack-top:#F9A8D4; --rack-front:#EC4899; --rack-side:#BE185D; }
