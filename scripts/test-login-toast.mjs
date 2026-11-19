@@ -2,8 +2,13 @@ import assert from 'node:assert/strict';
 
 export async function checkLoginToast({evaluate, send, sessionId, waitFor}) {
   await waitFor(`!!document.querySelector('.neo-login-screen form')`, 'login form', 60000);
-  for (const width of [1280, 390]) {
+  for (const width of [375, 1074, 1440]) {
     await send('Emulation.setDeviceMetricsOverride', {width, height:900, deviceScaleFactor:1, mobile:width < 600}, sessionId);
+    const fields=await evaluate(`Array.from(document.querySelectorAll('.login-input'),e=>{const input=e.querySelector('input'),icon=e.querySelector('svg'),r=input.getBoundingClientRect(),s=getComputedStyle(input);return {id:input.id,label:!!document.querySelector('label[for="'+input.id+'"]'),gap:r.left+parseFloat(s.paddingLeft)-icon.getBoundingClientRect().right,font:s.fontFamily,width:r.width};})`);
+    assert.equal(fields.length,2);
+    for(const field of fields){assert.equal(field.label,true);assert.ok(field.gap>=8,'icon must not overlap input text');assert.ok(field.width>200);}
+    assert.match(fields[1].font,/JetBrains Mono/);
+    assert.equal(await evaluate(`document.documentElement.scrollWidth>innerWidth+1`),false);
     const before = await evaluate(`document.querySelector('form').getBoundingClientRect().x`);
     await evaluate(`document.querySelector('form').requestSubmit()`);
     await waitFor(`!!document.querySelector('.neo-login-screen [role="alert"]')`, 'validation toast');

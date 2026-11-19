@@ -44,3 +44,6 @@ Only square tabs, truthful labels and preserved additional controls are approved
 
 User requests the HTML appearance throughout the website. Correct shared cascade conflicts at their source: legacy input/badge/profile/ornament rules and generic interface geometry must not apply to GitPulse. Define shared reference forms, surfaces, headings, menus and dialogs under GitPulse; preserve page layouts/actions, independent saved appearances and accessible targets. Verify representative routes in dark/light and mobile, including shared tool surfaces. No data/behavior changes.
 
+## v2 menu/login follow-up
+
+Supplied index-v2.html has the same SHA-256 as frozen menu-preview.html: no removed actions can be inferred from this file. Reproduce its labeled ribbon groups with existing 29-command catalog, existing Quick Access order, keyboard/collapse behavior and Admin alternative. Preserve all actual actions rather than transplant mock dialogs. Fix login overlap at shared input padding precedence, retain monospace controls, associate labels and use exact brand. Add browser gap/label checks at 375/1074/1440 and verify every menu group/command.

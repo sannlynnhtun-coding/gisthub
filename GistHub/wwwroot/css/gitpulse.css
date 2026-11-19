@@ -171,6 +171,10 @@
 @media(pointer:coarse) { :root[data-interface-style="gitpulse"] :is(.btn,input:not([type="checkbox"]):not([type="radio"]),select) { min-height:44px; } }
 
 :where(:root[data-interface-style="gitpulse"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),:root[data-interface-style="gitpulse"] select) { padding:8px 12px; }
+:root[data-interface-style="gitpulse"] .neo-login-screen .login-input input { padding:14px 16px 14px 44px; min-height:48px; }
+:root[data-interface-style="gitpulse"] .neo-login-screen h1 { border:0!important; outline:0!important; box-shadow:none!important; background:none!important; font-size:36px; font-weight:700; }
+:root[data-interface-style="gitpulse"] .neo-login-screen .neo-kicker { display:block; margin:0 0 8px; }
+:root[data-interface-style="gitpulse"] .neo-login-screen .login-input svg { display:block; }
 :root[data-interface-style="gitpulse"] .excel-workspace .workspace-commands { overflow-x:auto; }
 :root[data-interface-style="gitpulse"] .excel-workspace .workspace-command-area>.workspace-command-group { flex-wrap:nowrap; align-items:stretch; }
 :root[data-interface-style="gitpulse"] .excel-workspace .ribbon-group { display:flex; flex-direction:column; flex:0 0 auto; border-right:1px solid hsl(var(--border)); padding:0 6px; }
