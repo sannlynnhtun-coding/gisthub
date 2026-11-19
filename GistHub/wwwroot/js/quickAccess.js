@@ -1,5 +1,5 @@
 const key = 'gisthub:quick-access';
-export const commandIds = ["my-collection", "new-snippet", "playlists", "slh-collection", "discovery", "trending", "agent-skills", "tools-guide", "visual-studio-shortcuts", "password-generator", "cron-expression", "json-parser", "json-to-table", "base64", "markdown-live-preview", "markdown-to-docx", "markdown-to-cards", "markdown-converters", "markdown-to-text", "diagram-editor", "mermaid-to-image", "formula-to-image", "html-to-image", "code-image", "youtube-downloader", "local-settings", "appearance", "sound"];
+export const commandIds = ["home", "my-collection", "new-snippet", "playlists", "slh-collection", "discovery", "trending", "agent-skills", "tools-guide", "visual-studio-shortcuts", "password-generator", "cron-expression", "json-parser", "json-to-table", "base64", "markdown-live-preview", "markdown-to-docx", "markdown-to-cards", "markdown-converters", "markdown-to-text", "diagram-editor", "mermaid-to-image", "formula-to-image", "html-to-image", "code-image", "youtube-downloader", "local-settings", "appearance", "sound"];
 
 export function validate(json, strict = true) {
     if (typeof json !== 'string' || new TextEncoder().encode(json).length > 16 * 1024) throw new Error('Invalid Quick Access preference.');
@@ -31,4 +31,19 @@ export function watchVisibility(callback) {
 export function unwatchVisibility() {
     if (visibilityHandler) document.removeEventListener('visibilitychange', visibilityHandler);
     visibilityHandler = null;
+}
+
+export async function animateSubmenu(id, opening) {
+    const panel = document.getElementById(id);
+    if (!panel) return;
+    const startHeight = panel.getBoundingClientRect().height;
+    for (const animation of panel.getAnimations()) animation.cancel();
+    panel.inert = !opening;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const animation = panel.animate([
+        { height: `${opening ? 0 : startHeight}px`, opacity: opening ? 0 : 1 },
+        { height: `${opening ? panel.scrollHeight : 0}px`, opacity: opening ? 1 : 0 }
+    ], { duration: 320, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'forwards' });
+    try { await animation.finished; } catch { return; }
+    if (opening) animation.cancel();
 }

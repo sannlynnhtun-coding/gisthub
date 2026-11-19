@@ -5,20 +5,32 @@
 <div class="neo-app-shell relative min-h-screen flex bg-background text-foreground @(AreFilesBlurred ? "gist-files-blurred" : "")"
      inert="@(IsModalOpen ? "" : null)">
 
-    <main class="neo-main flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+    <main class="neo-main @(IsAdminPortal ? "admin-portal" : "excel-workspace") flex-1 flex flex-col min-w-0 h-screen overflow-hidden @(IsNavigationOpen ? "is-navigation-open" : "") @(IsAdminPortal && IsSidebarCollapsed ? "is-sidebar-collapsed" : "")">
         <header class="neo-topbar excel-topbar flex items-center justify-between px-6 glass sticky top-0 z-40">
             <div class="neo-topbar-brand flex items-center gap-4">
-                <a href="my-gists?favorites=true" aria-label="GistHub â€” My Collection" class="neo-brand-mark w-9 h-9 overflow-hidden rounded-md">
-                    <img src="logo.svg" class="w-full h-full object-cover" alt="" />
+                <button type="button" class="portal-menu-toggle" aria-label="Toggle workspace navigation" aria-controls="portal-navigation" aria-expanded="@(IsNavigationOpen ? "true" : "false")" @onclick="() => { IsSidebarCollapsed = false; IsNavigationOpen = !IsNavigationOpen; }">
+                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+                </button>
+                <a href="./" aria-label="GistHub — Home" class="neo-brand-mark w-9 h-9 overflow-hidden rounded-md">
+                    <img src="icons/gitpulse-brand.png" class="w-full h-full object-cover" alt="" />
                 </a>
                 <div>
                     <div class="neo-kicker mb-1">Code stash</div>
-                    <h1 class="text-xl font-black tracking-tight"><a href="my-gists?favorites=true" aria-label="GistHub â€” My Collection">GistHub</a></h1>
+                    <h1 class="text-xl font-black tracking-tight"><a href="./" aria-label="GistHub — Home">GistHub</a></h1>
                 </div>
             </div>
 
-            <div class="excel-workspace-title">Local workspace</div>
+            <div class="excel-workspace-title">
+                <button @ref="SidebarToggle" type="button" class="portal-sidebar-toggle" aria-controls="portal-navigation" aria-expanded="@(!IsSidebarCollapsed ? "true" : "false")" aria-label="@(IsSidebarCollapsed ? "Show sidebar" : "Hide sidebar")" title="@(IsSidebarCollapsed ? "Show sidebar" : "Hide sidebar")" @onclick="ToggleSidebar">
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M9 3v18M5.5 7h1M5.5 10h1" /></svg>
+                </button>
+                <span>@WorkspaceTitle</span><span class="portal-local-status">Local</span>
+            </div>
             <div class="neo-topbar-actions flex items-center gap-3">
+                <select class="workspace-layout-select" aria-label="Workspace layout" @bind:get="WorkspaceLayout" @bind:set="ChangeWorkspaceLayout">
+                    <option value="excel">Excel</option>
+                    <option value="admin">Admin portal</option>
+                </select>
                 <NavLink href="editor" class="neo-new-snippet btn btn-primary btn-md" title="Create a new snippet" aria-label="New snippet">
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
                     <span class="neo-new-snippet__label" aria-hidden="true">New Snippet</span>
@@ -51,7 +63,8 @@
                 <ProfileMenu />
             </div>
         </header>
-        <NavMenu @ref="WorkspaceNavigation" OnOpenWorkbenchTool="OpenWorkbenchTool" IsVercelApp="IsVercelApp" />
+        <NavMenu @ref="WorkspaceNavigation" OnOpenWorkbenchTool="OpenWorkbenchTool" OnToggleSidebar="ToggleSidebar" IsAdminPortal="IsAdminPortal" IsSidebarCollapsed="@(IsAdminPortal && IsSidebarCollapsed)" IsVercelApp="IsVercelApp" />
+        @if (WorkspaceLayoutError is not null) { <p role="status" class="workspace-layout-error">@WorkspaceLayoutError</p> }
 
         <div class="neo-canvas flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar @(IsToolWorkspaceVisible ? "neo-canvas--tool" : "")">
             <div class="neo-decor neo-decor--pink" aria-hidden="true"></div>
@@ -108,6 +121,36 @@
     private const string FilesBlurredStorageKey = "gisthub:files-blurred";
 
     private bool IsProfileReady;
+    private string WorkspaceLayout = "excel";
+    private bool IsAdminPortal => WorkspaceLayout == "admin";
+    private string? WorkspaceLayoutError;
+    private async Task ChangeWorkspaceLayout(string layout)
+    {
+        if (layout is not ("excel" or "admin")) return;
+        try
+        {
+            await JS.InvokeVoidAsync("gistHubBackup.setPreference", "gisthub:workspace-layout", layout);
+            WorkspaceLayout = layout;
+            IsSidebarCollapsed = false;
+            IsNavigationOpen = false;
+            WorkspaceLayoutError = null;
+        }
+        catch (JSException) { WorkspaceLayoutError = "Workspace layout could not be saved. Your previous layout is unchanged."; }
+    }
+    private string WorkspaceTitle => ActivePageTool ?? (Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0].Trim('/') switch
+    {
+        "" => "Home", "my-gists" => "My Collection", "discovery" => "Discovery", "collections" => "Playlists",
+        "slh-collection" => "SLH Collection", "editor" => "Snippet Editor", "settings" => "Local settings",
+        "trending" => "Trending Now", "login" => "Connect GitHub", _ => "Workspace"
+    });
+    private bool IsNavigationOpen;
+    private bool IsSidebarCollapsed, ShouldFocusSidebarToggle;
+    private ElementReference SidebarToggle;
+    private void ToggleSidebar()
+    {
+        IsSidebarCollapsed = !IsSidebarCollapsed;
+        ShouldFocusSidebarToggle = true;
+    }
     private bool ProfileLoadFailed;
     private bool AreFilesBlurred { get; set; }
     private bool IsVercelApp => new Uri(Navigation.BaseUri).Host is var host &&
@@ -172,8 +215,19 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (ShouldFocusSidebarToggle)
+        {
+            ShouldFocusSidebarToggle = false;
+            await SidebarToggle.FocusAsync();
+        }
         if (firstRender)
         {
+            try
+            {
+                var layout = await JS.InvokeAsync<string?>("localStorage.getItem", "gisthub:workspace-layout");
+                if (layout is "excel" or "admin") WorkspaceLayout = layout;
+            }
+            catch (JSException) { WorkspaceLayoutError = "Workspace layout could not be loaded. Using Excel workspace."; }
             var storedBlur = await JS.InvokeAsync<string?>("localStorage.getItem", FilesBlurredStorageKey);
             AreFilesBlurred = string.Equals(storedBlur, "true", StringComparison.OrdinalIgnoreCase);
 

@@ -5,7 +5,7 @@ const favoritesKey = 'gisthub:appearance-favorites';
 const categories = ['themes', 'styles', 'presets', 'fonts'];
 const preferenceKeys = ['theme', 'gisthub:theme-choice', 'gisthub:interface-style', 'gisthub:font',
     'button-sounds-enabled', 'gisthub:sidebar-visible', 'gisthub:files-blurred',
-    'gisthub:profile-tools-visible', 'gisthub:markdown-cards-draft', 'gisthub:quick-access'];
+    'gisthub:profile-tools-visible', 'gisthub:markdown-cards-draft', 'gisthub:quick-access', 'gisthub:workspace-layout'];
 const isPreference = key => preferenceKeys.includes(key) || /^gisthub:tool-category:tools-category-[a-z-]+$/.test(key);
 const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isText = value => typeof value === 'string' && value.length > 0;
@@ -41,7 +41,9 @@ function parseBackup(json) {
     if (!isObject(backup.preferences)) throw new Error('The preferences are missing.');
     for (const [key, value] of Object.entries(backup.preferences)) {
         if (!isPreference(key) || typeof value !== 'string') throw new Error('The backup contains an unsupported preference.');
-        if (key === 'gisthub:quick-access') {
+        if (key === 'gisthub:workspace-layout') {
+            if (!['excel', 'admin'].includes(value)) throw new Error('Invalid workspace layout.');
+        } else if (key === 'gisthub:quick-access') {
             validateQuickAccess(value);
         } else if (key === 'gisthub:markdown-cards-draft') {
             if (new TextEncoder().encode(value).length > 128 * 1024) throw new Error('The Markdown Cards draft is too large.');

@@ -5,6 +5,8 @@ export async function checkQuickAccess({ evaluate, send, sessionId, waitFor }) {
   const key = 'gisthub:quick-access';
   const origin = await evaluate('location.origin');
   const tab = async name => {
+    await evaluate(`if(document.querySelector('.admin-portal') && innerWidth<768 && document.querySelector('.portal-menu-toggle')?.getAttribute('aria-expanded')==='false')document.querySelector('.portal-menu-toggle').click()`);
+    await waitFor(`!document.querySelector('.admin-portal') || innerWidth>=768 || document.querySelector('.portal-menu-toggle')?.getAttribute('aria-expanded')==='true'`, 'workspace navigation visible');
     await evaluate(`document.querySelector('#workspace-tab-${name}').click()`);
     await waitFor(`document.querySelector('#workspace-tab-${name}').getAttribute('aria-selected')==='true'`, name);
   };
@@ -115,6 +117,7 @@ export async function checkQuickAccess({ evaluate, send, sessionId, waitFor }) {
     await waitFor(`localStorage.getItem('button-sounds-enabled') === '${!sound}'`, 'pinned sound');
 
     await send('Emulation.setDeviceMetricsOverride',{width:360,height:800,deviceScaleFactor:1,mobile:true},sessionId);
+    await evaluate(`if(document.querySelector('.portal-menu-toggle')?.getAttribute('aria-expanded')==='false')document.querySelector('.portal-menu-toggle').click()`);
     assert.equal(await evaluate(`document.documentElement.scrollWidth > innerWidth`), false, 'narrow ribbon fits');
     await move('json-parser','earlier');
     await send('Emulation.clearDeviceMetricsOverride',{},sessionId);
@@ -164,6 +167,7 @@ export async function checkQuickAccess({ evaluate, send, sessionId, waitFor }) {
     await mkdir('artifacts/toolbar-preview', {recursive:true});
     for (const width of [1440, 701, 390]) {
       await send('Emulation.setDeviceMetricsOverride',{width,height:835,deviceScaleFactor:1,mobile:false},sessionId);
+      await evaluate(`if(document.querySelector('.admin-portal') && innerWidth<768 && document.querySelector('.portal-menu-toggle')?.getAttribute('aria-expanded')==='false')document.querySelector('.portal-menu-toggle').click()`);
       const layout = await evaluate(`(()=>{
         const tabs=[...document.querySelectorAll('.workspace-tabs [role="tab"]')];
         const toggle=document.querySelector('.ribbon-toggle').getBoundingClientRect();
@@ -174,12 +178,12 @@ export async function checkQuickAccess({ evaluate, send, sessionId, waitFor }) {
           panelHeight:document.querySelector('#workspace-commands').getBoundingClientRect().height,
           ribbonBottom:Math.ceil(document.querySelector('.workspace-ribbon').getBoundingClientRect().bottom)};
       })()`);
-      assert.equal(new Set(layout.tops).size,1,'category tabs stay on one scrollable line');
+      assert.equal(new Set(layout.tops).size,1,'Excel categories remain on one horizontal ribbon');
       assert.equal(layout.overflow,false,`no page overflow at ${width}`);
       assert.equal(layout.toggleVisible,true,'collapse button remains visible');
       assert.equal(layout.labelOverlap,false,`command/help controls do not overlap at ${width}`);
-      assert.ok(layout.panelHeight<190,`compact panel at ${width}: ${layout.panelHeight}`);
-      const screenshot=await send('Page.captureScreenshot',{format:'png',clip:{x:0,y:0,width,height:layout.ribbonBottom+4,scale:1}},sessionId);
+      assert.ok(layout.panelHeight<300,`compact sidebar command panel at ${width}: ${layout.panelHeight}`);
+      const screenshot=await send('Page.captureScreenshot',{format:'png',clip:{x:0,y:0,width,height:Math.min(835,layout.ribbonBottom+4),scale:1}},sessionId);
       await writeFile(`artifacts/toolbar-preview/toolbar-${width}.png`,Buffer.from(screenshot.data,'base64'));
     }
     await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1},sessionId);
