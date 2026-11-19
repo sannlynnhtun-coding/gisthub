@@ -23,7 +23,11 @@
 .excel-topbar .neo-kicker { display: none !important; }
 .excel-topbar .neo-topbar-brand h1 { font: 400 15px var(--font-ui) !important; border: 0 !important; outline: none !important; background: none !important; color: hsl(var(--foreground)) !important; }
 .excel-topbar .neo-topbar-brand h1 a { border: 0 !important; color: inherit !important; box-shadow: none !important; background: transparent !important; text-decoration: none !important; }
-.excel-workspace-title { position: absolute; left: 50%; transform: translateX(-50%); font-weight: 600; }
+.excel-workspace-title { font-weight: 600; }
+.excel-workspace > .excel-topbar .excel-workspace-title {
+  flex: 1; min-width: 0; margin-inline: 12px; overflow: hidden;
+  text-align: center; text-overflow: ellipsis; white-space: nowrap;
+}
 .excel-topbar .neo-topbar-actions { gap: 8px !important; flex: 0 1 auto; }
 .neo-main > .excel-topbar .neo-topbar-actions :is(.neo-icon-button, .neo-new-snippet) {
   min-width: 32px !important;
@@ -40,11 +44,11 @@
 }
 .excel-topbar .neo-new-snippet__label { display: none !important; }
 .excel-topbar .workspace-more-trigger { display: none; }
+:root:not([data-pwa-install-available]) .workspace-install-action { display: none !important; }
 @media (min-width: 768px) {
   .excel-topbar .workspace-more-panel { display: contents; }
 }
 /* Compact command strip: categories scroll independently of the fixed collapse control. */
-:root:not([data-pwa-install-available]) .workspace-install-action { display: none !important; }
 .neo-main > .workspace-ribbon { position: relative; z-index: 20; padding: 0; border: 0 !important; border-bottom: 1px solid hsl(var(--border)) !important; }
 .workspace-tab-row { display: flex; align-items: center; padding: 0 12px; gap: 8px; }
 .workspace-ribbon .workspace-tabs { flex: 1; min-width: 0; gap: 2px; height: 44px; min-height: 44px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding: 0; border: 0; align-items: stretch; scrollbar-width: thin; }
@@ -84,6 +88,11 @@
 .workspace-ribbon .quick-access-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 0; }
 .workspace-ribbon .quick-access-actions button { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; width: 28px; height: 32px; min-height: 32px; padding: 4px; border: 0; border-radius: 4px; background: transparent; color: hsl(var(--muted-foreground)); font-size: 14px; }
 .workspace-ribbon .quick-access-actions button[aria-pressed="true"] { color: hsl(var(--foreground)); }
+@media (hover: hover) and (pointer: fine) and (not (any-pointer: coarse)) {
+  .excel-workspace .workspace-ribbon:not(.is-quick-access) .ribbon-command:not(:hover):not(:focus-within) [data-quick-access-toggle] {
+    opacity: 0; pointer-events: none;
+  }
+}
 .workspace-ribbon :is(.quick-access-actions button, .tool-help-button):hover,
 .neo-main .workspace-ribbon .tool-list-entry > :is(a, button):hover { background: hsl(var(--accent)) !important; }
 .neo-main .workspace-ribbon .tool-list-entry > a.active { background: hsl(var(--accent)) !important; }
@@ -125,6 +134,7 @@
   .workspace-more-panel :is(.neo-icon-button, .neo-new-snippet)::after { content: attr(aria-label) / ""; }
   .workspace-more-panel [data-testid="blur-files-trigger"]::after { content: attr(title) / ""; }
   .workspace-more-panel .workspace-layout-select { min-height: 44px !important; }
+  .workspace-more-panel .workspace-install-action { min-height: 44px; justify-content: flex-start; }
   .workspace-tab-row { padding-inline: 8px; gap: 4px; }
   .neo-main .workspace-ribbon .workspace-commands { padding: 6px 8px; }
   .neo-main .workspace-ribbon .tool-list-entry > :is(a, button:not(.tool-help-button)) { max-width: 190px; }
@@ -134,7 +144,6 @@
   .workspace-ribbon .quick-access-actions button,
   .workspace-ribbon .tool-list-entry > .tool-help-button { min-width: 44px; width: 44px; min-height: 44px; height: 44px; }
   .neo-main .workspace-ribbon .tool-list-entry > :is(a, button:not(.tool-help-button)) { min-height: 44px; }
-  .workspace-more-panel .workspace-install-action { min-height: 44px; justify-content: flex-start; }
 }
 
 .excel-topbar .profile-avatar { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; gap: 8px; min-width: 32px; height: 32px; padding: 0 !important; border: 0 !important; background: transparent !important; color: hsl(var(--foreground)) !important; box-shadow: none !important; }
