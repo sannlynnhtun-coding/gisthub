@@ -1,6 +1,17 @@
 import assert from 'node:assert/strict';
 
 export async function checkMermaidImage({evaluate,send,sessionId,waitFor}) {
+  if (process.env.BROWSER_CHECK_MERMAID_RETRY === '1') {
+    await waitFor(`Boolean(document.querySelector('#mermaid-retry'))`, 'renderer retry after failed module imports',60000);
+    const source = await evaluate(`document.querySelector('#mermaid-source').value`);
+    assert.ok(await evaluate(`document.querySelector('#mermaid-error').textContent.includes('could not load')`));
+    assert.equal(await evaluate(`document.querySelector('#mermaid-download').disabled`), true);
+    await evaluate(`document.querySelector('#mermaid-retry').click()`);
+    await waitFor(`document.querySelector('#mermaid-preview svg') && !document.querySelector('#mermaid-download').disabled`, 'module import recovery without reloading',30000);
+    assert.equal(await evaluate(`document.querySelector('#mermaid-source').value`), source);
+    assert.equal(await evaluate(`Boolean(document.querySelector('#mermaid-retry'))`), false);
+    console.log('PASS: failed module imports recover through Retry loading and preserve source.');
+  }
   await waitFor(`document.querySelector('#mermaid-preview svg') && !document.querySelector('#mermaid-download').disabled`, 'a valid Mermaid preview',60000);
   await evaluate(`document.querySelector('#workspace-tab-Diagrams').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="mermaid-image-menu-item"]'))`, 'the Mermaid menu entry');

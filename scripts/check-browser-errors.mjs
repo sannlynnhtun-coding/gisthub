@@ -82,6 +82,7 @@ try {
     socket.addEventListener("error", reject, { once: true });
   });
 
+  let blockedMermaidImports = 0;
   let nextId = 0;
   const pending = new Map();
   let resolvePageSession;
@@ -105,7 +106,14 @@ try {
       return;
     }
 
-    if (message.method === "Runtime.exceptionThrown") {
+    if (message.method === "Fetch.requestPaused") {
+      const {requestId, request} = message.params;
+      const block = process.env.BROWSER_CHECK_MERMAID_RETRY === '1'
+        && new URL(request.url).pathname === '/js/mermaidImage.js'
+        && blockedMermaidImports++ < 2;
+      void send(block ? 'Fetch.failRequest' : 'Fetch.continueRequest',
+        block ? {requestId, errorReason:'ConnectionReset'} : {requestId}, message.sessionId);
+    } else if (message.method === "Runtime.exceptionThrown") {
       const details = message.params.exceptionDetails;
       observedMessages.push(details.exception?.description ?? details.text ?? "");
     } else if (message.method === "Runtime.consoleAPICalled") {
@@ -197,6 +205,9 @@ try {
       })()`,
       awaitPromise: true,
     }, sessionId);
+  }
+  if (process.env.BROWSER_CHECK_MERMAID_RETRY === '1') {
+    await send('Fetch.enable', {patterns:[{urlPattern:'*/js/mermaidImage.js*',requestStage:'Request'}]}, sessionId);
   }
   await send("Page.navigate", { url }, sessionId);
   await delay(waitMs);

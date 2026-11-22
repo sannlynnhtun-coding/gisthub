@@ -25,6 +25,10 @@
         <label for="mermaid-file">Open .mmd (up to 64 KB)</label><InputFile id="mermaid-file" accept=".mmd,.mermaid,.txt,text/plain" OnChange="ImportAsync" />
     </div>
     @if (Error is not null) { <p id="mermaid-error" role="alert" class="text-destructive">@Error</p> }
+    @if (ModuleLoadFailed)
+    {
+        <button id="mermaid-retry" type="button" class="btn btn-secondary btn-md" @onclick="Changed">Retry loading</button>
+    }
     <p id="mermaid-status" role="status" aria-live="polite">@Status</p>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
@@ -53,12 +57,13 @@
     private const string Flow = "flowchart TD\n    A[Write Mermaid] --> B{Preview looks right?}\n    B -- Yes --> C[Download image]\n    B -- No --> A";
     private string Source = Flow, Title = "My diagram", Author = "", Theme = "default", Format = "png", Status = "Rendering preview…";
     private int Quality = 90, Revision;
-    private bool NeedsPreview = true, Ready, Exporting;
+    private bool NeedsPreview = true, Ready, Exporting, ModuleLoadFailed;
+    private int ModuleImportAttempts;
     private string? Error;
     private ElementReference Preview;
     private IJSObjectReference? Module;
 
-    private void Changed() { Revision++; NeedsPreview = true; Ready = false; Error = null; Status = "Rendering preview…"; }
+    private void Changed() { Revision++; NeedsPreview = true; Ready = false; Error = null; ModuleLoadFailed = false; Status = "Rendering preview…"; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -67,14 +72,36 @@
         var revision = Revision;
         try
         {
-            Module ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/mermaidImage.js");
+            if (Module is null)
+            {
+                try { Module = await ImportModuleAsync(); }
+                catch (JSException) { Module = await ImportModuleAsync(); }
+            }
+            ModuleLoadFailed = false;
             var ready = await Module.InvokeAsync<bool>("render", Preview, Source, new { title = Title, author = Author, theme = Theme });
             if (revision != Revision) return;
             Ready = ready;
             Status = ready ? "Preview ready. Images download at 2× resolution." : "Rendering preview…";
         }
-        catch (JSException ex) { if (revision == Revision) { Error = ex.Message.Split('\n')[0]; Status = "Fix the diagram to enable export."; Ready = false; } }
+        catch (JSException ex)
+        {
+            if (revision == Revision)
+            {
+                ModuleLoadFailed = Module is null;
+                Error = ModuleLoadFailed ? "The diagram renderer could not load. Check your connection and retry; your source is kept below." : ex.Message.Split('\n')[0];
+                Status = ModuleLoadFailed ? "Renderer unavailable. Retry loading to enable preview and export." : "Fix the diagram to enable export.";
+                Ready = false;
+            }
+        }
         StateHasChanged();
+    }
+
+    // Browsers cache failed dynamic imports for the lifetime of the page.
+    // A fresh URL lets a later attempt recover without reloading or losing source.
+    private ValueTask<IJSObjectReference> ImportModuleAsync()
+    {
+        var path = ModuleImportAttempts++ == 0 ? "./js/mermaidImage.js" : $"./js/mermaidImage.js?retry={Guid.NewGuid():N}";
+        return JS.InvokeAsync<IJSObjectReference>("import", path);
     }
 
     private void LoadExample(ChangeEventArgs args)
