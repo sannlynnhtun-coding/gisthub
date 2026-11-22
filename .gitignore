@@ -378,3 +378,4 @@ Thumbs.db
 
 # Generated browser comparison evidence
 /artifacts/
+output/
