@@ -1,13 +1,31 @@
 // BROWSER_CHECK_CONVERTER=1 node scripts/check-browser-errors.mjs http://localhost:5187/tools/markdown-to-docx
 import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
 
 export async function checkMarkdownConverter({ evaluate, send, sessionId, waitFor }) {
+  const screenshot = async name => {
+    if (!process.env.BROWSER_CHECK_SCREENSHOTS) return;
+    await evaluate(`Promise.all(document.querySelector('.code-image-overlay').getAnimations().map(animation => animation.finished))`);
+    await mkdir(process.env.BROWSER_CHECK_SCREENSHOTS, {recursive:true});
+    const {data} = await send('Page.captureScreenshot', {format:'png'}, sessionId);
+    await writeFile(`${process.env.BROWSER_CHECK_SCREENSHOTS}/${name}.png`, Buffer.from(data,'base64'));
+  };
+  await send('Emulation.setDeviceMetricsOverride', {width:1440,height:1000,deviceScaleFactor:1,mobile:false}, sessionId);
   console.log('Checking converter UI…');
   await waitFor(`Boolean(document.querySelector('#workspace-tab-Media'))`, 'the Tools menu', 60000);
   await evaluate(`document.querySelector('#workspace-tab-Media').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="code-image-menu-item"]'))`, 'the converter menu item');
   await evaluate(`document.querySelector('[data-testid="code-image-menu-item"]').click()`);
   await waitFor(`Boolean(document.querySelector('.code-image-overlay .code-image-markdown h1'))`, 'Markdown as the default mode');
+  const defaults = await evaluate(`(() => { const root = document.querySelector('.code-image-overlay'); return {theme:root.querySelector('.code-image-preview-frame').classList.contains('code-image-preview-theme--simple'), count:root.querySelector('.code-image-count-toggle input').checked}; })()`);
+  assert.deepEqual(defaults, {theme:true, count:false});
+  await screenshot('converter-desktop');
+  await evaluate(`(() => { for (const placeholder of ['Snippet title','Your name or handle']) { const field = document.querySelector('[placeholder="' + placeholder + '"]'); field.value = '   '; field.dispatchEvent(new Event('input',{bubbles:true})); } })()`);
+  await waitFor(`!document.querySelector('.code-image-card-meta')`, 'blank metadata to disappear');
+  await evaluate(`document.querySelector('.code-image-count-toggle input').click()`);
+  await waitFor(`document.querySelector('.code-image-card-meta')?.textContent.includes('words')`, 'optional word count');
+  await evaluate(`document.querySelector('.code-image-count-toggle input').click()`);
+  await waitFor(`!document.querySelector('.code-image-card-meta')`, 'word count to hide again');
   const source = '# Rich preview\n\nInline $x^2$ and block math:\n\n$$\\frac{1}{2}$$\n\n```mermaid\ngraph TD; A[Start]-->B[Done]\n```\n\n- [x] Task\n\n|A|B|\n|-|-|\n|One|Two|\n\n```js\nconst answer = 42;\n```\n\n<script>window.captureUnsafe=true</script><a href="javascript:alert(1)" onclick="window.captureUnsafe=true">Unsafe</a>';
   await evaluate(`(() => { const input = document.querySelector('.code-image-editor'); input.value = ${JSON.stringify(source)}; input.dispatchEvent(new Event('input', {bubbles:true})); })()`);
   await waitFor(`document.querySelector('.code-image-overlay math') && document.querySelector('.code-image-overlay .markdown-diagram svg')`, 'rendered math and Mermaid', 30000);
@@ -70,6 +88,7 @@ export async function checkMarkdownConverter({ evaluate, send, sessionId, waitFo
   await evaluate(`URL.createObjectURL = window.captureOriginalUrl; HTMLAnchorElement.prototype.click = window.captureOriginalClick`);
   await send('Emulation.setDeviceMetricsOverride', {width:390,height:844,deviceScaleFactor:1,mobile:true}, sessionId);
   assert.equal(await evaluate(`document.documentElement.scrollWidth > innerWidth`), false);
+  await screenshot('converter-mobile');
   await send('Emulation.clearDeviceMetricsOverride', {}, sessionId);
   console.log('PASS: converter math/diagrams, safe GFM, PNG/JPEG/WebP, print content, overflow rejection, and mobile layout.');
 }

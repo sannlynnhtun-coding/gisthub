@@ -14,17 +14,9 @@
                     <svg viewBox="0 0 24 24"><path d="m8 9-3 3 3 3"/><path d="m16 9 3 3-3 3"/><path d="m14 5-4 14"/></svg>
                 </div>
                 <div>
-                    <div class="neo-kicker">Share-ready code and docs</div>
+
                     <div class="tool-heading-inline"><h1 id="code-image-title">Markdown + Code Converter</h1><ToolHelp Name="Markdown + Code Converter" /></div>
                 </div>
-            </div>
-
-            <div class="code-image-pipeline" aria-label="Export steps">
-                <span>Paste content</span>
-                <svg viewBox="0 0 48 12" aria-hidden="true"><path d="M1 6h42m-6-5 6 5-6 5" /></svg>
-                <span>Style it</span>
-                <svg viewBox="0 0 48 12" aria-hidden="true"><path d="M1 6h42m-6-5 6 5-6 5" /></svg>
-                <span>Export image / PDF</span>
             </div>
 
             <button class="code-image-close" type="button" @onclick="CloseAsync" aria-label="Close code to image" title="Close code to image (Esc)">
@@ -34,12 +26,6 @@
 
         <div class="code-image-workspace">
             <aside class="code-image-controls custom-scrollbar" aria-label="Image settings">
-                <div class="code-image-section-heading">
-                    <span class="code-image-step">01 · Compose</span>
-                    <h2>Shape the shot</h2>
-                    <p>Your content stays in this browser.</p>
-                </div>
-
                 <fieldset class="code-image-choice-group">
                     <legend>Content</legend>
                     <div class="code-image-mode-grid">
@@ -81,14 +67,6 @@
                         </label>
                     </div>
                 }
-                else
-                {
-                    <div class="code-image-markdown-note">
-                        <strong>GitHub-flavored Markdown</strong>
-                        <span>Tables, task lists, highlighted code, $math$, and Mermaid diagrams. Remote images appear as labels. Invalid math or diagrams keep their source.</span>
-                    </div>
-                }
-
                 <label class="code-image-field">
                     <span>Title</span>
                     <input value="@Title" @oninput="HandleTitleInput" placeholder="Snippet title" maxlength="80" />
@@ -99,36 +77,18 @@
                     <input value="@Author" @oninput="HandleAuthorInput" placeholder="Your name or handle" maxlength="60" />
                 </label>
 
-                <fieldset class="code-image-choice-group">
-                    <legend>Theme</legend>
-                    <div class="code-image-theme-grid">
-                        @foreach (var theme in ThemePresets)
-                        {
-                            <button type="button"
-                                    class="code-image-theme @(SelectedTheme == theme.Value ? "is-selected" : null)"
-                                    aria-pressed="@(SelectedTheme == theme.Value ? "true" : "false")"
-                                    @onclick="() => SelectTheme(theme.Value)">
-                                <span style="@($"--swatch-bg:{theme.Background};--swatch-glow:{theme.Glow};--swatch-accent:{theme.Accent}")" aria-hidden="true"><i></i></span>
-                                @theme.Label
-                            </button>
-                        }
-                    </div>
-                </fieldset>
-
-                <fieldset class="code-image-choice-group">
-                    <legend>Canvas</legend>
-                    <div class="code-image-format-grid">
-                        @foreach (var format in Formats)
-                        {
-                            <button type="button"
-                                    aria-pressed="@(SelectedFormat == format.Value ? "true" : "false")"
-                                    @onclick="() => SelectFormat(format.Value)">
-                                <i class="code-image-format-icon code-image-format-icon--@format.Value" aria-hidden="true"></i>
-                                <span>@format.Label</span>
-                            </button>
-                        }
-                    </div>
-                </fieldset>
+                <label class="code-image-field">
+                    <span>Theme</span>
+                    <select value="@SelectedTheme" @onchange='e => SelectTheme(e.Value?.ToString() ?? "simple")'>
+                        @foreach (var theme in ThemePresets) { <option value="@theme.Value">@theme.Label</option> }
+                    </select>
+                </label>
+                <label class="code-image-field">
+                    <span>Canvas</span>
+                    <select value="@SelectedFormat" @onchange='e => SelectFormat(e.Value?.ToString() ?? "auto")'>
+                        @foreach (var format in Formats) { <option value="@format.Value">@format.Label</option> }
+                    </select>
+                </label>
 
                 <label class="code-image-range">
                     <span><strong>Type size</strong><output>@FontSize px</output></span>
@@ -155,6 +115,10 @@
                         <input type="range" min="50" max="100" step="5" @bind="Quality" @bind:event="oninput" />
                     </label>
                 }
+                <label class="code-image-count-toggle">
+                    <input type="checkbox" @bind="ShowContentCount" @bind:after="ResetCopyFeedback" />
+                    Show word / line count
+                </label>
             </aside>
 
             <main class="code-image-stage">
@@ -176,13 +140,16 @@
                                 <div class="code-image-dots" aria-hidden="true"><i></i><i></i><i></i></div>
                                 <span>@ContentLabel</span>
                             </div>
-                            <div class="code-image-card-meta">
-                                <div>
-                                    <h3>@DisplayTitle</h3>
-                                    <p>@DisplayAuthor</p>
+                            @if (!string.IsNullOrWhiteSpace(Title) || !string.IsNullOrWhiteSpace(Author) || ShowContentCount)
+                            {
+                                <div class="code-image-card-meta">
+                                    <div>
+                                        @if (!string.IsNullOrWhiteSpace(Title)) { <h3>@DisplayTitle</h3> }
+                                        @if (!string.IsNullOrWhiteSpace(Author)) { <p>@DisplayAuthor</p> }
+                                    </div>
+                                    @if (ShowContentCount) { <span>@ContentMeasure</span> }
                                 </div>
-                                <span>@ContentMeasure</span>
-                            </div>
+                            }
                             @if (SelectedMode == "markdown")
                             {
                                 <div @ref="PreviewMarkdownElement"
@@ -311,12 +278,15 @@
 @code {
     public object CaptureDraft() => (CodeContent, MarkdownContent, SelectedMode, OutputFormat, Quality, SelectedLanguage, SelectedTheme, SelectedFormat, CodeTitle, MarkdownTitle, Author, ShowLineNumbers, FontSize, CanvasPadding);
 
-    public void Dispose() => Drafts.Save(GetType(), (CodeContent, MarkdownContent, SelectedMode, OutputFormat, Quality, SelectedLanguage, SelectedTheme, SelectedFormat, CodeTitle, MarkdownTitle, Author, ShowLineNumbers, FontSize, CanvasPadding));
+    public void Dispose() { Drafts.Save(typeof(CountPreference), ShowContentCount); Drafts.Save(GetType(), (CodeContent, MarkdownContent, SelectedMode, OutputFormat, Quality, SelectedLanguage, SelectedTheme, SelectedFormat, CodeTitle, MarkdownTitle, Author, ShowLineNumbers, FontSize, CanvasPadding)); }
     protected override void OnInitialized()
     {
+        ShowContentCount = Drafts.Restore(typeof(CountPreference), false);
         (CodeContent, MarkdownContent, SelectedMode, OutputFormat, Quality, SelectedLanguage, SelectedTheme, SelectedFormat, CodeTitle, MarkdownTitle, Author, ShowLineNumbers, FontSize, CanvasPadding) = Drafts.Restore(GetType(), (CodeContent, MarkdownContent, SelectedMode, OutputFormat, Quality, SelectedLanguage, SelectedTheme, SelectedFormat, CodeTitle, MarkdownTitle, Author, ShowLineNumbers, FontSize, CanvasPadding));
     }
 
+    private sealed class CountPreference { }
+    private bool ShowContentCount;
     private bool CopyFailed;
     private const long MaxMarkdownFileSize = 1024 * 1024;
     private const string ExampleCode = "public record Gist(string Id, string Description);\n\npublic static string BuildShareUrl(Gist gist)\n{\n    ArgumentNullException.ThrowIfNull(gist);\n    return $\"https://gist.github.com/{gist.Id}\";\n}";
@@ -357,7 +327,7 @@
     private string OutputFormat { get; set; } = "png";
     private int Quality { get; set; } = 90;
     private string SelectedLanguage { get; set; } = "csharp";
-    private string SelectedTheme { get; set; } = "midnight";
+    private string SelectedTheme { get; set; } = "simple";
     private string SelectedFormat { get; set; } = "auto";
     private string CodeTitle { get; set; } = "A tiny share-link helper";
     private string MarkdownTitle { get; set; } = "Shipping notes";
@@ -396,8 +366,8 @@
     private int LineCount => string.IsNullOrEmpty(SourceText) ? 1 : SourceText.Replace("\r\n", "\n").Split('\n').Length;
     private int WordCount => System.Text.RegularExpressions.Regex.Matches(SourceText, @"\b[\p{L}\p{N}_'-]+\b").Count;
     private string LineNumberText => string.Join('\n', Enumerable.Range(1, LineCount));
-    private string DisplayTitle => string.IsNullOrWhiteSpace(Title) ? $"Untitled {EditorTitle.ToLowerInvariant()}" : Title.Trim();
-    private string DisplayAuthor => string.IsNullOrWhiteSpace(Author) ? "Anonymous maker" : Author.Trim();
+    private string DisplayTitle => Title.Trim();
+    private string DisplayAuthor => Author.Trim();
     private string LanguageLabel => Languages.First(language => language.Value == SelectedLanguage).Label;
     private string ContentLabel => SelectedMode == "markdown" ? "Markdown" : LanguageLabel;
     private string CaptureLabel => SelectedMode == "markdown" ? "MARKDOWN" : "CODE";
@@ -575,6 +545,7 @@
 
     private void ResetCopyFeedback()
     {
+        Drafts.Save(typeof(CountPreference), ShowContentCount);
         SettingsCopied = false;
         ImageCopied = false;
         ClipboardCopyFailed = false;
@@ -594,6 +565,7 @@
             title = DisplayTitle,
             author = DisplayAuthor,
             lineNumbers = ShowLineNumbers,
+            showContentCount = ShowContentCount,
             fontSize = FontSize,
             padding = CanvasPadding
         }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
@@ -671,6 +643,7 @@
         title = DisplayTitle,
         author = DisplayAuthor,
         showLineNumbers = ShowLineNumbers,
+        showContentCount = ShowContentCount,
         fontSize = FontSize,
         padding = CanvasPadding
     };

@@ -367,15 +367,16 @@
         context.textAlign = 'left';
         context.fillStyle = theme.text;
         context.font = theme.clean ? '600 30px "Aptos", sans-serif' : '900 30px "Arial Black", "Aptos Display", sans-serif';
-        context.fillText(options.title || 'Untitled snippet', innerX, cardY + 92);
+        if (options.title?.trim()) context.fillText(options.title.trim(), innerX, cardY + 92);
         context.fillStyle = theme.muted;
         context.font = '700 16px "Aptos", sans-serif';
-        context.fillText(options.author || 'Anonymous maker', innerX, cardY + 124);
+        if (options.author?.trim()) context.fillText(options.author.trim(), innerX, cardY + (options.title?.trim() ? 124 : 92));
 
         context.textAlign = 'right';
-        context.fillText(`${String(lines.length).padStart(2, '0')} LINES`, cardX + cardWidth - 42, cardY + 112);
+        if (options.showContentCount) context.fillText(`${String(lines.length).padStart(2, '0')} LINES`, cardX + cardWidth - 42, cardY + 112);
 
-        const codeTop = cardY + 164;
+        const hasMeta = options.title?.trim() || options.author?.trim() || options.showContentCount;
+        const codeTop = cardY + (hasMeta ? 164 : 72);
         const codeBottom = cardY + cardHeight - 48;
         const availableHeight = codeBottom - codeTop;
         const fontSize = fitFont(context, lines, requestedFont, innerWidth, availableHeight, options.showLineNumbers);
@@ -550,16 +551,19 @@
 
         const meta = createElement('div', 'markdown-export-meta');
         const metaText = createElement('div');
-        metaText.append(
-            createElement('h1', null, options.title || 'Untitled markdown'),
-            createElement('p', null, options.author || 'Anonymous maker')
-        );
-        const words = ((options.code || '').match(/\b[\p{L}\p{N}_'-]+\b/gu) || []).length;
-        meta.append(metaText, createElement('span', null, `${String(words).padStart(2, '0')} WORDS`));
+        if (options.title?.trim()) metaText.append(createElement('h1', null, options.title.trim()));
+        if (options.author?.trim()) metaText.append(createElement('p', null, options.author.trim()));
+        if (metaText.childElementCount) meta.append(metaText);
+        if (options.showContentCount) {
+            const words = ((options.code || '').match(/\b[\p{L}\p{N}_'-]+\b/gu) || []).length;
+            meta.append(createElement('span', null, `${String(words).padStart(2, '0')} WORDS`));
+        }
 
         const body = createElement('div', 'markdown-export-body');
 
-        card.append(bar, meta, body);
+        card.append(bar);
+        if (meta.childElementCount) card.append(meta);
+        card.append(body);
         const signature = createElement('div', 'markdown-export-signature');
         signature.append(
             createElement('span', null, 'GISTHUB / MARKDOWN CAPTURE'),
