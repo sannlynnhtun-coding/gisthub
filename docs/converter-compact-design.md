@@ -5,3 +5,5 @@ Use a neutral application surface, subtle borders, blue selection accents, and a
 New sessions select Simple. Existing saved theme choices remain intact. Empty or whitespace-only title and author fields omit their respective output elements without fallback labels. Hide content counts by default; expose a Show word / line count toggle for preview and every export. Keep existing draft tuple compatible; save the new preference separately through ToolDraftStore.
 
 Affected surfaces: CodeImageOverlay, isolated styles, codeImage.js canvas/Markdown/PDF rendering. Preserve mode switching, separate source drafts, import validation, syntax/math/diagram rendering, copy settings/image, image formats/quality, PDF and Escape dismissal. Checks: application build, JS syntax, existing converter browser checks where available, and review matching metadata conditions across preview and exports.
+
+Mode-toggle spacing refinement: use content-sized columns and 0.875rem horizontal / 0.5rem equal vertical padding, with a 13rem toolbar allocation. Keep both mode actions and selected-state semantics unchanged. Verify build and existing converter browser checks.

@@ -74,8 +74,14 @@
 .code-image-preview-shell { background: hsl(var(--muted) / .3); }
 .code-image-overlay :is(button, input, select, textarea):focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
 /* Keep the two content buttons readable when the toolbar wraps. */
-.code-image-controls .code-image-choice-group { flex: 0 0 11rem; }
-.code-image-controls .code-image-mode-grid button { gap: .35rem; padding-inline: .5rem; }
+.code-image-controls .code-image-choice-group { flex: 0 0 13rem; }
+.code-image-controls .code-image-mode-grid { grid-template-columns: max-content max-content; gap: .5rem; }
+.code-image-controls .code-image-mode-grid button {
+  gap: .4rem;
+  padding-inline: .875rem;
+  padding-block: .5rem;
+  white-space: nowrap;
+}
 .code-image-editor { border-width: 1px !important; border-radius: .5rem !important; box-shadow: none !important; }
 @media (max-width: 900px) {
   .code-image-controls { order: 0; overflow-y: auto; }
