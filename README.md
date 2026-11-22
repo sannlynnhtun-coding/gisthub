@@ -111,6 +111,8 @@ dotnet run --project GistHub/GistHub.csproj
 
 Open the local URL printed by `dotnet run`. The MSBuild project runs the minified Tailwind build automatically before each .NET build.
 
+If a standalone `dotnet run` server is active when you build separately, stop and restart it after the build. The server keeps its static asset routes in memory; an old server can return 404 for newly fingerprinted `GistHub.*.wasm` or `.pdb` resources and leave the browser at “Loading workspace” with integrity or `wasm-instantiate` errors. Use `dotnet watch` below to coordinate rebuilds during development. Do not clear local workspace data or disable resource integrity checks to resolve this server mismatch.
+
 For UI work, run the CSS watcher and the .NET watcher in separate terminals:
 
 ```bash

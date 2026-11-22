@@ -36,6 +36,10 @@ const chrome = spawn(browserPath, [
 ], { stdio: ["ignore", "pipe", "pipe"], windowsHide: true });
 
 const observedMessages = [];
+if (process.env.BROWSER_CHECK_DIAGNOSTICS === '1') {
+  const push = observedMessages.push.bind(observedMessages);
+  observedMessages.push = (...messages) => { for (const message of messages) console.log(message); return push(...messages); };
+}
 let startupError;
 let chromeStderr = "";
 chrome.on("error", (error) => { startupError = error; });
@@ -168,7 +172,7 @@ try {
       searchGistCount: document.querySelector('.global-search-panel')?.dataset.gistCount ?? null,
       blazorErrorVisible: !document.querySelector('#blazor-error-ui')?.classList.contains('hidden')
     })`);
-    throw new Error(`Timed out waiting for ${description}: ${JSON.stringify(snapshot)}\n${observedMessages.slice(-10).join('\n')}`);
+    throw new Error(`Timed out waiting for ${description}: ${JSON.stringify(snapshot)}\n${observedMessages.slice(-80).join('\n')}`);
   };
 
   if (process.env.BROWSER_CHECK_PRESEED_IDB === "1") {
