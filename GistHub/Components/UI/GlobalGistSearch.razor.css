@@ -1,0 +1,16 @@
+.global-search-header .global-search-input-wrap:focus-within {
+    border-color: hsl(var(--ring)) !important;
+    outline: 2px solid hsl(var(--ring)) !important;
+    outline-offset: 2px;
+    box-shadow: none !important;
+}
+.global-search-header .global-search-input-wrap input,
+.global-search-header .global-search-input-wrap input:focus,
+.global-search-header .global-search-input-wrap input:focus-visible {
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding-block: 0;
+}
