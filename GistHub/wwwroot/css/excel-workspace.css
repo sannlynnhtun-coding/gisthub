@@ -219,3 +219,23 @@
 /* Reference grouping has no effect on the alternate sidebar or older appearances. */
 .ribbon-group,.ribbon-group-items { display:contents; }
 .ribbon-group-label { display:none; }
+
+/* Favorite commands use a badge; Quick Access keeps its reorder controls. */
+.excel-workspace .workspace-ribbon:not(.is-quick-access) .ribbon-command { position: relative; }
+.excel-workspace .workspace-ribbon:not(.is-quick-access) .quick-access-actions {
+  position: absolute; top: 2px; right: 2px; z-index: 1;
+}
+.excel-workspace .workspace-ribbon:not(.is-quick-access) .quick-access-actions [data-quick-access-toggle] {
+  width: 24px; min-width: 24px; height: 24px; min-height: 24px;
+  padding-block: 0; padding-inline: 0;
+  border: 1px solid hsl(var(--border)); border-radius: 50%; background: hsl(var(--card));
+}
+.excel-workspace .workspace-ribbon:not(.is-quick-access) .tool-list-entry { padding-right: 24px; }
+
+@media (max-width:767px), (pointer:coarse) {
+  .excel-workspace .workspace-ribbon:not(.is-quick-access) .quick-access-actions [data-quick-access-toggle] {
+    width:44px; min-width:44px; height:44px; min-height:44px;
+    border:0; background:radial-gradient(circle, hsl(var(--secondary)) 12px, transparent 13px);
+  }
+  .excel-workspace .workspace-ribbon:not(.is-quick-access) .tool-list-entry { padding-right:44px; }
+}
