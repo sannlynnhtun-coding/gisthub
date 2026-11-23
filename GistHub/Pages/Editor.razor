@@ -353,7 +353,9 @@
                     try { await DraftModule.InvokeVoidAsync("removeEditorDraft", DraftKey); }
                     catch (JSException) { Console.WriteLine("The saved snippet's temporary update draft could not be removed."); }
                 }
-                Navigation.NavigateTo("/my-gists");
+                Navigation.NavigateTo(string.IsNullOrEmpty(GistId) && IsBookmarked
+                    ? "/my-gists?favorites=true"
+                    : "/my-gists");
             }
             else
             {

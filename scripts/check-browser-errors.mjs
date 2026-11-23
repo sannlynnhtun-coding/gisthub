@@ -264,7 +264,7 @@ try {
     }
   }
 
-  if (process.env.BROWSER_CHECK_UI === "1") {
+  if (process.env.BROWSER_CHECK_UI === "1" || process.env.BROWSER_CHECK_COLLECTION_POLISH === "1") {
     await evaluate(`(async () => {
       const db = await new Promise((resolve, reject) => {
         const request = indexedDB.open("GistHubDB", 4);
@@ -366,6 +366,12 @@ try {
       return true;
     })()`);
 
+    if (process.env.BROWSER_CHECK_COLLECTION_POLISH === "1") {
+      await send('Page.navigate', {url:new URL('/my-gists',url).href}, sessionId);
+      await waitFor(`Boolean(document.querySelector('[data-testid="global-search-trigger"]'))`, 'authenticated workspace',60000);
+      const {checkCollectionPolish} = await import('./test-collection-polish.mjs');
+      await checkCollectionPolish({evaluate,send,sessionId,waitFor});
+    } else {
     const myGistsUrl = new URL("/my-gists", url).href;
     await send("Page.navigate", { url: myGistsUrl }, sessionId);
     await waitFor(`Boolean(document.querySelector('[data-testid="global-search-trigger"]'))`, "the GistHub toolbar");
@@ -553,6 +559,8 @@ try {
     const collectionsUrl = new URL("/collections", url).href;
     await send("Page.navigate", { url: collectionsUrl }, sessionId);
     await waitFor(`Boolean(document.querySelector('a[href="/my-gists?favorites=true"]'))`, "the Collections bookmark shortcut");
+  }
+
   }
 
   if (process.env.BROWSER_CHECK_MARKDOWN === "1") {
