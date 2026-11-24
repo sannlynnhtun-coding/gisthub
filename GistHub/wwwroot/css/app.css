@@ -4014,3 +4014,23 @@
   body.printing-markdown .markdown-live-panes { display: block; }
   body.printing-markdown #markdown-live-preview { min-height: 0; border: 0; color: black; background: white; overflow: visible; }
 }
+
+/* Compact collection cards retain every action without a forced extra header row. */
+.neo-gist-card--compact > .neo-gist-card__body { padding-block: .75rem !important; padding-inline: .75rem !important; }
+.neo-gist-card--compact > .neo-gist-card__active-indicator { padding: 0 !important; }
+.neo-gist-card--compact .neo-gist-card__header { gap:.5rem; margin-bottom:.5rem; }
+.neo-gist-card--compact .neo-gist-card__footer { margin-top:.5rem; padding-block:.25rem; gap:.25rem; }
+.neo-gist-card--compact .neo-gist-card__footer-actions { gap:.25rem; }
+.neo-gist-card--compact .neo-code-preview { padding-block:.5rem; padding-inline:.5rem; }
+@media (min-width:480px) {
+  .neo-gist-card--compact .neo-gist-card__header { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:start; }
+  .neo-gist-card--compact .neo-gist-card__header > :first-child { flex-basis:auto; }
+  .neo-gist-card--compact .neo-gist-card__actions { width:auto; flex-wrap:nowrap; gap:0; }
+}
+@media (max-width:767px), (pointer:coarse) {
+  .neo-gist-card--compact .neo-gist-card__actions :is(button,.bookmark-drag-handle),
+  .neo-gist-card--compact .neo-gist-card__footer-actions :is(button,a) {
+    width:44px; min-width:44px; height:44px; min-height:44px; padding-block:0 !important; padding-inline:0 !important;
+  }
+  .gist-collection-grid > * { margin-bottom:.75rem; }
+}

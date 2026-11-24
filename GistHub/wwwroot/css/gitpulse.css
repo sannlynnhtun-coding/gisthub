@@ -506,3 +506,9 @@
  }
  .city-building-name { display:block; overflow-wrap:anywhere; font-size:.75rem; }
 }
+
+/* Compact cards use calmer surfaces while keeping the selected appearance colors. */
+:root[data-interface-style="gitpulse"] .neo-gist-card.neo-gist-card--compact { border-radius:12px !important; }
+:root[data-interface-style="gitpulse"] .neo-gist-card--compact .neo-code-preview { border-radius:6px !important; border-color:transparent !important; background:hsl(var(--background) / .45) !important; }
+:root[data-interface-style="gitpulse"] .neo-gist-card--compact .neo-gist-card__footer { border-color:hsl(var(--border) / .5); }
+
