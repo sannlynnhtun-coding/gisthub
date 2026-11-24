@@ -1,0 +1,3 @@
+# Collection edit dialog
+
+Edit from a My Collection card opens the existing Editor in a native modal dialog. Keep the collection URL, filters, ordering and scroll position. Successful saves refresh local cards and close the dialog; failed saves retain the form and error. Keep the standalone editor routes and new-gist behavior intact. Close button and Escape warn before discarding changed input, and cannot close while saving. Native dialog provides focus containment and background inertness; restore focus to the launcher after closing. Reuse existing account-scoped loads, validation, preview, metadata, draft recovery and GitHub/local save operations. Validate with isolated seeded profiles and mocked GitHub PATCH responses, no real gist changes.

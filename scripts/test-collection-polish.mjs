@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
 export async function checkCollectionPolish({evaluate,send,sessionId,waitFor}) {
   const origin=await evaluate('location.origin');
+  if (process.env.BROWSER_CHECK_COLLECTION_EDITOR_ONLY === '1') {
+    const {checkCollectionEditor}=await import('./test-collection-editor.mjs');
+    await checkCollectionEditor({evaluate,send,sessionId,waitFor});return;
+  }
+
   await evaluate(`document.querySelector('[data-testid="global-search-trigger"]').click()`);
   await waitFor(`Boolean(document.querySelector('[data-testid="global-search-input"]'))`, 'search dialog');
   await evaluate(`document.querySelector('[data-testid="global-search-input"]').focus()`);
@@ -22,6 +27,10 @@ export async function checkCollectionPolish({evaluate,send,sessionId,waitFor}) {
     await waitFor(`location.pathname==='/my-gists'`,'saved collection destination');
     assert.equal(await evaluate(`new URLSearchParams(location.search).get('favorites')==='true'`),bookmarked);
     await waitFor(`document.querySelector('[data-testid="collection-bookmarks-toggle"]')?.getAttribute('aria-pressed')==='${bookmarked}'`, 'collection filter matches saved choice');
+  }
+  if (process.env.BROWSER_CHECK_COLLECTION_EDITOR === '1') {
+    const {checkCollectionEditor}=await import('./test-collection-editor.mjs');
+    await checkCollectionEditor({evaluate,send,sessionId,waitFor});
   }
   console.log('PASS: search wrapper focus, mobile favorite badge, and mocked create bookmark destinations.');
 }

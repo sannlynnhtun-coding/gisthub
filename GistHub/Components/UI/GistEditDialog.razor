@@ -1,0 +1,45 @@
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<dialog @ref="Dialog" class="gist-edit-dialog" aria-labelledby="gist-editor-title" @onkeydown:stopPropagation="true">
+    <GistHub.Pages.Editor @ref="Editor" GistId="@GistId" IsEmbedded="true" OnSaved="SavedAsync" OnClose="CloseAsync" />
+</dialog>
+
+@code {
+    [Parameter, EditorRequired] public string GistId { get; set; } = "";
+    [Parameter] public EventCallback OnSaved { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    private ElementReference Dialog;
+    private GistHub.Pages.Editor? Editor;
+    private IJSObjectReference? Module;
+    private DotNetObjectReference<GistEditDialog>? Reference;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        Module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/gistEditDialog.js");
+        Reference = DotNetObjectReference.Create(this);
+        await Module.InvokeVoidAsync("open", Dialog, Reference);
+    }
+
+    [JSInvokable] public Task RequestClose() => Editor?.RequestCloseAsync() ?? Task.CompletedTask;
+    private async Task CloseAsync()
+    {
+        if (Module is not null) await Module.InvokeVoidAsync("close", Dialog);
+        await OnClose.InvokeAsync();
+    }
+    private async Task SavedAsync()
+    {
+        if (Module is not null) await Module.InvokeVoidAsync("close", Dialog);
+        await OnSaved.InvokeAsync();
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (Module is not null)
+        {
+            try { await Module.InvokeVoidAsync("close", Dialog); await Module.DisposeAsync(); }
+            catch (JSDisconnectedException) { }
+        }
+        Reference?.Dispose();
+    }
+}

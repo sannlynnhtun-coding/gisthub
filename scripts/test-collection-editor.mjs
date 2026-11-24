@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+export async function checkCollectionEditor({evaluate,send,sessionId,waitFor}) {
+  const origin=await evaluate('location.origin');
+  await send('Page.navigate',{url:origin+'/my-gists?favorites=true'},sessionId);
+  await waitFor(`Boolean(document.querySelector('[aria-label="Edit gist"]'))`,'editable collection',60000);
+  const url=await evaluate('location.href');
+  const open=async()=>{
+    await evaluate(`document.querySelector('[aria-label="Edit gist"]').focus();document.querySelector('[aria-label="Edit gist"]').click()`);
+    await waitFor(`document.querySelector('.gist-edit-dialog')?.open && document.querySelector('#gist-filename')?.value`,'open edit dialog');
+    assert.equal(await evaluate('location.href'),url);
+  };
+  const escape=async()=>{ await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape'},sessionId); await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape'},sessionId); };
+  const change=()=>evaluate(`(()=>{const e=document.querySelector('#gist-description');e.value='Updated in popup';e.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+  await open();
+  await escape();
+  await waitFor(`!document.querySelector('.gist-edit-dialog')`,'clean dismissal');
+  assert.equal(await evaluate(`document.activeElement.getAttribute('aria-label')`),'Edit gist');
+  await open();await change();
+  await evaluate(`window.originalConfirm=window.confirm;window.allowDiscard=false;window.confirm=()=>window.allowDiscard`);
+  await escape();
+  assert.equal(await evaluate(`document.querySelector('.gist-edit-dialog').open`),true);
+  await evaluate(`window.allowDiscard=true`);await escape();
+  await waitFor(`!document.querySelector('.gist-edit-dialog')`,'confirmed discard');
+  await evaluate(`window.confirm=window.originalConfirm`);
+  await open();await change();
+  await evaluate(`(()=>{const original=window.fetch;window.popupSaveFails=true;window.fetch=async(url,options)=>{if(String(url).includes('api.github.com/gists/') && options?.method==='PATCH'){if(window.popupSaveFails)return new Response(JSON.stringify({message:'Mock save unavailable'}),{status:503,headers:{'Content-Type':'application/json'}});const data=JSON.parse(await new Response(options.body).text());window.popupPatch=data;return new Response(JSON.stringify({id:'search-gist',description:data.description,files:{[Object.keys(data.files)[0]]:{filename:Object.keys(data.files)[0],content:Object.values(data.files)[0].content,language:'Text'}},public:false,created_at:'2026-11-24T00:00:00Z',updated_at:'2026-11-24T00:00:00Z',owner:{login:'browser-user'}}),{status:200,headers:{'Content-Type':'application/json'}});}return original(url,options);};})()`);
+  await evaluate(`document.querySelector('.gist-edit-dialog .neo-editor-actions button').click()`);
+  await waitFor(`document.querySelector('.gist-edit-dialog')?.textContent.includes('Mock save unavailable')`,'save error remains in popup');
+  assert.equal(await evaluate(`document.querySelector('#gist-description').value`),'Updated in popup');
+  await evaluate(`window.popupSaveFails=false;document.querySelector('.gist-edit-dialog .neo-editor-actions button').click()`);
+  await waitFor(`!document.querySelector('.gist-edit-dialog') && document.querySelector('.gist-collection-grid')?.textContent.includes('Updated in popup')`,'save closes popup and refreshes collection');
+  assert.equal(await evaluate('location.href'),url);
+  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true},sessionId);
+  await open();
+  assert.equal(await evaluate(`document.documentElement.scrollWidth>innerWidth`),false);
+  const dimensions=await evaluate(`(()=>{const r=document.querySelector('.gist-edit-dialog').getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};})()`);
+  const shot=await send('Page.captureScreenshot',{format:'png'},sessionId);
+  await (await import('node:fs/promises')).writeFile('output/collection-editor-mobile.png',Buffer.from(shot.data,'base64'));
+  console.log('Mobile popup bounds:', dimensions);
+  assert.ok(dimensions.left>=0 && dimensions.right<=390 && dimensions.top>=0 && dimensions.bottom<=844);
+  await escape();
+  console.log('PASS: collection edit popup, Escape/focus restoration, unsaved confirmation, failed/successful mocked save, filter retention and mobile sizing.');
+}

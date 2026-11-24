@@ -1,0 +1,30 @@
+.gist-edit-dialog {
+    width: min(1100px, calc(100vw - 2rem));
+    max-width: none;
+    max-height: calc(100dvh - 2rem);
+    margin: auto !important;
+    padding-inline: 1.25rem;
+    padding-block: 1.25rem;
+    overflow: auto;
+    color: hsl(var(--foreground));
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: 12px;
+}
+.gist-edit-dialog::backdrop { background: rgb(0 0 0 / .65); }
+.gist-edit-dialog ::deep .neo-page-heading { gap: 1rem; padding-block: .5rem; }
+.gist-edit-dialog ::deep .neo-page-heading h1 { font-size: 1.25rem; }
+.gist-edit-dialog ::deep .neo-page-heading .neo-kicker,
+.gist-edit-dialog ::deep .neo-page-heading p { display: none; }
+.gist-edit-dialog ::deep .neo-editor-grid { gap: 1rem; }
+@media (max-width:600px) {
+    .gist-edit-dialog { width: calc(100vw - 1rem); max-height: calc(100dvh - 1rem); padding-inline: .75rem; padding-block: .75rem; }
+}
+
+.gist-edit-dialog ::deep .neo-page-heading {
+    position: sticky;
+    top: -1.25rem;
+    z-index: 2;
+    background: hsl(var(--background));
+}
+@media (max-width:600px) { .gist-edit-dialog ::deep .neo-page-heading { top: -.75rem; } }

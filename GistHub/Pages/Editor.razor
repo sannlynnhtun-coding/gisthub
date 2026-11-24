@@ -13,12 +13,12 @@
     <!-- Header -->
     <div class="neo-page-heading flex flex-col md:flex-row md:items-center justify-between gap-6 pb-7 border-b">
         <div class="flex items-center gap-4">
-            <button @onclick='() => Navigation.NavigateTo("/my-gists")' class="btn btn-outline btn-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            <button type="button" @onclick="RequestCloseAsync" disabled="@IsLoading" aria-label="@(IsEmbedded ? "Close editor" : "Back to My Gists")" class="btn btn-outline btn-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d='@(IsEmbedded ? "M18 6 6 18M6 6l12 12" : "m12 19-7-7 7-7M19 12H5")'/></svg>
             </button>
             <div>
                 <span class="neo-kicker mb-2">Code workshop</span>
-                <h1 class="text-3xl font-semibold tracking-tight">@(string.IsNullOrEmpty(GistId) ? "Create a new gist" : "Edit your gist")</h1>
+                <h1 id="gist-editor-title" class="text-3xl font-semibold tracking-tight">@(string.IsNullOrEmpty(GistId) ? "Create a new gist" : "Edit your gist")</h1>
                 <p class="text-muted-foreground text-sm font-semibold">A focused workspace for your cloud snippets.</p>
             </div>
         </div>
@@ -48,7 +48,7 @@
         <div class="p-12 border border-dashed rounded-xl flex flex-col items-center justify-center text-center space-y-4">
             <h2 class="text-2xl font-semibold tracking-tight">Snippet unavailable</h2>
             <p class="text-sm text-muted-foreground max-w-xl">GitHub could not load this snippet for editing. Check that this gist still exists and that the current token belongs to the owner.</p>
-            <button @onclick='() => Navigation.NavigateTo("/my-gists")' class="btn btn-primary btn-md">Back to My Gists</button>
+            <button @onclick="RequestCloseAsync" class="btn btn-primary btn-md">@(IsEmbedded ? "Close editor" : "Back to My Gists")</button>
         </div>
     }
     else
@@ -167,6 +167,22 @@
 
 @code {
     [Parameter] public string? GistId { get; set; }
+    [Parameter] public bool IsEmbedded { get; set; }
+    [Parameter] public EventCallback OnSaved { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    private string InitialState = "";
+    private string FormState => System.Text.Json.JsonSerializer.Serialize(new { Description, Filename, Content, IsPublic, IsBookmarked, FilenameKebabEnabled });
+
+    public async Task RequestCloseAsync()
+    {
+        if (IsLoading) return;
+        if (IsEmbedded)
+        {
+            if (EditorLoaded && FormState != InitialState && !await JS.InvokeAsync<bool>("confirm", "Discard unsaved changes and close the editor?")) return;
+            await OnClose.InvokeAsync();
+        }
+        else Navigation.NavigateTo("/my-gists");
+    }
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
     private ElementReference DescriptionInput;
@@ -219,6 +235,7 @@
         {
             await LoadGistForEditing();
         }
+        InitialState = FormState;
         EditorLoaded = true;
     }
 
@@ -353,7 +370,8 @@
                     try { await DraftModule.InvokeVoidAsync("removeEditorDraft", DraftKey); }
                     catch (JSException) { Console.WriteLine("The saved snippet's temporary update draft could not be removed."); }
                 }
-                Navigation.NavigateTo(string.IsNullOrEmpty(GistId) && IsBookmarked
+                if (IsEmbedded) await OnSaved.InvokeAsync();
+                else Navigation.NavigateTo(string.IsNullOrEmpty(GistId) && IsBookmarked
                     ? "/my-gists?favorites=true"
                     : "/my-gists");
             }

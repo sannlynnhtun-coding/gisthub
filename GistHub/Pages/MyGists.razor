@@ -214,7 +214,7 @@
                             OnCreateGroup="@(name => CreateGroupFromCard(name))"
                             OnToggleGroupOn="@(name => AddGroupToGist(gist, name))"
                             OnToggleGroupOff="@(name => RemoveGroupFromGist(gist, name))"
-                            OnEdit="@(() => Navigation.NavigateTo($"/editor/{gist.Id}"))"
+                            OnEdit="@(() => EditingGistId = gist.Id)"
                             OnDelete="@(() => HandleDelete(gist))"
                             OnCopyRaw="@(() => HandleCopyRaw(gist))"
                             IsCopied="@(CopiedGistId == gist.Id)"
@@ -270,7 +270,21 @@
     </div>
 }
 
+@if (EditingGistId is not null)
+{
+    <GistHub.Components.UI.GistEditDialog @key="EditingGistId" GistId="@EditingGistId" OnClose="CloseEditor" OnSaved="EditorSavedAsync" />
+}
+
 @code {
+    private string? EditingGistId;
+    private void CloseEditor() => EditingGistId = null;
+    private async Task EditorSavedAsync()
+    {
+        EditingGistId = null;
+        await LoadLocalGists();
+        await LoadGroups();
+    }
+
     private bool CopyFailed;
     private const string ProfileToolsVisibleStorageKey = "gisthub:profile-tools-visible";
     private const string BookmarkRestoreInputId = "bookmark-restore-input";

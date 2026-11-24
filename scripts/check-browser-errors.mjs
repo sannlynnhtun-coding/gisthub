@@ -265,6 +265,14 @@ try {
   }
 
   if (process.env.BROWSER_CHECK_UI === "1" || process.env.BROWSER_CHECK_COLLECTION_POLISH === "1") {
+    await waitFor(`(async () => {
+      if (!(await indexedDB.databases()).some(db => db.name === 'GistHubDB')) return false;
+      return new Promise(resolve => {
+        const request=indexedDB.open('GistHubDB');
+        request.onerror=()=>resolve(false);
+        request.onsuccess=()=>{const db=request.result;const ready=['profiles','gists','groups'].every(name=>db.objectStoreNames.contains(name));db.close();resolve(ready);};
+      });
+    })()`, 'initialized local database before seeding',60000);
     await evaluate(`(async () => {
       const db = await new Promise((resolve, reject) => {
         const request = indexedDB.open("GistHubDB", 4);
