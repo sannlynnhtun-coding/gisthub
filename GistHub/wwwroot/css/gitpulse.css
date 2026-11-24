@@ -512,3 +512,8 @@
 :root[data-interface-style="gitpulse"] .neo-gist-card--compact .neo-code-preview { border-radius:6px !important; border-color:transparent !important; background:hsl(var(--background) / .45) !important; }
 :root[data-interface-style="gitpulse"] .neo-gist-card--compact .neo-gist-card__footer { border-color:hsl(var(--border) / .5); }
 
+/* Keep the favorite badge inside the primary tile, ahead of any separate help control. */
+:root[data-interface-style="gitpulse"] .excel-workspace .workspace-ribbon:not(.is-quick-access) .ribbon-command:has(.tool-help-button) .quick-access-actions { right:30px; }
+@media (max-width:767px), (pointer:coarse) {
+  :root[data-interface-style="gitpulse"] .excel-workspace .workspace-ribbon:not(.is-quick-access) .ribbon-command:has(.tool-help-button) .quick-access-actions { right:46px; }
+}

@@ -230,12 +230,17 @@
   padding-block: 0; padding-inline: 0;
   border: 1px solid hsl(var(--border)); border-radius: 50%; background: hsl(var(--card));
 }
-.excel-workspace .workspace-ribbon:not(.is-quick-access) .tool-list-entry { padding-right: 24px; }
+.excel-workspace .workspace-ribbon:not(.is-quick-access) .tool-list-entry { padding-right: 0; }
+/* Help is a sibling control, so anchor the badge before it rather than outside the tile. */
+.excel-workspace .workspace-ribbon:not(.is-quick-access) .ribbon-command:has(.tool-help-button) .quick-access-actions { right:30px; }
 
 @media (max-width:767px), (pointer:coarse) {
   .excel-workspace .workspace-ribbon:not(.is-quick-access) .quick-access-actions [data-quick-access-toggle] {
     width:44px; min-width:44px; height:44px; min-height:44px;
     border:0; background:radial-gradient(circle, hsl(var(--secondary)) 12px, transparent 13px);
   }
-  .excel-workspace .workspace-ribbon:not(.is-quick-access) .tool-list-entry { padding-right:44px; }
+  .excel-workspace .workspace-ribbon:not(.is-quick-access) .tool-list-entry { padding-right:0; }
+}
+@media (max-width:767px), (pointer:coarse) {
+  .excel-workspace .workspace-ribbon:not(.is-quick-access) .ribbon-command:has(.tool-help-button) .quick-access-actions { right:46px; }
 }
