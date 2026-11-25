@@ -1,9 +1,16 @@
 import { mountToaster, toast } from './vendor/ding/index.js';
+import { getNotificationSettings } from './notificationSettings.js';
 
 // Shared by Blazor and browser exports. Never include clipboard contents or tokens.
 const theme = () => document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 mountToaster({ position: 'bottom-right', theme: theme() });
-toast.configure({ sound: true, volume: 0.5 });
+function configureSound() {
+    const { muted, volume } = getNotificationSettings();
+    toast.configure({ sound: !muted && volume > 0, volume });
+}
+configureSound();
+window.addEventListener('gisthub:notification-settings-changed', configureSound);
+window.addEventListener('storage', configureSound);
 window.gistHubNotify = (type, message) => {
     try {
         (toast[type] ?? toast.info)(message, { duration: type === 'error' ? 8000 : 3000 });

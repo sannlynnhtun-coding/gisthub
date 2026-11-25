@@ -13,8 +13,20 @@
         <p class="text-muted-foreground mt-2">Keep your appearance favorites, preferences, bookmarks, and playlists in one JSON backup.</p>
     </div>
     <div class="bg-card border border-border rounded-md p-6 space-y-4">
+        <h3 class="text-xl font-bold">Notification sounds</h3>
+        <p class="text-sm text-muted-foreground">Control sounds for action notifications. Visual notifications stay on.</p>
+        <fieldset disabled="@(!SoundReady)" class="space-y-4">
+            <label class="flex items-center gap-2"><input id="notification-muted" type="checkbox" @bind="NotificationsMuted" @bind:after="SaveSoundAsync" /> Mute notification sounds</label>
+            <div class="space-y-2">
+                <label for="notification-volume" class="block">Volume: @NotificationVolume%</label>
+                <input id="notification-volume" type="range" min="0" max="100" step="1" class="w-full" aria-valuetext="@($"{NotificationVolume}%")" @bind="NotificationVolume" @bind:event="oninput" @bind:after="SaveSoundAsync" />
+            </div>
+        </fieldset>
+        @if (SoundError is not null) { <p role="alert" class="text-destructive">@SoundError</p> }
+    </div>
+    <div class="bg-card border border-border rounded-md p-6 space-y-4">
         <h3 class="text-xl font-bold">Save or restore your setup</h3>
-        <p>Includes the selected theme, style and font, favorite themes/styles/presets/fonts, button sounds, sidebar and privacy preferences, tool categories, saved Markdown Cards draft, bookmarks, playlist assignments, and local tags across your cached accounts.</p>
+        <p>Includes the selected theme, style and font, favorite themes/styles/presets/fonts, button and notification sound settings, sidebar and privacy preferences, tool categories, saved Markdown Cards draft, bookmarks, playlist assignments, and local tags across your cached accounts.</p>
         <p class="text-sm text-muted-foreground">GitHub tokens, profiles, and gist contents are excluded. Sync the relevant accounts before restoring bookmarks. Missing gists are skipped; you can sync them and import the same file again.</p>
         <fieldset disabled="@(Busy || Module is null)" class="space-y-4">
             <button id="local-settings-download" type="button" class="btn btn-primary btn-md" @onclick="DownloadAsync">Download local settings JSON</button>
@@ -43,6 +55,10 @@
     [CascadingParameter(Name = "IsToolWorkspace")] public bool IsToolWorkspace { get; set; }
     private IJSObjectReference? Module;
     private bool Busy;
+    private bool SoundReady, NotificationsMuted;
+    private int NotificationVolume = 50;
+    private string? SoundError;
+    private sealed record NotificationSoundSettings(bool Muted, double Volume);
     private string? Json, Error;
     private string Status = "Preferences save in this browser automatically. Download a backup to keep a portable copy.";
     private BackupPreview? Preview;
@@ -51,9 +67,24 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
-        try { Module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/localSettings.js"); }
+        try
+        {
+            Module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/localSettings.js");
+            var sound = await Module.InvokeAsync<NotificationSoundSettings>("getNotificationSettings");
+            NotificationsMuted = sound.Muted;
+            NotificationVolume = (int)Math.Round(sound.Volume * 100);
+            SoundReady = true;
+        }
         catch (JSException) { Error = "Local settings could not load. Reload the app to try again."; }
         StateHasChanged();
+    }
+
+    private async Task SaveSoundAsync()
+    {
+        if (!SoundReady || Module is null) return;
+        SoundError = null;
+        try { await Module.InvokeVoidAsync("setNotificationSettings", NotificationsMuted, NotificationVolume / 100.0); }
+        catch (JSException) { SoundError = "Could not save notification sounds. Allow browser storage and try again."; }
     }
 
     private async Task DownloadAsync()

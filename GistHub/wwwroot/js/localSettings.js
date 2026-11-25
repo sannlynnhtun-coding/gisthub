@@ -1,10 +1,11 @@
 import { getAllItems, restoreLocalMetadata } from './indexedDb.js';
 import { validate as validateQuickAccess } from './quickAccess.js';
+export { getNotificationSettings, setNotificationSettings } from './notificationSettings.js';
 
 const favoritesKey = 'gisthub:appearance-favorites';
 const categories = ['themes', 'styles', 'presets', 'fonts'];
 const preferenceKeys = ['theme', 'gisthub:theme-choice', 'gisthub:interface-style', 'gisthub:font',
-    'button-sounds-enabled', 'gisthub:sidebar-visible', 'gisthub:files-blurred',
+    'button-sounds-enabled', 'gisthub:notifications-muted', 'gisthub:notifications-volume', 'gisthub:sidebar-visible', 'gisthub:files-blurred',
     'gisthub:profile-tools-visible', 'gisthub:markdown-cards-draft', 'gisthub:quick-access', 'gisthub:workspace-layout'];
 const isPreference = key => preferenceKeys.includes(key) || /^gisthub:tool-category:tools-category-[a-z-]+$/.test(key);
 const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -41,7 +42,9 @@ function parseBackup(json) {
     if (!isObject(backup.preferences)) throw new Error('The preferences are missing.');
     for (const [key, value] of Object.entries(backup.preferences)) {
         if (!isPreference(key) || typeof value !== 'string') throw new Error('The backup contains an unsupported preference.');
-        if (key === 'gisthub:workspace-layout') {
+        if (key === 'gisthub:notifications-volume') {
+            if (!value.trim() || !Number.isFinite(Number(value)) || Number(value) < 0 || Number(value) > 1) throw new Error('Invalid notification volume.');
+        } else if (key === 'gisthub:workspace-layout') {
             if (!['excel', 'admin'].includes(value)) throw new Error('Invalid workspace layout.');
         } else if (key === 'gisthub:quick-access') {
             backup.preferences[key] = JSON.stringify(validateQuickAccess(value));
