@@ -3,6 +3,20 @@ import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
 
 const readAsset = name => readFile(new URL(`../GistHub/wwwroot/${name}`, import.meta.url), 'utf8');
+const developmentEvents = {};
+const developmentSteps = [];
+runInNewContext(await readAsset('service-worker.js'), {
+  self: {
+    addEventListener: (name, handler) => { developmentEvents[name] = handler; },
+    skipWaiting: async () => developmentSteps.push('skip waiting'),
+    clients: { claim: async () => developmentSteps.push('claimed clients') },
+  },
+});
+assert.equal(developmentEvents.fetch, undefined, 'development must not intercept fetch requests');
+for (const name of ['install', 'activate']) {
+  await new Promise(resolve => developmentEvents[name]({ waitUntil: resolve }));
+}
+assert.deepEqual(developmentSteps, ['skip waiting', 'claimed clients']);
 const workerSource = await readAsset('service-worker.published.js');
 const index = await readAsset('index.html');
 const registration = index.match(/<script>\s*(if \('serviceWorker' in navigator\)[\s\S]*?)<\/script>/)[1];
