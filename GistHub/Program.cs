@@ -13,7 +13,7 @@ var githubApiBaseUrl = builder.HostEnvironment.IsDevelopment() || new Uri(builde
     ? "https://api.github.com"
     : new Uri(new Uri(builder.HostEnvironment.BaseAddress), "api/github").ToString();
 builder.Services.AddScoped<IGithubService>(sp =>
-    new GithubService(sp.GetRequiredService<HttpClient>(), githubApiBaseUrl));
+    new GithubService(sp.GetRequiredService<HttpClient>(), githubApiBaseUrl, sp.GetRequiredService<Microsoft.JSInterop.IJSRuntime>()));
 builder.Services.AddScoped<IStorageService, IndexedDbService>();
 builder.Services.AddScoped<GistSearchService>();
 builder.Services.AddScoped<GistSyncService>();

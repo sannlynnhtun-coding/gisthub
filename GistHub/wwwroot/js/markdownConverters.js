@@ -144,7 +144,7 @@ export function download(result,format,preview) {
     }
     const html=format==='Markdown to HTML'||rich(format), ext=html?'html':format.endsWith('to Markdown')?'md':'txt';
     const url=URL.createObjectURL(new Blob([result],{type:html?'text/html;charset=utf-8':'text/plain;charset=utf-8'}));
-    const a=document.createElement('a');a.href=url;a.download='converted.'+ext;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    const a=document.createElement('a');a.href=url;a.download='converted.'+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 export function enableRichPaste() {

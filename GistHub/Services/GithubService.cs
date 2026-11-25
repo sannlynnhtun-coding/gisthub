@@ -1,3 +1,4 @@
+using Microsoft.JSInterop;
 using GistHub.Models;
 using System.Net;
 using System.Net.Http.Headers;
@@ -47,13 +48,15 @@ public class GithubService : IGithubService
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
     private readonly HttpClient _http;
+    private readonly IJSRuntime? _js;
     private readonly string _gitHubApiBaseUrl;
 
     public GithubApiError? LastError { get; private set; }
 
-    public GithubService(HttpClient http, string gitHubApiBaseUrl)
+    public GithubService(HttpClient http, string gitHubApiBaseUrl, IJSRuntime? js = null)
     {
         _http = http;
+        _js = js;
         _gitHubApiBaseUrl = gitHubApiBaseUrl.TrimEnd('/');
     }
 
@@ -304,7 +307,11 @@ public class GithubService : IGithubService
     }
 
     public async Task<bool> DeleteGistAsync(string gistId, string token)
-        => await SendGitHubForSuccessAsync(HttpMethod.Delete, $"/gists/{gistId}", token);
+    {
+        var deleted = await SendGitHubForSuccessAsync(HttpMethod.Delete, $"/gists/{gistId}", token);
+        await NotifyMutationAsync(deleted, "Gist deleted");
+        return deleted;
+    }
 
     public async Task<LocalGist?> CreateGistAsync(string description, bool isPublic, Dictionary<string, GistFile> files, string token)
     {
@@ -315,7 +322,9 @@ public class GithubService : IGithubService
             files = files.ToDictionary(f => f.Key, f => new { content = f.Value.Content })
         };
 
-        return await SendGitHubJsonAsync<LocalGist>(HttpMethod.Post, "/gists", token, payload);
+        var gist = await SendGitHubJsonAsync<LocalGist>(HttpMethod.Post, "/gists", token, payload);
+        await NotifyMutationAsync(gist is not null, "Upload complete — gist created");
+        return gist;
     }
 
     public async Task<LocalGist?> GetGistByIdAsync(string id, string? token = null)
@@ -331,7 +340,16 @@ public class GithubService : IGithubService
                 file => CreateGistUpdateFilePayload(file.Key, file.Value))
         };
 
-        return await SendGitHubJsonAsync<LocalGist>(HttpMethod.Patch, $"/gists/{id}", token, body);
+        var gist = await SendGitHubJsonAsync<LocalGist>(HttpMethod.Patch, $"/gists/{id}", token, body);
+        await NotifyMutationAsync(gist is not null, "Gist saved");
+        return gist;
+    }
+
+    private async Task NotifyMutationAsync(bool success, string message)
+    {
+        if (_js is null) return;
+        try { await _js.InvokeVoidAsync("gistHubNotify", success ? "success" : "error", success ? message : "GitHub action failed. Check the page for details."); }
+        catch (JSException) { /* Feedback must not change the operation's result. */ }
     }
 
     private static Dictionary<string, object?> CreateGistUpdateFilePayload(string existingFilename, GistFile file)

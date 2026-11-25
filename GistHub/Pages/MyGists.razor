@@ -480,6 +480,7 @@
             await Task.WhenAll(changedGists.Select(Storage.SaveGistAsync));
             BookmarkBackupWasSuccessful = true;
             BookmarkBackupMessage = $"Restored {matchingCount} bookmark{(matchingCount == 1 ? "" : "s")}.{missingText}";
+            await JS.InvokeVoidAsync("gistHubNotify", "success", "Bookmark restore complete");
         }
         catch (Exception ex)
         {

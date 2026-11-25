@@ -138,6 +138,7 @@
             Theme = result.Theme; Style = result.Style; Font = result.Font;
             ShowAppearanceJson = false;
             AppearanceFeedback = "Appearance applied.";
+            await JS.InvokeVoidAsync("gistHubNotify", "success", "Appearance applied");
         }
         catch (JSException ex) { AppearanceFeedback = $"Could not apply appearance: {ex.Message}"; }
     }

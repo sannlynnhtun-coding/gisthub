@@ -84,7 +84,10 @@ function runTransaction(storeName, mode, operation) {
         transaction.onerror = () => {
             // The abort handler reports the underlying request/transaction error.
         };
-    }));
+    })).catch(error => {
+        if (mode === "readwrite") globalThis.gistHubNotify?.('error', 'Could not save local changes');
+        throw error;
+    });
 }
 
 export async function initDb() {
@@ -105,6 +108,7 @@ export async function saveItem(storeName, item) {
         return request;
     });
     if (changed) globalThis.gistHubBackup?.changed();
+    if (changed || storeName === 'profiles') globalThis.gistHubNotify?.('success', 'Saved');
     return true;
 }
 
@@ -170,6 +174,7 @@ export async function deleteItem(storeName, id) {
         return request;
     });
     if (changed) globalThis.gistHubBackup?.changed();
+    globalThis.gistHubNotify?.('success', 'Deleted');
     return true;
 }
 

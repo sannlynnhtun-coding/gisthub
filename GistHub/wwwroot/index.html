@@ -277,6 +277,7 @@
             // Clipboard access can be denied when focus changes during interop.
             // Return a result so callers never report success for a rejected write.
             if (!document.hasFocus() || !navigator.clipboard?.writeText) {
+                window.gistHubNotify?.('error', 'Could not copy. Focus this page and allow clipboard access.');
                 return false;
             }
             try {
@@ -309,6 +310,7 @@
     <script src="js/toolHelp.js"></script>
     <script src="js/codeImage.js"></script>
     <script src="js/indexedDb.js" type="module"></script>
+    <script type="module" src="js/notifications.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>
         if ('serviceWorker' in navigator) {

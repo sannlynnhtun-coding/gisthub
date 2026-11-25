@@ -151,6 +151,7 @@
             FileBytes = result;
             FileName = Decode ? (file.Name.EndsWith(".base64", StringComparison.OrdinalIgnoreCase) ? file.Name[..^7] : file.Name + ".decoded") : file.Name + ".base64";
             if (string.IsNullOrWhiteSpace(FileName)) FileName = "decoded.bin";
+            await JS.InvokeVoidAsync("gistHubNotify", "success", "File conversion complete");
         }
         catch (Exception ex) when (ex is IOException or FormatException or System.Text.DecoderFallbackException)
         {

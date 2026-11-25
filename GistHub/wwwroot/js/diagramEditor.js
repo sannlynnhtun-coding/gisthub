@@ -377,14 +377,16 @@ class Editor {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url; a.download = (this.doc.title.replace(/[<>:"/\\|?*\x00-\x1f]/g, '_') || 'diagram') + extension;
-        a.click(); setTimeout(() => URL.revokeObjectURL(url), 30000);
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 30000);
     }
     async importFile(input) {
         const file = input.files?.[0];
         if (!file) return null;
         try {
             if (file.size > maxBytes) throw new Error('Diagram source must be no larger than 5 MiB.');
-            return await this.newDocument(file.name.replace(/\.(drawio|xml)$/i, ''), validateXml(await file.text()));
+            const document = await this.newDocument(file.name.replace(/\.(drawio|xml)$/i, ''), validateXml(await file.text()));
+            globalThis.gistHubNotify?.('success', 'Diagram imported');
+            return document;
         } finally { input.value = ''; }
     }
     async fullscreen(element) {
