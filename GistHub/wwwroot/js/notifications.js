@@ -3,7 +3,7 @@ import { mountToaster, toast } from './vendor/ding/index.js';
 // Shared by Blazor and browser exports. Never include clipboard contents or tokens.
 const theme = () => document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 mountToaster({ position: 'bottom-right', theme: theme() });
-toast.configure({ sound: false });
+toast.configure({ sound: true, volume: 0.5 });
 window.gistHubNotify = (type, message) => {
     try {
         (toast[type] ?? toast.info)(message, { duration: type === 'error' ? 8000 : 3000 });

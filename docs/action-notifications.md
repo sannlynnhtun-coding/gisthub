@@ -19,5 +19,5 @@ Keep user content, clipboard data, filenames, and credentials out of toast messa
 Keep detailed validation and recovery instructions on the page.
 
 Ding follows the app's light/dark theme, announces notifications through its live
-regions, supports keyboard dismissal, and respects reduced motion. Sound is off.
+regions, supports keyboard dismissal, and respects reduced motion. Built-in status sounds are enabled at 50% volume; browser audio requires a user interaction.
 Existing confirmations continue to decide whether destructive actions run.
