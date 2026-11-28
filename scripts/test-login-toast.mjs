@@ -15,11 +15,12 @@ export async function checkLoginToast({evaluate, send, sessionId, waitFor}) {
     const toast = await evaluate(`(() => {
       const element = document.querySelector('.neo-login-screen [role="alert"]');
       const rect = element.getBoundingClientRect();
-      return {position:getComputedStyle(element).position, top:rect.top, right:rect.right,
+      return {position:getComputedStyle(element).position, top:rect.top, left:rect.left, right:rect.right,
         z:Number(getComputedStyle(element).zIndex), text:element.textContent};
     })()`);
     assert.equal(toast.position, 'fixed');
     assert.ok(toast.top >= 0 && toast.top < 40 && toast.right <= width);
+    assert.ok(Math.abs(toast.left + toast.right - width) <= 1, 'toast is centered in the viewport');
     assert.ok(toast.z >= 50);
     assert.ok(toast.text.includes('Please fill in all fields.'));
     assert.equal(await evaluate(`document.querySelector('form').getBoundingClientRect().x`), before, 'toast does not shift the form');

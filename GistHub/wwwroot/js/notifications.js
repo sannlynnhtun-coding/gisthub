@@ -3,7 +3,7 @@ import { getNotificationSettings } from './notificationSettings.js';
 
 // Shared by Blazor and browser exports. Never include clipboard contents or tokens.
 const theme = () => document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-mountToaster({ position: 'bottom-right', theme: theme() });
+mountToaster({ position: 'top-center', theme: theme() });
 function configureSound() {
     const { muted, volume } = getNotificationSettings();
     toast.configure({ sound: !muted && volume > 0, volume });
