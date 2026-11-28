@@ -1,0 +1,68 @@
+{
+  "databaseVersion": 4,
+  "profiles": [
+    {
+      "id": "profile-a",
+      "githubUsername": "alice"
+    },
+    {
+      "id": "profile-b",
+      "githubUsername": "bob"
+    }
+  ],
+  "gists": [
+    {
+      "id": "shared",
+      "storageKey": "alice:shared",
+      "cacheOwnerUsername": "alice",
+      "isBookmarked": true,
+      "bookmarkOrder": 1,
+      "collectionNames": [
+        "Reading"
+      ],
+      "tags": [
+        "derived",
+        "local"
+      ],
+      "files": {
+        "note.md": {
+          "content": "SYNTHETIC CONTENT NEVER UPLOAD"
+        }
+      }
+    },
+    {
+      "id": "shared",
+      "storageKey": "bob:shared",
+      "cacheOwnerUsername": "bob",
+      "isBookmarked": false,
+      "collectionNames": [
+        "Reading"
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "id": "legacy",
+      "name": "Reading"
+    },
+    {
+      "id": "empty",
+      "name": "Empty"
+    }
+  ],
+  "preferences": {
+    "theme": "dark",
+    "gisthub:font": "roboto",
+    "gisthub:workspace-layout": "excel"
+  },
+  "expected": {
+    "profiles": 2,
+    "gists": 2,
+    "groups": 2,
+    "unassignedLegacyGroups": [
+      "legacy",
+      "empty"
+    ],
+    "metadataOnlyReference": "missing-gist"
+  }
+}

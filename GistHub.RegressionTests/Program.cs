@@ -3,6 +3,9 @@ using GistHub.Models;
 using GistHub.Services;
 using Microsoft.AspNetCore.Components;
 
+GoogleSyncProtocolTests.RunAll();
+if (args.Contains("--google-sync-only", StringComparer.Ordinal)) return;
+
 await GithubDashboardTests.RunAsync();
 await DiagramGistTests.RunAsync();
 await EditorAppearanceTests.RunAsync();

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GistHub disposable transport proof</title>
+<style>body{font:16px system-ui;max-width:850px;margin:2rem auto;padding:1rem}button,select{padding-block:.65rem;padding-inline:1rem;margin:.5rem}pre{white-space:pre-wrap;overflow-wrap:anywhere}fieldset{padding-block:1rem}</style>
+<h1>Google Sheets transport gate</h1>
+<p>This standalone test creates one disposable private spreadsheet. It does not open your application database. Use the same Google account in two isolated browser profiles. Credentials remain in page memory. Do not use a real sync file.</p>
+<fieldset><legend>Profile role</legend><select id="role"><option value="a">A — create disposable file</option><option value="b">B — join A's file</option></select>
+<button id="connect" disabled>Authorize and join test</button><button id="run" disabled>Run 100 rounds</button></fieldset>
+<p id="status" role="status" aria-live="polite">Loading public configuration…</p><pre id="output"></pre>
+<script type="module">
+import { canonicalize,sha256,envelope,verifyRows,canAppend } from '/protocol.mjs';
+const key='__SESSION_KEY__', status=document.querySelector('#status'), output=document.querySelector('#output');
+const connect=document.querySelector('#connect'), run=document.querySelector('#run'), roleInput=document.querySelector('#role');
+let token, identity, config, role, fileId, known, physicalRows=0, own=[], deviceId=crypto.randomUUID();
+const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function control(path,body) {
+  const response=await fetch(path,{method:body?'POST':'GET',headers:{'Content-Type':'application/json','X-Harness-Key':key},...(body?{body:JSON.stringify(body)}:{})});
+  const result=await response.json(); if(!response.ok) throw new Error(result.error); return result;
+}
+async function google(url, method='GET', body) {
+  for(let attempt=0;attempt<6;attempt++) {
+    let response;
+    try {
+      response=await fetch(url,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
+    } catch {
+      if(attempt===5)throw new Error('Network retry limit reached; remote outcome may be uncertain.');
+      await pause(1000*2**attempt+Math.random()*400);continue;
+    }
+    if(response.ok) return response.json();
+    if(response.status===401) throw new Error('Authorization expired. Restart proof and authorize again.');
+    if(response.status!==429 && response.status<500) throw new Error('Google request failed: HTTP '+response.status+' (no credentials logged).');
+    if(attempt===5) throw new Error('Google retry limit reached. Live gate failed.');
+    const retry=Number(response.headers.get('Retry-After'))*1000;
+    await pause(Math.max(retry||0,1000*2**attempt+Math.random()*400));
+  }
+}
+const sheets=(suffix='')=>'https://sheets.googleapis.com/v4/spreadsheets/'+fileId+suffix;
+async function read() {
+  const result=await google(sheets('/values/'+encodeURIComponent('Operations!A:C')));
+  const rows=result.values??[];
+  if(canonicalize(rows[0])!==canonicalize(['opId','payloadHash','payloadJson'])) throw new Error('Unexpected journal header.');
+  physicalRows=rows.length-1;known=await verifyRows(rows.slice(1),config.libraryId,config.workspaceId); return known;
+}
+async function append(rows) {
+  const map=await read();
+  const usage={operations:map.size,bodyBytes:[...map.values()].reduce((n,row)=>n+new TextEncoder().encode(row[2]).length,0),rows:physicalRows};
+  if(!canAppend(usage,rows,map)) throw new Error('Upload capacity reached; existing rows retained.');
+  for(const row of rows) for(const parent of JSON.parse(row[2]).parentIds)
+    if(!map.has(parent)) throw new Error('Dependency not verified before dispatch.');
+  await google(sheets('/values/'+encodeURIComponent('Operations!A:C')+':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS'),'POST',{values:rows});
+}
+function heads(map) {
+  const bodies=[...map.values()].map(row=>JSON.parse(row[2]));
+  const referenced=new Set(bodies.flatMap(body=>body.parentIds));
+  return bodies.filter(body=>!referenced.has(body.opId)).map(body=>body.opId).sort();
+}
+async function replayDigest(map) {
+  // All test edits affect the same field/entity, so causal heads fully describe its candidates.
+  return sha256(canonicalize(heads(map).map(id=>JSON.parse(map.get(id)[2])).sort((a,b)=>a.opId<b.opId?-1:1)));
+}
+async function makeOperation(counter,parents) {
+  return envelope({opId:crypto.randomUUID(),libraryId:config.libraryId,workspaceId:config.workspaceId,deviceId,
+    entityType:'collection',entityId:'transport-proof',field:'displayName',kind:'set',value:role+'-'+counter,parentIds:parents,logicalCounter:String(counter)});
+}
+function fail(error) {status.textContent='FAILED / NOT PASSED: '+error.message;run.disabled=true;}
+config=await control('/state');
+const script=document.createElement('script');script.src='https://accounts.google.com/gsi/client';
+script.onload=()=>{connect.disabled=false;status.textContent='Choose role, then authorize. Open the second role in a separate browser profile.';};
+script.onerror=()=>fail(new Error('Google Identity Services did not load.'));document.head.append(script);
+connect.onclick=()=>{
+  role=roleInput.value;connect.disabled=true;roleInput.disabled=true;
+  const client=window.google.accounts.oauth2.initTokenClient({client_id:config.clientId,scope:'https://www.googleapis.com/auth/drive.file',
+    error_callback:()=>{connect.disabled=false;roleInput.disabled=false;fail(new Error('Authorization popup cancelled or blocked.'));},
+    callback:async response=>{
+      try {
+        if(!response.access_token) throw new Error('Consent not granted.');token=response.access_token;
+        identity=await google('https://www.googleapis.com/drive/v3/about?fields=user(permissionId)');
+        if(!identity.user?.permissionId) throw new Error('Stable Google identity unavailable.');
+        const accountHash=await sha256(identity.user.permissionId);
+        if(role==='a') {
+          const existing=await control('/state');
+          if(existing.spreadsheetId) throw new Error('Role A already created a file. Restart server for another run.');
+          const created=await google('https://sheets.googleapis.com/v4/spreadsheets','POST',{properties:{title:'GistHub DISPOSABLE transport proof '+new Date().toISOString()},sheets:[{properties:{title:'Manifest'}},{properties:{title:'Operations'}}]});
+          fileId=created.spreadsheetId;
+          await google(sheets('/values:batchUpdate'),'POST',{valueInputOption:'RAW',data:[{range:'Manifest!A1:B5',values:[['format','gisthub-sync'],['schemaVersion','1'],['workspaceId',config.workspaceId],['githubUserId',config.libraryId],['creatorGooglePermissionId',identity.user.permissionId]]},{range:'Operations!A1:C1',values:[['opId','payloadHash','payloadJson']]}]});
+        } else {
+          const existing=await control('/state');
+          if(!existing.spreadsheetId) throw new Error('Authorize role A first.');fileId=existing.spreadsheetId;
+        }
+        await control('/join',{role,spreadsheetId:fileId,accountHash});await read();
+        output.textContent='Disposable spreadsheet: https://docs.google.com/spreadsheets/d/'+fileId+'\nRole '+role.toUpperCase()+' ready. Keep this page open.';
+        run.disabled=false;status.textContent='Connected. Click Run in BOTH profiles.';
+      } catch(error){connect.disabled=false;roleInput.disabled=false;fail(error);}
+    }});
+  client.requestAccessToken({prompt:'consent'});
+};
+run.onclick=async()=>{
+  run.disabled=true;
+  try {
+    const joined=await control('/state');if(joined.ready.length!==2)throw new Error('Both profiles must authorize before running.');
+    for(let round=0;round<config.rounds;round++) {
+      const map=await read(), row=await makeOperation(round,heads(map));
+      await control('/barrier',{role,round});
+      await append([row]);own.push(row);
+      // Intentionally disregard the first append acknowledgement and retry the exact immutable row.
+      if(round%10===0) {await pause(1200);await append([row]);}
+      const after=await read();if(after.get(row[0])?.[1]!==row[1])throw new Error('Missing operation or changed hash after append/retry.');
+      status.textContent='Round '+(round+1)+'/100: own row verified; duplicate replay and parent closure valid.';
+      await pause(8000);
+    }
+    // Wait for both streams to finish, then compare final field-head replay and expected row set.
+    await control('/barrier',{role,round:100});const final=await read();
+    for(const row of own)if(final.get(row[0])?.[1]!==row[1])throw new Error('Previously verified operation disappeared.');
+    if(final.size!==200)throw new Error('Expected 200 distinct operations from two profiles; got '+final.size);
+    const digest=await replayDigest(final);
+    const results=await control('/result',{role,passed:true,digest,operations:final.size});
+    status.textContent='This profile completed. Overall PASS requires matching summaries from BOTH profiles (see server terminal).';
+    output.textContent+='\n'+JSON.stringify({role,rounds:100,operations:final.size,replayDigest:digest,results},null,2);
+  } catch(error){fail(error);await control('/result',{role,passed:false,error:true}).catch(()=>{});}
+};
+</script></html>

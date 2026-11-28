@@ -1,0 +1,31 @@
+{
+  "scope": {
+    "libraryId": "9007199254740993",
+    "workspaceId": "10000000-0000-4000-8000-000000000001"
+  },
+  "rows": [
+    [
+      "30000000-0000-4000-8000-000000000001",
+      "786bb9aafa919f88cd584539e0c14d853604c010bfa4573c5eea1fb09b20cdc2",
+      "{\"deviceId\":\"20000000-0000-4000-8000-000000000001\",\"entityId\":\"reading\",\"entityType\":\"collection\",\"field\":\"displayName\",\"kind\":\"set\",\"libraryId\":\"9007199254740993\",\"logicalCounter\":\"1\",\"opId\":\"30000000-0000-4000-8000-000000000001\",\"parentIds\":[],\"value\":\"Original\",\"workspaceId\":\"10000000-0000-4000-8000-000000000001\"}"
+    ],
+    [
+      "30000000-0000-4000-8000-000000000002",
+      "5ce49be3e3580f284ec9cec6dded4d1079ec0c3e4912fc5f005e391956784053",
+      "{\"deviceId\":\"20000000-0000-4000-8000-000000000001\",\"entityId\":\"reading\",\"entityType\":\"collection\",\"field\":\"displayName\",\"kind\":\"set\",\"libraryId\":\"9007199254740993\",\"logicalCounter\":\"2\",\"opId\":\"30000000-0000-4000-8000-000000000002\",\"parentIds\":[\"30000000-0000-4000-8000-000000000001\"],\"value\":\"Left\",\"workspaceId\":\"10000000-0000-4000-8000-000000000001\"}"
+    ],
+    [
+      "30000000-0000-4000-8000-000000000003",
+      "922123af11b30914ad537c5ad77248edaed23e86e6720c7e7844e4c910f4c1f5",
+      "{\"deviceId\":\"20000000-0000-4000-8000-000000000002\",\"entityId\":\"reading\",\"entityType\":\"collection\",\"field\":\"displayName\",\"kind\":\"set\",\"libraryId\":\"9007199254740993\",\"logicalCounter\":\"2\",\"opId\":\"30000000-0000-4000-8000-000000000003\",\"parentIds\":[\"30000000-0000-4000-8000-000000000001\"],\"value\":\"Right\",\"workspaceId\":\"10000000-0000-4000-8000-000000000001\"}"
+    ]
+  ],
+  "expected": {
+    "uniqueOperations": 3,
+    "conflictFields": 1,
+    "candidateValues": [
+      "Left",
+      "Right"
+    ]
+  }
+}
